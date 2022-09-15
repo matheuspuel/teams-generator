@@ -1,0 +1,39 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "typescript",
+      "tsconfig": "tsconfig.json",
+      "option": "watch",
+      "problemMatcher": ["$tsc-watch"],
+      "group": "build",
+      "label": "tsc: watch - tsconfig.json",
+      "runOptions": { "runOn": "folderOpen" },
+      "presentation": {
+        "reveal": "never",
+        "group": "tsc:watch",
+      },
+      "icon": { "id": "eye-watch" },
+    },
+    {
+      "label": "Client Packager",
+      "type": "shell",
+      "command": "yarn start",
+      "group": { "kind": "build" },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "custom",
+        "pattern": { "regexp": "^$" },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Starting.*",
+          "endsPattern": "Metro waiting on.*",
+        },
+      },
+      "presentation": {
+        "reveal": "never",
+      },
+      "icon": { "id": "device-mobile", "color": "terminal.ansiGreen" },
+    },
+  ],
+}

@@ -1,0 +1,9 @@
+{
+  "react-native.packager.port": 19000,
+  "task.allowAutomaticTasks": "on",
+  "files.exclude": {
+    "node_modules": true,
+    "yarn.lock": true,
+    ".expo": true,
+  },
+}

@@ -1,0 +1,30 @@
+{
+  "cli": {
+    "version": ">= 0.44.1",
+    "requireCommit": true
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "releaseChannel": "default",
+      "env": { "APP_VARIANT": "preview" },
+      "distribution": "internal"
+    },
+    "staging": {
+      "releaseChannel": "staging",
+      "env": { "APP_VARIANT": "staging" },
+      "distribution": "internal"
+    },
+    "production": {
+      "releaseChannel": "production",
+      "env": { "APP_VARIANT": "production" },
+      "distribution": "internal"
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
