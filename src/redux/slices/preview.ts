@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { flow } from 'fp-ts/lib/function'
-import { RootState } from '../../../redux/store'
+import { RootState } from 'src/redux/store'
 
 export type PreviewData = {
   serverUrl: string
@@ -18,7 +18,7 @@ export default previewDataSlice.reducer
 
 // SELECTORS
 
-const getPreviewData = (s: RootState) => s.core.preview
+const getPreviewData = (s: RootState) => s.preview
 export const getPreviewServerUrl = flow(getPreviewData, v => v.serverUrl)
 
 // ACTIONS

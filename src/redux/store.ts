@@ -1,22 +1,21 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import throttle from 'lodash.throttle'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import auth from 'src/features/auth/slices'
-import core from 'src/features/core/slices'
+import hydrated from './slices/hydrated'
+import preview from './slices/preview'
+
 import {
   hydrateReducer,
   hydrateStore,
   saveState,
-} from 'src/features/core/slices/hydrated'
-import realtor from 'src/features/realtor/slices'
-import { api } from './api'
+} from 'src/redux/slices/hydrated'
 import { getCache, setCache } from './cache'
+// import { api } from './api'
 
 const rootReducer = combineReducers({
-  [api.reducerPath]: api.reducer,
-  core,
-  auth,
-  realtor,
+  // [api.reducerPath]: api.reducer,
+  preview,
+  hydrated,
 })
 
 const reducer: typeof rootReducer = (state, action) =>
@@ -27,7 +26,8 @@ const store = configureStore({
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).concat(api.middleware),
+    }),
+  // .concat(api.middleware),
   preloadedState: __DEV__ ? getCache() : undefined,
 })
 if (__DEV__) store.subscribe(() => setCache(store.getState()))

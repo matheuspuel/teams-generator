@@ -5,9 +5,9 @@ import { SimpleStorage } from './simpleStorage'
 
 export interface Storage<A> {
   get: TO.TaskOption<A>
-  set: (value: A) => TE.TaskEither<void, void>
+  set: (value: A) => TE.TaskEither<unknown, void>
   remove: TE.TaskEither<void, void>
-  setOrRemove: (value: O.Option<A>) => TE.TaskEither<void, void>
+  setOrRemove: (value: O.Option<A>) => TE.TaskEither<unknown, void>
 }
 
 export const createStorage: <A>(args: {
