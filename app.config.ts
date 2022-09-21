@@ -56,7 +56,7 @@ const config: ExpoConfig = {
   ios: {
     supportsTablet: true,
     bundleIdentifier:
-      'dev.matheuspuel.sorteio-times' +
+      'dev.matheuspuel.sorteiotimes' +
       matchEnv({
         production: '',
         staging: '.staging',
@@ -66,7 +66,7 @@ const config: ExpoConfig = {
   },
   android: {
     package:
-      'dev.matheuspuel.sorteio-times' +
+      'dev.matheuspuel.sorteiotimes' +
       matchEnv({
         production: '',
         staging: '.staging',

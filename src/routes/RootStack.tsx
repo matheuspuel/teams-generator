@@ -1,6 +1,8 @@
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
 import { theme } from 'src/theme'
-import { Home } from 'src/views/Home'
+import { Id } from 'src/utils/Entity'
+import { Group } from 'src/views/Group'
+import { Groups } from 'src/views/Groups'
 import { Loading } from 'src/views/Loading'
 // import { DrawerNavigator, DrawerParamList } from './Drawer'
 
@@ -17,7 +19,8 @@ export type RootStackScreenProps<
 export type RootStackParamList = {
   // Drawer: NavigatorScreenParams<DrawerParamList>
   Loading: undefined
-  Home: undefined
+  Groups: undefined
+  Group: { id: Id }
 }
 
 const Stack = createStackNavigator<RootStackParamList>()
@@ -42,9 +45,14 @@ export const RootStackNavigator = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="Home"
-        component={Home}
-        options={{ headerShown: false }}
+        name="Groups"
+        component={Groups}
+        options={{ title: 'Grupos' }}
+      />
+      <Stack.Screen
+        name="Group"
+        component={Group}
+        options={{ title: 'Grupo' }}
       />
     </Stack.Navigator>
   )

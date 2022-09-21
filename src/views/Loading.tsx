@@ -18,7 +18,7 @@ export const Loading = (props: RootStackScreenProps<'Loading'>) => {
       //   screen: 'Realtor/CreateRealEstate',
       // })
     }
-    navigation.replace('Home')
+    navigation.replace('Groups')
   }, [hydrated])
 
   return <StatusBar style="light" />

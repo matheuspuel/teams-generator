@@ -41,17 +41,18 @@ export * as TO from 'fp-ts/TaskOption'
 export * as TT from 'fp-ts/TaskThese'
 export * as Th from 'fp-ts/These'
 export * as D from 'io-ts/Decoder'
-export { Decoder }
-export { Reader }
-export { Either, Left, Right, left, right }
-export { None, none, Option, Some, some }
-export { These, Both, both }
 import { Either, Left, left, Right, right } from 'fp-ts/Either'
 import * as IO_ from 'fp-ts/IO'
 import { None, none, Option, Some, some } from 'fp-ts/Option'
 import { Reader } from 'fp-ts/Reader'
 import { Both, both, These } from 'fp-ts/These'
 import { Decoder } from 'io-ts/Decoder'
+
+export { Either, Left, Right, left, right }
+export { None, none, Option, Some, some }
+export { Reader }
+export { These, Both, both }
+export { Decoder }
 
 export const IO = IO_
 export type IO<A> = IO_.IO<A>
