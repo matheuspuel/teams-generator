@@ -1,11 +1,15 @@
 import * as Random from 'fp-ts/Random'
-import { Player } from 'src/datatypes/Player'
+import { Player, PlayerNameOrd, PlayerPositionOrd } from 'src/datatypes/Player'
 import { A, IO, IOO, none, O, Option, pipe, some } from 'src/utils/fp-ts'
+
+// export const randomizeTeamsByPosition = (players: Player[]): IO<Player[][]> =>
+//   pipe()
 
 export const randomizeTeams = (players: Player[]): IO<Player[][]> =>
   pipe(
     Math.floor(players.length / 2), //
     n => randomExtractNElems(n)(players),
+    IO.map(A.map(A.sortBy([PlayerPositionOrd, PlayerNameOrd]))),
   )
 
 const randomExtractNElems =

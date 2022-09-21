@@ -24,7 +24,6 @@ export * as Json from 'fp-ts/Json'
 export * as NEA from 'fp-ts/NonEmptyArray'
 export * as N from 'fp-ts/number'
 export * as O from 'fp-ts/Option'
-export * as Ord from 'fp-ts/Ord'
 export * as R from 'fp-ts/Reader'
 export * as RT from 'fp-ts/ReaderTask'
 export * as RTE from 'fp-ts/ReaderTaskEither'
@@ -44,6 +43,7 @@ export * as D from 'io-ts/Decoder'
 import { Either, Left, left, Right, right } from 'fp-ts/Either'
 import * as IO_ from 'fp-ts/IO'
 import { None, none, Option, Some, some } from 'fp-ts/Option'
+import * as Ord_ from 'fp-ts/Ord'
 import { Reader } from 'fp-ts/Reader'
 import { Both, both, These } from 'fp-ts/These'
 import { Decoder } from 'io-ts/Decoder'
@@ -56,3 +56,5 @@ export { Decoder }
 
 export const IO = IO_
 export type IO<A> = IO_.IO<A>
+export const Ord = Ord_
+export type Ord<A> = Ord_.Ord<A>
