@@ -1,5 +1,5 @@
 import { Id } from 'src/utils/Entity'
-import { N, Ord, pipe, S } from 'src/utils/fp-ts'
+import { Num, Ord, pipe, Str } from 'src/utils/fp-ts'
 
 export type Score = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
 
@@ -15,7 +15,7 @@ const PositionOrder = {
 export type Position = keyof typeof PositionOrder
 
 export const PositionOrd: Ord<Position> = pipe(
-  N.Ord,
+  Num.Ord,
   Ord.contramap(a => PositionOrder[a]),
 )
 
@@ -32,6 +32,6 @@ export const PlayerPositionOrd: Ord<Player> = pipe(
 )
 
 export const PlayerNameOrd: Ord<Player> = pipe(
-  S.Ord,
+  Str.Ord,
   Ord.contramap(p => p.name),
 )

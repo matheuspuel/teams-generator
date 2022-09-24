@@ -43,7 +43,7 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
       />
       <Button
         onPress={() => {
-          const teams = randomizeTeams(players)()
+          const teams = randomizeTeams(2)(players)()
           const text = pipe(
             teams,
             A.map(

@@ -1,41 +1,54 @@
 import * as Random from 'fp-ts/Random'
-import { Player, PlayerNameOrd, PlayerPositionOrd } from 'src/datatypes/Player'
+import { Player } from 'src/datatypes/Player'
 import { A, IO, IOO, none, O, Option, pipe, some } from 'src/utils/fp-ts'
 
 // export const randomizeTeamsByPosition = (players: Player[]): IO<Player[][]> =>
-//   pipe()
+//   pipe(
+//     groupByPosition(players), //
+//   )
 
-export const randomizeTeams = (players: Player[]): IO<Player[][]> =>
+// const groupByPosition = (
+//   players: Player[],
+// ): Partial<Record<Position, Player[]>> =>
+//   pipe(
+//     players,
+//     A.reduce<Player, Partial<Record<Position, Player[]>>>(
+//       {},
+//       (groups, player) => ({
+//         ...groups,
+//         [player.position]: [...(groups[player.position] ?? []), player],
+//       }),
+//     ),
+//   )
+
+export const randomizeTeams =
+  (numOfTeams: number) =>
+  (players: Player[]): IO<Player[][]> =>
+    pipe(randomizeArray(players), IO.map(divideTeams(numOfTeams)))
+
+const divideTeams =
+  (numOfTeams: number) =>
+  (players: Player[]): Player[][] =>
+    numOfTeams <= 0
+      ? []
+      : pipe(
+          players,
+          A.splitAt(Math.floor(players.length / numOfTeams)),
+          ([as, bs]) => pipe(divideTeams(numOfTeams - 1)(bs), A.appendW(as)),
+        )
+
+const randomizeArray = <A>(as: A[]): IO<A[]> =>
   pipe(
-    Math.floor(players.length / 2), //
-    n => randomExtractNElems(n)(players),
-    IO.map(A.map(A.sortBy([PlayerPositionOrd, PlayerNameOrd]))),
+    randomExtractElem(as), //
+    IOO.matchEW(
+      () => IO.of([]),
+      ([a, rest]) => pipe(randomizeArray(rest), IO.map(A.append(a))),
+    ),
   )
-
-const randomExtractNElems =
-  (n: number) =>
-  <A>(as: A[]): IO<[A[], A[]]> =>
-    pipe(
-      n <= 0
-        ? IO.of([[], as])
-        : pipe(
-            randomExtractElem(as),
-            IOO.matchW(
-              () => IO.of<[A[], A[]]>([[], as]),
-              ([elem, rest]) =>
-                pipe(
-                  randomExtractNElems(n - 1)(rest),
-                  IO.map(([elems, rr]): [A[], A[]] => [[elem, ...elems], rr]),
-                ),
-            ),
-            IO.flatten,
-          ),
-    )
 
 const randomExtractElem = <A>(as: A[]): IO<Option<[A, A[]]>> =>
   pipe(
     Random.randomInt(0, as.length - 1),
-    IO.map(v => (console.log('v', v), console.log('len', as.length - 1), v)),
     IO.map(i => extractElem(i)(as)),
   )
 
