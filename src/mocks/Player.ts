@@ -1,0 +1,27 @@
+import { Player } from 'src/datatypes/Player'
+
+export const playersMock: Player[] = [
+  { id: '1', name: 'Matheus', rating: 10, position: 'M' },
+  { id: '2', name: 'Paulo A.', rating: 4, position: 'A' },
+  { id: '3', name: 'Carlos', rating: 5, position: 'Z' },
+  { id: '4', name: 'Paulo G.', rating: 8, position: 'G' },
+  { id: '5', name: 'Peter', rating: 6, position: 'Z' },
+  { id: '6', name: 'Zeca', rating: 3, position: 'LE' },
+  { id: '7', name: 'Moisés', rating: 3, position: 'LD' },
+  { id: '8', name: 'Odilon', rating: 9, position: 'M' },
+  { id: '9', name: 'Paulo S.', rating: 10, position: 'A' },
+  { id: '10', name: 'João', rating: 7, position: 'M' },
+  { id: '11', name: 'Anderson', rating: 3, position: 'Z' },
+  { id: '12', name: 'Gilmar', rating: 6, position: 'LD' },
+  { id: '13', name: 'Vagner', rating: 8, position: 'M' },
+  { id: '14', name: 'Douglas', rating: 2, position: 'LD' },
+  { id: '15', name: 'Marlon', rating: 4, position: 'A' },
+  { id: '16', name: 'Marcos', rating: 8, position: 'M' },
+  { id: '17', name: 'Jackson', rating: 4, position: 'A' },
+  { id: '18', name: 'Wagner', rating: 7, position: 'A' },
+  { id: '19', name: 'Moa', rating: 5, position: 'A' },
+  { id: '20', name: 'Neto', rating: 5, position: 'A' },
+  { id: '21', name: 'Lucas', rating: 7, position: 'Z' },
+  { id: '22', name: 'Jevinho', rating: 3, position: 'LD' },
+  { id: '23', name: 'Clóvis', rating: 7, position: 'Z' },
+]

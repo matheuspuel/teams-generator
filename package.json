@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.1",
   "scripts": {
+    "experiment": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/experiment.ts",
     "start": "SET APP_VARIANT=development&& expo start",
     "android": "SET APP_VARIANT=development&& expo run:android",
     "ios": "SET APP_VARIANT=development&& expo run:ios",
