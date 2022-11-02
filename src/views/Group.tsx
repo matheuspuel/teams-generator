@@ -42,10 +42,29 @@ const Item = (props: {
 
   return (
     <Pressable>
-      <Flex bg="white" m="2" p="2" rounded="lg" shadow="1">
-        <Text bold>{name}</Text>
-        <Text>{position}</Text>
-        <Text>{rating}</Text>
+      <Flex
+        direction="row"
+        align="center"
+        bg="white"
+        m="1"
+        p="1"
+        rounded="lg"
+        shadow="1"
+      >
+        <Flex
+          justify="center"
+          align="center"
+          p="1"
+          size="8"
+          rounded="full"
+          bg="amber.300"
+        >
+          <Text bold>{position}</Text>
+        </Flex>
+        <Text p="1" bold>
+          {rating}
+        </Text>
+        <Text isTruncated>{name}</Text>
       </Flex>
     </Pressable>
   )

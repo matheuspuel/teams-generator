@@ -32,7 +32,11 @@ export const PlayerShow: Show.Show<Player> = {
 }
 
 export const PlayerListShow: Show.Show<Player[]> = {
-  show: flow(A.map(PlayerShow.show), A.intercalate(Str.Monoid)('\n')),
+  show: flow(
+    A.sortBy([PlayerPositionOrd, Ord.reverse(PlayerRatingOrd), PlayerNameOrd]),
+    A.map(PlayerShow.show),
+    A.intercalate(Str.Monoid)('\n'),
+  ),
 }
 
 export const getRatingAvg: (players: Player[]) => number = flow(
