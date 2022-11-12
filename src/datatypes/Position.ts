@@ -1,4 +1,4 @@
-import { identity, Num, Ord, pipe, Show } from 'src/utils/fp-ts'
+import { D, identity, Num, Ord, pipe, Show } from 'src/utils/fp-ts'
 
 export const PositionDict = {
   G: null,
@@ -10,6 +10,16 @@ export const PositionDict = {
 }
 
 export type Position = keyof typeof PositionDict
+
+export const PositionFromString: D.Decoder<string, Position> = D.fromRefinement(
+  (v): v is Position => true,
+  'Position',
+)
+
+export const Position: D.Decoder<unknown, Position> = pipe(
+  D.string,
+  D.compose(PositionFromString),
+)
 
 const PositionOrder: Record<Position, number> = {
   G: 1,

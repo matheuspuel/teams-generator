@@ -5,11 +5,10 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit'
 import { constant, pipe } from 'fp-ts/lib/function'
-import { some } from 'fp-ts/lib/Option'
 import { AppDispatch, RootState } from 'src/redux/store'
-import { PreviewDataStorage } from 'src/storage'
+import { GroupsStorage, PreviewDataStorage } from 'src/storage'
 import { envName } from 'src/utils/Env'
-import { O, T } from 'src/utils/fp-ts'
+import { O, T, TO } from 'src/utils/fp-ts'
 
 const hydratedSlice = createSlice({
   name: 'hydrated',
@@ -31,6 +30,7 @@ export const hydrateReducer = (
     ...state,
     hydrated: true,
     preview: p.preview,
+    groups: p.groups,
   }
 }
 
@@ -45,23 +45,23 @@ export const saveState =
     pipe(
       T.fromIO(getState),
       T.chainFirst(s => PreviewDataStorage.set(s.preview)),
+      T.chainFirst(s => GroupsStorage.set(s.groups)),
     )()
+
+const getHydrateData = pipe(
+  T.Do,
+  T.apS(
+    'preview',
+    pipe(
+      envName === 'production' ? TO.none : PreviewDataStorage.get,
+      T.map(O.getOrElse(constant({ serverUrl: '' }))),
+    ),
+  ),
+  T.apS('groups', pipe(GroupsStorage.get, T.map(O.getOrElseW(constant({}))))),
+)
+
+type HydrateData = Awaited<ReturnType<typeof getHydrateData>>
 
 const hydrateAction = createAction<HydrateData>('HYDRATE')
 
-export const hydrateStore = () => async (dispatch: AppDispatch) => {
-  dispatch(hydrateAction(await getHydrateData()))
-}
-
-type HydrateData = Awaited<ReturnType<typeof getHydrateData>>
-const getHydrateData = async () => {
-  const preview = pipe(
-    envName === 'production'
-      ? some({ serverUrl: '' })
-      : await PreviewDataStorage.get(),
-    O.getOrElse(constant({ serverUrl: '' })),
-  )
-  return {
-    preview,
-  }
-}
+export const makeHydrateAction = pipe(getHydrateData, T.map(hydrateAction))

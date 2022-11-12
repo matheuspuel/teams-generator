@@ -1,8 +1,15 @@
-import { string, struct } from 'io-ts/Decoder'
 import { PreviewData } from 'src/redux/slices/preview'
 import { createStorage } from 'src/utils/storage'
+import { Group } from './datatypes/Group'
+import { GroupsState } from './redux/slices/groups'
+import { D } from './utils/fp-ts'
 
 export const PreviewDataStorage = createStorage<PreviewData>({
   key: 'core/preview',
-  decoder: struct({ serverUrl: string }),
+  decoder: D.struct({ serverUrl: D.string }),
+})
+
+export const GroupsStorage = createStorage<GroupsState>({
+  key: 'core/groups',
+  decoder: D.record(Group),
 })

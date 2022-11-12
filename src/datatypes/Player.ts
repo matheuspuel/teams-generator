@@ -1,5 +1,5 @@
 import { Id } from 'src/utils/Entity'
-import { A, flow, Num, Ord, pipe, Show, Str } from 'src/utils/fp-ts'
+import { A, D, flow, Num, Ord, pipe, Show, Str } from 'src/utils/fp-ts'
 import { avg } from 'src/utils/Number'
 import { Position, PositionAbrvShow, PositionOrd } from './Position'
 
@@ -7,12 +7,29 @@ export const RatingList = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const
 
 export type Rating = typeof RatingList[number]
 
+export const RatingFromNumber: D.Decoder<number, Rating> = D.fromRefinement(
+  (v): v is Rating => true,
+  'Rating',
+)
+
+export const Rating: D.Decoder<unknown, Rating> = pipe(
+  D.number,
+  D.compose(RatingFromNumber),
+)
+
 export type Player = {
   id: Id
   name: string
   rating: Rating
   position: Position
 }
+
+export const Player: D.Decoder<unknown, Player> = D.struct({
+  id: Id,
+  name: D.string,
+  rating: Rating,
+  position: Position,
+})
 
 export const PlayerPositionOrd: Ord<Player> = pipe(
   PositionOrd,

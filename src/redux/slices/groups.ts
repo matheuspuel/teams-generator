@@ -6,9 +6,9 @@ import { RootState } from 'src/redux/store'
 import { generateId, Id } from 'src/utils/Entity'
 import { A, O, Rec, Tup } from 'src/utils/fp-ts'
 
-type SliceState = Record<Id, Group>
+export type GroupsState = Record<Id, Group>
 
-const initialState: SliceState = {}
+const initialState: GroupsState = {}
 
 export const groupsSlice = createSlice({
   name: 'groups',

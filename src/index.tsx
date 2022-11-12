@@ -8,12 +8,12 @@ import Router from './routes'
 import './utils/ignoreLogs'
 
 export const AppIndex = () => (
-  <Splash>
-    <NativeBaseProvider theme={theme} config={nbConfig}>
+  <NativeBaseProvider theme={theme} config={nbConfig}>
+    <Provider store={store}>
       <StatusBar style="dark" />
-      <Provider store={store}>
+      <Splash>
         <Router />
-      </Provider>
-    </NativeBaseProvider>
-  </Splash>
+      </Splash>
+    </Provider>
+  </NativeBaseProvider>
 )

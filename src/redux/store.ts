@@ -3,9 +3,10 @@ import throttle from 'lodash.throttle'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import {
   hydrateReducer,
-  hydrateStore,
+  makeHydrateAction,
   saveState,
 } from 'src/redux/slices/hydrated'
+import { pipe, T } from 'src/utils/fp-ts'
 import { getCache, setCache } from './cache'
 import groups from './slices/groups'
 import hydrated from './slices/hydrated'
@@ -42,6 +43,8 @@ export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
 
 store.subscribe(throttle(() => store.dispatch(saveState()), 1000))
 // store.dispatch(listenToAppState())
-store.dispatch(hydrateStore()).then(() => {
-  // store.dispatch(listenToConnectivity())
-})
+pipe(
+  makeHydrateAction,
+  T.chainFirstIOK(a => () => store.dispatch(a)),
+  // T.chainFirstIOK(() => () => listenToConnetivity()),
+)()
