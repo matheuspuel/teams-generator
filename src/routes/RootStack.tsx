@@ -1,9 +1,11 @@
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
 import { theme } from 'src/theme'
 import { Id } from 'src/utils/Entity'
+import { Option } from 'src/utils/fp-ts'
 import { Group } from 'src/views/Group'
 import { Groups } from 'src/views/Groups'
 import { Loading } from 'src/views/Loading'
+import { PlayerView } from 'src/views/PlayerForm'
 // import { DrawerNavigator, DrawerParamList } from './Drawer'
 
 declare global {
@@ -21,6 +23,7 @@ export type RootStackParamList = {
   Loading: undefined
   Groups: undefined
   Group: { id: Id }
+  Player: { groupId: Id; id: Option<Id> }
 }
 
 const Stack = createStackNavigator<RootStackParamList>()
@@ -53,6 +56,11 @@ export const RootStackNavigator = () => {
         name="Group"
         component={Group}
         options={{ title: 'Grupo' }}
+      />
+      <Stack.Screen
+        name="Player"
+        component={PlayerView}
+        options={{ title: 'Jogador' }}
       />
     </Stack.Navigator>
   )

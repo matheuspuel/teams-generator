@@ -1,5 +1,5 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { flow, pipe } from 'fp-ts/lib/function'
+import { constant, flow, pipe } from 'fp-ts/lib/function'
 import { Group } from 'src/datatypes/Group'
 import { Player } from 'src/datatypes/Player'
 import { RootState } from 'src/redux/store'
@@ -26,6 +26,14 @@ export const groupsSlice = createSlice({
         payload: { id: generateId(), name: args.name },
       }),
     },
+    edit: (s, { payload: p }: PayloadAction<{ id: Id; name: string }>) =>
+      pipe(
+        s,
+        Rec.modifyAt(p.id, g => ({ ...g, name: p.name })),
+        O.getOrElseW(() => s),
+      ),
+    delete: (s, { payload: p }: PayloadAction<{ id: Id }>) =>
+      pipe(s, Rec.deleteAt(p.id)),
     addPlayer: {
       reducer: (
         s,
@@ -46,6 +54,36 @@ export const groupsSlice = createSlice({
         },
       }),
     },
+    editPlayer: (
+      s,
+      { payload: p }: PayloadAction<{ groupId: Id; player: Player }>,
+    ) =>
+      pipe(
+        s,
+        Rec.modifyAt(p.groupId, g => ({
+          ...g,
+          players: pipe(
+            g.players,
+            A.map(a => (a.id === p.player.id ? p.player : a)),
+          ),
+        })),
+        O.getOrElseW(() => s),
+      ),
+    deletePlayer: (
+      s,
+      { payload: p }: PayloadAction<{ groupId: Id; playerId: Id }>,
+    ) =>
+      pipe(
+        s,
+        Rec.modifyAt(p.groupId, g => ({
+          ...g,
+          players: pipe(
+            g.players,
+            A.filter(a => a.id !== p.playerId),
+          ),
+        })),
+        O.getOrElseW(() => s),
+      ),
   },
 })
 
@@ -61,5 +99,12 @@ export const getGroups = createSelector(
 )
 
 export const getGroupById = (id: Id) => flow(getGroupsRecord, Rec.lookup(id))
+
+export const getPlayer = (args: { groupId: Id; id: Id }) =>
+  flow(
+    getGroupById(args.groupId),
+    O.match(constant([]), g => g.players),
+    A.findFirst(p => p.id === args.id),
+  )
 
 // ACTIONS
