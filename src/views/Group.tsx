@@ -88,10 +88,11 @@ const Item = (props: {
         shadow="1"
       >
         <Flex
+          alignSelf="stretch"
           justify="center"
           align="center"
           p="1"
-          size="8"
+          style={{ aspectRatio: 1 }}
           rounded="full"
           bg="amber.300"
         >
