@@ -21,7 +21,7 @@
     "production": {
       "releaseChannel": "production",
       "env": { "APP_VARIANT": "production" },
-      "distribution": "internal"
+      "distribution": "store"
     }
   },
   "submit": {
