@@ -37,17 +37,22 @@ export const groupsSlice = createSlice({
     addPlayer: {
       reducer: (
         s,
-        { payload: p }: PayloadAction<{ groupId: Id; player: Player }>,
+        {
+          payload: p,
+        }: PayloadAction<{ groupId: Id; player: Omit<Player, 'active'> }>,
       ) =>
         pipe(
           s,
           Rec.modifyAt(p.groupId, g => ({
             ...g,
-            players: A.append(p.player)(g.players),
+            players: A.append({ ...p.player, active: true })(g.players),
           })),
           O.getOrElseW(() => s),
         ),
-      prepare: (args: { groupId: Id; player: Omit<Player, 'id'> }) => ({
+      prepare: (args: {
+        groupId: Id
+        player: Omit<Player, 'active' | 'id'>
+      }) => ({
         payload: {
           ...args,
           player: { ...args.player, id: generateId() },
@@ -56,7 +61,9 @@ export const groupsSlice = createSlice({
     },
     editPlayer: (
       s,
-      { payload: p }: PayloadAction<{ groupId: Id; player: Player }>,
+      {
+        payload: p,
+      }: PayloadAction<{ groupId: Id; player: Omit<Player, 'active'> }>,
     ) =>
       pipe(
         s,
@@ -64,7 +71,9 @@ export const groupsSlice = createSlice({
           ...g,
           players: pipe(
             g.players,
-            A.map(a => (a.id === p.player.id ? p.player : a)),
+            A.map(a =>
+              a.id === p.player.id ? { ...p.player, active: a.active } : a,
+            ),
           ),
         })),
         O.getOrElseW(() => s),
@@ -80,6 +89,38 @@ export const groupsSlice = createSlice({
           players: pipe(
             g.players,
             A.filter(a => a.id !== p.playerId),
+          ),
+        })),
+        O.getOrElseW(() => s),
+      ),
+    setPlayerActive: (
+      s,
+      {
+        payload: p,
+      }: PayloadAction<{ groupId: Id; playerId: Id; active: boolean }>,
+    ) =>
+      pipe(
+        s,
+        Rec.modifyAt(p.groupId, g => ({
+          ...g,
+          players: pipe(
+            g.players,
+            A.map(a => (a.id === p.playerId ? { ...a, active: p.active } : a)),
+          ),
+        })),
+        O.getOrElseW(() => s),
+      ),
+    setAllPlayersActive: (
+      s,
+      { payload: p }: PayloadAction<{ groupId: Id; active: boolean }>,
+    ) =>
+      pipe(
+        s,
+        Rec.modifyAt(p.groupId, g => ({
+          ...g,
+          players: pipe(
+            g.players,
+            A.map(a => ({ ...a, active: p.active })),
           ),
         })),
         O.getOrElseW(() => s),

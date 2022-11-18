@@ -22,6 +22,7 @@ export type Player = {
   name: string
   rating: Rating
   position: Position
+  active: boolean
 }
 
 export const Player: D.Decoder<unknown, Player> = D.struct({
@@ -29,7 +30,10 @@ export const Player: D.Decoder<unknown, Player> = D.struct({
   name: D.string,
   rating: Rating,
   position: Position,
+  active: D.boolean,
 })
+
+export const PlayerIsActive = (p: Player) => p.active
 
 export const PlayerPositionOrd: Ord<Player> = pipe(
   PositionOrd,

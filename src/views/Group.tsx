@@ -1,17 +1,26 @@
-import { MaterialIcons } from '@expo/vector-icons'
-import { Button, FlatList, Flex, Icon, Pressable, Text } from 'native-base'
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
+import {
+  Button,
+  Checkbox,
+  FlatList,
+  Flex,
+  Icon,
+  Pressable,
+  Text,
+} from 'native-base'
 import { useLayoutEffect } from 'react'
 import { Alert } from 'react-native'
 import { generateRandomBalancedTeams } from 'src/business/distribution'
-import { Player, PlayerListShow } from 'src/datatypes/Player'
-import { getGroupById } from 'src/redux/slices/groups'
-import { useAppSelector } from 'src/redux/store'
+import { Player, PlayerIsActive, PlayerListShow } from 'src/datatypes/Player'
+import { getGroupById, groupsSlice } from 'src/redux/slices/groups'
+import { useAppDispatch, useAppSelector } from 'src/redux/store'
 import { RootStackScreenProps } from 'src/routes/RootStack'
 import { A, Eq, none, O, pipe, some } from 'src/utils/fp-ts'
 
 export const Group = (props: RootStackScreenProps<'Group'>) => {
   const { navigation, route } = props
   const { id } = route.params
+  const dispatch = useAppDispatch()
   const group = useAppSelector(getGroupById(id), O.getEq(Eq.eqStrict).equals)
 
   const players: Player[] = pipe(
@@ -20,23 +29,52 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
     O.getOrElseW(() => []),
   )
 
+  const allActive = pipe(players, A.every(PlayerIsActive))
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: ({ tintColor }) => (
-        <Pressable
-          mr="1"
-          p="2"
-          rounded="full"
-          _pressed={{ bg: 'primary.700' }}
-          onPress={() => {
-            navigation.navigate('Player', { groupId: id, id: none })
-          }}
-        >
-          <Icon size="lg" color={tintColor} as={<MaterialIcons name="add" />} />
-        </Pressable>
+        <Flex direction="row">
+          <Pressable
+            mr="1"
+            p="2"
+            rounded="full"
+            _pressed={{ bg: 'primary.700' }}
+            onPress={() => {
+              dispatch(
+                groupsSlice.actions.setAllPlayersActive({
+                  groupId: id,
+                  active: !allActive,
+                }),
+              )
+              //
+            }}
+          >
+            <Icon
+              size="lg"
+              color={tintColor}
+              as={<MaterialCommunityIcons name="checkbox-multiple-outline" />}
+            />
+          </Pressable>
+          <Pressable
+            mr="1"
+            p="2"
+            rounded="full"
+            _pressed={{ bg: 'primary.700' }}
+            onPress={() => {
+              navigation.navigate('Player', { groupId: id, id: none })
+            }}
+          >
+            <Icon
+              size="lg"
+              color={tintColor}
+              as={<MaterialIcons name="add" />}
+            />
+          </Pressable>
+        </Flex>
       ),
     })
-  }, [])
+  }, [allActive])
 
   return (
     <Flex flex={1}>
@@ -48,10 +86,11 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
       <Button
         rounded="none"
         onPress={() => {
+          const activePlayers = pipe(players, A.filter(PlayerIsActive))
           const teams = generateRandomBalancedTeams({
             position: true,
             rating: true,
-          })(2)(players)()
+          })(2)(activePlayers)()
           const text = pipe(teams, A.map(PlayerListShow.show), v =>
             v.join('\n\n'),
           )
@@ -70,7 +109,8 @@ const Item = (props: {
 }) => {
   const { navigation, route } = props.parentProps
   const { id: groupId } = route.params
-  const { id, name, position, rating } = props.data
+  const { id, name, position, rating, active } = props.data
+  const dispatch = useAppDispatch()
 
   return (
     <Pressable
@@ -87,6 +127,20 @@ const Item = (props: {
         rounded="lg"
         shadow="1"
       >
+        <Checkbox.Group
+          value={active ? ['true'] : []}
+          onChange={(v: string[]) => {
+            dispatch(
+              groupsSlice.actions.setPlayerActive({
+                groupId,
+                playerId: id,
+                active: !!v.length,
+              }),
+            )
+          }}
+        >
+          <Checkbox m="1" size="lg" value="true" accessibilityLabel="Ativo" />
+        </Checkbox.Group>
         <Flex
           alignSelf="stretch"
           justify="center"
@@ -96,7 +150,9 @@ const Item = (props: {
           rounded="full"
           bg="amber.300"
         >
-          <Text bold>{position}</Text>
+          <Text fontSize="md" bold>
+            {position}
+          </Text>
         </Flex>
         <Text p="1" bold>
           {rating}

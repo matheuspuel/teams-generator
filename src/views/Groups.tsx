@@ -164,7 +164,7 @@ const GroupModal = (
                 props.onClose()
                 pipe(
                   group,
-                  O.match(
+                  O.matchW(
                     () => () =>
                       dispatch(groupsSlice.actions.add({ name: groupName })),
                     g => () =>
