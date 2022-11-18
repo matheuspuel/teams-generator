@@ -6,6 +6,7 @@ import { Group } from 'src/views/Group'
 import { Groups } from 'src/views/Groups'
 import { Loading } from 'src/views/Loading'
 import { PlayerView } from 'src/views/PlayerForm'
+import { ResultView } from 'src/views/Result'
 // import { DrawerNavigator, DrawerParamList } from './Drawer'
 
 declare global {
@@ -24,6 +25,7 @@ export type RootStackParamList = {
   Groups: undefined
   Group: { id: Id }
   Player: { groupId: Id; id: Option<Id> }
+  Result: { id: Id }
 }
 
 const Stack = createStackNavigator<RootStackParamList>()
@@ -61,6 +63,11 @@ export const RootStackNavigator = () => {
         name="Player"
         component={PlayerView}
         options={{ title: 'Jogador' }}
+      />
+      <Stack.Screen
+        name="Result"
+        component={ResultView}
+        options={{ title: 'Resultado' }}
       />
     </Stack.Navigator>
   )

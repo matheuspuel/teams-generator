@@ -19,6 +19,7 @@ const disableMessages = {
     '%s: Calling %s on the ref of an Animated component is no longer necessary.',
     'was not found in',
     'We can not support a function callback. See Github Issues for details https://github.com/adobe/react-spectrum/issues/2320',
+    '`new NativeEventEmitter()` was called with a non-null argument without the required',
   ],
   error: [
     'Warning: React does not recognize the `%s` prop on a DOM element.',

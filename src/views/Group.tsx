@@ -9,9 +9,7 @@ import {
   Text,
 } from 'native-base'
 import { useLayoutEffect } from 'react'
-import { Alert } from 'react-native'
-import { generateRandomBalancedTeams } from 'src/business/distribution'
-import { Player, PlayerIsActive, PlayerListShow } from 'src/datatypes/Player'
+import { Player, PlayerIsActive } from 'src/datatypes/Player'
 import { getGroupById, groupsSlice } from 'src/redux/slices/groups'
 import { useAppDispatch, useAppSelector } from 'src/redux/store'
 import { RootStackScreenProps } from 'src/routes/RootStack'
@@ -86,15 +84,7 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
       <Button
         rounded="none"
         onPress={() => {
-          const activePlayers = pipe(players, A.filter(PlayerIsActive))
-          const teams = generateRandomBalancedTeams({
-            position: true,
-            rating: true,
-          })(2)(activePlayers)()
-          const text = pipe(teams, A.map(PlayerListShow.show), v =>
-            v.join('\n\n'),
-          )
-          Alert.alert('Resultado', text)
+          navigation.navigate('Result', { id })
         }}
       >
         Sortear

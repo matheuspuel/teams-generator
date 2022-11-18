@@ -62,6 +62,38 @@ export const PlayerListShow: Show.Show<Player[]> = {
   ),
 }
 
+export const TeamListShow: Show.Show<Player[][]> = {
+  show: flow(
+    A.map(PlayerListShow.show),
+    A.mapWithIndex((i, t) => `Time ${i + 1}\n\n${t}`),
+    A.intercalate(Str.Monoid)('\n\n'),
+  ),
+}
+
+export const PlayerShowSensitive: Show.Show<Player> = {
+  show: p => `${p.name} (${PositionAbrvShow.show(p.position)})`,
+}
+
+export const PlayerListShowSensitive: Show.Show<Player[]> = {
+  show: flow(
+    A.sortBy([PlayerPositionOrd, PlayerNameOrd]),
+    A.map(PlayerShowSensitive.show),
+    A.intercalate(Str.Monoid)('\n'),
+  ),
+}
+
+export const TeamListShowSensitive: Show.Show<Player[][]> = {
+  show: flow(
+    A.map(PlayerListShowSensitive.show),
+    A.mapWithIndex((i, t) => `Time ${i + 1}\n\n${t}`),
+    A.intercalate(Str.Monoid)('\n\n'),
+  ),
+}
+
+export const getRatingTotal: (players: Player[]) => number = A.foldMap(
+  Num.MonoidSum,
+)(p => p.rating)
+
 export const getRatingAvg: (players: Player[]) => number = flow(
   A.map(p => p.rating),
   avg,
