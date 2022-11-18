@@ -73,7 +73,7 @@ const config: ExpoConfig = {
         preview: '.preview',
         development: '.development',
       }),
-    versionCode: 1,
+    versionCode: 2,
     adaptiveIcon: {
       backgroundColor: '#103454',
       foregroundImage:
