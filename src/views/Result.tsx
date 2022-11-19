@@ -15,6 +15,9 @@ import {
   getRatingTotal,
   Player,
   PlayerIsActive,
+  PlayerNameOrd,
+  PlayerPositionOrd,
+  PlayerRatingOrd,
   TeamListShowSensitive,
 } from 'src/datatypes/Player'
 import { getGroupById } from 'src/redux/slices/groups'
@@ -29,12 +32,13 @@ import {
   none,
   O,
   Option,
+  Ord,
   pipe,
   some,
   T,
   TE,
 } from 'src/utils/fp-ts'
-import { div } from 'src/utils/Number'
+import { div, toFixedLocale } from 'src/utils/Number'
 
 export const ResultView = (props: RootStackScreenProps<'Result'>) => {
   const { navigation, route } = props
@@ -119,7 +123,7 @@ const TeamItem = (props: { index: number; players: Player[] }) => {
   const title = `Time ${props.index + 1}`
   const numPlayers = props.players.length
   const totalRating = getRatingTotal(props.players)
-  const avgRating = div(numPlayers)(totalRating)
+  const avgRating = toFixedLocale(2)(div(numPlayers)(totalRating))
   return (
     <Flex bg="white" m="1" p="1" rounded="lg" shadow="1">
       <Text textAlign="center" fontSize="md" bold>
@@ -136,6 +140,11 @@ const TeamItem = (props: { index: number; players: Player[] }) => {
       </Text>
       {pipe(
         props.players,
+        A.sortBy([
+          PlayerPositionOrd,
+          Ord.reverse(PlayerRatingOrd),
+          PlayerNameOrd,
+        ]),
         A.map(p => <PlayerItem key={p.id} data={p} />),
       )}
     </Flex>
