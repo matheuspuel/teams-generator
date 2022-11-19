@@ -5,8 +5,13 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit'
 import { constant, pipe } from 'fp-ts/lib/function'
+import { defaultParameters } from 'src/datatypes/Parameters'
 import { AppDispatch, RootState } from 'src/redux/store'
-import { GroupsStorage, PreviewDataStorage } from 'src/storage'
+import {
+  GroupsStorage,
+  ParametersStorage,
+  PreviewDataStorage,
+} from 'src/storage'
 import { envName } from 'src/utils/Env'
 import { O, T, TO } from 'src/utils/fp-ts'
 
@@ -31,6 +36,7 @@ export const hydrateReducer = (
     hydrated: true,
     preview: p.preview,
     groups: p.groups,
+    parameters: p.parameters,
   }
 }
 
@@ -46,6 +52,7 @@ export const saveState =
       T.fromIO(getState),
       T.chainFirst(s => PreviewDataStorage.set(s.preview)),
       T.chainFirst(s => GroupsStorage.set(s.groups)),
+      T.chainFirst(s => ParametersStorage.set(s.parameters)),
     )()
 
 const getHydrateData = pipe(
@@ -58,6 +65,13 @@ const getHydrateData = pipe(
     ),
   ),
   T.apS('groups', pipe(GroupsStorage.get, T.map(O.getOrElseW(constant({}))))),
+  T.apS(
+    'parameters',
+    pipe(
+      ParametersStorage.get,
+      T.map(O.getOrElseW(constant(defaultParameters))),
+    ),
+  ),
 )
 
 type HydrateData = Awaited<ReturnType<typeof getHydrateData>>

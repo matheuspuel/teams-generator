@@ -5,12 +5,16 @@ import {
   FlatList,
   Flex,
   Icon,
+  IconButton,
+  Modal,
   Pressable,
   Text,
+  useDisclose,
 } from 'native-base'
 import { useLayoutEffect } from 'react'
 import { Player, PlayerIsActive } from 'src/datatypes/Player'
 import { getGroupById, groupsSlice } from 'src/redux/slices/groups'
+import { getParameters, parametersSlice } from 'src/redux/slices/parameters'
 import { useAppDispatch, useAppSelector } from 'src/redux/store'
 import { RootStackScreenProps } from 'src/routes/RootStack'
 import { A, Eq, none, O, pipe, some } from 'src/utils/fp-ts'
@@ -20,6 +24,7 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
   const { id } = route.params
   const dispatch = useAppDispatch()
   const group = useAppSelector(getGroupById(id), O.getEq(Eq.eqStrict).equals)
+  const modalParameters = useDisclose()
 
   const players: Player[] = pipe(
     group,
@@ -45,7 +50,6 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
                   active: !allActive,
                 }),
               )
-              //
             }}
           >
             <Icon
@@ -84,11 +88,12 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
       <Button
         rounded="none"
         onPress={() => {
-          navigation.navigate('Result', { id })
+          modalParameters.onOpen()
         }}
       >
         Sortear
       </Button>
+      <ParametersModal {...props} {...modalParameters} />
     </Flex>
   )
 }
@@ -150,5 +155,83 @@ const Item = (props: {
         <Text isTruncated>{name}</Text>
       </Flex>
     </Pressable>
+  )
+}
+
+const ParametersModal = (
+  props: RootStackScreenProps<'Group'> & {
+    isOpen: boolean
+    onClose: () => void
+  },
+) => {
+  const { navigation, route } = props
+  const { id } = route.params
+  const dispatch = useAppDispatch()
+  const parameters = useAppSelector(getParameters)
+
+  return (
+    <Modal isOpen={props.isOpen}>
+      <Modal.Content>
+        <Modal.Header>
+          Parâmetros
+          <Modal.CloseButton onPress={props.onClose} />
+        </Modal.Header>
+        <Modal.Body>
+          <Flex direction="row" align="center">
+            <IconButton
+              onPress={() =>
+                dispatch(parametersSlice.actions.decrementTeamsCount())
+              }
+              icon={<Icon as={<MaterialIcons name="remove" />} />}
+            />
+            <Text p="2" bold>
+              {parameters.teamsCount}
+            </Text>
+            <IconButton
+              onPress={() =>
+                dispatch(parametersSlice.actions.incrementTeamsCount())
+              }
+              icon={<Icon as={<MaterialIcons name="add" />} />}
+            />
+            <Text pl="2">Número de times</Text>
+          </Flex>
+          <Checkbox.Group
+            value={parameters.position ? ['true'] : []}
+            onChange={(v: string[]) => {
+              dispatch(parametersSlice.actions.setPosition(!!v.length))
+            }}
+          >
+            <Checkbox m="1" size="lg" value="true" _text={{ fontSize: 'sm' }}>
+              Considerar posições
+            </Checkbox>
+          </Checkbox.Group>
+          <Checkbox.Group
+            value={parameters.rating ? ['true'] : []}
+            onChange={(v: string[]) => {
+              dispatch(parametersSlice.actions.setRating(!!v.length))
+            }}
+          >
+            <Checkbox m="1" size="lg" value="true" _text={{ fontSize: 'sm' }}>
+              Considerar habilidade
+            </Checkbox>
+          </Checkbox.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button.Group space="2">
+            <Button variant="ghost" onPress={props.onClose}>
+              Cancelar
+            </Button>
+            <Button
+              onPress={() => {
+                props.onClose()
+                navigation.navigate('Result', { id })
+              }}
+            >
+              Sortear
+            </Button>
+          </Button.Group>
+        </Modal.Footer>
+      </Modal.Content>
+    </Modal>
   )
 }

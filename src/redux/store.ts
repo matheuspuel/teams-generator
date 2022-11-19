@@ -10,6 +10,7 @@ import { pipe, T } from 'src/utils/fp-ts'
 import { getCache, setCache } from './cache'
 import groups from './slices/groups'
 import hydrated from './slices/hydrated'
+import parameters from './slices/parameters'
 import preview from './slices/preview'
 // import { api } from './api'
 
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   preview,
   hydrated,
   groups,
+  parameters,
 })
 
 const reducer: typeof rootReducer = (state, action) =>

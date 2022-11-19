@@ -1,6 +1,14 @@
 import { MaterialIcons } from '@expo/vector-icons'
 import * as Clipboard from 'expo-clipboard'
-import { Flex, Icon, Pressable, Spinner, Text, useToast } from 'native-base'
+import {
+  Flex,
+  Icon,
+  Pressable,
+  ScrollView,
+  Spinner,
+  Text,
+  useToast,
+} from 'native-base'
 import { useEffect, useLayoutEffect, useState } from 'react'
 import { generateRandomBalancedTeams } from 'src/business/distribution'
 import {
@@ -10,6 +18,7 @@ import {
   TeamListShowSensitive,
 } from 'src/datatypes/Player'
 import { getGroupById } from 'src/redux/slices/groups'
+import { getParameters } from 'src/redux/slices/parameters'
 import { useAppSelector } from 'src/redux/store'
 import { RootStackScreenProps } from 'src/routes/RootStack'
 import {
@@ -31,6 +40,7 @@ export const ResultView = (props: RootStackScreenProps<'Result'>) => {
   const { navigation, route } = props
   const { id } = route.params
   const group = useAppSelector(getGroupById(id), O.getEq(Eq.eqStrict).equals)
+  const parameters = useAppSelector(getParameters)
   const [result, setResult] = useState<Option<Player[][]>>(none)
   const toast = useToast()
 
@@ -41,9 +51,9 @@ export const ResultView = (props: RootStackScreenProps<'Result'>) => {
       O.getOrElseW(() => []),
       A.filter(PlayerIsActive),
       generateRandomBalancedTeams({
-        position: true,
-        rating: true,
-      })(2),
+        position: parameters.position,
+        rating: parameters.rating,
+      })(parameters.teamsCount),
       IO.chain(s => () => setResult(some(s))),
     )()
   }, [])
@@ -92,14 +102,14 @@ export const ResultView = (props: RootStackScreenProps<'Result'>) => {
       ),
       r =>
         pipe(
-          <Flex flex={1}>
+          <ScrollView flex={1}>
             {pipe(
               r,
               A.mapWithIndex((i, t) => (
                 <TeamItem key={i} index={i} players={t} />
               )),
             )}
-          </Flex>,
+          </ScrollView>,
         ),
     ),
   )
