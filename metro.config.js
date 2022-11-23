@@ -1,3 +1,4 @@
+/* eslint-env node */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 // Learn more https://docs.expo.io/guides/customizing-metro
