@@ -7,7 +7,7 @@ export const Splash = (props: { children: React.ReactElement }) => {
   const ready = useAppSelector(getHydrated)
 
   useEffect(() => {
-    SplashScreen.preventAutoHideAsync()
+    void SplashScreen.preventAutoHideAsync()
   }, [])
 
   if (!ready) {

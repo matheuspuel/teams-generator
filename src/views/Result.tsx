@@ -71,7 +71,7 @@ export const ResultView = (props: RootStackScreenProps<'Result'>) => {
           rounded="full"
           _pressed={{ bg: 'primary.700' }}
           onPress={() => {
-            pipe(
+            void pipe(
               result,
               O.matchW(
                 () => TE.of(undefined),
@@ -79,7 +79,7 @@ export const ResultView = (props: RootStackScreenProps<'Result'>) => {
                   TeamListShowSensitive.show,
                   t => () => Clipboard.setStringAsync(t),
                   T.chainFirstIOK(
-                    () => () => toast.show({ description: 'Copiado' }),
+                    () => () => void toast.show({ description: 'Copiado' }),
                   ),
                 ),
               ),

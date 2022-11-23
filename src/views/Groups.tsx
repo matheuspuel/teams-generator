@@ -44,7 +44,7 @@ export const Groups = (props: RootStackScreenProps<'Groups'>) => {
   }, [])
 
   return (
-    <Flex flex={1} onLayout={() => SplashScreen.hideAsync()}>
+    <Flex flex={1} onLayout={() => void SplashScreen.hideAsync()}>
       <StatusBar style="light" />
       <FlatList
         data={groups}

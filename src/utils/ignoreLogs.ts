@@ -1,7 +1,7 @@
 import { Platform } from 'react-native'
 
 if (Platform.OS !== 'web') {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
   require('react-native').LogBox.ignoreLogs([
     'Require cycle',
     'Setting a timer for a long period of time',
@@ -29,11 +29,14 @@ const disableMessages = {
 
 const defaultConsole = { ...console }
 console.log = (...data) =>
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
   disableMessages.log.some(m => data[0]?.includes?.(m)) ||
   defaultConsole.log(...data)
 console.warn = (...data) =>
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
   disableMessages.warn.some(m => data[0]?.includes?.(m)) ||
   defaultConsole.warn(...data)
 console.error = (...data) =>
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
   disableMessages.error.some(m => data[0]?.includes?.(m)) ||
   defaultConsole.error(...data)
