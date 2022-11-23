@@ -21,11 +21,11 @@ const getErrorType: (e: DE.DecodeError<string>) => string = DE.fold({
   Wrap: (error, errors) => error,
 })
 
-export const toErrorTypeArray = (e: DecodeError): ReadonlyArray<string> => {
+export const toErrorTypeArray = (e: DecodeError): readonly string[] => {
   const stack = []
   let focus = e
   const res = []
-  // eslint-disable-next-line no-constant-condition
+  // eslint-disable-next-line no-constant-condition, @typescript-eslint/no-unnecessary-condition
   while (true) {
     switch (focus._tag) {
       case 'Of': {

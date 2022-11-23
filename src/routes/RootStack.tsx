@@ -11,6 +11,7 @@ import { ResultView } from 'src/views/Result'
 
 declare global {
   namespace ReactNavigation {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
     interface RootParamList extends RootStackParamList {}
   }
 }

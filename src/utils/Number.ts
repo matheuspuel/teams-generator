@@ -5,7 +5,7 @@ export const div = (divisor: number) => (dividend: number) => dividend / divisor
 export const avg = (ns: number[]) =>
   pipe(ns, Monoid.concatAll(Num.MonoidSum), div(A.size(ns)))
 
-const thousandsSeparator = '.'
+const thousandsSeparator = '.' as '.' | ','
 const decimalSeparator = thousandsSeparator === '.' ? ',' : '.'
 
 export const parseLocaleNumber = (stringNumber: string) =>

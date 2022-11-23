@@ -3,7 +3,7 @@ import { Decoder } from 'io-ts/lib/Decoder'
 import { O, TE, TO } from 'src/utils/fp-ts'
 import { SimpleStorage } from './simpleStorage'
 
-export interface Storage<A> {
+export type Storage<A> = {
   get: TO.TaskOption<A>
   set: (value: A) => TE.TaskEither<unknown, void>
   remove: TE.TaskEither<void, void>

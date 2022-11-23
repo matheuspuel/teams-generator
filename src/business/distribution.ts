@@ -18,7 +18,7 @@ import {
 import { randomizeArray } from '../utils/Random'
 
 const getFitOrdByDevianceFns = (
-  fns: Array<(teams: Player[][]) => number>,
+  fns: ((teams: Player[][]) => number)[],
 ): Ord<Player[][]> =>
   pipe(
     fns,
@@ -136,7 +136,7 @@ const divideTeams =
         )
 
 const generateRandomBalancedTeamsByDevianceFns =
-  (devianceFns: Array<(teams: Player[][]) => number>) =>
+  (devianceFns: ((teams: Player[][]) => number)[]) =>
   (numOfTeams: number) =>
   (players: Player[]): IO<Player[][]> =>
     pipe(
