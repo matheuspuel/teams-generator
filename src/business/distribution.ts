@@ -18,15 +18,17 @@ import {
 import { randomizeArray } from '../utils/Random'
 
 const getFitOrdByDevianceFns = (
-  fns: ((teams: Player[][]) => number)[],
-): Ord<Player[][]> =>
+  fns: Array<(teams: Array<Array<Player>>) => number>,
+): Ord<Array<Array<Player>>> =>
   pipe(
     fns,
     A.map(f => Ord.contramap(f)(Num.Ord)),
-    Monoid.concatAll(Ord.getMonoid<Player[][]>()),
+    Monoid.concatAll(Ord.getMonoid<Array<Array<Player>>>()),
   )
 
-export const getResultPositionDeviance = (teams: Player[][]): number =>
+export const getResultPositionDeviance = (
+  teams: Array<Array<Player>>,
+): number =>
   pipe(teams, A.flatten, allPlayers =>
     pipe(
       PositionDict,
@@ -49,7 +51,7 @@ export const getResultPositionDeviance = (teams: Player[][]): number =>
     ),
   )
 
-export const getResultRatingDeviance = (teams: Player[][]): number =>
+export const getResultRatingDeviance = (teams: Array<Array<Player>>): number =>
   pipe(teams, A.flatten, getRatingAvg, overallAvg =>
     pipe(
       teams,
@@ -58,8 +60,8 @@ export const getResultRatingDeviance = (teams: Player[][]): number =>
   )
 
 const balanceTeams: (
-  fitOrd: Ord<Player[][]>,
-) => (teams: Player[][]) => Player[][] = fitOrd => teams =>
+  fitOrd: Ord<Array<Array<Player>>>,
+) => (teams: Array<Array<Player>>) => Array<Array<Player>> = fitOrd => teams =>
   pipe(
     teams,
     findFirstMapWithIndex((i, team) =>
@@ -93,7 +95,7 @@ const deviance = (b: number) => (a: number) => Math.pow(Math.abs(a - b), 2)
 
 const positionCount =
   (position: Position) =>
-  (players: Player[]): number =>
+  (players: Array<Player>): number =>
     pipe(
       players,
       A.filter(p => p.position === position),
@@ -105,7 +107,7 @@ const changePlayers =
   (playerIndex: number) =>
   (otherTeamIndex: number) =>
   (otherPlayerIndex: number) =>
-  (teams: Player[][]): Player[][] => {
+  (teams: Array<Array<Player>>): Array<Array<Player>> => {
     const team = teams[teamIndex]
     const otherTeam = teams[otherTeamIndex]
     if (!team) return teams
@@ -126,7 +128,7 @@ const changePlayers =
 
 const divideTeams =
   (numOfTeams: number) =>
-  (players: Player[]): Player[][] =>
+  (players: Array<Player>): Array<Array<Player>> =>
     numOfTeams <= 0
       ? []
       : pipe(
@@ -136,9 +138,9 @@ const divideTeams =
         )
 
 const generateRandomBalancedTeamsByDevianceFns =
-  (devianceFns: ((teams: Player[][]) => number)[]) =>
+  (devianceFns: Array<(teams: Array<Array<Player>>) => number>) =>
   (numOfTeams: number) =>
-  (players: Player[]): IO<Player[][]> =>
+  (players: Array<Player>): IO<Array<Array<Player>>> =>
     pipe(
       randomizeArray(players),
       IO.map(divideTeams(numOfTeams)),

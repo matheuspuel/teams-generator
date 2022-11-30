@@ -21,7 +21,7 @@ const getErrorType: (e: DE.DecodeError<string>) => string = DE.fold({
   Wrap: (error, errors) => error,
 })
 
-export const toErrorTypeArray = (e: DecodeError): readonly string[] => {
+export const toErrorTypeArray = (e: DecodeError): Array<string> => {
   const stack = []
   let focus = e
   const res = []

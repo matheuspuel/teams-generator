@@ -1,7 +1,7 @@
 import { Player } from 'src/datatypes/Player'
 import { Id } from 'src/utils/Entity'
 
-export const playersMock: Player[] = [
+export const playersMock: Array<Player> = [
   { id: '1' as Id, name: 'Matheus', rating: 10, position: 'M', active: true },
   { id: '2' as Id, name: 'Paulo A.', rating: 4, position: 'A', active: true },
   { id: '3' as Id, name: 'Carlos', rating: 5, position: 'Z', active: true },

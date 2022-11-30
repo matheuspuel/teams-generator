@@ -45,7 +45,7 @@ export const ResultView = (props: RootStackScreenProps<'Result'>) => {
   const { id } = route.params
   const group = useAppSelector(getGroupById(id), O.getEq(Eq.eqStrict).equals)
   const parameters = useAppSelector(getParameters)
-  const [result, setResult] = useState<Option<Player[][]>>(none)
+  const [result, setResult] = useState<Option<Array<Array<Player>>>>(none)
   const toast = useToast()
 
   useEffect(() => {
@@ -119,7 +119,7 @@ export const ResultView = (props: RootStackScreenProps<'Result'>) => {
   )
 }
 
-const TeamItem = (props: { index: number; players: Player[] }) => {
+const TeamItem = (props: { index: number; players: Array<Player> }) => {
   const title = `Time ${props.index + 1}`
   const numPlayers = props.players.length
   const totalRating = getRatingTotal(props.players)

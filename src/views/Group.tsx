@@ -26,7 +26,7 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
   const group = useAppSelector(getGroupById(id), O.getEq(Eq.eqStrict).equals)
   const modalParameters = useDisclose()
 
-  const players: Player[] = pipe(
+  const players: Array<Player> = pipe(
     group,
     O.map(g => g.players),
     O.getOrElseW(() => []),
@@ -124,7 +124,7 @@ const Item = (props: {
       >
         <Checkbox.Group
           value={active ? ['true'] : []}
-          onChange={(v: string[]) => {
+          onChange={(v: Array<string>) => {
             dispatch(
               groupsSlice.actions.setPlayerActive({
                 groupId,
@@ -197,7 +197,7 @@ const ParametersModal = (
           </Flex>
           <Checkbox.Group
             value={parameters.position ? ['true'] : []}
-            onChange={(v: string[]) => {
+            onChange={(v: Array<string>) => {
               dispatch(parametersSlice.actions.setPosition(!!v.length))
             }}
           >
@@ -207,7 +207,7 @@ const ParametersModal = (
           </Checkbox.Group>
           <Checkbox.Group
             value={parameters.rating ? ['true'] : []}
-            onChange={(v: string[]) => {
+            onChange={(v: Array<string>) => {
               dispatch(parametersSlice.actions.setRating(!!v.length))
             }}
           >

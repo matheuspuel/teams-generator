@@ -9,7 +9,7 @@ const teams = generateRandomBalancedTeams({ position: true, rating: true })(3)(
   playersMock,
 )()
 
-const showTeams = (teams: Player[][]) =>
+const showTeams = (teams: Array<Array<Player>>) =>
   pipe(
     teams,
     A.map(t => ({

@@ -2,10 +2,10 @@
 import { extendTheme, INativebaseConfig, Theme } from 'native-base'
 
 type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends (infer U)[]
-    ? DeepPartial<U>[]
-    : T[P] extends readonly (infer U)[]
-    ? readonly DeepPartial<U>[]
+  [P in keyof T]?: T[P] extends Array<infer U>
+    ? Array<DeepPartial<U>>
+    : T[P] extends Array<infer U>
+    ? Array<DeepPartial<U>>
     : DeepPartial<T[P]> | T[P]
 }
 
