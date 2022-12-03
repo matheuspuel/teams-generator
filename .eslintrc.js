@@ -1,6 +1,6 @@
-/* eslint-disable prettier/prettier */
 /* eslint-env node */
 
+// eslint-disable-next-line functional/no-expression-statement, functional/immutable-data
 module.exports = {
   root: true,
   ignorePatterns: ['/dist/**'],
@@ -15,7 +15,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'plugin:@typescript-eslint/strict',
     'plugin:functional/external-recommended',
-    // 'plugin:functional/recommended',
+    'plugin:functional/recommended',
     // 'plugin:functional/stylistic',
     'prettier',
   ],
@@ -33,6 +33,8 @@ module.exports = {
   },
   rules: {
     'prettier/prettier': ['warn'],
+    'react/prop-types': ['off'],
+    'react/jsx-key': 'off',
     '@typescript-eslint/no-empty-interface': 'off',
     '@typescript-eslint/no-namespace': 'off',
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
@@ -42,7 +44,6 @@ module.exports = {
       'warn',
       { default: 'generic', readonly: 'generic' },
     ],
-    'react/prop-types': ['off'],
-    'react/jsx-key': 'off',
+    'functional/prefer-readonly-type': 'off',
   },
 }
