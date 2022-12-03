@@ -44,6 +44,7 @@ module.exports = {
       'warn',
       { default: 'generic', readonly: 'generic' },
     ],
+    'functional/no-promise-reject': 'error',
     'functional/prefer-readonly-type': 'off',
     'functional/functional-parameters': [
       'error',
