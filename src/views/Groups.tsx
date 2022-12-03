@@ -161,7 +161,7 @@ const GroupModal = (
                 Str.isEmpty(groupName)
                   ? constVoid
                   : pipe(
-                      IOO.fromIO(() => props.onClose()),
+                      IOO.fromIO(props.onClose),
                       IOO.chainOptionK(() => group),
                       IOO.matchEW(
                         () => () => (): unknown =>
@@ -239,7 +239,7 @@ const DeleteGroupModal = (
             <Button
               colorScheme="danger"
               onPress={pipe(
-                IOO.fromIO(() => props.onClose()),
+                IOO.fromIO(props.onClose),
                 IOO.chainOptionK(() => group),
                 IOO.chainIOK(
                   g => () => dispatch(groupsSlice.actions.delete({ id: g.id })),

@@ -16,7 +16,7 @@ module.exports = {
     'plugin:@typescript-eslint/strict',
     'plugin:functional/external-recommended',
     'plugin:functional/recommended',
-    // 'plugin:functional/stylistic',
+    'plugin:functional/stylistic',
     'prettier',
   ],
   overrides: [],
