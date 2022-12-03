@@ -45,5 +45,15 @@ module.exports = {
       { default: 'generic', readonly: 'generic' },
     ],
     'functional/prefer-readonly-type': 'off',
+    'functional/functional-parameters': [
+      'error',
+      { enforceParameterCount: false },
+    ],
+    'functional/no-mixed-type': 'off',
+    'functional/no-expression-statement': [
+      'error',
+      { ignorePattern: ['^use'] },
+    ],
+    'functional/no-return-void': ['off'],
   },
 }

@@ -17,7 +17,7 @@ import { getGroupById, groupsSlice } from 'src/redux/slices/groups'
 import { getParameters, parametersSlice } from 'src/redux/slices/parameters'
 import { useAppDispatch, useAppSelector } from 'src/redux/store'
 import { RootStackScreenProps } from 'src/routes/RootStack'
-import { A, Eq, none, O, pipe, some } from 'src/utils/fp-ts'
+import { A, Eq, IO, none, O, pipe, some } from 'src/utils/fp-ts'
 
 export const Group = (props: RootStackScreenProps<'Group'>) => {
   const { navigation, route } = props
@@ -34,49 +34,51 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
 
   const allActive = pipe(players, A.every(PlayerIsActive))
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: ({ tintColor }) => (
-        <Flex direction="row">
-          <Pressable
-            mr="1"
-            p="2"
-            rounded="full"
-            _pressed={{ bg: 'primary.700' }}
-            onPress={() => {
-              dispatch(
-                groupsSlice.actions.setAllPlayersActive({
-                  groupId: id,
-                  active: !allActive,
-                }),
-              )
-            }}
-          >
-            <Icon
-              size="lg"
-              color={tintColor}
-              as={<MaterialCommunityIcons name="checkbox-multiple-outline" />}
-            />
-          </Pressable>
-          <Pressable
-            mr="1"
-            p="2"
-            rounded="full"
-            _pressed={{ bg: 'primary.700' }}
-            onPress={() => {
-              navigation.navigate('Player', { groupId: id, id: none })
-            }}
-          >
-            <Icon
-              size="lg"
-              color={tintColor}
-              as={<MaterialIcons name="add" />}
-            />
-          </Pressable>
-        </Flex>
-      ),
-    })
-  }, [allActive])
+  useLayoutEffect(
+    () =>
+      navigation.setOptions({
+        headerRight: ({ tintColor }) => (
+          <Flex direction="row">
+            <Pressable
+              mr="1"
+              p="2"
+              rounded="full"
+              _pressed={{ bg: 'primary.700' }}
+              onPress={() =>
+                dispatch(
+                  groupsSlice.actions.setAllPlayersActive({
+                    groupId: id,
+                    active: !allActive,
+                  }),
+                )
+              }
+            >
+              <Icon
+                size="lg"
+                color={tintColor}
+                as={<MaterialCommunityIcons name="checkbox-multiple-outline" />}
+              />
+            </Pressable>
+            <Pressable
+              mr="1"
+              p="2"
+              rounded="full"
+              _pressed={{ bg: 'primary.700' }}
+              onPress={() =>
+                navigation.navigate('Player', { groupId: id, id: none })
+              }
+            >
+              <Icon
+                size="lg"
+                color={tintColor}
+                as={<MaterialIcons name="add" />}
+              />
+            </Pressable>
+          </Flex>
+        ),
+      }),
+    [allActive],
+  )
 
   return (
     <Flex flex={1}>
@@ -85,12 +87,7 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
         keyExtractor={({ id }) => id}
         renderItem={({ item }) => <Item data={item} parentProps={props} />}
       />
-      <Button
-        rounded="none"
-        onPress={() => {
-          modalParameters.onOpen()
-        }}
-      >
+      <Button rounded="none" onPress={modalParameters.onOpen}>
         Sortear
       </Button>
       <ParametersModal {...props} {...modalParameters} />
@@ -109,9 +106,7 @@ const Item = (props: {
 
   return (
     <Pressable
-      onPress={() => {
-        navigation.navigate('Player', { groupId, id: some(id) })
-      }}
+      onPress={() => navigation.navigate('Player', { groupId, id: some(id) })}
     >
       <Flex
         direction="row"
@@ -124,7 +119,7 @@ const Item = (props: {
       >
         <Checkbox.Group
           value={active ? ['true'] : []}
-          onChange={(v: Array<string>) => {
+          onChange={(v: Array<string>) =>
             dispatch(
               groupsSlice.actions.setPlayerActive({
                 groupId,
@@ -132,7 +127,7 @@ const Item = (props: {
                 active: !!v.length,
               }),
             )
-          }}
+          }
         >
           <Checkbox m="1" size="lg" value="true" accessibilityLabel="Ativo" />
         </Checkbox.Group>
@@ -161,7 +156,7 @@ const Item = (props: {
 const ParametersModal = (
   props: RootStackScreenProps<'Group'> & {
     isOpen: boolean
-    onClose: () => void
+    onClose: IO<void>
   },
 ) => {
   const { navigation, route } = props
@@ -197,9 +192,9 @@ const ParametersModal = (
           </Flex>
           <Checkbox.Group
             value={parameters.position ? ['true'] : []}
-            onChange={(v: Array<string>) => {
+            onChange={(v: Array<string>) =>
               dispatch(parametersSlice.actions.setPosition(!!v.length))
-            }}
+            }
           >
             <Checkbox m="1" size="lg" value="true" _text={{ fontSize: 'sm' }}>
               Considerar posições
@@ -207,9 +202,9 @@ const ParametersModal = (
           </Checkbox.Group>
           <Checkbox.Group
             value={parameters.rating ? ['true'] : []}
-            onChange={(v: Array<string>) => {
+            onChange={(v: Array<string>) =>
               dispatch(parametersSlice.actions.setRating(!!v.length))
-            }}
+            }
           >
             <Checkbox m="1" size="lg" value="true" _text={{ fontSize: 'sm' }}>
               Considerar habilidade
@@ -222,10 +217,10 @@ const ParametersModal = (
               Cancelar
             </Button>
             <Button
-              onPress={() => {
-                props.onClose()
-                navigation.navigate('Result', { id })
-              }}
+              onPress={pipe(
+                props.onClose,
+                IO.chain(() => () => navigation.navigate('Result', { id })),
+              )}
             >
               Sortear
             </Button>

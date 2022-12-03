@@ -9,6 +9,7 @@ import {
   refine,
   string,
 } from 'io-ts/Decoder'
+import { fatal } from './Error'
 
 export type NonEmptyString = Branded<string, NonEmptyStringBrand>
 type NonEmptyStringBrand = { readonly NonEmptyString: unique symbol }
@@ -30,12 +31,12 @@ export namespace NonEmptyString {
         ? S
         : never
       : S,
-  ): S & NonEmptyString => {
-    if (stringIs(s)) return s
-    throw new Error(
-      'Called `NonEmptyString.of` function with an empty string, which should not be possible',
-    )
-  }
+  ): S & NonEmptyString =>
+    stringIs(s)
+      ? s
+      : fatal(
+          'Called `NonEmptyString.of` function with an empty string, which should not be possible',
+        )
 }
 
 export type Slug = Branded<NonEmptyString, SlugBrand>

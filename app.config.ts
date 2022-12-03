@@ -1,20 +1,21 @@
 import { ExpoConfig } from '@expo/config-types'
+import { fatal } from 'src/utils/Error'
 import packageJSON from './package.json'
 
 const APP_VARIANT = process.env.APP_VARIANT
-const envName = (() => {
-  switch (APP_VARIANT) {
-    case 'production':
-    case 'staging':
-    case 'preview':
-    case 'development':
-      return APP_VARIANT
-    case undefined:
-      return 'development'
-    default:
-      throw new Error('Unknown app environment')
-  }
-})()
+
+const envName =
+  APP_VARIANT === 'production'
+    ? APP_VARIANT
+    : APP_VARIANT === 'staging'
+    ? APP_VARIANT
+    : APP_VARIANT === 'preview'
+    ? APP_VARIANT
+    : APP_VARIANT === 'development'
+    ? APP_VARIANT
+    : APP_VARIANT === undefined
+    ? 'development'
+    : fatal('Unknown app environment')
 
 const matchEnv = <D, PW, S, P>(cases: {
   development: D

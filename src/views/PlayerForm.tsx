@@ -1,5 +1,6 @@
 import { MaterialIcons } from '@expo/vector-icons'
 import { none } from 'fp-ts/lib/Option'
+import { not } from 'fp-ts/lib/Predicate'
 import {
   Button,
   Flex,
@@ -15,7 +16,19 @@ import { Position, PositionDict, PositionOrd } from 'src/datatypes/Position'
 import { getPlayer, groupsSlice } from 'src/redux/slices/groups'
 import { useAppDispatch, useAppSelector } from 'src/redux/store'
 import { RootStackScreenProps } from 'src/routes/RootStack'
-import { A, constant, Eq, IO, O, pipe, RA, Rec, Tup } from 'src/utils/fp-ts'
+import {
+  A,
+  constant,
+  Eq,
+  IO,
+  IOO,
+  O,
+  pipe,
+  RA,
+  Rec,
+  Str,
+  Tup,
+} from 'src/utils/fp-ts'
 
 const makeSubSetter =
   <R extends object>(rootSetter: React.Dispatch<React.SetStateAction<R>>) =>
@@ -63,34 +76,36 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
     [k in keyof typeof form]: React.Dispatch<typeof form[k]>
   } = pipe(form, Rec.mapWithIndex(makeSubSetter(setForm)))
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: O.isNone(id)
-        ? undefined
-        : ({ tintColor }) => (
-            <Pressable
-              mr="1"
-              p="2"
-              rounded="full"
-              _pressed={{ bg: 'primary.700' }}
-              onPress={pipe(
-                groupsSlice.actions.deletePlayer({
-                  groupId,
-                  playerId: id.value,
-                }),
-                a => () => dispatch(a),
-                IO.chainFirst(() => () => navigation.goBack()),
-              )}
-            >
-              <Icon
-                size="lg"
-                color={tintColor}
-                as={<MaterialIcons name="delete" />}
-              />
-            </Pressable>
-          ),
-    })
-  }, [])
+  useLayoutEffect(
+    () =>
+      navigation.setOptions({
+        headerRight: O.isNone(id)
+          ? undefined
+          : ({ tintColor }) => (
+              <Pressable
+                mr="1"
+                p="2"
+                rounded="full"
+                _pressed={{ bg: 'primary.700' }}
+                onPress={pipe(
+                  groupsSlice.actions.deletePlayer({
+                    groupId,
+                    playerId: id.value,
+                  }),
+                  a => () => dispatch(a),
+                  IO.chainFirst(() => () => navigation.goBack()),
+                )}
+              >
+                <Icon
+                  size="lg"
+                  color={tintColor}
+                  as={<MaterialIcons name="delete" />}
+                />
+              </Pressable>
+            ),
+      }),
+    [],
+  )
 
   return (
     <>
@@ -166,21 +181,28 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
       <Button
         rounded="none"
         isDisabled={!form.name}
-        onPress={() => {
-          if (!form.name) return
-          navigation.goBack()
-          if (O.isSome(id)) {
-            dispatch(
-              groupsSlice.actions.editPlayer({
-                groupId,
-                player: { ...form, id: id.value },
-              }),
-            )
-          } else {
-            dispatch(groupsSlice.actions.addPlayer({ groupId, player: form }))
-          }
-          setForm(initialFormState)
-        }}
+        onPress={pipe(
+          form.name,
+          IOO.fromPredicate(not(Str.isEmpty)),
+          IOO.chainFirstIOK(() => () => navigation.goBack()),
+          IOO.map(() => id),
+          IOO.chainFirstIOK(
+            O.matchW(
+              () => (): unknown =>
+                dispatch(
+                  groupsSlice.actions.addPlayer({ groupId, player: form }),
+                ),
+              id => (): unknown =>
+                dispatch(
+                  groupsSlice.actions.editPlayer({
+                    groupId,
+                    player: { ...form, id },
+                  }),
+                ),
+            ),
+          ),
+          IOO.chainFirstIOK(() => () => setForm(initialFormState)),
+        )}
       >
         Gravar
       </Button>

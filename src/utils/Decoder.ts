@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { flow } from 'fp-ts/lib/function'
 import { Option } from 'fp-ts/lib/Option'
-import * as DE from 'io-ts/lib/DecodeError'
 import {
-  DecodeError,
   Decoder,
   fromRefinement,
   literal,
@@ -11,41 +9,6 @@ import {
   union,
 } from 'io-ts/lib/Decoder'
 import { E, O } from 'src/utils/fp-ts'
-
-const getErrorType: (e: DE.DecodeError<string>) => string = DE.fold({
-  Leaf: (input, error) => error,
-  Key: (key, kind, errors) => `${kind} property ${JSON.stringify(key)}`,
-  Index: (index, kind, errors) => `${kind} index ${index}`,
-  Member: (index, errors) => `member ${index}`,
-  Lazy: (id, errors) => `lazy type ${id}`,
-  Wrap: (error, errors) => error,
-})
-
-export const toErrorTypeArray = (e: DecodeError): Array<string> => {
-  const stack = []
-  let focus = e
-  const res = []
-  // eslint-disable-next-line no-constant-condition, @typescript-eslint/no-unnecessary-condition
-  while (true) {
-    switch (focus._tag) {
-      case 'Of': {
-        res.push(getErrorType(focus.value))
-        const tmp = stack.pop()
-        if (tmp === undefined) {
-          return res
-        } else {
-          focus = tmp
-        }
-        break
-      }
-      case 'Concat': {
-        stack.push(focus.right)
-        focus = focus.left
-        break
-      }
-    }
-  }
-}
 
 export const undefinedDecoder = fromRefinement(
   (v): v is undefined => v === undefined,

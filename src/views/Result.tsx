@@ -26,6 +26,7 @@ import { useAppSelector } from 'src/redux/store'
 import { RootStackScreenProps } from 'src/routes/RootStack'
 import {
   A,
+  constVoid,
   Eq,
   flow,
   IO,
@@ -36,7 +37,6 @@ import {
   pipe,
   some,
   T,
-  TE,
 } from 'src/utils/fp-ts'
 import { div, toFixedLocale } from 'src/utils/Number'
 
@@ -48,7 +48,7 @@ export const ResultView = (props: RootStackScreenProps<'Result'>) => {
   const [result, setResult] = useState<Option<Array<Array<Player>>>>(none)
   const toast = useToast()
 
-  useEffect(() => {
+  useEffect(
     pipe(
       group,
       O.map(g => g.players),
@@ -59,42 +59,44 @@ export const ResultView = (props: RootStackScreenProps<'Result'>) => {
         rating: parameters.rating,
       })(parameters.teamsCount),
       IO.chain(s => () => setResult(some(s))),
-    )()
-  }, [])
+    ),
+    [],
+  )
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: ({ tintColor }) => (
-        <Pressable
-          mr="1"
-          p="2"
-          rounded="full"
-          _pressed={{ bg: 'primary.700' }}
-          onPress={() => {
-            void pipe(
+  useLayoutEffect(
+    () =>
+      navigation.setOptions({
+        headerRight: ({ tintColor }) => (
+          <Pressable
+            mr="1"
+            p="2"
+            rounded="full"
+            _pressed={{ bg: 'primary.700' }}
+            onPress={pipe(
               result,
               O.matchW(
-                () => TE.of(undefined),
+                () => T.of(undefined),
                 flow(
                   TeamListShowSensitive.show,
                   t => () => Clipboard.setStringAsync(t),
-                  T.chainFirstIOK(
+                  T.chainIOK(
                     () => () => void toast.show({ description: 'Copiado' }),
                   ),
                 ),
               ),
-            )()
-          }}
-        >
-          <Icon
-            size="lg"
-            color={tintColor}
-            as={<MaterialIcons name="content-copy" />}
-          />
-        </Pressable>
-      ),
-    })
-  }, [result])
+              IO.map(constVoid),
+            )}
+          >
+            <Icon
+              size="lg"
+              color={tintColor}
+              as={<MaterialIcons name="content-copy" />}
+            />
+          </Pressable>
+        ),
+      }),
+    [result],
+  )
 
   return pipe(
     result,

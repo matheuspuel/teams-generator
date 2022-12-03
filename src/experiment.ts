@@ -3,7 +3,7 @@ import { generateRandomBalancedTeams } from './business/distribution'
 import { Player, PlayerListShow } from './datatypes/Player'
 import { PositionDict } from './datatypes/Position'
 import { playersMock } from './mocks/Player'
-import { A, pipe, Rec, Tup } from './utils/fp-ts'
+import { A, IO, pipe, Rec, Tup } from './utils/fp-ts'
 
 const teams = generateRandomBalancedTeams({ position: true, rating: true })(3)(
   playersMock,
@@ -53,4 +53,8 @@ const showTeams = (teams: Array<Array<Player>>) =>
   )
 
 const text = showTeams(teams)
-console.log(text)
+
+const showResult: IO<void> = () => console.log(text)
+
+// eslint-disable-next-line functional/no-expression-statement
+showResult()

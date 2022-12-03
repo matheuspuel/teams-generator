@@ -28,17 +28,16 @@ export default hydratedSlice.reducer
 export const hydrateReducer = (
   state: RootState,
   action: AnyAction,
-): RootState => {
-  if (!hydrateAction.match(action)) return state
-  const p = action.payload
-  return {
-    ...state,
-    hydrated: true,
-    preview: p.preview,
-    groups: p.groups,
-    parameters: p.parameters,
-  }
-}
+): RootState =>
+  hydrateAction.match(action)
+    ? pipe(action.payload, p => ({
+        ...state,
+        hydrated: true,
+        preview: p.preview,
+        groups: p.groups,
+        parameters: p.parameters,
+      }))
+    : state
 
 // SELECTORS
 

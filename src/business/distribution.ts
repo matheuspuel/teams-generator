@@ -107,24 +107,30 @@ const changePlayers =
   (playerIndex: number) =>
   (otherTeamIndex: number) =>
   (otherPlayerIndex: number) =>
-  (teams: Array<Array<Player>>): Array<Array<Player>> => {
-    const team = teams[teamIndex]
-    const otherTeam = teams[otherTeamIndex]
-    if (!team) return teams
-    if (!otherTeam) return teams
-    const player = team[playerIndex]
-    const otherPlayer = otherTeam[otherPlayerIndex]
-    if (!player || !otherPlayer) return teams
-    const nextTeam = [...team.filter((p, i) => i !== playerIndex), otherPlayer]
-    const nextOtherTeam = [
-      ...otherTeam.filter((p, i) => i !== otherPlayerIndex),
-      player,
-    ]
-    const nextResult = teams.map((t, i) =>
-      i === teamIndex ? nextTeam : i === otherTeamIndex ? nextOtherTeam : t,
+  (teams: Array<Array<Player>>): Array<Array<Player>> =>
+    pipe(
+      O.Do,
+      O.apS('team', pipe(teams, A.lookup(teamIndex))),
+      O.apS('otherTeam', pipe(teams, A.lookup(otherTeamIndex))),
+      O.bind('player', ({ team }) => pipe(team, A.lookup(playerIndex))),
+      O.bind('otherPlayer', ({ otherTeam }) =>
+        pipe(otherTeam, A.lookup(otherPlayerIndex)),
+      ),
+      O.bind('nextTeam', ({ team, otherPlayer }) =>
+        pipe(team, A.deleteAt(playerIndex), O.map(A.append(otherPlayer))),
+      ),
+      O.bind('nextOtherTeam', ({ otherTeam, player }) =>
+        pipe(otherTeam, A.deleteAt(otherPlayerIndex), O.map(A.append(player))),
+      ),
+      O.chain(({ nextTeam, nextOtherTeam }) =>
+        pipe(
+          teams,
+          A.updateAt<Array<Player>>(teamIndex, nextTeam),
+          O.chain(A.updateAt<Array<Player>>(otherTeamIndex, nextOtherTeam)),
+        ),
+      ),
+      O.getOrElse(() => teams),
     )
-    return nextResult
-  }
 
 const divideTeams =
   (numOfTeams: number) =>

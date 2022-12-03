@@ -19,7 +19,7 @@ import { getGroupById, getGroups, groupsSlice } from 'src/redux/slices/groups'
 import { useAppDispatch, useAppSelector } from 'src/redux/store'
 import { RootStackScreenProps } from 'src/routes/RootStack'
 import { Id } from 'src/utils/Entity'
-import { constVoid, Eq, O, pipe } from 'src/utils/fp-ts'
+import { constVoid, Eq, IO, IOO, O, pipe, Str } from 'src/utils/fp-ts'
 
 export const Groups = (props: RootStackScreenProps<'Groups'>) => {
   const { navigation } = props
@@ -27,21 +27,27 @@ export const Groups = (props: RootStackScreenProps<'Groups'>) => {
   const [modal, setModal] = useState<Option<Option<{ id: Id }>>>(none)
   const [deleteModal, setDeleteModal] = useState<Option<{ id: Id }>>(none)
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: ({ tintColor }) => (
-        <Pressable
-          mr="1"
-          p="2"
-          rounded="full"
-          _pressed={{ bg: 'primary.700' }}
-          onPress={() => setModal(some(none))}
-        >
-          <Icon size="lg" color={tintColor} as={<MaterialIcons name="add" />} />
-        </Pressable>
-      ),
-    })
-  }, [])
+  useLayoutEffect(
+    () =>
+      navigation.setOptions({
+        headerRight: ({ tintColor }) => (
+          <Pressable
+            mr="1"
+            p="2"
+            rounded="full"
+            _pressed={{ bg: 'primary.700' }}
+            onPress={() => setModal(some(none))}
+          >
+            <Icon
+              size="lg"
+              color={tintColor}
+              as={<MaterialIcons name="add" />}
+            />
+          </Pressable>
+        ),
+      }),
+    [],
+  )
 
   return (
     <Flex flex={1} onLayout={() => void SplashScreen.hideAsync()}>
@@ -81,20 +87,10 @@ const Item = (props: {
         <Text flex={1} isTruncated bold>
           {name}
         </Text>
-        <Pressable
-          px="1"
-          onPress={() => {
-            props.openEdit(id)
-          }}
-        >
+        <Pressable px="1" onPress={() => props.openEdit(id)}>
           <Icon size="lg" color="gray.500" as={<MaterialIcons name="edit" />} />
         </Pressable>
-        <Pressable
-          px="1"
-          onPress={() => {
-            props.openDelete(id)
-          }}
-        >
+        <Pressable px="1" onPress={() => props.openDelete(id)}>
           <Icon
             size="lg"
             color="gray.500"
@@ -125,15 +121,17 @@ const GroupModal = (
   )
   const [groupName, setGroupName] = useState('')
 
-  useEffect(() => {
-    setGroupName(
-      pipe(
-        group,
-        O.map(g => g.name),
-        O.getOrElse(() => ''),
+  useEffect(
+    () =>
+      setGroupName(
+        pipe(
+          group,
+          O.map(g => g.name),
+          O.getOrElse(() => ''),
+        ),
       ),
-    )
-  }, [group])
+    [group],
+  )
 
   return (
     <Modal isOpen={O.isSome(props.state)}>
@@ -159,22 +157,28 @@ const GroupModal = (
             </Button>
             <Button
               isDisabled={!groupName}
-              onPress={() => {
-                if (!groupName) return
-                props.onClose()
-                pipe(
-                  group,
-                  O.matchW(
-                    () => () =>
-                      dispatch(groupsSlice.actions.add({ name: groupName })),
-                    g => () =>
-                      dispatch(
-                        groupsSlice.actions.edit({ id: g.id, name: groupName }),
+              onPress={
+                Str.isEmpty(groupName)
+                  ? constVoid
+                  : pipe(
+                      IOO.fromIO(() => props.onClose()),
+                      IOO.chainOptionK(() => group),
+                      IOO.matchEW(
+                        () => () => (): unknown =>
+                          dispatch(
+                            groupsSlice.actions.add({ name: groupName }),
+                          ),
+                        g => (): unknown =>
+                          dispatch(
+                            groupsSlice.actions.edit({
+                              id: g.id,
+                              name: groupName,
+                            }),
+                          ),
                       ),
-                  ),
-                )()
-                setGroupName('')
-              }}
+                      IO.chainFirst(() => () => setGroupName('')),
+                    )
+              }
             >
               Gravar
             </Button>
@@ -234,17 +238,13 @@ const DeleteGroupModal = (
             </Button>
             <Button
               colorScheme="danger"
-              onPress={() => {
-                props.onClose()
-                pipe(
-                  group,
-                  O.match(
-                    () => constVoid,
-                    g => () =>
-                      dispatch(groupsSlice.actions.delete({ id: g.id })),
-                  ),
-                )()
-              }}
+              onPress={pipe(
+                IOO.fromIO(() => props.onClose()),
+                IOO.chainOptionK(() => group),
+                IOO.chainIOK(
+                  g => () => dispatch(groupsSlice.actions.delete({ id: g.id })),
+                ),
+              )}
             >
               Excluir
             </Button>

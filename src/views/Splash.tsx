@@ -6,13 +6,7 @@ import { useAppSelector } from 'src/redux/store'
 export const Splash = (props: { children: React.ReactElement }) => {
   const ready = useAppSelector(getHydrated)
 
-  useEffect(() => {
-    void SplashScreen.preventAutoHideAsync()
-  }, [])
+  useEffect(() => void SplashScreen.preventAutoHideAsync(), [])
 
-  if (!ready) {
-    return null
-  } else {
-    return props.children
-  }
+  return ready ? props.children : null
 }

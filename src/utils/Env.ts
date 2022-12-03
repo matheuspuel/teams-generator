@@ -1,18 +1,18 @@
 import Constants from 'expo-constants'
+import { fatal } from './Error'
 
 const envName_: unknown = Constants.manifest?.extra?.envName
 
-export const envName = (() => {
-  switch (envName_) {
-    case 'production':
-    case 'staging':
-    case 'preview':
-    case 'development':
-      return envName_
-    default:
-      throw new Error('Unknown app environment')
-  }
-})()
+export const envName =
+  envName_ === 'production'
+    ? envName_
+    : envName_ === 'staging'
+    ? envName_
+    : envName_ === 'preview'
+    ? envName_
+    : envName_ === 'development'
+    ? envName_
+    : fatal('Unknown app environment')
 
 export const matchEnv = <D, PW, S, P>(cases: {
   development: D
