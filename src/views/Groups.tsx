@@ -137,7 +137,14 @@ const GroupModal = (
     <Modal isOpen={O.isSome(props.state)}>
       <Modal.Content>
         <Modal.Header>
-          Novo grupo
+          {pipe(
+            props.state,
+            O.flatten,
+            O.match(
+              () => 'Novo grupo',
+              () => 'Editar grupo',
+            ),
+          )}
           <Modal.CloseButton onPress={props.onClose} />
         </Modal.Header>
         <Modal.Body>

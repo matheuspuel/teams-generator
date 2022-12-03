@@ -86,6 +86,7 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
         data={players}
         keyExtractor={({ id }) => id}
         renderItem={({ item }) => <Item data={item} parentProps={props} />}
+        initialNumToRender={20}
       />
       <Button rounded="none" onPress={modalParameters.onOpen}>
         Sortear
