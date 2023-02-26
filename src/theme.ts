@@ -1,20 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { extendTheme, INativebaseConfig, Theme } from 'native-base'
-
-type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends Array<infer U>
-    ? Array<DeepPartial<U>>
-    : T[P] extends Array<infer U>
-    ? Array<DeepPartial<U>>
-    : DeepPartial<T[P]> | T[P]
-}
-
-const customExtendTheme = <T extends DeepPartial<Theme>>(value: T) =>
-  extendTheme(value)
-// extendTheme(value) as ITheme & T
-
-export const theme = customExtendTheme({
+export const theme = {
   colors: {
+    background: '#F2F2F2',
+    lightText: '#FFFFFF',
+    darkText: '#1E1E1E',
+    grayText: '#606060',
+    white: '#ffffff',
+    black: '#000000',
     primary: {
       50: '#D0E6FA',
       100: '#A1CDF5',
@@ -27,25 +18,41 @@ export const theme = customExtendTheme({
       800: '#072640',
       900: '#041320',
     },
-    lightText: '#FFFFFF',
-    darkText: '#1E1E1E',
-    grayText: '#606060',
-    background: '#F2F2F2',
+    danger: {
+      50: '#fff1f2',
+      100: '#ffe4e6',
+      200: '#fecdd3',
+      300: '#fda4af',
+      400: '#fb7185',
+      500: '#f43f5e',
+      600: '#e11d48',
+      700: '#be123c',
+      800: '#9f1239',
+      900: '#881337',
+    },
+    gray: {
+      50: '#fafafa',
+      100: '#f4f4f5',
+      200: '#e4e4e7',
+      300: '#d4d4d8',
+      400: '#a1a1aa',
+      500: '#71717a',
+      600: '#52525b',
+      700: '#3f3f46',
+      800: '#27272a',
+      900: '#18181b',
+    },
+    amber: {
+      50: '#fffbeb',
+      100: '#fef3c7',
+      200: '#fde68a',
+      300: '#fcd34d',
+      400: '#fbbf24',
+      500: '#f59e0b',
+      600: '#d97706',
+      700: '#b45309',
+      800: '#92400e',
+      900: '#78350f',
+    },
   },
-  components: {
-    Text: { baseStyle: { _light: { color: 'darkText' } } },
-    Heading: { baseStyle: { _light: { color: 'darkText' } } },
-    Select: { baseStyle: { fontSize: 'md' } },
-  },
-})
-
-export const nbConfig: INativebaseConfig = {
-  suppressColorAccessibilityWarning: true,
-}
-
-type CustomTheme = typeof theme
-
-declare module 'native-base' {
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-  interface ICustomTheme extends CustomTheme {}
 }
