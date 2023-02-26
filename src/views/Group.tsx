@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
-import { Button, IconButton, Modal } from 'native-base'
+import { IconButton, Modal } from 'native-base'
 import { useLayoutEffect } from 'react'
 import { FlatList, Pressable, Text, View } from 'react-native'
 import { Player, PlayerIsActive, RatingShow } from 'src/datatypes/Player'
@@ -84,9 +84,19 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
         renderItem={({ item }) => <Item data={item} parentProps={props} />}
         initialNumToRender={20}
       />
-      <Button rounded="none" onPress={modalParameters.onOpen}>
-        Sortear
-      </Button>
+      <Pressable
+        style={({ pressed }) => ({
+          padding: 12,
+          backgroundColor: pressed
+            ? theme.colors.primary[800]
+            : theme.colors.primary[600],
+        })}
+        onPress={modalParameters.onOpen}
+      >
+        <Text style={{ textAlign: 'center', color: theme.colors.white }}>
+          Sortear
+        </Text>
+      </Pressable>
       <ParametersModal {...props} {...modalParameters} />
     </View>
   )
@@ -336,19 +346,36 @@ const ParametersModal = (
           </Pressable>
         </Modal.Body>
         <Modal.Footer>
-          <Button.Group space="2">
-            <Button variant="ghost" onPress={props.onClose}>
-              Cancelar
-            </Button>
-            <Button
+          <View style={{ flexDirection: 'row' }}>
+            <Pressable
+              style={({ pressed }) => ({
+                marginRight: 8,
+                padding: 12,
+                backgroundColor: pressed
+                  ? theme.colors.primary[600] + '1f'
+                  : undefined,
+                borderRadius: 4,
+              })}
+              onPress={props.onClose}
+            >
+              <Text style={{ color: theme.colors.primary[600] }}>Cancelar</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => ({
+                padding: 12,
+                backgroundColor: pressed
+                  ? theme.colors.primary[800]
+                  : theme.colors.primary[600],
+                borderRadius: 4,
+              })}
               onPress={pipe(
                 props.onClose,
                 IO.chain(() => () => navigation.navigate('Result', { id })),
               )}
             >
-              Sortear
-            </Button>
-          </Button.Group>
+              <Text style={{ color: theme.colors.white }}>Sortear</Text>
+            </Pressable>
+          </View>
         </Modal.Footer>
       </Modal.Content>
     </Modal>

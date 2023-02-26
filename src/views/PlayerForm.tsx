@@ -1,7 +1,7 @@
 import { MaterialIcons } from '@expo/vector-icons'
 import { none } from 'fp-ts/lib/Option'
 import { not } from 'fp-ts/lib/Predicate'
-import { Button, FormControl, Input } from 'native-base'
+import { FormControl, Input } from 'native-base'
 import { useLayoutEffect, useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { Player, Rating, RatingList, RatingShow } from 'src/datatypes/Player'
@@ -239,9 +239,15 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
           />
         </FormControl>
       </View>
-      <Button
-        rounded="none"
-        isDisabled={!form.name}
+      <Pressable
+        style={({ pressed }) => ({
+          padding: 12,
+          backgroundColor: !form.name
+            ? theme.colors.primary[600] + '5f'
+            : pressed
+            ? theme.colors.primary[800]
+            : theme.colors.primary[600],
+        })}
         onPress={pipe(
           form.name,
           IOO.fromPredicate(not(Str.isEmpty)),
@@ -265,8 +271,15 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
           IOO.chainFirstIOK(() => () => setForm(initialFormState)),
         )}
       >
-        Gravar
-      </Button>
+        <Text
+          style={{
+            textAlign: 'center',
+            color: !form.name ? theme.colors.white + '5f' : theme.colors.white,
+          }}
+        >
+          Gravar
+        </Text>
+      </Pressable>
     </>
   )
 }

@@ -2,7 +2,7 @@ import { MaterialIcons } from '@expo/vector-icons'
 import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
 import { none, Option, some } from 'fp-ts/lib/Option'
-import { Button, FormControl, Input, Modal } from 'native-base'
+import { FormControl, Input, Modal } from 'native-base'
 import { useEffect, useLayoutEffect, useState } from 'react'
 import { FlatList, Pressable, Text, View } from 'react-native'
 import { Group } from 'src/datatypes/Group'
@@ -167,12 +167,30 @@ const GroupModal = (
           </FormControl>
         </Modal.Body>
         <Modal.Footer>
-          <Button.Group space="2">
-            <Button variant="ghost" onPress={props.onClose}>
-              Cancelar
-            </Button>
-            <Button
-              isDisabled={!groupName}
+          <View style={{ flexDirection: 'row' }}>
+            <Pressable
+              style={({ pressed }) => ({
+                marginRight: 8,
+                padding: 12,
+                backgroundColor: pressed
+                  ? theme.colors.primary[600] + '1f'
+                  : undefined,
+                borderRadius: 4,
+              })}
+              onPress={props.onClose}
+            >
+              <Text style={{ color: theme.colors.primary[600] }}>Cancelar</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => ({
+                padding: 12,
+                backgroundColor: !groupName
+                  ? theme.colors.primary[600] + '5f'
+                  : pressed
+                  ? theme.colors.primary[800]
+                  : theme.colors.primary[600],
+                borderRadius: 4,
+              })}
               onPress={
                 Str.isEmpty(groupName)
                   ? constVoid
@@ -180,7 +198,7 @@ const GroupModal = (
                       IOO.fromIO(props.onClose),
                       IOO.chainOptionK(() => group),
                       IOO.matchEW(
-                        () => () => (): unknown =>
+                        () => (): unknown =>
                           dispatch(
                             groupsSlice.actions.add({ name: groupName }),
                           ),
@@ -196,9 +214,17 @@ const GroupModal = (
                     )
               }
             >
-              Gravar
-            </Button>
-          </Button.Group>
+              <Text
+                style={{
+                  color: !groupName
+                    ? theme.colors.white + '5f'
+                    : theme.colors.white,
+                }}
+              >
+                Gravar
+              </Text>
+            </Pressable>
+          </View>
         </Modal.Footer>
       </Modal.Content>
     </Modal>
@@ -254,16 +280,28 @@ const DeleteGroupModal = (
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button.Group space="2">
-            <Button
-              variant="ghost"
-              colorScheme="danger"
+          <View style={{ flexDirection: 'row' }}>
+            <Pressable
+              style={({ pressed }) => ({
+                marginRight: 8,
+                padding: 12,
+                backgroundColor: pressed
+                  ? theme.colors.danger[600] + '1f'
+                  : undefined,
+                borderRadius: 4,
+              })}
               onPress={props.onClose}
             >
-              Cancelar
-            </Button>
-            <Button
-              colorScheme="danger"
+              <Text style={{ color: theme.colors.danger[600] }}>Cancelar</Text>
+            </Pressable>
+            <Pressable
+              style={({ pressed }) => ({
+                padding: 12,
+                backgroundColor: pressed
+                  ? theme.colors.danger[800]
+                  : theme.colors.danger[600],
+                borderRadius: 4,
+              })}
               onPress={pipe(
                 IOO.fromIO(props.onClose),
                 IOO.chainOptionK(() => group),
@@ -272,9 +310,9 @@ const DeleteGroupModal = (
                 ),
               )}
             >
-              Excluir
-            </Button>
-          </Button.Group>
+              <Text style={{ color: theme.colors.white }}>Excluir</Text>
+            </Pressable>
+          </View>
         </Modal.Footer>
       </Modal.Content>
     </Modal>
