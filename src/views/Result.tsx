@@ -1,8 +1,14 @@
 import { MaterialIcons } from '@expo/vector-icons'
 import * as Clipboard from 'expo-clipboard'
-import { ScrollView, useToast } from 'native-base'
+import { useToast } from 'native-base'
 import { useEffect, useLayoutEffect, useState } from 'react'
-import { ActivityIndicator, Pressable, Text, View } from 'react-native'
+import {
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native'
 import { generateRandomBalancedTeams } from 'src/business/distribution'
 import {
   getRatingTotal,
@@ -101,7 +107,7 @@ export const ResultView = (props: RootStackScreenProps<'Result'>) => {
       ),
       r =>
         pipe(
-          <ScrollView flex={1}>
+          <ScrollView style={{ flex: 1 }}>
             {pipe(
               r,
               A.mapWithIndex((i, t) => (
