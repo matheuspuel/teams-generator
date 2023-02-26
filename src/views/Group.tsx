@@ -2,14 +2,13 @@ import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
 import {
   Button,
   Checkbox,
-  FlatList,
   Icon,
   IconButton,
   Modal,
   useDisclose,
 } from 'native-base'
 import { useLayoutEffect } from 'react'
-import { Pressable, Text, View } from 'react-native'
+import { FlatList, Pressable, Text, View } from 'react-native'
 import { Player, PlayerIsActive, RatingShow } from 'src/datatypes/Player'
 import { getGroupById, groupsSlice } from 'src/redux/slices/groups'
 import { getParameters, parametersSlice } from 'src/redux/slices/parameters'
