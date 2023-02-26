@@ -93,11 +93,9 @@ export const groupsSlice = createSlice({
         })),
         O.getOrElseW(() => s),
       ),
-    setPlayerActive: (
+    togglePlayerActive: (
       s,
-      {
-        payload: p,
-      }: PayloadAction<{ groupId: Id; playerId: Id; active: boolean }>,
+      { payload: p }: PayloadAction<{ groupId: Id; playerId: Id }>,
     ) =>
       pipe(
         s,
@@ -105,7 +103,7 @@ export const groupsSlice = createSlice({
           ...g,
           players: pipe(
             g.players,
-            A.map(a => (a.id === p.playerId ? { ...a, active: p.active } : a)),
+            A.map(a => (a.id === p.playerId ? { ...a, active: !a.active } : a)),
           ),
         })),
         O.getOrElseW(() => s),

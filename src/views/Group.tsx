@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
-import { Button, Checkbox, IconButton, Modal, useDisclose } from 'native-base'
+import { Button, IconButton, Modal, useDisclose } from 'native-base'
 import { useLayoutEffect } from 'react'
 import { FlatList, Pressable, Text, View } from 'react-native'
 import { Player, PlayerIsActive, RatingShow } from 'src/datatypes/Player'
@@ -115,20 +115,45 @@ const Item = (props: {
           elevation: 1,
         }}
       >
-        <Checkbox.Group
-          value={active ? ['true'] : []}
-          onChange={(v: Array<string>) =>
+        <Pressable
+          style={{ marginRight: 4 }}
+          onPress={() =>
             dispatch(
-              groupsSlice.actions.setPlayerActive({
-                groupId,
-                playerId: id,
-                active: !!v.length,
-              }),
+              groupsSlice.actions.togglePlayerActive({ groupId, playerId: id }),
             )
           }
         >
-          <Checkbox m="1" size="lg" value="true" accessibilityLabel="Ativo" />
-        </Checkbox.Group>
+          {({ pressed }) =>
+            active ? (
+              <View
+                style={{
+                  borderWidth: 2,
+                  borderRadius: 4,
+                  height: 28,
+                  width: 28,
+                  backgroundColor: theme.colors.primary[pressed ? 800 : 600],
+                  borderColor: theme.colors.primary[pressed ? 800 : 600],
+                }}
+              >
+                <MaterialIcons
+                  name="check"
+                  size={24}
+                  color={theme.colors.white}
+                />
+              </View>
+            ) : (
+              <View
+                style={{
+                  borderWidth: 2,
+                  borderRadius: 4,
+                  borderColor: theme.colors.gray[pressed ? 600 : 400],
+                  height: 28,
+                  width: 28,
+                }}
+              />
+            )
+          }
+        </Pressable>
         <View
           style={{
             aspectRatio: 1,
@@ -226,26 +251,88 @@ const ParametersModal = (
               Número de times
             </Text>
           </View>
-          <Checkbox.Group
-            value={parameters.position ? ['true'] : []}
-            onChange={(v: Array<string>) =>
-              dispatch(parametersSlice.actions.setPosition(!!v.length))
-            }
+          <Pressable
+            style={{ padding: 4 }}
+            onPress={() => dispatch(parametersSlice.actions.togglePosition())}
           >
-            <Checkbox m="1" size="lg" value="true" _text={{ fontSize: 'sm' }}>
-              Considerar posições
-            </Checkbox>
-          </Checkbox.Group>
-          <Checkbox.Group
-            value={parameters.rating ? ['true'] : []}
-            onChange={(v: Array<string>) =>
-              dispatch(parametersSlice.actions.setRating(!!v.length))
-            }
+            {({ pressed }) => (
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                {parameters.position ? (
+                  <View
+                    style={{
+                      borderWidth: 2,
+                      borderRadius: 4,
+                      height: 28,
+                      width: 28,
+                      backgroundColor:
+                        theme.colors.primary[pressed ? 800 : 600],
+                      borderColor: theme.colors.primary[pressed ? 800 : 600],
+                    }}
+                  >
+                    <MaterialIcons
+                      name="check"
+                      size={24}
+                      color={theme.colors.white}
+                    />
+                  </View>
+                ) : (
+                  <View
+                    style={{
+                      borderWidth: 2,
+                      borderRadius: 4,
+                      borderColor: theme.colors.gray[pressed ? 600 : 400],
+                      height: 28,
+                      width: 28,
+                    }}
+                  />
+                )}
+                <Text style={{ margin: 4, fontSize: 14 }}>
+                  Considerar posições
+                </Text>
+              </View>
+            )}
+          </Pressable>
+          <Pressable
+            style={{ padding: 4 }}
+            onPress={() => dispatch(parametersSlice.actions.toggleRating())}
           >
-            <Checkbox m="1" size="lg" value="true" _text={{ fontSize: 'sm' }}>
-              Considerar habilidade
-            </Checkbox>
-          </Checkbox.Group>
+            {({ pressed }) => (
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                {parameters.rating ? (
+                  <View
+                    style={{
+                      borderWidth: 2,
+                      borderRadius: 4,
+                      height: 28,
+                      width: 28,
+                      backgroundColor:
+                        theme.colors.primary[pressed ? 800 : 600],
+                      borderColor: theme.colors.primary[pressed ? 800 : 600],
+                    }}
+                  >
+                    <MaterialIcons
+                      name="check"
+                      size={24}
+                      color={theme.colors.white}
+                    />
+                  </View>
+                ) : (
+                  <View
+                    style={{
+                      borderWidth: 2,
+                      borderRadius: 4,
+                      borderColor: theme.colors.gray[pressed ? 600 : 400],
+                      height: 28,
+                      width: 28,
+                    }}
+                  />
+                )}
+                <Text style={{ margin: 4, fontSize: 14 }}>
+                  Considerar habilidade
+                </Text>
+              </View>
+            )}
+          </Pressable>
         </Modal.Body>
         <Modal.Footer>
           <Button.Group space="2">

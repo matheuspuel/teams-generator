@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 import { defaultParameters, Parameters } from 'src/datatypes/Parameters'
 import { RootState } from 'src/redux/store'
 import { Num, Ord } from 'src/utils/fp-ts'
@@ -11,14 +11,8 @@ export const parametersSlice = createSlice({
   name: 'parameters',
   initialState: initialState,
   reducers: {
-    setPosition: (s, { payload: p }: PayloadAction<boolean>) => ({
-      ...s,
-      position: p,
-    }),
-    setRating: (s, { payload: p }: PayloadAction<boolean>) => ({
-      ...s,
-      rating: p,
-    }),
+    togglePosition: s => ({ ...s, position: !s.position }),
+    toggleRating: s => ({ ...s, rating: !s.rating }),
     incrementTeamsCount: s => ({
       ...s,
       teamsCount: teamsCountClamp(s.teamsCount + 1),
