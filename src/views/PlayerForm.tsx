@@ -169,7 +169,7 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
                       backgroundColor:
                         form.position === p
                           ? theme.colors.primary[500]
-                          : theme.colors.primary[100],
+                          : theme.colors.primary[500] + '3f',
                     }}
                   >
                     <Text

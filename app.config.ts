@@ -17,12 +17,12 @@ const getConfig = (): ExpoConfig => ({
   icon: './assets/icon.png',
   androidStatusBar: {
     barStyle: 'light-content',
-    backgroundColor: '#103454',
+    backgroundColor: '#136d15',
   },
   splash: {
     image: './assets/splash.png',
     resizeMode: 'contain',
-    backgroundColor: '#103454',
+    backgroundColor: '#136d15',
   },
   updates: {
     fallbackToCacheTimeout: 0,
@@ -53,7 +53,7 @@ const getConfig = (): ExpoConfig => ({
       }),
     versionCode: 2,
     adaptiveIcon: {
-      backgroundColor: '#103454',
+      backgroundColor: '#136d15',
       foregroundImage:
         './assets/adaptive-icon' +
         matchEnv({
