@@ -2,9 +2,9 @@ import { MaterialIcons } from '@expo/vector-icons'
 import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
 import { none, Option, some } from 'fp-ts/lib/Option'
-import { Input } from 'native-base'
 import { useEffect, useLayoutEffect, useState } from 'react'
 import { FlatList, Modal, Pressable, Text, View } from 'react-native'
+import { Input } from 'src/components/Input'
 import { Group } from 'src/datatypes/Group'
 import { getGroupById, getGroups, groupsSlice } from 'src/redux/slices/groups'
 import { useAppDispatch, useAppSelector } from 'src/redux/store'
@@ -222,6 +222,21 @@ const GroupModal = (
                 placeholder="Ex: Futebol de quinta"
                 value={groupName}
                 onChangeText={setGroupName}
+                placeholderTextColor={theme.colors.gray[400]}
+                cursorColor={theme.colors.darkText}
+                style={({ isFocused }) => ({
+                  fontSize: 12,
+                  padding: 8,
+                  paddingHorizontal: 14,
+                  borderWidth: 1,
+                  borderRadius: 4,
+                  borderColor: isFocused
+                    ? theme.colors.primary[600]
+                    : theme.colors.gray[300],
+                  backgroundColor: isFocused
+                    ? theme.colors.primary[600] + '1f'
+                    : undefined,
+                })}
               />
             </View>
           </View>

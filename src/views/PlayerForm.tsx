@@ -1,9 +1,9 @@
 import { MaterialIcons } from '@expo/vector-icons'
 import { none } from 'fp-ts/lib/Option'
 import { not } from 'fp-ts/lib/Predicate'
-import { Input } from 'native-base'
 import { useLayoutEffect, useState } from 'react'
-import { Pressable, Text, View } from 'react-native'
+import { Pressable, ScrollView, Text, View } from 'react-native'
+import { Input } from 'src/components/Input'
 import { Player, Rating, RatingList, RatingShow } from 'src/datatypes/Player'
 import { Position, PositionDict, PositionOrd } from 'src/datatypes/Position'
 import { getPlayer, groupsSlice } from 'src/redux/slices/groups'
@@ -102,7 +102,10 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
   )
 
   return (
-    <>
+    <ScrollView
+      keyboardShouldPersistTaps="handled"
+      contentContainerStyle={{ flexGrow: 1 }}
+    >
       <View style={{ flex: 1, padding: 4 }}>
         <View style={{ padding: 4 }}>
           <Text
@@ -116,8 +119,23 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
           </Text>
           <Input
             placeholder="Ex: Pedro"
+            placeholderTextColor={theme.colors.gray[400]}
             value={form.name}
             onChangeText={formSetters.name}
+            cursorColor={theme.colors.darkText}
+            style={({ isFocused }) => ({
+              fontSize: 12,
+              padding: 8,
+              paddingHorizontal: 14,
+              borderWidth: 1,
+              borderRadius: 4,
+              borderColor: isFocused
+                ? theme.colors.primary[600]
+                : theme.colors.gray[300],
+              backgroundColor: isFocused
+                ? theme.colors.primary[600] + '1f'
+                : undefined,
+            })}
           />
         </View>
         <View style={{ padding: 4 }}>
@@ -304,6 +322,6 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
           Gravar
         </Text>
       </Pressable>
-    </>
+    </ScrollView>
   )
 }
