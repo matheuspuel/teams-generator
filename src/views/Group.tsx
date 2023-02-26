@@ -126,7 +126,7 @@ const Item = (props: {
         }}
       >
         <Pressable
-          style={{ marginRight: 4 }}
+          style={{ marginRight: 8 }}
           onPress={() =>
             dispatch(
               groupsSlice.actions.togglePlayerActive({ groupId, playerId: id }),
@@ -180,6 +180,7 @@ const Item = (props: {
               fontSize: 16,
               fontWeight: 'bold',
               color: theme.colors.darkText,
+              lineHeight: 19,
             }}
           >
             {position}
@@ -187,7 +188,7 @@ const Item = (props: {
         </View>
         <Text
           style={{
-            padding: 4,
+            marginHorizontal: 8,
             fontWeight: 'bold',
             color: theme.colors.darkText,
           }}
