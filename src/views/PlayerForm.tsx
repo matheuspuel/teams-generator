@@ -1,9 +1,9 @@
 import { MaterialIcons } from '@expo/vector-icons'
 import { none } from 'fp-ts/lib/Option'
 import { not } from 'fp-ts/lib/Predicate'
-import { Button, FormControl, Icon, Input, Pressable, Text } from 'native-base'
+import { Button, FormControl, Icon, Input, Pressable } from 'native-base'
 import { useLayoutEffect, useState } from 'react'
-import { Pressable as Pressable_, Text as Text_, View } from 'react-native'
+import { Pressable as Pressable_, Text, View } from 'react-native'
 import { Player, Rating, RatingList, RatingShow } from 'src/datatypes/Player'
 import { Position, PositionDict, PositionOrd } from 'src/datatypes/Position'
 import { getPlayer, groupsSlice } from 'src/redux/slices/groups'
@@ -139,7 +139,13 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
                           : theme.colors.primary[100],
                     }}
                   >
-                    <Text fontSize="sm" textAlign="center" color="lightText">
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        textAlign: 'center',
+                        color: theme.colors.lightText,
+                      }}
+                    >
                       {p}
                     </Text>
                   </View>
@@ -150,7 +156,7 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
         </FormControl>
         <FormControl p="1">
           <FormControl.Label>Habilidade</FormControl.Label>
-          <Text_
+          <Text
             style={{
               textAlign: 'center',
               fontSize: 24,
@@ -159,7 +165,7 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
             }}
           >
             {RatingShow.show(form.rating)}
-          </Text_>
+          </Text>
           <View style={{ flexDirection: 'row' }}>
             {pipe(
               RatingList,
@@ -208,7 +214,7 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
                     />
                     {r % 1 === 0 && (
                       <View style={{ position: 'absolute', top: 10 }}>
-                        <Text_
+                        <Text
                           style={{
                             textAlign: 'center',
                             fontSize: 12,
@@ -218,7 +224,7 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
                           }}
                         >
                           {r}
-                        </Text_>
+                        </Text>
                       </View>
                     )}
                   </View>

@@ -7,11 +7,10 @@ import {
   IconButton,
   Modal,
   Pressable,
-  Text,
   useDisclose,
 } from 'native-base'
 import { useLayoutEffect } from 'react'
-import { View } from 'react-native'
+import { Text, View } from 'react-native'
 import { Player, PlayerIsActive, RatingShow } from 'src/datatypes/Player'
 import { getGroupById, groupsSlice } from 'src/redux/slices/groups'
 import { getParameters, parametersSlice } from 'src/redux/slices/parameters'
@@ -146,14 +145,28 @@ const Item = (props: {
             backgroundColor: theme.colors.amber[300],
           }}
         >
-          <Text fontSize="md" bold>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: 'bold',
+              color: theme.colors.darkText,
+            }}
+          >
             {position}
           </Text>
         </View>
-        <Text p="1" bold>
+        <Text
+          style={{
+            padding: 4,
+            fontWeight: 'bold',
+            color: theme.colors.darkText,
+          }}
+        >
           {RatingShow.show(rating)}
         </Text>
-        <Text isTruncated>{name}</Text>
+        <Text style={{ color: theme.colors.darkText }} numberOfLines={1}>
+          {name}
+        </Text>
       </View>
     </Pressable>
   )
@@ -185,7 +198,13 @@ const ParametersModal = (
               }
               icon={<Icon as={<MaterialIcons name="remove" />} />}
             />
-            <Text p="2" bold>
+            <Text
+              style={{
+                padding: 8,
+                fontWeight: 'bold',
+                color: theme.colors.darkText,
+              }}
+            >
               {parameters.teamsCount}
             </Text>
             <IconButton
@@ -194,7 +213,9 @@ const ParametersModal = (
               }
               icon={<Icon as={<MaterialIcons name="add" />} />}
             />
-            <Text flex={1} pl="2">
+            <Text
+              style={{ flex: 1, paddingLeft: 8, color: theme.colors.darkText }}
+            >
               Número de times
             </Text>
           </View>

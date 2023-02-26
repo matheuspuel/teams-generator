@@ -10,10 +10,9 @@ import {
   Input,
   Modal,
   Pressable,
-  Text,
 } from 'native-base'
 import { useEffect, useLayoutEffect, useState } from 'react'
-import { View } from 'react-native'
+import { Text, View } from 'react-native'
 import { Group } from 'src/datatypes/Group'
 import { getGroupById, getGroups, groupsSlice } from 'src/redux/slices/groups'
 import { useAppDispatch, useAppSelector } from 'src/redux/store'
@@ -95,7 +94,10 @@ const Item = (props: {
           elevation: 1,
         }}
       >
-        <Text flex={1} isTruncated bold>
+        <Text
+          style={{ flex: 1, fontWeight: 'bold', color: theme.colors.darkText }}
+          numberOfLines={1}
+        >
           {name}
         </Text>
         <Pressable px="1" onPress={() => props.openEdit(id)}>
@@ -237,9 +239,19 @@ const DeleteGroupModal = (
             O.matchW(
               () => null,
               g => (
-                <Text>
-                  Deseja excluir o grupo {<Text bold>{g.name}</Text>} e todos os
-                  jogadores?
+                <Text style={{ color: theme.colors.darkText }}>
+                  Deseja excluir o grupo{' '}
+                  {
+                    <Text
+                      style={{
+                        fontWeight: 'bold',
+                        color: theme.colors.darkText,
+                      }}
+                    >
+                      {g.name}
+                    </Text>
+                  }{' '}
+                  e todos os jogadores?
                 </Text>
               ),
             ),

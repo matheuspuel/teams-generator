@@ -1,15 +1,8 @@
 import { MaterialIcons } from '@expo/vector-icons'
 import * as Clipboard from 'expo-clipboard'
-import {
-  Icon,
-  Pressable,
-  ScrollView,
-  Spinner,
-  Text,
-  useToast,
-} from 'native-base'
+import { Icon, Pressable, ScrollView, Spinner, useToast } from 'native-base'
 import { useEffect, useLayoutEffect, useState } from 'react'
-import { View } from 'react-native'
+import { Text, View } from 'react-native'
 import { generateRandomBalancedTeams } from 'src/business/distribution'
 import {
   getRatingTotal,
@@ -138,16 +131,23 @@ const TeamItem = (props: { index: number; players: Array<Player> }) => {
         elevation: 1,
       }}
     >
-      <Text textAlign="center" fontSize="md" bold>
+      <Text
+        style={{
+          color: theme.colors.darkText,
+          textAlign: 'center',
+          fontSize: 16,
+          fontWeight: 'bold',
+        }}
+      >
         {title}
       </Text>
-      <Text fontSize="xs" color="grayText">
+      <Text style={{ color: theme.colors.grayText, fontSize: 12 }}>
         Número de jogadores: <Text>{numPlayers}</Text>
       </Text>
-      <Text fontSize="xs" color="grayText">
+      <Text style={{ color: theme.colors.grayText, fontSize: 12 }}>
         Média de habilidade: <Text>{avgRating}</Text>
       </Text>
-      <Text fontSize="xs" color="grayText">
+      <Text style={{ color: theme.colors.grayText, fontSize: 12 }}>
         Total de habilidade: <Text>{totalRating}</Text>
       </Text>
       {pipe(
@@ -167,9 +167,14 @@ const PlayerItem = (props: { data: Player }) => {
   const { name, position, rating } = props.data
   return (
     <View style={{ flexDirection: 'row', padding: 4 }}>
-      <Text bold>{RatingShow.show(rating)}</Text>
-      <Text isTruncated> - {name}</Text>
-      <Text> ({position})</Text>
+      <Text style={{ color: theme.colors.darkText, fontWeight: 'bold' }}>
+        {RatingShow.show(rating)}
+      </Text>
+      <Text style={{ color: theme.colors.darkText }} numberOfLines={1}>
+        {' '}
+        - {name}
+      </Text>
+      <Text style={{ color: theme.colors.darkText }}> ({position})</Text>
     </View>
   )
 }
