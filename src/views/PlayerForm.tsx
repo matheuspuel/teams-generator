@@ -1,7 +1,7 @@
 import { MaterialIcons } from '@expo/vector-icons'
 import { none } from 'fp-ts/lib/Option'
 import { not } from 'fp-ts/lib/Predicate'
-import { FormControl, Input } from 'native-base'
+import { Input } from 'native-base'
 import { useLayoutEffect, useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { Player, Rating, RatingList, RatingShow } from 'src/datatypes/Player'
@@ -104,16 +104,32 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
   return (
     <>
       <View style={{ flex: 1, padding: 4 }}>
-        <FormControl p="1">
-          <FormControl.Label>Nome</FormControl.Label>
+        <View style={{ padding: 4 }}>
+          <Text
+            style={{
+              fontWeight: '500',
+              color: theme.colors.gray[500],
+              marginVertical: 4,
+            }}
+          >
+            Nome
+          </Text>
           <Input
             placeholder="Ex: Pedro"
             value={form.name}
             onChangeText={formSetters.name}
           />
-        </FormControl>
-        <FormControl p="1">
-          <FormControl.Label>Posição</FormControl.Label>
+        </View>
+        <View style={{ padding: 4 }}>
+          <Text
+            style={{
+              fontWeight: '500',
+              color: theme.colors.gray[500],
+              marginVertical: 4,
+            }}
+          >
+            Posição
+          </Text>
           <View style={{ flexDirection: 'row' }}>
             {pipe(
               PositionDict,
@@ -152,9 +168,17 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
               )),
             )}
           </View>
-        </FormControl>
-        <FormControl p="1">
-          <FormControl.Label>Habilidade</FormControl.Label>
+        </View>
+        <View style={{ padding: 4 }}>
+          <Text
+            style={{
+              fontWeight: '500',
+              color: theme.colors.gray[500],
+              marginVertical: 4,
+            }}
+          >
+            Habilidade
+          </Text>
           <Text
             style={{
               textAlign: 'center',
@@ -237,7 +261,7 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
               borderRadius: 10,
             }}
           />
-        </FormControl>
+        </View>
       </View>
       <Pressable
         style={({ pressed }) => ({

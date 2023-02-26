@@ -2,7 +2,7 @@ import { MaterialIcons } from '@expo/vector-icons'
 import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
 import { none, Option, some } from 'fp-ts/lib/Option'
-import { FormControl, Input } from 'native-base'
+import { Input } from 'native-base'
 import { useEffect, useLayoutEffect, useState } from 'react'
 import { FlatList, Modal, Pressable, Text, View } from 'react-native'
 import { Group } from 'src/datatypes/Group'
@@ -208,14 +208,22 @@ const GroupModal = (
             style={{ borderTopWidth: 1, borderColor: theme.colors.gray[300] }}
           />
           <View style={{ padding: 16 }}>
-            <FormControl>
-              <FormControl.Label>Nome do grupo</FormControl.Label>
+            <View>
+              <Text
+                style={{
+                  fontWeight: '500',
+                  color: theme.colors.gray[500],
+                  marginVertical: 4,
+                }}
+              >
+                Nome do grupo
+              </Text>
               <Input
                 placeholder="Ex: Futebol de quinta"
                 value={groupName}
                 onChangeText={setGroupName}
               />
-            </FormControl>
+            </View>
           </View>
           <View
             style={{ borderTopWidth: 1, borderColor: theme.colors.gray[300] }}
