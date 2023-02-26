@@ -83,7 +83,15 @@ const Item = (props: {
 
   return (
     <Pressable onPress={() => navigation.navigate('Group', { id })}>
-      <Flex bg="white" direction="row" m="2" p="2" rounded="lg" shadow="1">
+      <Flex
+        bg="white"
+        direction="row"
+        align="center"
+        m="2"
+        p="2"
+        rounded="lg"
+        shadow="1"
+      >
         <Text flex={1} isTruncated bold>
           {name}
         </Text>

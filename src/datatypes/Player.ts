@@ -3,7 +3,10 @@ import { A, D, flow, Num, Ord, pipe, Show, Str } from 'src/utils/fp-ts'
 import { avg } from 'src/utils/Number'
 import { Position, PositionAbrvShow, PositionOrd } from './Position'
 
-export const RatingList = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const
+export const RatingList = [
+  0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9,
+  9.5, 10,
+] as const
 
 export type Rating = typeof RatingList[number]
 
@@ -16,6 +19,10 @@ export const Rating: D.Decoder<unknown, Rating> = pipe(
   D.number,
   D.compose(RatingFromNumber),
 )
+
+export const RatingShow: Show.Show<Rating> = {
+  show: r => (r === 10 ? r.toString() : r.toFixed(1)).replace('.', ','),
+}
 
 export type Player = {
   id: Id
@@ -51,7 +58,10 @@ export const PlayerRatingOrd: Ord<Player> = pipe(
 )
 
 export const PlayerShow: Show.Show<Player> = {
-  show: p => `${p.rating} - ${p.name} (${PositionAbrvShow.show(p.position)})`,
+  show: p =>
+    `${RatingShow.show(p.rating)} - ${p.name} (${PositionAbrvShow.show(
+      p.position,
+    )})`,
 }
 
 export const PlayerListShow: Show.Show<Array<Player>> = {

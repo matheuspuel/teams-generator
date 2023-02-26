@@ -18,6 +18,7 @@ import {
   PlayerNameOrd,
   PlayerPositionOrd,
   PlayerRatingOrd,
+  RatingShow,
   TeamListShowSensitive,
 } from 'src/datatypes/Player'
 import { getGroupById } from 'src/redux/slices/groups'
@@ -157,7 +158,7 @@ const PlayerItem = (props: { data: Player }) => {
   const { name, position, rating } = props.data
   return (
     <Flex direction="row" p="1">
-      <Text bold>{rating}</Text>
+      <Text bold>{RatingShow.show(rating)}</Text>
       <Text isTruncated> - {name}</Text>
       <Text> ({position})</Text>
     </Flex>

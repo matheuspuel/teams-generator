@@ -12,7 +12,7 @@ import {
   useDisclose,
 } from 'native-base'
 import { useLayoutEffect } from 'react'
-import { Player, PlayerIsActive } from 'src/datatypes/Player'
+import { Player, PlayerIsActive, RatingShow } from 'src/datatypes/Player'
 import { getGroupById, groupsSlice } from 'src/redux/slices/groups'
 import { getParameters, parametersSlice } from 'src/redux/slices/parameters'
 import { useAppDispatch, useAppSelector } from 'src/redux/store'
@@ -146,7 +146,7 @@ const Item = (props: {
           </Text>
         </Flex>
         <Text p="1" bold>
-          {rating}
+          {RatingShow.show(rating)}
         </Text>
         <Text isTruncated>{name}</Text>
       </Flex>
@@ -189,7 +189,9 @@ const ParametersModal = (
               }
               icon={<Icon as={<MaterialIcons name="add" />} />}
             />
-            <Text pl="2">Número de times</Text>
+            <Text flex={1} pl="2">
+              Número de times
+            </Text>
           </Flex>
           <Checkbox.Group
             value={parameters.position ? ['true'] : []}

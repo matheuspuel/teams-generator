@@ -11,11 +11,13 @@ import {
   Text,
 } from 'native-base'
 import { useLayoutEffect, useState } from 'react'
-import { Player, Rating, RatingList } from 'src/datatypes/Player'
+import { Pressable as Pressable_, Text as Text_, View } from 'react-native'
+import { Player, Rating, RatingList, RatingShow } from 'src/datatypes/Player'
 import { Position, PositionDict, PositionOrd } from 'src/datatypes/Position'
 import { getPlayer, groupsSlice } from 'src/redux/slices/groups'
 import { useAppDispatch, useAppSelector } from 'src/redux/store'
 import { RootStackScreenProps } from 'src/routes/RootStack'
+import { theme } from 'src/theme'
 import {
   A,
   constant,
@@ -151,31 +153,89 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
         </FormControl>
         <FormControl p="1">
           <FormControl.Label>Habilidade</FormControl.Label>
-          <Flex direction="row">
+          <Text_
+            style={{
+              textAlign: 'center',
+              fontSize: 24,
+              fontWeight: '700',
+              color: theme.colors.primary[600],
+            }}
+          >
+            {RatingShow.show(form.rating)}
+          </Text_>
+          <View style={{ flexDirection: 'row' }}>
             {pipe(
               RatingList,
               RA.map(r => (
-                <Pressable
-                  key={r}
-                  flex={1}
-                  alignItems="center"
-                  onPress={() => formSetters.rating(r)}
-                >
-                  <Flex
-                    justify="center"
-                    p="1"
-                    style={{ aspectRatio: 1 }}
-                    rounded="full"
-                    bg={form.rating === r ? 'primary.500' : 'primary.100'}
-                  >
-                    <Text fontSize="2xs" textAlign="center" color="lightText">
-                      {r}
-                    </Text>
-                  </Flex>
-                </Pressable>
+                <View style={{ flex: 1 }}>
+                  {form.rating === r ? (
+                    <View
+                      style={{
+                        alignSelf: 'center',
+                        width: 200,
+                        position: 'absolute',
+                        bottom: -10,
+                      }}
+                    >
+                      <MaterialIcons
+                        name="arrow-drop-down"
+                        color="black"
+                        style={{
+                          fontSize: 60,
+                          textAlign: 'center',
+                          color: theme.colors.primary[600],
+                        }}
+                      />
+                    </View>
+                  ) : null}
+                  <Pressable_
+                    onPress={() => formSetters.rating(r)}
+                    style={{
+                      height: 70,
+                      marginBottom: -45,
+                      zIndex: 1,
+                    }}
+                  />
+                  <View style={{ alignItems: 'center' }}>
+                    <View
+                      style={{
+                        marginBottom: -1,
+                        marginTop: r % 1 === 0 ? 0 : 4,
+                        height: r % 1 === 0 ? 9 : 5,
+                        width: 4,
+                        backgroundColor: theme.colors.primary[500],
+                        borderRadius: 10,
+                        borderBottomLeftRadius: 0,
+                        borderBottomRightRadius: 0,
+                      }}
+                    />
+                    {r % 1 === 0 && (
+                      <View style={{ position: 'absolute', top: 10 }}>
+                        <Text_
+                          style={{
+                            textAlign: 'center',
+                            fontSize: 12,
+                            color: theme.colors.primary[500],
+                            fontWeight: '900',
+                            width: 100,
+                          }}
+                        >
+                          {r}
+                        </Text_>
+                      </View>
+                    )}
+                  </View>
+                </View>
               )),
             )}
-          </Flex>
+          </View>
+          <View
+            style={{
+              height: 4,
+              backgroundColor: theme.colors.primary[500],
+              borderRadius: 10,
+            }}
+          />
         </FormControl>
       </Flex>
       <Button
