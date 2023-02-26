@@ -10,9 +10,9 @@
     "web": "SET APP_VARIANT=development&& expo start --web",
     "react-devtools": "react-devtools",
     "lint": "eslint .",
-    "preview": "SET APP_VARIANT=preview&& expo publish --release-channel default",
-    "staging": "SET APP_VARIANT=staging&& expo publish --release-channel staging",
-    "postversion": "SET APP_VARIANT=production&& expo publish --release-channel production"
+    "preview": "SET APP_VARIANT=preview&& expo-cli publish --release-channel default",
+    "staging": "SET APP_VARIANT=staging&& expo-cli publish --release-channel staging",
+    "postversion": "SET APP_VARIANT=production&& expo-cli publish --release-channel production"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "~1.17.11",
