@@ -1,8 +1,8 @@
 import { MaterialIcons } from '@expo/vector-icons'
 import * as Clipboard from 'expo-clipboard'
-import { ScrollView, Spinner, useToast } from 'native-base'
+import { ScrollView, useToast } from 'native-base'
 import { useEffect, useLayoutEffect, useState } from 'react'
-import { Pressable, Text, View } from 'react-native'
+import { ActivityIndicator, Pressable, Text, View } from 'react-native'
 import { generateRandomBalancedTeams } from 'src/business/distribution'
 import {
   getRatingTotal,
@@ -96,7 +96,7 @@ export const ResultView = (props: RootStackScreenProps<'Result'>) => {
     O.matchW(
       () => (
         <View style={{ flex: 1, justifyContent: 'center' }}>
-          <Spinner size="lg" />
+          <ActivityIndicator size="large" color={theme.colors.primary[500]} />
         </View>
       ),
       r =>
