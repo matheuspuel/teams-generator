@@ -3,7 +3,6 @@ import {
   Button,
   Checkbox,
   FlatList,
-  Flex,
   Icon,
   IconButton,
   Modal,
@@ -12,11 +11,13 @@ import {
   useDisclose,
 } from 'native-base'
 import { useLayoutEffect } from 'react'
+import { View } from 'react-native'
 import { Player, PlayerIsActive, RatingShow } from 'src/datatypes/Player'
 import { getGroupById, groupsSlice } from 'src/redux/slices/groups'
 import { getParameters, parametersSlice } from 'src/redux/slices/parameters'
 import { useAppDispatch, useAppSelector } from 'src/redux/store'
 import { RootStackScreenProps } from 'src/routes/RootStack'
+import { theme } from 'src/theme'
 import { A, Eq, IO, none, O, pipe, some } from 'src/utils/fp-ts'
 
 export const Group = (props: RootStackScreenProps<'Group'>) => {
@@ -38,7 +39,7 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
     () =>
       navigation.setOptions({
         headerRight: ({ tintColor }) => (
-          <Flex direction="row">
+          <View style={{ flexDirection: 'row' }}>
             <Pressable
               mr="1"
               p="2"
@@ -74,14 +75,14 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
                 as={<MaterialIcons name="add" />}
               />
             </Pressable>
-          </Flex>
+          </View>
         ),
       }),
     [allActive],
   )
 
   return (
-    <Flex flex={1}>
+    <View style={{ flex: 1 }}>
       <FlatList
         data={players}
         keyExtractor={({ id }) => id}
@@ -92,7 +93,7 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
         Sortear
       </Button>
       <ParametersModal {...props} {...modalParameters} />
-    </Flex>
+    </View>
   )
 }
 
@@ -109,14 +110,16 @@ const Item = (props: {
     <Pressable
       onPress={() => navigation.navigate('Player', { groupId, id: some(id) })}
     >
-      <Flex
-        direction="row"
-        align="center"
-        bg="white"
-        m="1"
-        p="1"
-        rounded="lg"
-        shadow="1"
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          backgroundColor: theme.colors.white,
+          margin: 4,
+          padding: 4,
+          borderRadius: 8,
+          elevation: 1,
+        }}
       >
         <Checkbox.Group
           value={active ? ['true'] : []}
@@ -132,24 +135,26 @@ const Item = (props: {
         >
           <Checkbox m="1" size="lg" value="true" accessibilityLabel="Ativo" />
         </Checkbox.Group>
-        <Flex
-          alignSelf="stretch"
-          justify="center"
-          align="center"
-          p="1"
-          style={{ aspectRatio: 1 }}
-          rounded="full"
-          bg="amber.300"
+        <View
+          style={{
+            aspectRatio: 1,
+            alignSelf: 'stretch',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 4,
+            borderRadius: 9999,
+            backgroundColor: theme.colors.amber[300],
+          }}
         >
           <Text fontSize="md" bold>
             {position}
           </Text>
-        </Flex>
+        </View>
         <Text p="1" bold>
           {RatingShow.show(rating)}
         </Text>
         <Text isTruncated>{name}</Text>
-      </Flex>
+      </View>
     </Pressable>
   )
 }
@@ -173,7 +178,7 @@ const ParametersModal = (
           <Modal.CloseButton onPress={props.onClose} />
         </Modal.Header>
         <Modal.Body>
-          <Flex direction="row" align="center">
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <IconButton
               onPress={() =>
                 dispatch(parametersSlice.actions.decrementTeamsCount())
@@ -192,7 +197,7 @@ const ParametersModal = (
             <Text flex={1} pl="2">
               Número de times
             </Text>
-          </Flex>
+          </View>
           <Checkbox.Group
             value={parameters.position ? ['true'] : []}
             onChange={(v: Array<string>) =>

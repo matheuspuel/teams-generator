@@ -1,15 +1,7 @@
 import { MaterialIcons } from '@expo/vector-icons'
 import { none } from 'fp-ts/lib/Option'
 import { not } from 'fp-ts/lib/Predicate'
-import {
-  Button,
-  Flex,
-  FormControl,
-  Icon,
-  Input,
-  Pressable,
-  Text,
-} from 'native-base'
+import { Button, FormControl, Icon, Input, Pressable, Text } from 'native-base'
 import { useLayoutEffect, useState } from 'react'
 import { Pressable as Pressable_, Text as Text_, View } from 'react-native'
 import { Player, Rating, RatingList, RatingShow } from 'src/datatypes/Player'
@@ -75,7 +67,7 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
   )
 
   const formSetters: {
-    [k in keyof typeof form]: React.Dispatch<typeof form[k]>
+    [k in keyof typeof form]: React.Dispatch<(typeof form)[k]>
   } = pipe(form, Rec.mapWithIndex(makeSubSetter(setForm)))
 
   useLayoutEffect(
@@ -111,7 +103,7 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
 
   return (
     <>
-      <Flex flex={1} p="1">
+      <View style={{ flex: 1, padding: 4 }}>
         <FormControl p="1">
           <FormControl.Label>Nome</FormControl.Label>
           <Input
@@ -122,7 +114,7 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
         </FormControl>
         <FormControl p="1">
           <FormControl.Label>Posição</FormControl.Label>
-          <Flex direction="row">
+          <View style={{ flexDirection: 'row' }}>
             {pipe(
               PositionDict,
               Rec.toEntries,
@@ -135,21 +127,26 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
                   alignItems="center"
                   onPress={() => formSetters.position(p)}
                 >
-                  <Flex
-                    justify="center"
-                    p="1"
-                    style={{ aspectRatio: 1 }}
-                    rounded="full"
-                    bg={form.position === p ? 'primary.500' : 'primary.100'}
+                  <View
+                    style={{
+                      aspectRatio: 1,
+                      justifyContent: 'center',
+                      padding: 4,
+                      borderRadius: 9999,
+                      backgroundColor:
+                        form.position === p
+                          ? theme.colors.primary[500]
+                          : theme.colors.primary[100],
+                    }}
                   >
                     <Text fontSize="sm" textAlign="center" color="lightText">
                       {p}
                     </Text>
-                  </Flex>
+                  </View>
                 </Pressable>
               )),
             )}
-          </Flex>
+          </View>
         </FormControl>
         <FormControl p="1">
           <FormControl.Label>Habilidade</FormControl.Label>
@@ -167,7 +164,7 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
             {pipe(
               RatingList,
               RA.map(r => (
-                <View style={{ flex: 1 }}>
+                <View key={r} style={{ flex: 1 }}>
                   {form.rating === r ? (
                     <View
                       style={{
@@ -237,7 +234,7 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
             }}
           />
         </FormControl>
-      </Flex>
+      </View>
       <Button
         rounded="none"
         isDisabled={!form.name}

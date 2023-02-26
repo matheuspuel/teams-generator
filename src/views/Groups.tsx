@@ -5,7 +5,6 @@ import { none, Option, some } from 'fp-ts/lib/Option'
 import {
   Button,
   FlatList,
-  Flex,
   FormControl,
   Icon,
   Input,
@@ -14,10 +13,12 @@ import {
   Text,
 } from 'native-base'
 import { useEffect, useLayoutEffect, useState } from 'react'
+import { View } from 'react-native'
 import { Group } from 'src/datatypes/Group'
 import { getGroupById, getGroups, groupsSlice } from 'src/redux/slices/groups'
 import { useAppDispatch, useAppSelector } from 'src/redux/store'
 import { RootStackScreenProps } from 'src/routes/RootStack'
+import { theme } from 'src/theme'
 import { Id } from 'src/utils/Entity'
 import { constVoid, Eq, IO, IOO, O, pipe, Str } from 'src/utils/fp-ts'
 
@@ -50,7 +51,7 @@ export const Groups = (props: RootStackScreenProps<'Groups'>) => {
   )
 
   return (
-    <Flex flex={1} onLayout={() => void SplashScreen.hideAsync()}>
+    <View style={{ flex: 1 }} onLayout={() => void SplashScreen.hideAsync()}>
       <StatusBar style="light" />
       <FlatList
         data={groups}
@@ -69,7 +70,7 @@ export const Groups = (props: RootStackScreenProps<'Groups'>) => {
         state={deleteModal}
         onClose={() => setDeleteModal(none)}
       />
-    </Flex>
+    </View>
   )
 }
 const Item = (props: {
@@ -83,14 +84,16 @@ const Item = (props: {
 
   return (
     <Pressable onPress={() => navigation.navigate('Group', { id })}>
-      <Flex
-        bg="white"
-        direction="row"
-        align="center"
-        m="2"
-        p="2"
-        rounded="lg"
-        shadow="1"
+      <View
+        style={{
+          backgroundColor: theme.colors.white,
+          flexDirection: 'row',
+          alignItems: 'center',
+          margin: 8,
+          padding: 8,
+          borderRadius: 8,
+          elevation: 1,
+        }}
       >
         <Text flex={1} isTruncated bold>
           {name}
@@ -105,7 +108,7 @@ const Item = (props: {
             as={<MaterialIcons name="delete" />}
           />
         </Pressable>
-      </Flex>
+      </View>
     </Pressable>
   )
 }

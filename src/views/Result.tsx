@@ -1,7 +1,6 @@
 import { MaterialIcons } from '@expo/vector-icons'
 import * as Clipboard from 'expo-clipboard'
 import {
-  Flex,
   Icon,
   Pressable,
   ScrollView,
@@ -10,6 +9,7 @@ import {
   useToast,
 } from 'native-base'
 import { useEffect, useLayoutEffect, useState } from 'react'
+import { View } from 'react-native'
 import { generateRandomBalancedTeams } from 'src/business/distribution'
 import {
   getRatingTotal,
@@ -25,6 +25,7 @@ import { getGroupById } from 'src/redux/slices/groups'
 import { getParameters } from 'src/redux/slices/parameters'
 import { useAppSelector } from 'src/redux/store'
 import { RootStackScreenProps } from 'src/routes/RootStack'
+import { theme } from 'src/theme'
 import {
   A,
   constVoid,
@@ -103,9 +104,9 @@ export const ResultView = (props: RootStackScreenProps<'Result'>) => {
     result,
     O.matchW(
       () => (
-        <Flex flex={1} justify="center">
+        <View style={{ flex: 1, justifyContent: 'center' }}>
           <Spinner size="lg" />
-        </Flex>
+        </View>
       ),
       r =>
         pipe(
@@ -128,7 +129,15 @@ const TeamItem = (props: { index: number; players: Array<Player> }) => {
   const totalRating = getRatingTotal(props.players)
   const avgRating = toFixedLocale(2)(div(numPlayers)(totalRating))
   return (
-    <Flex bg="white" m="1" p="1" rounded="lg" shadow="1">
+    <View
+      style={{
+        backgroundColor: theme.colors.white,
+        margin: 4,
+        padding: 4,
+        borderRadius: 8,
+        elevation: 1,
+      }}
+    >
       <Text textAlign="center" fontSize="md" bold>
         {title}
       </Text>
@@ -150,17 +159,17 @@ const TeamItem = (props: { index: number; players: Array<Player> }) => {
         ]),
         A.map(p => <PlayerItem key={p.id} data={p} />),
       )}
-    </Flex>
+    </View>
   )
 }
 
 const PlayerItem = (props: { data: Player }) => {
   const { name, position, rating } = props.data
   return (
-    <Flex direction="row" p="1">
+    <View style={{ flexDirection: 'row', padding: 4 }}>
       <Text bold>{RatingShow.show(rating)}</Text>
       <Text isTruncated> - {name}</Text>
       <Text> ({position})</Text>
-    </Flex>
+    </View>
   )
 }
