@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
-import { IconButton, Modal } from 'native-base'
+import { Modal } from 'native-base'
 import { useLayoutEffect } from 'react'
 import { FlatList, Pressable, Text, View } from 'react-native'
 import { Player, PlayerIsActive, RatingShow } from 'src/datatypes/Player'
@@ -223,18 +223,24 @@ const ParametersModal = (
         </Modal.Header>
         <Modal.Body>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <IconButton
+            <Pressable
+              style={({ pressed }) => ({
+                padding: 12,
+                backgroundColor: pressed
+                  ? theme.colors.primary[600] + '1f'
+                  : undefined,
+                borderRadius: 4,
+              })}
               onPress={() =>
                 dispatch(parametersSlice.actions.decrementTeamsCount())
               }
-              icon={
-                <MaterialIcons
-                  name="remove"
-                  size={24}
-                  color={theme.colors.primary[600]}
-                />
-              }
-            />
+            >
+              <MaterialIcons
+                name="remove"
+                size={24}
+                color={theme.colors.primary[600]}
+              />
+            </Pressable>
             <Text
               style={{
                 padding: 8,
@@ -244,18 +250,24 @@ const ParametersModal = (
             >
               {parameters.teamsCount}
             </Text>
-            <IconButton
+            <Pressable
+              style={({ pressed }) => ({
+                padding: 12,
+                backgroundColor: pressed
+                  ? theme.colors.primary[600] + '1f'
+                  : undefined,
+                borderRadius: 4,
+              })}
               onPress={() =>
                 dispatch(parametersSlice.actions.incrementTeamsCount())
               }
-              icon={
-                <MaterialIcons
-                  name="add"
-                  size={24}
-                  color={theme.colors.primary[600]}
-                />
-              }
-            />
+            >
+              <MaterialIcons
+                name="add"
+                size={24}
+                color={theme.colors.primary[600]}
+              />
+            </Pressable>
             <Text
               style={{ flex: 1, paddingLeft: 8, color: theme.colors.darkText }}
             >
