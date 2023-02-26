@@ -6,11 +6,10 @@ import {
   Icon,
   IconButton,
   Modal,
-  Pressable,
   useDisclose,
 } from 'native-base'
 import { useLayoutEffect } from 'react'
-import { Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import { Player, PlayerIsActive, RatingShow } from 'src/datatypes/Player'
 import { getGroupById, groupsSlice } from 'src/redux/slices/groups'
 import { getParameters, parametersSlice } from 'src/redux/slices/parameters'
@@ -40,10 +39,14 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
         headerRight: ({ tintColor }) => (
           <View style={{ flexDirection: 'row' }}>
             <Pressable
-              mr="1"
-              p="2"
-              rounded="full"
-              _pressed={{ bg: 'primary.700' }}
+              style={({ pressed }) => ({
+                marginRight: 4,
+                padding: 8,
+                borderRadius: 100,
+                backgroundColor: pressed
+                  ? theme.colors.primary[700]
+                  : undefined,
+              })}
               onPress={() =>
                 dispatch(
                   groupsSlice.actions.setAllPlayersActive({
@@ -60,10 +63,14 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
               />
             </Pressable>
             <Pressable
-              mr="1"
-              p="2"
-              rounded="full"
-              _pressed={{ bg: 'primary.700' }}
+              style={({ pressed }) => ({
+                marginRight: 4,
+                padding: 8,
+                borderRadius: 100,
+                backgroundColor: pressed
+                  ? theme.colors.primary[700]
+                  : undefined,
+              })}
               onPress={() =>
                 navigation.navigate('Player', { groupId: id, id: none })
               }

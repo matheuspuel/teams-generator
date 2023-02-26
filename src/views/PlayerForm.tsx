@@ -1,9 +1,9 @@
 import { MaterialIcons } from '@expo/vector-icons'
 import { none } from 'fp-ts/lib/Option'
 import { not } from 'fp-ts/lib/Predicate'
-import { Button, FormControl, Icon, Input, Pressable } from 'native-base'
+import { Button, FormControl, Icon, Input } from 'native-base'
 import { useLayoutEffect, useState } from 'react'
-import { Pressable as Pressable_, Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import { Player, Rating, RatingList, RatingShow } from 'src/datatypes/Player'
 import { Position, PositionDict, PositionOrd } from 'src/datatypes/Position'
 import { getPlayer, groupsSlice } from 'src/redux/slices/groups'
@@ -77,10 +77,14 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
           ? undefined
           : ({ tintColor }) => (
               <Pressable
-                mr="1"
-                p="2"
-                rounded="full"
-                _pressed={{ bg: 'primary.700' }}
+                style={({ pressed }) => ({
+                  marginRight: 4,
+                  padding: 8,
+                  borderRadius: 100,
+                  backgroundColor: pressed
+                    ? theme.colors.primary[700]
+                    : undefined,
+                })}
                 onPress={pipe(
                   groupsSlice.actions.deletePlayer({
                     groupId,
@@ -123,8 +127,7 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
               A.map(p => (
                 <Pressable
                   key={p}
-                  flex={1}
-                  alignItems="center"
+                  style={{ flex: 1, alignItems: 'center' }}
                   onPress={() => formSetters.position(p)}
                 >
                   <View
@@ -191,7 +194,7 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
                       />
                     </View>
                   ) : null}
-                  <Pressable_
+                  <Pressable
                     onPress={() => formSetters.rating(r)}
                     style={{
                       height: 70,

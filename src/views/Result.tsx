@@ -1,8 +1,8 @@
 import { MaterialIcons } from '@expo/vector-icons'
 import * as Clipboard from 'expo-clipboard'
-import { Icon, Pressable, ScrollView, Spinner, useToast } from 'native-base'
+import { Icon, ScrollView, Spinner, useToast } from 'native-base'
 import { useEffect, useLayoutEffect, useState } from 'react'
-import { Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import { generateRandomBalancedTeams } from 'src/business/distribution'
 import {
   getRatingTotal,
@@ -63,10 +63,12 @@ export const ResultView = (props: RootStackScreenProps<'Result'>) => {
       navigation.setOptions({
         headerRight: ({ tintColor }) => (
           <Pressable
-            mr="1"
-            p="2"
-            rounded="full"
-            _pressed={{ bg: 'primary.700' }}
+            style={({ pressed }) => ({
+              marginRight: 4,
+              padding: 8,
+              borderRadius: 100,
+              backgroundColor: pressed ? theme.colors.primary[700] : undefined,
+            })}
             onPress={pipe(
               result,
               O.matchW(

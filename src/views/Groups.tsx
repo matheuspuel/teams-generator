@@ -2,17 +2,9 @@ import { MaterialIcons } from '@expo/vector-icons'
 import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
 import { none, Option, some } from 'fp-ts/lib/Option'
-import {
-  Button,
-  FlatList,
-  FormControl,
-  Icon,
-  Input,
-  Modal,
-  Pressable,
-} from 'native-base'
+import { Button, FlatList, FormControl, Icon, Input, Modal } from 'native-base'
 import { useEffect, useLayoutEffect, useState } from 'react'
-import { Text, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import { Group } from 'src/datatypes/Group'
 import { getGroupById, getGroups, groupsSlice } from 'src/redux/slices/groups'
 import { useAppDispatch, useAppSelector } from 'src/redux/store'
@@ -32,10 +24,12 @@ export const Groups = (props: RootStackScreenProps<'Groups'>) => {
       navigation.setOptions({
         headerRight: ({ tintColor }) => (
           <Pressable
-            mr="1"
-            p="2"
-            rounded="full"
-            _pressed={{ bg: 'primary.700' }}
+            style={({ pressed }) => ({
+              marginRight: 4,
+              padding: 8,
+              borderRadius: 100,
+              backgroundColor: pressed ? theme.colors.primary[700] : undefined,
+            })}
             onPress={() => setModal(some(none))}
           >
             <Icon
@@ -100,10 +94,16 @@ const Item = (props: {
         >
           {name}
         </Text>
-        <Pressable px="1" onPress={() => props.openEdit(id)}>
+        <Pressable
+          style={{ paddingHorizontal: 4 }}
+          onPress={() => props.openEdit(id)}
+        >
           <Icon size="lg" color="gray.500" as={<MaterialIcons name="edit" />} />
         </Pressable>
-        <Pressable px="1" onPress={() => props.openDelete(id)}>
+        <Pressable
+          style={{ paddingHorizontal: 4 }}
+          onPress={() => props.openDelete(id)}
+        >
           <Icon
             size="lg"
             color="gray.500"
