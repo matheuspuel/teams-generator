@@ -1,7 +1,6 @@
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
-import { Modal } from 'native-base'
 import { useLayoutEffect } from 'react'
-import { FlatList, Pressable, Text, View } from 'react-native'
+import { FlatList, Modal, Pressable, Text, View } from 'react-native'
 import { Player, PlayerIsActive, RatingShow } from 'src/datatypes/Player'
 import { useDisclose } from 'src/hooks/useDisclose'
 import { getGroupById, groupsSlice } from 'src/redux/slices/groups'
@@ -215,181 +214,248 @@ const ParametersModal = (
   const parameters = useAppSelector(getParameters)
 
   return (
-    <Modal isOpen={props.isOpen}>
-      <Modal.Content>
-        <Modal.Header>
-          Parâmetros
-          <Modal.CloseButton onPress={props.onClose} />
-        </Modal.Header>
-        <Modal.Body>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Pressable
-              style={({ pressed }) => ({
-                padding: 12,
-                backgroundColor: pressed
-                  ? theme.colors.primary[600] + '1f'
-                  : undefined,
-                borderRadius: 4,
-              })}
-              onPress={() =>
-                dispatch(parametersSlice.actions.decrementTeamsCount())
-              }
-            >
-              <MaterialIcons
-                name="remove"
-                size={24}
-                color={theme.colors.primary[600]}
-              />
-            </Pressable>
+    <Modal
+      transparent
+      visible={props.isOpen}
+      style={{ flex: 1 }}
+      animationType="fade"
+      statusBarTranslucent
+    >
+      <Pressable
+        style={{
+          flex: 1,
+          backgroundColor: theme.colors.black + '3f',
+          justifyContent: 'center',
+        }}
+        onPress={props.onClose}
+      >
+        <Pressable
+          style={{
+            backgroundColor: theme.colors.white,
+            margin: 48,
+            borderRadius: 8,
+            elevation: 2,
+          }}
+        >
+          <View
+            style={{ flexDirection: 'row', alignItems: 'center', padding: 8 }}
+          >
             <Text
               style={{
-                padding: 8,
-                fontWeight: 'bold',
+                margin: 8,
+                flex: 1,
+                fontSize: 16,
+                fontWeight: '600',
                 color: theme.colors.darkText,
               }}
             >
-              {parameters.teamsCount}
+              Parâmetros
             </Text>
             <Pressable
               style={({ pressed }) => ({
-                padding: 12,
+                padding: 8,
                 backgroundColor: pressed
-                  ? theme.colors.primary[600] + '1f'
-                  : undefined,
-                borderRadius: 4,
-              })}
-              onPress={() =>
-                dispatch(parametersSlice.actions.incrementTeamsCount())
-              }
-            >
-              <MaterialIcons
-                name="add"
-                size={24}
-                color={theme.colors.primary[600]}
-              />
-            </Pressable>
-            <Text
-              style={{ flex: 1, paddingLeft: 8, color: theme.colors.darkText }}
-            >
-              Número de times
-            </Text>
-          </View>
-          <Pressable
-            style={{ padding: 4 }}
-            onPress={() => dispatch(parametersSlice.actions.togglePosition())}
-          >
-            {({ pressed }) => (
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                {parameters.position ? (
-                  <View
-                    style={{
-                      borderWidth: 2,
-                      borderRadius: 4,
-                      height: 28,
-                      width: 28,
-                      backgroundColor:
-                        theme.colors.primary[pressed ? 800 : 600],
-                      borderColor: theme.colors.primary[pressed ? 800 : 600],
-                    }}
-                  >
-                    <MaterialIcons
-                      name="check"
-                      size={24}
-                      color={theme.colors.white}
-                    />
-                  </View>
-                ) : (
-                  <View
-                    style={{
-                      borderWidth: 2,
-                      borderRadius: 4,
-                      borderColor: theme.colors.gray[pressed ? 600 : 400],
-                      height: 28,
-                      width: 28,
-                    }}
-                  />
-                )}
-                <Text style={{ margin: 4, fontSize: 14 }}>
-                  Considerar posições
-                </Text>
-              </View>
-            )}
-          </Pressable>
-          <Pressable
-            style={{ padding: 4 }}
-            onPress={() => dispatch(parametersSlice.actions.toggleRating())}
-          >
-            {({ pressed }) => (
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                {parameters.rating ? (
-                  <View
-                    style={{
-                      borderWidth: 2,
-                      borderRadius: 4,
-                      height: 28,
-                      width: 28,
-                      backgroundColor:
-                        theme.colors.primary[pressed ? 800 : 600],
-                      borderColor: theme.colors.primary[pressed ? 800 : 600],
-                    }}
-                  >
-                    <MaterialIcons
-                      name="check"
-                      size={24}
-                      color={theme.colors.white}
-                    />
-                  </View>
-                ) : (
-                  <View
-                    style={{
-                      borderWidth: 2,
-                      borderRadius: 4,
-                      borderColor: theme.colors.gray[pressed ? 600 : 400],
-                      height: 28,
-                      width: 28,
-                    }}
-                  />
-                )}
-                <Text style={{ margin: 4, fontSize: 14 }}>
-                  Considerar habilidade
-                </Text>
-              </View>
-            )}
-          </Pressable>
-        </Modal.Body>
-        <Modal.Footer>
-          <View style={{ flexDirection: 'row' }}>
-            <Pressable
-              style={({ pressed }) => ({
-                marginRight: 8,
-                padding: 12,
-                backgroundColor: pressed
-                  ? theme.colors.primary[600] + '1f'
+                  ? theme.colors.gray[600] + '1f'
                   : undefined,
                 borderRadius: 4,
               })}
               onPress={props.onClose}
             >
-              <Text style={{ color: theme.colors.primary[600] }}>Cancelar</Text>
-            </Pressable>
-            <Pressable
-              style={({ pressed }) => ({
-                padding: 12,
-                backgroundColor: pressed
-                  ? theme.colors.primary[800]
-                  : theme.colors.primary[600],
-                borderRadius: 4,
-              })}
-              onPress={pipe(
-                props.onClose,
-                IO.chain(() => () => navigation.navigate('Result', { id })),
-              )}
-            >
-              <Text style={{ color: theme.colors.white }}>Sortear</Text>
+              <MaterialIcons
+                name="close"
+                size={24}
+                color={theme.colors.gray[500]}
+              />
             </Pressable>
           </View>
-        </Modal.Footer>
-      </Modal.Content>
+          <View
+            style={{ borderTopWidth: 1, borderColor: theme.colors.gray[300] }}
+          />
+          <View style={{ padding: 16 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Pressable
+                style={({ pressed }) => ({
+                  padding: 12,
+                  backgroundColor: pressed
+                    ? theme.colors.primary[600] + '1f'
+                    : undefined,
+                  borderRadius: 4,
+                })}
+                onPress={() =>
+                  dispatch(parametersSlice.actions.decrementTeamsCount())
+                }
+              >
+                <MaterialIcons
+                  name="remove"
+                  size={24}
+                  color={theme.colors.primary[600]}
+                />
+              </Pressable>
+              <Text
+                style={{
+                  padding: 8,
+                  fontWeight: 'bold',
+                  color: theme.colors.darkText,
+                }}
+              >
+                {parameters.teamsCount}
+              </Text>
+              <Pressable
+                style={({ pressed }) => ({
+                  padding: 12,
+                  backgroundColor: pressed
+                    ? theme.colors.primary[600] + '1f'
+                    : undefined,
+                  borderRadius: 4,
+                })}
+                onPress={() =>
+                  dispatch(parametersSlice.actions.incrementTeamsCount())
+                }
+              >
+                <MaterialIcons
+                  name="add"
+                  size={24}
+                  color={theme.colors.primary[600]}
+                />
+              </Pressable>
+              <Text
+                style={{
+                  flex: 1,
+                  paddingLeft: 8,
+                  color: theme.colors.darkText,
+                }}
+              >
+                Número de times
+              </Text>
+            </View>
+            <Pressable
+              style={{ padding: 4 }}
+              onPress={() => dispatch(parametersSlice.actions.togglePosition())}
+            >
+              {({ pressed }) => (
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  {parameters.position ? (
+                    <View
+                      style={{
+                        borderWidth: 2,
+                        borderRadius: 4,
+                        height: 28,
+                        width: 28,
+                        backgroundColor:
+                          theme.colors.primary[pressed ? 800 : 600],
+                        borderColor: theme.colors.primary[pressed ? 800 : 600],
+                      }}
+                    >
+                      <MaterialIcons
+                        name="check"
+                        size={24}
+                        color={theme.colors.white}
+                      />
+                    </View>
+                  ) : (
+                    <View
+                      style={{
+                        borderWidth: 2,
+                        borderRadius: 4,
+                        borderColor: theme.colors.gray[pressed ? 600 : 400],
+                        height: 28,
+                        width: 28,
+                      }}
+                    />
+                  )}
+                  <Text style={{ margin: 4, fontSize: 14 }}>
+                    Considerar posições
+                  </Text>
+                </View>
+              )}
+            </Pressable>
+            <Pressable
+              style={{ padding: 4 }}
+              onPress={() => dispatch(parametersSlice.actions.toggleRating())}
+            >
+              {({ pressed }) => (
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  {parameters.rating ? (
+                    <View
+                      style={{
+                        borderWidth: 2,
+                        borderRadius: 4,
+                        height: 28,
+                        width: 28,
+                        backgroundColor:
+                          theme.colors.primary[pressed ? 800 : 600],
+                        borderColor: theme.colors.primary[pressed ? 800 : 600],
+                      }}
+                    >
+                      <MaterialIcons
+                        name="check"
+                        size={24}
+                        color={theme.colors.white}
+                      />
+                    </View>
+                  ) : (
+                    <View
+                      style={{
+                        borderWidth: 2,
+                        borderRadius: 4,
+                        borderColor: theme.colors.gray[pressed ? 600 : 400],
+                        height: 28,
+                        width: 28,
+                      }}
+                    />
+                  )}
+                  <Text style={{ margin: 4, fontSize: 14 }}>
+                    Considerar habilidade
+                  </Text>
+                </View>
+              )}
+            </Pressable>
+          </View>
+          <View
+            style={{ borderTopWidth: 1, borderColor: theme.colors.gray[300] }}
+          />
+          <View
+            style={{
+              flexDirection: 'row',
+              padding: 16,
+              justifyContent: 'flex-end',
+            }}
+          >
+            <View style={{ flexDirection: 'row' }}>
+              <Pressable
+                style={({ pressed }) => ({
+                  marginRight: 8,
+                  padding: 12,
+                  backgroundColor: pressed
+                    ? theme.colors.primary[600] + '1f'
+                    : undefined,
+                  borderRadius: 4,
+                })}
+                onPress={props.onClose}
+              >
+                <Text style={{ color: theme.colors.primary[600] }}>
+                  Cancelar
+                </Text>
+              </Pressable>
+              <Pressable
+                style={({ pressed }) => ({
+                  padding: 12,
+                  backgroundColor: pressed
+                    ? theme.colors.primary[800]
+                    : theme.colors.primary[600],
+                  borderRadius: 4,
+                })}
+                onPress={pipe(
+                  props.onClose,
+                  IO.chain(() => () => navigation.navigate('Result', { id })),
+                )}
+              >
+                <Text style={{ color: theme.colors.white }}>Sortear</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Pressable>
+      </Pressable>
     </Modal>
   )
 }

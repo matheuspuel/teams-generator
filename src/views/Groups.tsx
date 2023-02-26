@@ -2,9 +2,9 @@ import { MaterialIcons } from '@expo/vector-icons'
 import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
 import { none, Option, some } from 'fp-ts/lib/Option'
-import { FormControl, Input, Modal } from 'native-base'
+import { FormControl, Input } from 'native-base'
 import { useEffect, useLayoutEffect, useState } from 'react'
-import { FlatList, Pressable, Text, View } from 'react-native'
+import { FlatList, Modal, Pressable, Text, View } from 'react-native'
 import { Group } from 'src/datatypes/Group'
 import { getGroupById, getGroups, groupsSlice } from 'src/redux/slices/groups'
 import { useAppDispatch, useAppSelector } from 'src/redux/store'
@@ -143,90 +143,153 @@ const GroupModal = (
   )
 
   return (
-    <Modal isOpen={O.isSome(props.state)}>
-      <Modal.Content>
-        <Modal.Header>
-          {pipe(
-            props.state,
-            O.flatten,
-            O.match(
-              () => 'Novo grupo',
-              () => 'Editar grupo',
-            ),
-          )}
-          <Modal.CloseButton onPress={props.onClose} />
-        </Modal.Header>
-        <Modal.Body>
-          <FormControl>
-            <FormControl.Label>Nome do grupo</FormControl.Label>
-            <Input
-              placeholder="Ex: Futebol de quinta"
-              value={groupName}
-              onChangeText={setGroupName}
-            />
-          </FormControl>
-        </Modal.Body>
-        <Modal.Footer>
-          <View style={{ flexDirection: 'row' }}>
+    <Modal
+      transparent
+      visible={O.isSome(props.state)}
+      style={{ flex: 1 }}
+      animationType="fade"
+      statusBarTranslucent
+    >
+      <Pressable
+        style={{
+          flex: 1,
+          backgroundColor: theme.colors.black + '3f',
+          justifyContent: 'center',
+        }}
+        onPress={props.onClose}
+      >
+        <Pressable
+          style={{
+            backgroundColor: theme.colors.white,
+            margin: 48,
+            borderRadius: 8,
+            elevation: 2,
+          }}
+        >
+          <View
+            style={{ flexDirection: 'row', alignItems: 'center', padding: 8 }}
+          >
+            <Text
+              style={{
+                margin: 8,
+                flex: 1,
+                fontSize: 16,
+                fontWeight: '600',
+                color: theme.colors.darkText,
+              }}
+            >
+              {pipe(
+                props.state,
+                O.flatten,
+                O.match(
+                  () => 'Novo grupo',
+                  () => 'Editar grupo',
+                ),
+              )}
+            </Text>
             <Pressable
               style={({ pressed }) => ({
-                marginRight: 8,
-                padding: 12,
+                padding: 8,
                 backgroundColor: pressed
-                  ? theme.colors.primary[600] + '1f'
+                  ? theme.colors.gray[600] + '1f'
                   : undefined,
                 borderRadius: 4,
               })}
               onPress={props.onClose}
             >
-              <Text style={{ color: theme.colors.primary[600] }}>Cancelar</Text>
-            </Pressable>
-            <Pressable
-              style={({ pressed }) => ({
-                padding: 12,
-                backgroundColor: !groupName
-                  ? theme.colors.primary[600] + '5f'
-                  : pressed
-                  ? theme.colors.primary[800]
-                  : theme.colors.primary[600],
-                borderRadius: 4,
-              })}
-              onPress={
-                Str.isEmpty(groupName)
-                  ? constVoid
-                  : pipe(
-                      IOO.fromIO(props.onClose),
-                      IOO.chainOptionK(() => group),
-                      IOO.matchEW(
-                        () => (): unknown =>
-                          dispatch(
-                            groupsSlice.actions.add({ name: groupName }),
-                          ),
-                        g => (): unknown =>
-                          dispatch(
-                            groupsSlice.actions.edit({
-                              id: g.id,
-                              name: groupName,
-                            }),
-                          ),
-                      ),
-                      IO.chainFirst(() => () => setGroupName('')),
-                    )
-              }
-            >
-              <Text
-                style={{
-                  color: !groupName
-                    ? theme.colors.white + '5f'
-                    : theme.colors.white,
-                }}
-              >
-                Gravar
-              </Text>
+              <MaterialIcons
+                name="close"
+                size={24}
+                color={theme.colors.gray[500]}
+              />
             </Pressable>
           </View>
-        </Modal.Footer>
-      </Modal.Content>
+          <View
+            style={{ borderTopWidth: 1, borderColor: theme.colors.gray[300] }}
+          />
+          <View style={{ padding: 16 }}>
+            <FormControl>
+              <FormControl.Label>Nome do grupo</FormControl.Label>
+              <Input
+                placeholder="Ex: Futebol de quinta"
+                value={groupName}
+                onChangeText={setGroupName}
+              />
+            </FormControl>
+          </View>
+          <View
+            style={{ borderTopWidth: 1, borderColor: theme.colors.gray[300] }}
+          />
+          <View
+            style={{
+              flexDirection: 'row',
+              padding: 16,
+              justifyContent: 'flex-end',
+            }}
+          >
+            <View style={{ flexDirection: 'row' }}>
+              <Pressable
+                style={({ pressed }) => ({
+                  marginRight: 8,
+                  padding: 12,
+                  backgroundColor: pressed
+                    ? theme.colors.primary[600] + '1f'
+                    : undefined,
+                  borderRadius: 4,
+                })}
+                onPress={props.onClose}
+              >
+                <Text style={{ color: theme.colors.primary[600] }}>
+                  Cancelar
+                </Text>
+              </Pressable>
+              <Pressable
+                style={({ pressed }) => ({
+                  padding: 12,
+                  backgroundColor: !groupName
+                    ? theme.colors.primary[600] + '5f'
+                    : pressed
+                    ? theme.colors.primary[800]
+                    : theme.colors.primary[600],
+                  borderRadius: 4,
+                })}
+                onPress={
+                  Str.isEmpty(groupName)
+                    ? constVoid
+                    : pipe(
+                        IOO.fromIO(props.onClose),
+                        IOO.chainOptionK(() => group),
+                        IOO.matchEW(
+                          () => (): unknown =>
+                            dispatch(
+                              groupsSlice.actions.add({ name: groupName }),
+                            ),
+                          g => (): unknown =>
+                            dispatch(
+                              groupsSlice.actions.edit({
+                                id: g.id,
+                                name: groupName,
+                              }),
+                            ),
+                        ),
+                        IO.chainFirst(() => () => setGroupName('')),
+                      )
+                }
+              >
+                <Text
+                  style={{
+                    color: !groupName
+                      ? theme.colors.white + '5f'
+                      : theme.colors.white,
+                  }}
+                >
+                  Gravar
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+        </Pressable>
+      </Pressable>
     </Modal>
   )
 }
@@ -249,72 +312,138 @@ const DeleteGroupModal = (
   const dispatch = useAppDispatch()
 
   return (
-    <Modal isOpen={O.isSome(props.state)}>
-      <Modal.Content>
-        <Modal.Header>
-          Excluir grupo
-          <Modal.CloseButton onPress={props.onClose} />
-        </Modal.Header>
-        <Modal.Body>
-          {pipe(
-            group,
-            O.matchW(
-              () => null,
-              g => (
-                <Text style={{ color: theme.colors.darkText }}>
-                  Deseja excluir o grupo{' '}
-                  {
-                    <Text
-                      style={{
-                        fontWeight: 'bold',
-                        color: theme.colors.darkText,
-                      }}
-                    >
-                      {g.name}
-                    </Text>
-                  }{' '}
-                  e todos os jogadores?
-                </Text>
-              ),
-            ),
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <View style={{ flexDirection: 'row' }}>
+    <Modal
+      transparent
+      visible={O.isSome(props.state)}
+      style={{ flex: 1 }}
+      animationType="fade"
+      statusBarTranslucent
+    >
+      <Pressable
+        style={{
+          flex: 1,
+          backgroundColor: theme.colors.black + '3f',
+          justifyContent: 'center',
+        }}
+        onPress={props.onClose}
+      >
+        <Pressable
+          style={{
+            backgroundColor: theme.colors.white,
+            margin: 48,
+            borderRadius: 8,
+            elevation: 2,
+          }}
+        >
+          <View
+            style={{ flexDirection: 'row', alignItems: 'center', padding: 8 }}
+          >
+            <Text
+              style={{
+                margin: 8,
+                flex: 1,
+                fontSize: 16,
+                fontWeight: '600',
+                color: theme.colors.darkText,
+              }}
+            >
+              Excluir grupo
+            </Text>
             <Pressable
               style={({ pressed }) => ({
-                marginRight: 8,
-                padding: 12,
+                padding: 8,
                 backgroundColor: pressed
-                  ? theme.colors.danger[600] + '1f'
+                  ? theme.colors.gray[600] + '1f'
                   : undefined,
                 borderRadius: 4,
               })}
               onPress={props.onClose}
             >
-              <Text style={{ color: theme.colors.danger[600] }}>Cancelar</Text>
-            </Pressable>
-            <Pressable
-              style={({ pressed }) => ({
-                padding: 12,
-                backgroundColor: pressed
-                  ? theme.colors.danger[800]
-                  : theme.colors.danger[600],
-                borderRadius: 4,
-              })}
-              onPress={pipe(
-                IOO.fromIO(props.onClose),
-                IOO.chainOptionK(() => group),
-                IOO.chainIOK(
-                  g => () => dispatch(groupsSlice.actions.delete({ id: g.id })),
-                ),
-              )}
-            >
-              <Text style={{ color: theme.colors.white }}>Excluir</Text>
+              <MaterialIcons
+                name="close"
+                size={24}
+                color={theme.colors.gray[500]}
+              />
             </Pressable>
           </View>
-        </Modal.Footer>
-      </Modal.Content>
+          <View
+            style={{ borderTopWidth: 1, borderColor: theme.colors.gray[300] }}
+          />
+          <View style={{ padding: 16 }}>
+            <Text>
+              {pipe(
+                group,
+                O.matchW(
+                  () => null,
+                  g => (
+                    <Text style={{ color: theme.colors.darkText }}>
+                      Deseja excluir o grupo{' '}
+                      {
+                        <Text
+                          style={{
+                            fontWeight: 'bold',
+                            color: theme.colors.darkText,
+                          }}
+                        >
+                          {g.name}
+                        </Text>
+                      }{' '}
+                      e todos os jogadores?
+                    </Text>
+                  ),
+                ),
+              )}
+            </Text>
+          </View>
+          <View
+            style={{ borderTopWidth: 1, borderColor: theme.colors.gray[300] }}
+          />
+          <View
+            style={{
+              flexDirection: 'row',
+              padding: 16,
+              justifyContent: 'flex-end',
+            }}
+          >
+            <View style={{ flexDirection: 'row' }}>
+              <Pressable
+                style={({ pressed }) => ({
+                  marginRight: 8,
+                  padding: 12,
+                  backgroundColor: pressed
+                    ? theme.colors.danger[600] + '1f'
+                    : undefined,
+                  borderRadius: 4,
+                })}
+                onPress={props.onClose}
+              >
+                <Text style={{ color: theme.colors.danger[600] }}>
+                  Cancelar
+                </Text>
+              </Pressable>
+              <Pressable
+                style={({ pressed }) => ({
+                  padding: 12,
+                  backgroundColor: pressed
+                    ? theme.colors.danger[800]
+                    : theme.colors.danger[600],
+                  borderRadius: 4,
+                })}
+                onPress={pipe(
+                  IOO.fromIO(props.onClose),
+                  IOO.chainOptionK(() => group),
+                  IOO.chainIOK(
+                    g => () =>
+                      dispatch(groupsSlice.actions.delete({ id: g.id })),
+                  ),
+                )}
+              >
+                <Text style={{ color: theme.colors.white }}>Excluir</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Pressable>
+      </Pressable>
     </Modal>
   )
 }
