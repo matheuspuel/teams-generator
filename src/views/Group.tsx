@@ -1,12 +1,5 @@
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
-import {
-  Button,
-  Checkbox,
-  Icon,
-  IconButton,
-  Modal,
-  useDisclose,
-} from 'native-base'
+import { Button, Checkbox, IconButton, Modal, useDisclose } from 'native-base'
 import { useLayoutEffect } from 'react'
 import { FlatList, Pressable, Text, View } from 'react-native'
 import { Player, PlayerIsActive, RatingShow } from 'src/datatypes/Player'
@@ -55,10 +48,10 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
                 )
               }
             >
-              <Icon
-                size="lg"
+              <MaterialCommunityIcons
+                name="checkbox-multiple-outline"
                 color={tintColor}
-                as={<MaterialCommunityIcons name="checkbox-multiple-outline" />}
+                size={24}
               />
             </Pressable>
             <Pressable
@@ -74,11 +67,7 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
                 navigation.navigate('Player', { groupId: id, id: none })
               }
             >
-              <Icon
-                size="lg"
-                color={tintColor}
-                as={<MaterialIcons name="add" />}
-              />
+              <MaterialIcons name="add" color={tintColor} size={24} />
             </Pressable>
           </View>
         ),
@@ -202,7 +191,13 @@ const ParametersModal = (
               onPress={() =>
                 dispatch(parametersSlice.actions.decrementTeamsCount())
               }
-              icon={<Icon as={<MaterialIcons name="remove" />} />}
+              icon={
+                <MaterialIcons
+                  name="remove"
+                  size={24}
+                  color={theme.colors.primary[600]}
+                />
+              }
             />
             <Text
               style={{
@@ -217,7 +212,13 @@ const ParametersModal = (
               onPress={() =>
                 dispatch(parametersSlice.actions.incrementTeamsCount())
               }
-              icon={<Icon as={<MaterialIcons name="add" />} />}
+              icon={
+                <MaterialIcons
+                  name="add"
+                  size={24}
+                  color={theme.colors.primary[600]}
+                />
+              }
             />
             <Text
               style={{ flex: 1, paddingLeft: 8, color: theme.colors.darkText }}

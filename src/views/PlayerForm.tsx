@@ -1,7 +1,7 @@
 import { MaterialIcons } from '@expo/vector-icons'
 import { none } from 'fp-ts/lib/Option'
 import { not } from 'fp-ts/lib/Predicate'
-import { Button, FormControl, Icon, Input } from 'native-base'
+import { Button, FormControl, Input } from 'native-base'
 import { useLayoutEffect, useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { Player, Rating, RatingList, RatingShow } from 'src/datatypes/Player'
@@ -94,11 +94,7 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
                   IO.chainFirst(() => () => navigation.goBack()),
                 )}
               >
-                <Icon
-                  size="lg"
-                  color={tintColor}
-                  as={<MaterialIcons name="delete" />}
-                />
+                <MaterialIcons name="delete" color={tintColor} size={24} />
               </Pressable>
             ),
       }),
@@ -185,7 +181,6 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
                     >
                       <MaterialIcons
                         name="arrow-drop-down"
-                        color="black"
                         style={{
                           fontSize: 60,
                           textAlign: 'center',

@@ -1,6 +1,6 @@
 import { MaterialIcons } from '@expo/vector-icons'
 import * as Clipboard from 'expo-clipboard'
-import { Icon, ScrollView, Spinner, useToast } from 'native-base'
+import { ScrollView, Spinner, useToast } from 'native-base'
 import { useEffect, useLayoutEffect, useState } from 'react'
 import { Pressable, Text, View } from 'react-native'
 import { generateRandomBalancedTeams } from 'src/business/distribution'
@@ -84,11 +84,7 @@ export const ResultView = (props: RootStackScreenProps<'Result'>) => {
               IO.map(constVoid),
             )}
           >
-            <Icon
-              size="lg"
-              color={tintColor}
-              as={<MaterialIcons name="content-copy" />}
-            />
+            <MaterialIcons name="content-copy" color={tintColor} size={24} />
           </Pressable>
         ),
       }),

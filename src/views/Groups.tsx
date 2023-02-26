@@ -2,7 +2,7 @@ import { MaterialIcons } from '@expo/vector-icons'
 import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
 import { none, Option, some } from 'fp-ts/lib/Option'
-import { Button, FormControl, Icon, Input, Modal } from 'native-base'
+import { Button, FormControl, Input, Modal } from 'native-base'
 import { useEffect, useLayoutEffect, useState } from 'react'
 import { FlatList, Pressable, Text, View } from 'react-native'
 import { Group } from 'src/datatypes/Group'
@@ -32,11 +32,7 @@ export const Groups = (props: RootStackScreenProps<'Groups'>) => {
             })}
             onPress={() => setModal(some(none))}
           >
-            <Icon
-              size="lg"
-              color={tintColor}
-              as={<MaterialIcons name="add" />}
-            />
+            <MaterialIcons name="add" color={tintColor} size={24} />
           </Pressable>
         ),
       }),
@@ -98,16 +94,16 @@ const Item = (props: {
           style={{ paddingHorizontal: 4 }}
           onPress={() => props.openEdit(id)}
         >
-          <Icon size="lg" color="gray.500" as={<MaterialIcons name="edit" />} />
+          <MaterialIcons name="edit" color={theme.colors.gray[500]} size={24} />
         </Pressable>
         <Pressable
           style={{ paddingHorizontal: 4 }}
           onPress={() => props.openDelete(id)}
         >
-          <Icon
-            size="lg"
-            color="gray.500"
-            as={<MaterialIcons name="delete" />}
+          <MaterialIcons
+            name="delete"
+            color={theme.colors.gray[500]}
+            size={24}
           />
         </Pressable>
       </View>
