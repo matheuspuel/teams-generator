@@ -1,11 +1,10 @@
 import { MaterialIcons } from '@expo/vector-icons'
-import * as Clipboard from 'expo-clipboard'
-import { useToast } from 'native-base'
 import { useEffect, useLayoutEffect, useState } from 'react'
 import {
   ActivityIndicator,
   Pressable,
   ScrollView,
+  Share,
   Text,
   View,
 } from 'react-native'
@@ -47,7 +46,6 @@ export const ResultView = (props: RootStackScreenProps<'Result'>) => {
   const group = useAppSelector(getGroupById(id), O.getEq(Eq.eqStrict).equals)
   const parameters = useAppSelector(getParameters)
   const [result, setResult] = useState<Option<Array<Array<Player>>>>(none)
-  const toast = useToast()
 
   useEffect(
     pipe(
@@ -77,20 +75,18 @@ export const ResultView = (props: RootStackScreenProps<'Result'>) => {
             })}
             onPress={pipe(
               result,
-              O.matchW(
+              O.match(
                 () => T.of(undefined),
                 flow(
                   TeamListShowSensitive.show,
-                  t => () => Clipboard.setStringAsync(t),
-                  T.chainIOK(
-                    () => () => void toast.show({ description: 'Copiado' }),
-                  ),
+                  t => () => Share.share({ message: t, title: 'Times' }),
+                  T.map(constVoid),
                 ),
               ),
               IO.map(constVoid),
             )}
           >
-            <MaterialIcons name="content-copy" color={tintColor} size={24} />
+            <MaterialIcons name="share" color={tintColor} size={24} />
           </Pressable>
         ),
       }),
