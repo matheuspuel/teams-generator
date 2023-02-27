@@ -211,14 +211,14 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
             {pipe(
               RatingList,
               RA.map(r => (
-                <View key={r} style={{ flex: 1 }}>
+                <View key={r} style={{ flex: 1, height: 30 }}>
                   {form.rating === r ? (
                     <View
                       style={{
                         alignSelf: 'center',
                         width: 200,
                         position: 'absolute',
-                        bottom: -10,
+                        bottom: -15,
                       }}
                     >
                       <MaterialIcons
@@ -231,14 +231,15 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
                       />
                     </View>
                   ) : null}
-                  <Pressable
-                    onPress={() => formSetters.rating(r)}
-                    style={{
-                      height: 70,
-                      marginBottom: -45,
-                      zIndex: 1,
-                    }}
-                  />
+                </View>
+              )),
+            )}
+          </View>
+          <View style={{ flexDirection: 'row' }}>
+            {pipe(
+              RatingList,
+              RA.map(r => (
+                <View key={r} style={{ flex: 1 }}>
                   <View style={{ alignItems: 'center' }}>
                     <View
                       style={{
@@ -279,6 +280,19 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
               borderRadius: 10,
             }}
           />
+          <View style={{ flexDirection: 'row' }}>
+            {pipe(
+              RatingList,
+              RA.map(r => (
+                <View key={r} style={{ flex: 1 }}>
+                  <Pressable
+                    onPress={() => formSetters.rating(r)}
+                    style={{ height: 70, marginTop: -35 }}
+                  />
+                </View>
+              )),
+            )}
+          </View>
         </View>
       </View>
       <Pressable
