@@ -1,10 +1,7 @@
 {
   "react-native.packager.port": 19000,
   "task.allowAutomaticTasks": "on",
-  "files.exclude": {
-    "node_modules": true,
-    "yarn.lock": true,
-    ".expo": true,
-  },
+  "files.exclude": { ".expo": true },
   "typescript.tsdk": "node_modules\\typescript\\lib",
+  "cSpell.words": ["sorteiotimes"],
 }

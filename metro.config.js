@@ -1,9 +1,11 @@
-/* eslint-env node */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable functional/immutable-data */
+/* eslint-disable functional/no-expression-statement */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-env node */
 
 // Learn more https://docs.expo.io/guides/customizing-metro
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const { getDefaultConfig } = require('expo/metro-config')
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, functional/no-expression-statement, functional/immutable-data
 module.exports = getDefaultConfig(__dirname)
