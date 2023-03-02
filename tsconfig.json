@@ -7,6 +7,7 @@
     "noFallthroughCasesInSwitch": true,
     "paths": {
       "src/*": ["src/*"],
+      "fp": ["src/utils/fp"],
     },
   },
 }

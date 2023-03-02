@@ -1,8 +1,7 @@
-import { flow } from 'fp-ts/lib/function'
-import { Json, O, TE, TO } from 'src/utils/fp-ts'
+import { $f, Json, O, TE, TO } from 'fp'
 import { AsyncStorageFP } from './wrapper'
 
-const get: (key: string) => TO.TaskOption<Json.Json> = flow(
+const get: (key: string) => TO.TaskOption<Json.Json> = $f(
   AsyncStorageFP.getItem,
   TO.fromTaskEither,
   TO.chainOptionK(O.fromNullable),
@@ -12,13 +11,9 @@ const get: (key: string) => TO.TaskOption<Json.Json> = flow(
 const set: (
   key: string,
 ) => (value: unknown) => TE.TaskEither<unknown, void> = key =>
-  flow(
-    Json.stringify, //
-    TE.fromEither,
-    TE.chain(AsyncStorageFP.setItem(key)),
-  )
+  $f(TE.fromEitherK(Json.stringify), TE.chain(AsyncStorageFP.setItem(key)))
 
-const remove: (key: string) => TE.TaskEither<void, void> = flow(
+const remove: (key: string) => TE.TaskEither<void, void> = $f(
   AsyncStorageFP.removeItem,
 )
 

@@ -1,4 +1,4 @@
-import { D, identity, Num, Ord, pipe, Show } from 'src/utils/fp-ts'
+import { $, D, identity, Num, Ord, Show } from 'fp'
 
 export const PositionDict = {
   G: null,
@@ -16,7 +16,7 @@ export const PositionFromString: D.Decoder<string, Position> = D.fromRefinement(
   'Position',
 )
 
-export const Position: D.Decoder<unknown, Position> = pipe(
+export const Position: D.Decoder<unknown, Position> = $(
   D.string,
   D.compose(PositionFromString),
 )
@@ -30,7 +30,7 @@ const PositionOrder: Record<Position, number> = {
   A: 6,
 }
 
-export const PositionOrd: Ord<Position> = pipe(
+export const PositionOrd: Ord<Position> = $(
   Num.Ord,
   Ord.contramap(a => PositionOrder[a]),
 )

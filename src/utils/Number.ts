@@ -1,9 +1,9 @@
-import { A, Monoid, Num, pipe } from './fp-ts'
+import { $, A, Monoid, Num } from 'fp'
 
 export const div = (divisor: number) => (dividend: number) => dividend / divisor
 
 export const avg = (ns: Array<number>) =>
-  pipe(ns, Monoid.concatAll(Num.MonoidSum), div(A.size(ns)))
+  $(ns, Monoid.concatAll(Num.MonoidSum), div(A.size(ns)))
 
 const thousandsSeparator = '.' as '.' | ','
 const decimalSeparator = thousandsSeparator === '.' ? ',' : '.'
@@ -14,7 +14,7 @@ export const parseLocaleNumber = (stringNumber: string) =>
     .replace(new RegExp(`\\${decimalSeparator}`), '.')
 
 const addThousandsSeparators = (numStr: string) =>
-  pipe(
+  $(
     numStr.indexOf(decimalSeparator),
     i => (i === -1 ? numStr.length : i),
     i => addThousandsSeparators_(i)(numStr),
@@ -22,26 +22,26 @@ const addThousandsSeparators = (numStr: string) =>
 const addThousandsSeparators_ =
   (i: number) =>
   (s: string): string =>
-    pipe(i - 3, i =>
+    $(i - 3, i =>
       i < 1
         ? s
-        : pipe(
+        : $(
             s.slice(0, i) + thousandsSeparator + s.slice(i, s.length),
             addThousandsSeparators_(i),
           ),
     )
 
 const numStringToLocale = (numStr: string) =>
-  pipe(
+  $(
     decimalSeparator === ',' ? numStr.replace('.', ',') : numStr,
     addThousandsSeparators,
   )
 
 export const toFixedLocale = (fractionDigits: number) => (value: number) =>
-  pipe(value.toFixed(fractionDigits), numStringToLocale)
+  $(value.toFixed(fractionDigits), numStringToLocale)
 
 export const numberToLocaleString = (value: number) =>
-  pipe(value.toString(), numStringToLocale)
+  $(value.toString(), numStringToLocale)
 
 export const formatPercentage = (value: number) =>
   numberToLocaleString(value * 100) + '%'

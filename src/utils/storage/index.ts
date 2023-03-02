@@ -1,6 +1,5 @@
-import { flow, pipe } from 'fp-ts/lib/function'
+import { $, $f, O, TE, TO } from 'fp'
 import { Decoder } from 'io-ts/lib/Decoder'
-import { O, TE, TO } from 'src/utils/fp-ts'
 import { SimpleStorage } from './simpleStorage'
 
 export type Storage<A> = {
@@ -14,10 +13,10 @@ export const createStorage: <A>(args: {
   key: string
   decoder: Decoder<unknown, A>
 }) => Storage<A> = ({ key, decoder }) => ({
-  get: pipe(key, SimpleStorage.get, TO.chainEitherK(decoder.decode)),
+  get: $(key, SimpleStorage.get, TO.chainEitherK(decoder.decode)),
   set: SimpleStorage.set(key),
   remove: SimpleStorage.remove(key),
-  setOrRemove: flow(
+  setOrRemove: $f(
     O.match(() => SimpleStorage.remove(key), SimpleStorage.set(key)),
   ),
 })

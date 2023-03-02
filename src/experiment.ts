@@ -1,16 +1,16 @@
+import { $, A, IO, Rec, Tup } from 'fp'
 import * as Id from 'fp-ts/Identity'
 import { generateRandomBalancedTeams } from './business/distribution'
 import { Player, PlayerListShow } from './datatypes/Player'
 import { PositionDict } from './datatypes/Position'
 import { playersMock } from './mocks/Player'
-import { A, IO, pipe, Rec, Tup } from './utils/fp-ts'
 
 const teams = generateRandomBalancedTeams({ position: true, rating: true })(3)(
   playersMock,
 )()
 
 const showTeams = (teams: Array<Array<Player>>) =>
-  pipe(
+  $(
     teams,
     A.map(t => ({
       players: t,
@@ -18,14 +18,14 @@ const showTeams = (teams: Array<Array<Player>>) =>
       total: t.reduce((acc, p) => acc + p.rating, 0),
       positionCount: t.reduce(
         (acc, cur) => ({ ...acc, [cur.position]: acc[cur.position] + 1 }),
-        pipe(
+        $(
           PositionDict,
           Rec.map((): number => 0),
         ),
       ),
     })),
     A.map(t =>
-      pipe(
+      $(
         t.players,
         PlayerListShow.show,
         Id.bindTo('players'),
@@ -37,7 +37,7 @@ const showTeams = (teams: Array<Array<Player>>) =>
             }\n`,
         ),
         Id.bind('positions', () =>
-          pipe(
+          $(
             t.positionCount,
             Rec.mapWithIndex((k, v) => `${k}: ${v}`),
             Rec.toEntries,

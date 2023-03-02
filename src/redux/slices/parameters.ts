@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { Num, Ord } from 'fp'
 import { defaultParameters, Parameters } from 'src/datatypes/Parameters'
 import { RootState } from 'src/redux/store'
-import { Num, Ord } from 'src/utils/fp-ts'
 
 const initialState: Parameters = defaultParameters
 

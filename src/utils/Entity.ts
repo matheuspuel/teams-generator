@@ -1,6 +1,6 @@
 import cuid from 'cuid'
+import { $, D, IO } from 'fp'
 import { Branded } from 'io-ts'
-import { D, IO, pipe } from './fp-ts'
 import { NonEmptyString } from './String'
 
 export type Id = Branded<NonEmptyString, IdBrand>
@@ -11,10 +11,7 @@ export const IdFromString: D.Decoder<string, Id> = D.fromRefinement(
   'Id',
 )
 
-export const Id: D.Decoder<unknown, Id> = pipe(
-  D.string,
-  D.compose(IdFromString),
-)
+export const Id: D.Decoder<unknown, Id> = $(D.string, D.compose(IdFromString))
 
 export const getId: <A extends { id: unknown }>(a: A) => A['id'] = a => a.id
 

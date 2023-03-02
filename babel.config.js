@@ -13,6 +13,7 @@ module.exports = function (api) {
         {
           alias: {
             src: './src',
+            '^fp$': './src/utils/fp',
           },
         },
       ],

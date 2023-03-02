@@ -1,4 +1,4 @@
-import { D } from 'src/utils/fp-ts'
+import { D } from 'fp'
 
 export type Parameters = {
   teamsCount: number

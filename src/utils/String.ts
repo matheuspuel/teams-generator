@@ -1,4 +1,4 @@
-import { pipe } from 'fp-ts/lib/function'
+import { $ } from 'fp'
 import { Branded } from 'io-ts'
 import {
   compose,
@@ -18,7 +18,7 @@ export namespace NonEmptyString {
 
   export const FromString = fromRefinement(stringIs, 'NonEmptyString')
 
-  export const Decoder = pipe(string, compose(FromString))
+  export const Decoder = $(string, compose(FromString))
 
   export const of = <S extends string>(
     s: S extends ''
@@ -44,12 +44,12 @@ type SlugBrand = { readonly Slug: unique symbol }
 export namespace Slug {
   const nonEmptyStringIs = (v: NonEmptyString): v is Slug => true
 
-  export const FromString = pipe(
+  export const FromString = $(
     NonEmptyString.FromString,
     refine(nonEmptyStringIs, 'Slug'),
   )
 
-  export const Decoder = pipe(string, compose(FromString))
+  export const Decoder = $(string, compose(FromString))
 }
 
 export type Email = Branded<NonEmptyString, EmailBrand>
@@ -60,12 +60,12 @@ export namespace Email {
 
   export const FromNonEmptyString = fromRefinement(nonEmptyStringIs, 'Email')
 
-  export const FromString = pipe(
+  export const FromString = $(
     NonEmptyString.FromString,
     compose(FromNonEmptyString),
   )
 
-  export const Decoder = pipe(string, compose(FromString))
+  export const Decoder = $(string, compose(FromString))
 }
 
 export type PhoneNumber = Branded<NonEmptyString, PhoneNumberBrand>
@@ -73,12 +73,12 @@ type PhoneNumberBrand = { readonly PhoneNumber: unique symbol }
 export namespace PhoneNumber {
   const nonEmptyStringIs = (v: NonEmptyString): v is PhoneNumber => true
 
-  export const FromString = pipe(
+  export const FromString = $(
     NonEmptyString.FromString,
     refine(nonEmptyStringIs, 'PhoneNumber'),
   )
 
-  export const Decoder = pipe(string, compose(FromString))
+  export const Decoder = $(string, compose(FromString))
 }
 
 export type Digits = Branded<string, DigitsBrand>
@@ -88,7 +88,7 @@ export namespace Digits {
 
   export const FromString = fromRefinement(stringIs, 'Digits')
 
-  export const Decoder = pipe(string, compose(FromString))
+  export const Decoder = $(string, compose(FromString))
 }
 
 export type StringExact6 = Branded<NonEmptyString, StringExact6Brand>
@@ -102,37 +102,37 @@ export namespace StringExact6 {
     'StringExact6',
   )
 
-  export const FromString = pipe(
+  export const FromString = $(
     NonEmptyString.FromString,
     compose(FromNonEmptyString),
   )
 
-  export const Decoder = pipe(string, compose(FromString))
+  export const Decoder = $(string, compose(FromString))
 }
 
 export type DigitsExact6 = StringExact6 & Digits
 export namespace DigitsExact6 {
-  export const FromDigits: Decoder<Digits, DigitsExact6> = pipe(
+  export const FromDigits: Decoder<Digits, DigitsExact6> = $(
     id<Digits>(),
     intersect(StringExact6.FromString),
   )
 
-  export const FromStringExact6: Decoder<StringExact6, DigitsExact6> = pipe(
+  export const FromStringExact6: Decoder<StringExact6, DigitsExact6> = $(
     id<StringExact6>(),
     intersect(Digits.FromString),
   )
 
-  export const FromNonEmptyString: Decoder<NonEmptyString, DigitsExact6> = pipe(
+  export const FromNonEmptyString: Decoder<NonEmptyString, DigitsExact6> = $(
     Digits.FromString,
-    intersect(pipe(StringExact6.FromNonEmptyString)),
+    intersect($(StringExact6.FromNonEmptyString)),
   )
 
-  export const FromString = pipe(
+  export const FromString = $(
     NonEmptyString.FromString,
     compose(FromNonEmptyString),
   )
 
-  export const Decoder = pipe(Digits.Decoder, compose(FromDigits))
+  export const Decoder = $(Digits.Decoder, compose(FromDigits))
 }
 
 export type SmsCode = Branded<DigitsExact6, SmsCodeBrand>
@@ -141,10 +141,10 @@ type SmsCodeBrand = { readonly SmsCode: unique symbol }
 export namespace SmsCode {
   const digitsExact6Is = (v: DigitsExact6): v is SmsCode => true
 
-  export const FromString = pipe(
+  export const FromString = $(
     DigitsExact6.FromString,
     refine(digitsExact6Is, 'SmsCode'),
   )
 
-  export const Decoder = pipe(string, compose(FromString))
+  export const Decoder = $(string, compose(FromString))
 }

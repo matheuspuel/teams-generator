@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { flow } from 'fp-ts/lib/function'
-import { Option } from 'fp-ts/lib/Option'
+import { $f, E, O, Option } from 'fp'
 import {
   Decoder,
   fromRefinement,
@@ -8,7 +7,6 @@ import {
   struct,
   union,
 } from 'io-ts/lib/Decoder'
-import { E, O } from 'src/utils/fp-ts'
 
 export const undefinedDecoder = fromRefinement(
   (v): v is undefined => v === undefined,
@@ -18,7 +16,7 @@ export const undefinedDecoder = fromRefinement(
 export const optionFromNullable = <A>(
   decoder: Decoder<unknown, A>,
 ): Decoder<unknown, Option<NonNullable<A>>> => ({
-  decode: flow(
+  decode: $f(
     union(undefinedDecoder, literal(null), decoder).decode,
     E.map(O.fromNullable),
   ),

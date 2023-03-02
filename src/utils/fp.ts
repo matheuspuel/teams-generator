@@ -17,6 +17,8 @@ export {
   identity,
   Lazy,
   pipe,
+  pipe as $,
+  flow as $f,
 } from 'fp-ts/function'
 export * as IOE from 'fp-ts/IOEither'
 export * as IOO from 'fp-ts/IOOption'

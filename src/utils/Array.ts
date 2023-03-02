@@ -1,4 +1,4 @@
-import { O, Option } from './fp-ts'
+import { O, Option } from 'fp'
 
 export const findFirstMapWithIndex =
   <A, B>(f: (index: number, a: A) => Option<B>) =>
