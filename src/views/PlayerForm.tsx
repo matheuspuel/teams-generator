@@ -1,6 +1,7 @@
-import { $, A, constant, Eq, IOO, none, O, RA, Rec, RIO, Str, Tup } from 'fp'
+import { get } from '@fp-ts/optic'
+import { $, $f, A, apply, IOO, O, RA, Rec, RIO, Str, Tup } from 'fp'
 import { not } from 'fp-ts/Predicate'
-import { useLayoutEffect, useState } from 'react'
+import { useLayoutEffect } from 'react'
 import { Txt } from 'src/components/hyperscript/derivative'
 import { MaterialIcons } from 'src/components/hyperscript/icons'
 import {
@@ -9,57 +10,20 @@ import {
   View,
 } from 'src/components/hyperscript/reactNative'
 import { Input } from 'src/components/Input'
-import { Player, Rating, RatingList, RatingShow } from 'src/datatypes/Player'
-import { Position, PositionDict, PositionOrd } from 'src/datatypes/Position'
+import { RatingList, RatingShow } from 'src/datatypes/Player'
+import { PositionDict, PositionOrd } from 'src/datatypes/Position'
 import { useEnv } from 'src/Env'
-import { execute } from 'src/redux'
-import {
-  createPlayer,
-  deletePlayer,
-  editPlayer,
-  getPlayer,
-} from 'src/redux/slices/groups'
+import { execute, replaceSApp } from 'src/redux'
+import { createPlayer, deletePlayer, editPlayer } from 'src/redux/slices/groups'
+import { blankPlayerForm, PlayerFormLens } from 'src/redux/slices/playerForm'
 import { useAppSelector } from 'src/redux/store'
 import { RootStackScreenProps } from 'src/routes/RootStack'
 import { theme } from 'src/theme'
 
-const makeSubSetter =
-  <R extends object>(rootSetter: React.Dispatch<React.SetStateAction<R>>) =>
-  <K extends keyof R>(key: K): React.Dispatch<R[K]> =>
-  a =>
-    rootSetter(p => ({ ...p, [key]: a }))
-
-type Form = { name: string; position: Position; rating: Rating }
-
-const initialFormState: Form = { name: '', position: 'A', rating: 5 }
-
-const getFormFromData = ({ name, position, rating }: Player): Form => ({
-  name,
-  position,
-  rating,
-})
-
 export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
-  const { navigation, route } = props
-  const { id, groupId } = route.params
+  const { navigation } = props
   const env = useEnv()
-  const player = useAppSelector(
-    $(
-      id,
-      O.matchW(
-        () => () => none,
-        id => getPlayer({ groupId, id }),
-      ),
-    ),
-    O.getEq(Eq.eqStrict),
-  )
-  const [form, setForm] = useState<Form>(
-    $(player, O.match(constant(initialFormState), getFormFromData)),
-  )
-
-  const formSetters: {
-    [k in keyof typeof form]: React.Dispatch<(typeof form)[k]>
-  } = $(form, Rec.mapWithIndex(makeSubSetter(setForm)))
+  const form = useAppSelector(get(PlayerFormLens))
 
   useLayoutEffect(
     () =>
@@ -109,7 +73,11 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
           placeholder: 'Ex: Pedro',
           placeholderTextColor: theme.colors.gray[400],
           value: form.name,
-          onChangeText: formSetters.name,
+          onChangeText: $f(
+            replaceSApp(PlayerFormLens.at('name')),
+            execute,
+            apply(env),
+          ),
           cursorColor: theme.colors.darkText,
           style: ({ isFocused }) => ({
             fontSize: 12,
@@ -144,7 +112,11 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
               Pressable({
                 key: p,
                 style: { flex: 1, alignItems: 'center' },
-                onPress: () => formSetters.position(p),
+                onPress: $(
+                  replaceSApp(PlayerFormLens.at('position'))(p),
+                  execute,
+                  apply(env),
+                ),
               })([
                 View({
                   style: {
@@ -268,7 +240,11 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
             RA.map(r =>
               View({ key: r, style: { flex: 1 } })([
                 Pressable({
-                  onPress: () => formSetters.rating(r),
+                  onPress: $(
+                    replaceSApp(PlayerFormLens.at('rating'))(r),
+                    execute,
+                    apply(env),
+                  ),
                   style: { height: 70, marginTop: -35 },
                 })([]),
               ]),
@@ -298,7 +274,9 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
               execute(editPlayer({ groupId, player: { ...form, id } }))(env),
           ),
         ),
-        IOO.chainFirstIOK(() => () => setForm(initialFormState)),
+        IOO.chainFirstIOK(() =>
+          execute(replaceSApp(PlayerFormLens)(blankPlayerForm))(env),
+        ),
       ),
     })([
       Txt({

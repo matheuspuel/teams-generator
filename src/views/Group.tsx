@@ -1,4 +1,5 @@
-import { $, A, Eq, IO, none, O, some } from 'fp'
+import { get } from '@fp-ts/optic'
+import { $, A, constVoid, Eq, IO, O } from 'fp'
 import { useLayoutEffect } from 'react'
 import { Txt } from 'src/components/hyperscript/derivative'
 import {
@@ -13,8 +14,7 @@ import {
 } from 'src/components/hyperscript/reactNative'
 import { Player, PlayerIsActive, RatingShow } from 'src/datatypes/Player'
 import { AppEnv, useEnv } from 'src/Env'
-import { useDisclose } from 'src/hooks/useDisclose'
-import { execute } from 'src/redux'
+import { execute, replaceSApp } from 'src/redux'
 import {
   getGroupById,
   setAllPlayersActive,
@@ -27,16 +27,28 @@ import {
   togglePosition,
   toggleRating,
 } from 'src/redux/slices/parameters'
+import { UiLens } from 'src/redux/slices/ui'
 import { useAppSelector } from 'src/redux/store'
 import { RootStackScreenProps } from 'src/routes/RootStack'
 import { theme } from 'src/theme'
+import { Id } from 'src/utils/Entity'
 
 export const Group = (props: RootStackScreenProps<'Group'>) => {
-  const { navigation, route } = props
-  const { id } = route.params
+  const { navigation } = props
   const env = useEnv()
-  const group = useAppSelector(getGroupById(id), O.getEq(Eq.eqStrict))
-  const modalParameters = useDisclose()
+  const groupId = useAppSelector(get(UiLens.at('selectedGroupId')))
+  const group = useAppSelector(
+    s =>
+      $(
+        groupId,
+        O.match(
+          () => O.none,
+          id => getGroupById(id)(s),
+        ),
+      ),
+    O.getEq(Eq.eqStrict),
+  )
+  const modalParameters = useAppSelector(get(UiLens.at('modalParameters')))
 
   const players: Array<Player> = $(
     group,
@@ -60,9 +72,16 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
                   ? theme.colors.primary[700]
                   : undefined,
               }),
-              onPress: execute(
-                setAllPlayersActive({ groupId: id, active: !allActive }),
-              )(env),
+              onPress: $(
+                groupId,
+                O.match(
+                  () => constVoid,
+                  id =>
+                    execute(
+                      setAllPlayersActive({ groupId: id, active: !allActive }),
+                    )(env),
+                ),
+              ),
             })([
               MaterialCommunityIcons({
                 name: 'checkbox-multiple-outline',
@@ -79,8 +98,14 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
                   ? theme.colors.primary[700]
                   : undefined,
               }),
-              onPress: () =>
-                navigation.navigate('Player', { groupId: id, id: none }),
+              onPress: $(
+                () => navigation.navigate('Player'),
+                IO.chain(() =>
+                  execute(replaceSApp(UiLens.at('selectedPlayerId'))(O.none))(
+                    env,
+                  ),
+                ),
+              ),
             })([MaterialIcons({ name: 'add', color: tintColor, size: 24 })]),
           ]),
       }),
@@ -88,12 +113,19 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
   )
 
   return View({ style: { flex: 1 } })([
-    FlatList({
-      data: players,
-      keyExtractor: ({ id }) => id,
-      renderItem: ({ item }) => Item({ data: item, parentProps: props, env }),
-      initialNumToRender: 20,
-    }),
+    ...$(
+      groupId,
+      O.map(groupId =>
+        FlatList({
+          data: players,
+          keyExtractor: ({ id }) => id,
+          renderItem: ({ item }) =>
+            Item({ data: item, parentProps: props, env, groupId }),
+          initialNumToRender: 20,
+        }),
+      ),
+      A.fromOption,
+    ),
     Pressable({
       style: ({ pressed }) => ({
         padding: 12,
@@ -101,27 +133,32 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
           ? theme.colors.primary[800]
           : theme.colors.primary[600],
       }),
-      onPress: modalParameters.onOpen,
+      onPress: execute(replaceSApp(UiLens.at('modalParameters'))(true))(env),
     })([
       Txt({ style: { textAlign: 'center', color: theme.colors.white } })(
         'Sortear',
       ),
     ]),
-    ParametersModal({ ...props, ...modalParameters }),
+    ...(modalParameters ? [ParametersModal(props)] : []),
   ])
 }
 
 const Item = (props: {
   data: Player
   parentProps: RootStackScreenProps<'Group'>
+  groupId: Id
   env: AppEnv
 }) => {
-  const { env } = props
-  const { navigation, route } = props.parentProps
-  const { id: groupId } = route.params
+  const { env, groupId } = props
+  const { navigation } = props.parentProps
   const { id, name, position, rating, active } = props.data
   return Pressable({
-    onPress: () => navigation.navigate('Player', { groupId, id: some(id) }),
+    onPress: $(
+      () => navigation.navigate('Player'),
+      IO.chain(() =>
+        execute(replaceSApp(UiLens.at('selectedPlayerId'))(O.some(id)))(env),
+      ),
+    ),
   })([
     View({
       style: {
@@ -197,16 +234,12 @@ const Item = (props: {
   ])
 }
 
-const ParametersModal = (
-  props: RootStackScreenProps<'Group'> & { isOpen: boolean; onClose: IO<void> },
-) => {
-  const { navigation, route } = props
-  const { id } = route.params
+const ParametersModal = (props: RootStackScreenProps<'Group'>) => {
+  const { navigation } = props
   const env = useEnv()
   const parameters = useAppSelector(getParameters)
   return Modal({
     transparent: true,
-    visible: props.isOpen,
     style: { flex: 1 },
     animationType: 'fade',
     statusBarTranslucent: true,
@@ -217,7 +250,7 @@ const ParametersModal = (
         backgroundColor: theme.colors.black + '3f',
         justifyContent: 'center',
       },
-      onPress: props.onClose,
+      onPress: execute(replaceSApp(UiLens.at('modalParameters'))(false))(env),
     })([
       Pressable({
         style: {
@@ -247,7 +280,9 @@ const ParametersModal = (
                 : undefined,
               borderRadius: 4,
             }),
-            onPress: props.onClose,
+            onPress: execute(replaceSApp(UiLens.at('modalParameters'))(false))(
+              env,
+            ),
           })([
             MaterialIcons({
               name: 'close',
@@ -399,7 +434,9 @@ const ParametersModal = (
                   : undefined,
                 borderRadius: 4,
               }),
-              onPress: props.onClose,
+              onPress: execute(
+                replaceSApp(UiLens.at('modalParameters'))(false),
+              )(env),
             })([
               Txt({ style: { color: theme.colors.primary[600] } })('Cancelar'),
             ]),
@@ -412,8 +449,8 @@ const ParametersModal = (
                 borderRadius: 4,
               }),
               onPress: $(
-                props.onClose,
-                IO.chain(() => () => navigation.navigate('Result', { id })),
+                execute(replaceSApp(UiLens.at('modalParameters'))(false))(env),
+                IO.chain(() => () => navigation.navigate('Result')),
               ),
             })([Txt({ style: { color: theme.colors.white } })('Sortear')]),
           ]),

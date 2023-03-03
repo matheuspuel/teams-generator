@@ -1,7 +1,5 @@
 import { createStackNavigator, StackScreenProps } from '@react-navigation/stack'
-import { Option } from 'fp'
 import { theme } from 'src/theme'
-import { Id } from 'src/utils/Entity'
 import { Group } from 'src/views/Group'
 import { Groups } from 'src/views/Groups'
 import { PlayerView } from 'src/views/PlayerForm'
@@ -20,9 +18,9 @@ export type RootStackScreenProps<
 
 export type RootStackParamList = {
   Groups: undefined
-  Group: { id: Id }
-  Player: { groupId: Id; id: Option<Id> }
-  Result: { id: Id }
+  Group: undefined
+  Player: undefined
+  Result: undefined
 }
 
 const Stack = createStackNavigator<RootStackParamList>()
