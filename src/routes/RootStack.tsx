@@ -4,7 +4,6 @@ import { theme } from 'src/theme'
 import { Id } from 'src/utils/Entity'
 import { Group } from 'src/views/Group'
 import { Groups } from 'src/views/Groups'
-import { Loading } from 'src/views/Loading'
 import { PlayerView } from 'src/views/PlayerForm'
 import { ResultView } from 'src/views/Result'
 
@@ -20,7 +19,6 @@ export type RootStackScreenProps<
 > = StackScreenProps<RootStackParamList, S>
 
 export type RootStackParamList = {
-  Loading: undefined
   Groups: undefined
   Group: { id: Id }
   Player: { groupId: Id; id: Option<Id> }
@@ -36,13 +34,8 @@ export const RootStackNavigator = () => {
       screenOptions={{
         headerTintColor: theme.colors.lightText,
       }}
-      initialRouteName="Loading"
+      initialRouteName="Groups"
     >
-      <Stack.Screen
-        name="Loading"
-        component={Loading}
-        options={{ headerShown: false }}
-      />
       <Stack.Screen
         name="Groups"
         component={Groups}

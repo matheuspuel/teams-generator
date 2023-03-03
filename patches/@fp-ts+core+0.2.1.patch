@@ -1,0 +1,419 @@
+diff --git a/node_modules/@fp-ts/core/Bigint.d.ts b/node_modules/@fp-ts/core/Bigint.d.ts
+index 2c19a2b..21da583 100644
+--- a/node_modules/@fp-ts/core/Bigint.d.ts
++++ b/node_modules/@fp-ts/core/Bigint.d.ts
+@@ -17,7 +17,7 @@ import * as semigroup from "@fp-ts/core/typeclass/Semigroup";
+  * @example
+  * import { isBigint } from "@fp-ts/core/Bigint"
+  *
+- * assert.deepStrictEqual(isBigint(1n), true)
++ * assert.deepStrictEqual(isBigint(1), true)
+  * assert.deepStrictEqual(isBigint(1), false)
+  *
+  * @category guards
+@@ -91,7 +91,7 @@ export declare const SemigroupMultiply: semigroup.Semigroup<bigint>;
+ /**
+  * `bigint` monoid under addition.
+  *
+- * The `empty` value is `0n`.
++ * The `empty` value is `0`.
+  *
+  * @category instances
+  * @since 1.0.0
+@@ -100,7 +100,7 @@ export declare const MonoidSum: monoid.Monoid<bigint>;
+ /**
+  * `bigint` monoid under multiplication.
+  *
+- * The `empty` value is `1n`.
++ * The `empty` value is `1`.
+  *
+  * @category instances
+  * @since 1.0.0
+diff --git a/node_modules/@fp-ts/core/Bigint.js b/node_modules/@fp-ts/core/Bigint.js
+index d610ba3..33c0091 100644
+--- a/node_modules/@fp-ts/core/Bigint.js
++++ b/node_modules/@fp-ts/core/Bigint.js
+@@ -28,7 +28,7 @@ function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj &&
+  * @example
+  * import { isBigint } from "@fp-ts/core/Bigint"
+  *
+- * assert.deepStrictEqual(isBigint(1n), true)
++ * assert.deepStrictEqual(isBigint(1), true)
+  * assert.deepStrictEqual(isBigint(1), false)
+  *
+  * @category guards
+@@ -63,12 +63,12 @@ const divide = /*#__PURE__*/(0, _Function.dual)(2, (self, that) => self / that);
+  * @since 1.0.0
+  */
+ exports.divide = divide;
+-const increment = n => n + 1n;
++const increment = n => n + 1;
+ /**
+  * @since 1.0.0
+  */
+ exports.increment = increment;
+-const decrement = n => n - 1n;
++const decrement = n => n - 1;
+ /**
+  * @category instances
+  * @since 1.0.0
+@@ -100,7 +100,7 @@ const SemigroupMultiply = semigroup.bigintMultiply;
+ /**
+  * `bigint` monoid under addition.
+  *
+- * The `empty` value is `0n`.
++ * The `empty` value is `0`.
+  *
+  * @category instances
+  * @since 1.0.0
+@@ -110,7 +110,7 @@ const MonoidSum = monoid.bigintSum;
+ /**
+  * `bigint` monoid under multiplication.
+  *
+- * The `empty` value is `1n`.
++ * The `empty` value is `1`.
+  *
+  * @category instances
+  * @since 1.0.0
+diff --git a/node_modules/@fp-ts/core/Predicate.d.ts b/node_modules/@fp-ts/core/Predicate.d.ts
+index b140e79..7b160eb 100644
+--- a/node_modules/@fp-ts/core/Predicate.d.ts
++++ b/node_modules/@fp-ts/core/Predicate.d.ts
+@@ -5,7 +5,6 @@ import * as monoid from "@fp-ts/core/typeclass/Monoid";
+ import * as of_ from "@fp-ts/core/typeclass/Of";
+ import * as product_ from "@fp-ts/core/typeclass/Product";
+ import * as semigroup from "@fp-ts/core/typeclass/Semigroup";
+-import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup";
+ import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct";
+ /**
+  * @category models
+@@ -84,7 +83,7 @@ export declare const isBoolean: (input: unknown) => input is boolean;
+  * @example
+  * import { isBigint } from "@fp-ts/core/Predicate"
+  *
+- * assert.deepStrictEqual(isBigint(1n), true)
++ * assert.deepStrictEqual(isBigint(1), true)
+  *
+  * assert.deepStrictEqual(isBigint(1), false)
+  *
+diff --git a/node_modules/@fp-ts/core/Predicate.js b/node_modules/@fp-ts/core/Predicate.js
+index 7e62594..cd39070 100644
+--- a/node_modules/@fp-ts/core/Predicate.js
++++ b/node_modules/@fp-ts/core/Predicate.js
+@@ -77,7 +77,7 @@ const isBoolean = input => typeof input === "boolean";
+  * @example
+  * import { isBigint } from "@fp-ts/core/Predicate"
+  *
+- * assert.deepStrictEqual(isBigint(1n), true)
++ * assert.deepStrictEqual(isBigint(1), true)
+  *
+  * assert.deepStrictEqual(isBigint(1), false)
+  *
+diff --git a/node_modules/@fp-ts/core/mjs/Bigint.mjs b/node_modules/@fp-ts/core/mjs/Bigint.mjs
+index 6278314..404a354 100644
+--- a/node_modules/@fp-ts/core/mjs/Bigint.mjs
++++ b/node_modules/@fp-ts/core/mjs/Bigint.mjs
+@@ -19,7 +19,7 @@ import * as semigroup from "@fp-ts/core/typeclass/Semigroup";
+  * @example
+  * import { isBigint } from "@fp-ts/core/Bigint"
+  *
+- * assert.deepStrictEqual(isBigint(1n), true)
++ * assert.deepStrictEqual(isBigint(1), true)
+  * assert.deepStrictEqual(isBigint(1), false)
+  *
+  * @category guards
+@@ -49,11 +49,11 @@ export const divide = /*#__PURE__*/dual(2, (self, that) => self / that);
+ /**
+  * @since 1.0.0
+  */
+-export const increment = n => n + 1n;
++export const increment = n => n + 1;
+ /**
+  * @since 1.0.0
+  */
+-export const decrement = n => n - 1n;
++export const decrement = n => n - 1;
+ /**
+  * @category instances
+  * @since 1.0.0
+@@ -81,7 +81,7 @@ export const SemigroupMultiply = semigroup.bigintMultiply;
+ /**
+  * `bigint` monoid under addition.
+  *
+- * The `empty` value is `0n`.
++ * The `empty` value is `0`.
+  *
+  * @category instances
+  * @since 1.0.0
+@@ -90,7 +90,7 @@ export const MonoidSum = monoid.bigintSum;
+ /**
+  * `bigint` monoid under multiplication.
+  *
+- * The `empty` value is `1n`.
++ * The `empty` value is `1`.
+  *
+  * @category instances
+  * @since 1.0.0
+diff --git a/node_modules/@fp-ts/core/mjs/Predicate.mjs b/node_modules/@fp-ts/core/mjs/Predicate.mjs
+index db3b739..01bca71 100644
+--- a/node_modules/@fp-ts/core/mjs/Predicate.mjs
++++ b/node_modules/@fp-ts/core/mjs/Predicate.mjs
+@@ -66,7 +66,7 @@ export const isBoolean = input => typeof input === "boolean";
+  * @example
+  * import { isBigint } from "@fp-ts/core/Predicate"
+  *
+- * assert.deepStrictEqual(isBigint(1n), true)
++ * assert.deepStrictEqual(isBigint(1), true)
+  *
+  * assert.deepStrictEqual(isBigint(1), false)
+  *
+diff --git a/node_modules/@fp-ts/core/mjs/typeclass/Monoid.mjs b/node_modules/@fp-ts/core/mjs/typeclass/Monoid.mjs
+index 6cb1df9..b66b60d 100644
+--- a/node_modules/@fp-ts/core/mjs/typeclass/Monoid.mjs
++++ b/node_modules/@fp-ts/core/mjs/typeclass/Monoid.mjs
+@@ -60,21 +60,21 @@ export const numberMultiply = /*#__PURE__*/fromSemigroup(semigroup.numberMultipl
+ /**
+  * `number` monoid under addition.
+  *
+- * The `bigint` value is `0n`.
++ * The `bigint` value is `0`.
+  *
+  * @category instances
+  * @since 1.0.0
+  */
+-export const bigintSum = /*#__PURE__*/fromSemigroup(semigroup.bigintSum, 0n);
++export const bigintSum = /*#__PURE__*/fromSemigroup(semigroup.bigintSum, 0);
+ /**
+  * `bigint` monoid under multiplication.
+  *
+- * The `empty` value is `1n`.
++ * The `empty` value is `1`.
+  *
+  * @category instances
+  * @since 1.0.0
+  */
+-export const bigintMultiply = /*#__PURE__*/fromSemigroup(semigroup.bigintMultiply, 1n);
++export const bigintMultiply = /*#__PURE__*/fromSemigroup(semigroup.bigintMultiply, 1);
+ /**
+  * `boolean` monoid under conjunction.
+  *
+diff --git a/node_modules/@fp-ts/core/mjs/typeclass/Semigroup.mjs b/node_modules/@fp-ts/core/mjs/typeclass/Semigroup.mjs
+index 32ffa63..d833d89 100644
+--- a/node_modules/@fp-ts/core/mjs/typeclass/Semigroup.mjs
++++ b/node_modules/@fp-ts/core/mjs/typeclass/Semigroup.mjs
+@@ -58,13 +58,13 @@ export const bigintSum = /*#__PURE__*/make((self, that) => self + that);
+  * @since 1.0.0
+  */
+ export const bigintMultiply = /*#__PURE__*/make((self, that) => self * that, (self, collection) => {
+-  if (self === 0n) {
+-    return 0n;
++  if (self === 0) {
++    return 0;
+   }
+   let out = self;
+   for (const n of collection) {
+-    if (n === 0n) {
+-      return 0n;
++    if (n === 0) {
++      return 0;
+     }
+     out = out * n;
+   }
+diff --git a/node_modules/@fp-ts/core/src/Bigint.ts b/node_modules/@fp-ts/core/src/Bigint.ts
+index eaab9a7..acdb24e 100644
+--- a/node_modules/@fp-ts/core/src/Bigint.ts
++++ b/node_modules/@fp-ts/core/src/Bigint.ts
+@@ -21,7 +21,7 @@ import * as semigroup from "@fp-ts/core/typeclass/Semigroup"
+  * @example
+  * import { isBigint } from "@fp-ts/core/Bigint"
+  *
+- * assert.deepStrictEqual(isBigint(1n), true)
++ * assert.deepStrictEqual(isBigint(1), true)
+  * assert.deepStrictEqual(isBigint(1), false)
+  *
+  * @category guards
+@@ -68,12 +68,12 @@ export const divide: {
+ /**
+  * @since 1.0.0
+  */
+-export const increment = (n: bigint): bigint => n + 1n
++export const increment = (n: bigint): bigint => n + 1
+ 
+ /**
+  * @since 1.0.0
+  */
+-export const decrement = (n: bigint): bigint => n - 1n
++export const decrement = (n: bigint): bigint => n - 1
+ 
+ /**
+  * @category instances
+@@ -106,7 +106,7 @@ export const SemigroupMultiply: semigroup.Semigroup<bigint> = semigroup.bigintMu
+ /**
+  * `bigint` monoid under addition.
+  *
+- * The `empty` value is `0n`.
++ * The `empty` value is `0`.
+  *
+  * @category instances
+  * @since 1.0.0
+@@ -116,7 +116,7 @@ export const MonoidSum: monoid.Monoid<bigint> = monoid.bigintSum
+ /**
+  * `bigint` monoid under multiplication.
+  *
+- * The `empty` value is `1n`.
++ * The `empty` value is `1`.
+  *
+  * @category instances
+  * @since 1.0.0
+diff --git a/node_modules/@fp-ts/core/src/Predicate.ts b/node_modules/@fp-ts/core/src/Predicate.ts
+index 35d7267..43942ac 100644
+--- a/node_modules/@fp-ts/core/src/Predicate.ts
++++ b/node_modules/@fp-ts/core/src/Predicate.ts
+@@ -9,8 +9,8 @@ import * as invariant from "@fp-ts/core/typeclass/Invariant"
+ import * as monoid from "@fp-ts/core/typeclass/Monoid"
+ import * as of_ from "@fp-ts/core/typeclass/Of"
+ import * as product_ from "@fp-ts/core/typeclass/Product"
+-import * as semigroup from "@fp-ts/core/typeclass/Semigroup"
+ import type { Semigroup } from "@fp-ts/core/typeclass/Semigroup"
++import * as semigroup from "@fp-ts/core/typeclass/Semigroup"
+ import * as semiProduct from "@fp-ts/core/typeclass/SemiProduct"
+ 
+ /**
+@@ -96,7 +96,7 @@ export const isBoolean = (input: unknown): input is boolean => typeof input ===
+  * @example
+  * import { isBigint } from "@fp-ts/core/Predicate"
+  *
+- * assert.deepStrictEqual(isBigint(1n), true)
++ * assert.deepStrictEqual(isBigint(1), true)
+  *
+  * assert.deepStrictEqual(isBigint(1), false)
+  *
+diff --git a/node_modules/@fp-ts/core/src/typeclass/Monoid.ts b/node_modules/@fp-ts/core/src/typeclass/Monoid.ts
+index 3a3f782..23d9cc3 100644
+--- a/node_modules/@fp-ts/core/src/typeclass/Monoid.ts
++++ b/node_modules/@fp-ts/core/src/typeclass/Monoid.ts
+@@ -82,22 +82,22 @@ export const numberMultiply: Monoid<number> = fromSemigroup(semigroup.numberMult
+ /**
+  * `number` monoid under addition.
+  *
+- * The `bigint` value is `0n`.
++ * The `bigint` value is `0`.
+  *
+  * @category instances
+  * @since 1.0.0
+  */
+-export const bigintSum: Monoid<bigint> = fromSemigroup(semigroup.bigintSum, 0n)
++export const bigintSum: Monoid<bigint> = fromSemigroup(semigroup.bigintSum, 0)
+ 
+ /**
+  * `bigint` monoid under multiplication.
+  *
+- * The `empty` value is `1n`.
++ * The `empty` value is `1`.
+  *
+  * @category instances
+  * @since 1.0.0
+  */
+-export const bigintMultiply: Monoid<bigint> = fromSemigroup(semigroup.bigintMultiply, 1n)
++export const bigintMultiply: Monoid<bigint> = fromSemigroup(semigroup.bigintMultiply, 1)
+ 
+ /**
+  * `boolean` monoid under conjunction.
+diff --git a/node_modules/@fp-ts/core/src/typeclass/Semigroup.ts b/node_modules/@fp-ts/core/src/typeclass/Semigroup.ts
+index f7928b6..f917aca 100644
+--- a/node_modules/@fp-ts/core/src/typeclass/Semigroup.ts
++++ b/node_modules/@fp-ts/core/src/typeclass/Semigroup.ts
+@@ -95,13 +95,13 @@ export const bigintSum: Semigroup<bigint> = make((self, that) => self + that)
+ export const bigintMultiply: Semigroup<bigint> = make(
+   (self, that) => self * that,
+   (self, collection) => {
+-    if (self === 0n) {
+-      return 0n
++    if (self === 0) {
++      return 0
+     }
+     let out = self
+     for (const n of collection) {
+-      if (n === 0n) {
+-        return 0n
++      if (n === 0) {
++        return 0
+       }
+       out = out * n
+     }
+diff --git a/node_modules/@fp-ts/core/typeclass/Monoid.d.ts b/node_modules/@fp-ts/core/typeclass/Monoid.d.ts
+index faf07ea..8a79171 100644
+--- a/node_modules/@fp-ts/core/typeclass/Monoid.d.ts
++++ b/node_modules/@fp-ts/core/typeclass/Monoid.d.ts
+@@ -67,7 +67,7 @@ export declare const numberMultiply: Monoid<number>;
+ /**
+  * `number` monoid under addition.
+  *
+- * The `bigint` value is `0n`.
++ * The `bigint` value is `0`.
+  *
+  * @category instances
+  * @since 1.0.0
+@@ -76,7 +76,7 @@ export declare const bigintSum: Monoid<bigint>;
+ /**
+  * `bigint` monoid under multiplication.
+  *
+- * The `empty` value is `1n`.
++ * The `empty` value is `1`.
+  *
+  * @category instances
+  * @since 1.0.0
+diff --git a/node_modules/@fp-ts/core/typeclass/Monoid.js b/node_modules/@fp-ts/core/typeclass/Monoid.js
+index 97dc968..e6fbdbf 100644
+--- a/node_modules/@fp-ts/core/typeclass/Monoid.js
++++ b/node_modules/@fp-ts/core/typeclass/Monoid.js
+@@ -74,23 +74,23 @@ const numberMultiply = /*#__PURE__*/fromSemigroup(semigroup.numberMultiply, 1);
+ /**
+  * `number` monoid under addition.
+  *
+- * The `bigint` value is `0n`.
++ * The `bigint` value is `0`.
+  *
+  * @category instances
+  * @since 1.0.0
+  */
+ exports.numberMultiply = numberMultiply;
+-const bigintSum = /*#__PURE__*/fromSemigroup(semigroup.bigintSum, 0n);
++const bigintSum = /*#__PURE__*/fromSemigroup(semigroup.bigintSum, 0);
+ /**
+  * `bigint` monoid under multiplication.
+  *
+- * The `empty` value is `1n`.
++ * The `empty` value is `1`.
+  *
+  * @category instances
+  * @since 1.0.0
+  */
+ exports.bigintSum = bigintSum;
+-const bigintMultiply = /*#__PURE__*/fromSemigroup(semigroup.bigintMultiply, 1n);
++const bigintMultiply = /*#__PURE__*/fromSemigroup(semigroup.bigintMultiply, 1);
+ /**
+  * `boolean` monoid under conjunction.
+  *
+diff --git a/node_modules/@fp-ts/core/typeclass/Semigroup.js b/node_modules/@fp-ts/core/typeclass/Semigroup.js
+index 98c2092..088e435 100644
+--- a/node_modules/@fp-ts/core/typeclass/Semigroup.js
++++ b/node_modules/@fp-ts/core/typeclass/Semigroup.js
+@@ -70,13 +70,13 @@ const bigintSum = /*#__PURE__*/make((self, that) => self + that);
+  */
+ exports.bigintSum = bigintSum;
+ const bigintMultiply = /*#__PURE__*/make((self, that) => self * that, (self, collection) => {
+-  if (self === 0n) {
+-    return 0n;
++  if (self === 0) {
++    return 0;
+   }
+   let out = self;
+   for (const n of collection) {
+-    if (n === 0n) {
+-      return 0n;
++    if (n === 0) {
++      return 0;
+     }
+     out = out * n;
+   }

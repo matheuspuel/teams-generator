@@ -3,8 +3,11 @@ lockfileVersion: 5.4
 specifiers:
   '@babel/core': ^7.19.3
   '@babel/plugin-proposal-export-namespace-from': ^7.17.12
+  '@effect/data': 0.1.2
   '@expo/config-types': 48.0.0
   '@expo/vector-icons': 13.0.0
+  '@fp-ts/core': 0.2.1
+  '@fp-ts/optic': 0.2.0
   '@react-native-async-storage/async-storage': ~1.17.11
   '@react-navigation/native': ^6.0.13
   '@react-navigation/stack': ^6.3.4
@@ -49,8 +52,11 @@ specifiers:
   typescript: ^4.9.3
 
 dependencies:
+  '@effect/data': 0.1.2
   '@expo/config-types': 48.0.0
   '@expo/vector-icons': 13.0.0
+  '@fp-ts/core': 0.2.1
+  '@fp-ts/optic': 0.2.0
   '@react-native-async-storage/async-storage': 1.17.11_react-native@0.71.3
   '@react-navigation/native': 6.1.6_yqouayos4dnow7nnkhah4yzuzq
   '@react-navigation/stack': 6.3.16_pf4j4f7edywtcmcmtmj6rq4iri
@@ -1455,6 +1461,12 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
+  /@effect/data/0.1.2:
+    resolution: {integrity: sha512-X0zlbWN/po6LxMQRxRAdIJMiBNpp8ib7FpskVeDmTlJ2id+SrcFoE4R/QnW1YkD2WvnPH2s7AtNLT8Xwx7+GnQ==}
+    dependencies:
+      '@fp-ts/core': 0.2.1
+    dev: false
+
   /@egjs/hammerjs/2.0.17:
     resolution: {integrity: sha512-XQsZgjm2EcVUiZQf11UBJQfmZeEmOW8DpI1gsFeln6w0ae0ii4dMQEQ0kjl6DspdWX1aGY1/loyXnP0JS06e/A==}
     engines: {node: '>=0.8.0'}
@@ -1844,6 +1856,17 @@ packages:
       chalk: 4.1.2
       find-up: 5.0.0
       js-yaml: 4.1.0
+    dev: false
+
+  /@fp-ts/core/0.2.1:
+    resolution: {integrity: sha512-gjp/LTCsxqe8KYvPOcMcsEXT+J6tKC4v1nNqK4RZsZcB6pMcQgrullh5Oa371O9WHSULivpgOvjWyeioFevg5g==}
+    dev: false
+
+  /@fp-ts/optic/0.2.0:
+    resolution: {integrity: sha512-Cr3A05Q4kMXx5JBP71FOBLqyuE9g0Ol3XMkm6q75QDl2rElrTO/kQTabb3VAEgEf8t5SQvjEMK/9JFDIBZ1SSA==}
+    dependencies:
+      '@effect/data': 0.1.2
+      '@fp-ts/core': 0.2.1
     dev: false
 
   /@gar/promisify/1.1.3:

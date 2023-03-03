@@ -1,47 +1,22 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit'
-import { $, T } from 'fp'
-import throttle from 'lodash.throttle'
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import {
-  hydrateReducer,
-  makeHydrateAction,
-  saveState,
-} from 'src/redux/slices/hydrated'
-import groups from './slices/groups'
-import hydrated from './slices/hydrated'
-import parameters from './slices/parameters'
-import preview from './slices/preview'
+import { defaultParameters, Parameters } from 'src/datatypes/Parameters'
+import { makeStore, Store } from 'src/utils/store'
+import { selectorHook, SelectorHook } from 'src/utils/store/react/selector'
+import { emptyGroups, GroupsState } from './slices/groups'
 
-const rootReducer = combineReducers({
-  preview,
-  hydrated,
-  groups,
-  parameters,
+export type RootState = {
+  core: { isLoaded: boolean }
+  parameters: Parameters
+  groups: GroupsState
+}
+
+export type AppStore = Store<RootState>
+
+export type AppStoreEnv = { store: AppStore }
+
+export const useAppSelector: SelectorHook<RootState> = selectorHook
+
+export const store: AppStore = makeStore<RootState>({
+  core: { isLoaded: false },
+  groups: emptyGroups,
+  parameters: defaultParameters,
 })
-
-const reducer: typeof rootReducer = (state, action) =>
-  hydrateReducer(rootReducer(state, action), action)
-
-const store = configureStore({
-  reducer,
-  middleware: getDefaultMiddleware =>
-    getDefaultMiddleware({
-      serializableCheck: false,
-    }),
-})
-export default store
-
-export type RootState = ReturnType<typeof rootReducer>
-export type AppDispatch = typeof store.dispatch
-
-export const useAppDispatch = () => useDispatch<AppDispatch>()
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
-
-// eslint-disable-next-line functional/no-expression-statement
-store.subscribe(throttle(() => void store.dispatch(saveState()), 1000))
-
-// eslint-disable-next-line functional/no-expression-statement
-void $(
-  makeHydrateAction,
-  T.chainFirstIOK(a => () => store.dispatch(a)),
-)()

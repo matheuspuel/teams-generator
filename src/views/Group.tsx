@@ -12,18 +12,30 @@ import {
   View,
 } from 'src/components/hyperscript/reactNative'
 import { Player, PlayerIsActive, RatingShow } from 'src/datatypes/Player'
+import { AppEnv, useEnv } from 'src/Env'
 import { useDisclose } from 'src/hooks/useDisclose'
-import { getGroupById, groupsSlice } from 'src/redux/slices/groups'
-import { getParameters, parametersSlice } from 'src/redux/slices/parameters'
-import { AppDispatch, useAppDispatch, useAppSelector } from 'src/redux/store'
+import { execute } from 'src/redux'
+import {
+  getGroupById,
+  setAllPlayersActive,
+  togglePlayerActive,
+} from 'src/redux/slices/groups'
+import {
+  decrementTeamsCount,
+  getParameters,
+  incrementTeamsCount,
+  togglePosition,
+  toggleRating,
+} from 'src/redux/slices/parameters'
+import { useAppSelector } from 'src/redux/store'
 import { RootStackScreenProps } from 'src/routes/RootStack'
 import { theme } from 'src/theme'
 
 export const Group = (props: RootStackScreenProps<'Group'>) => {
   const { navigation, route } = props
   const { id } = route.params
-  const dispatch = useAppDispatch()
-  const group = useAppSelector(getGroupById(id), O.getEq(Eq.eqStrict).equals)
+  const env = useEnv()
+  const group = useAppSelector(getGroupById(id), O.getEq(Eq.eqStrict))
   const modalParameters = useDisclose()
 
   const players: Array<Player> = $(
@@ -48,13 +60,9 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
                   ? theme.colors.primary[700]
                   : undefined,
               }),
-              onPress: () =>
-                dispatch(
-                  groupsSlice.actions.setAllPlayersActive({
-                    groupId: id,
-                    active: !allActive,
-                  }),
-                ),
+              onPress: execute(
+                setAllPlayersActive({ groupId: id, active: !allActive }),
+              )(env),
             })([
               MaterialCommunityIcons({
                 name: 'checkbox-multiple-outline',
@@ -83,8 +91,7 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
     FlatList({
       data: players,
       keyExtractor: ({ id }) => id,
-      renderItem: ({ item }) =>
-        Item({ data: item, parentProps: props, dispatch }),
+      renderItem: ({ item }) => Item({ data: item, parentProps: props, env }),
       initialNumToRender: 20,
     }),
     Pressable({
@@ -106,11 +113,10 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
 
 const Item = (props: {
   data: Player
-
   parentProps: RootStackScreenProps<'Group'>
-  dispatch: AppDispatch
+  env: AppEnv
 }) => {
-  const { dispatch } = props
+  const { env } = props
   const { navigation, route } = props.parentProps
   const { id: groupId } = route.params
   const { id, name, position, rating, active } = props.data
@@ -130,10 +136,7 @@ const Item = (props: {
     })([
       Pressable({
         style: { marginRight: 8 },
-        onPress: () =>
-          dispatch(
-            groupsSlice.actions.togglePlayerActive({ groupId, playerId: id }),
-          ),
+        onPress: execute(togglePlayerActive({ groupId, playerId: id }))(env),
       })(({ pressed }) =>
         active
           ? View({
@@ -199,7 +202,7 @@ const ParametersModal = (
 ) => {
   const { navigation, route } = props
   const { id } = route.params
-  const dispatch = useAppDispatch()
+  const env = useEnv()
   const parameters = useAppSelector(getParameters)
   return Modal({
     transparent: true,
@@ -266,8 +269,7 @@ const ParametersModal = (
                   : undefined,
                 borderRadius: 4,
               }),
-              onPress: () =>
-                dispatch(parametersSlice.actions.decrementTeamsCount()),
+              onPress: execute(decrementTeamsCount)(env),
             })([
               MaterialIcons({
                 name: 'remove',
@@ -290,8 +292,7 @@ const ParametersModal = (
                   : undefined,
                 borderRadius: 4,
               }),
-              onPress: () =>
-                dispatch(parametersSlice.actions.incrementTeamsCount()),
+              onPress: execute(incrementTeamsCount)(env),
             })([
               MaterialIcons({
                 name: 'add',
@@ -305,7 +306,7 @@ const ParametersModal = (
           ]),
           Pressable({
             style: { padding: 4 },
-            onPress: () => dispatch(parametersSlice.actions.togglePosition()),
+            onPress: execute(togglePosition)(env),
           })(({ pressed }) =>
             View({ style: { flexDirection: 'row', alignItems: 'center' } })([
               parameters.position
@@ -342,7 +343,7 @@ const ParametersModal = (
           ),
           Pressable({
             style: { padding: 4 },
-            onPress: () => dispatch(parametersSlice.actions.toggleRating()),
+            onPress: execute(toggleRating)(env),
           })(({ pressed }) =>
             View({ style: { flexDirection: 'row', alignItems: 'center' } })([
               parameters.rating

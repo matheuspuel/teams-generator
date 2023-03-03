@@ -15,8 +15,11 @@
     "postversion": "SET APP_VARIANT=production&& expo-cli publish --release-channel production"
   },
   "dependencies": {
+    "@effect/data": "0.1.2",
     "@expo/config-types": "48.0.0",
     "@expo/vector-icons": "13.0.0",
+    "@fp-ts/core": "0.2.1",
+    "@fp-ts/optic": "0.2.0",
     "@react-native-async-storage/async-storage": "~1.17.11",
     "@react-navigation/native": "^6.0.13",
     "@react-navigation/stack": "^6.3.4",

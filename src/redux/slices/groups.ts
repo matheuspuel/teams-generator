@@ -1,135 +1,20 @@
-import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { $, $f, A, constant, O, Rec, Tup } from 'fp'
+import { createSelector } from '@reduxjs/toolkit'
+import { $, $f, A, constant, O, Rec, RIO, Tup } from 'fp'
 import { Group } from 'src/datatypes/Group'
 import { Player } from 'src/datatypes/Player'
-import { RootState } from 'src/redux/store'
 import { generateId, Id } from 'src/utils/Entity'
+import { Optic } from 'src/utils/Optic'
+import { execute, modifySApp, RootOptic } from '..'
+
+export const GroupsLens = RootOptic.at('groups')
 
 export type GroupsState = Record<Id, Group>
 
-const initialState: GroupsState = {}
+export const emptyGroups: GroupsState = {}
 
-export const groupsSlice = createSlice({
-  name: 'groups',
-  initialState: initialState,
-  reducers: {
-    add: {
-      reducer: (
-        s,
-        { payload: p }: PayloadAction<{ id: Id; name: string }>,
-      ) => ({
-        ...s,
-        [p.id]: { id: p.id, name: p.name, players: [] },
-      }),
-      prepare: (args: { name: string }) => ({
-        payload: { id: generateId(), name: args.name },
-      }),
-    },
-    edit: (s, { payload: p }: PayloadAction<{ id: Id; name: string }>) =>
-      $(
-        s,
-        Rec.modifyAt(p.id, g => ({ ...g, name: p.name })),
-        O.getOrElseW(() => s),
-      ),
-    delete: (s, { payload: p }: PayloadAction<{ id: Id }>) =>
-      $(s, Rec.deleteAt(p.id)),
-    addPlayer: {
-      reducer: (
-        s,
-        {
-          payload: p,
-        }: PayloadAction<{ groupId: Id; player: Omit<Player, 'active'> }>,
-      ) =>
-        $(
-          s,
-          Rec.modifyAt(p.groupId, g => ({
-            ...g,
-            players: A.append({ ...p.player, active: true })(g.players),
-          })),
-          O.getOrElseW(() => s),
-        ),
-      prepare: (args: {
-        groupId: Id
-        player: Omit<Player, 'active' | 'id'>
-      }) => ({
-        payload: {
-          ...args,
-          player: { ...args.player, id: generateId() },
-        },
-      }),
-    },
-    editPlayer: (
-      s,
-      {
-        payload: p,
-      }: PayloadAction<{ groupId: Id; player: Omit<Player, 'active'> }>,
-    ) =>
-      $(
-        s,
-        Rec.modifyAt(p.groupId, g => ({
-          ...g,
-          players: $(
-            g.players,
-            A.map(a =>
-              a.id === p.player.id ? { ...p.player, active: a.active } : a,
-            ),
-          ),
-        })),
-        O.getOrElseW(() => s),
-      ),
-    deletePlayer: (
-      s,
-      { payload: p }: PayloadAction<{ groupId: Id; playerId: Id }>,
-    ) =>
-      $(
-        s,
-        Rec.modifyAt(p.groupId, g => ({
-          ...g,
-          players: $(
-            g.players,
-            A.filter(a => a.id !== p.playerId),
-          ),
-        })),
-        O.getOrElseW(() => s),
-      ),
-    togglePlayerActive: (
-      s,
-      { payload: p }: PayloadAction<{ groupId: Id; playerId: Id }>,
-    ) =>
-      $(
-        s,
-        Rec.modifyAt(p.groupId, g => ({
-          ...g,
-          players: $(
-            g.players,
-            A.map(a => (a.id === p.playerId ? { ...a, active: !a.active } : a)),
-          ),
-        })),
-        O.getOrElseW(() => s),
-      ),
-    setAllPlayersActive: (
-      s,
-      { payload: p }: PayloadAction<{ groupId: Id; active: boolean }>,
-    ) =>
-      $(
-        s,
-        Rec.modifyAt(p.groupId, g => ({
-          ...g,
-          players: $(
-            g.players,
-            A.map(a => ({ ...a, active: p.active })),
-          ),
-        })),
-        O.getOrElseW(() => s),
-      ),
-  },
-})
+const modify = modifySApp(GroupsLens)
 
-export default groupsSlice.reducer
-
-// SELECTORS
-
-export const getGroupsRecord = (s: RootState) => s.groups
+export const getGroupsRecord = Optic.get(GroupsLens)
 
 export const getGroups = createSelector(
   getGroupsRecord,
@@ -145,4 +30,110 @@ export const getPlayer = (args: { groupId: Id; id: Id }) =>
     A.findFirst(p => p.id === args.id),
   )
 
-// ACTIONS
+const addGroup = (group: Group) => modify(gs => ({ ...gs, [group.id]: group }))
+
+export const createGroup = ({ name }: { name: string }) =>
+  $(
+    RIO.fromIO(generateId),
+    RIO.chain(id => execute(addGroup({ id, name, players: [] }))),
+  )
+
+export const editGroup = (args: { id: Id; name: string }) =>
+  modify(s =>
+    $(
+      s,
+      Rec.modifyAt(args.id, g => ({ ...g, name: args.name })),
+      O.getOrElseW(() => s),
+    ),
+  )
+
+export const deleteGroup = (args: { id: Id }) => modify(Rec.deleteAt(args.id))
+
+const addPlayer = (args: { groupId: Id; player: Omit<Player, 'active'> }) =>
+  modify(s =>
+    $(
+      s,
+      Rec.modifyAt(args.groupId, g => ({
+        ...g,
+        players: A.append({ ...args.player, active: true })(g.players),
+      })),
+      O.getOrElseW(() => s),
+    ),
+  )
+
+export const createPlayer = ({
+  groupId,
+  player,
+}: {
+  groupId: Id
+  player: Omit<Player, 'active' | 'id'>
+}) =>
+  $(
+    RIO.fromIO(generateId),
+    RIO.chain(id => execute(addPlayer({ groupId, player: { ...player, id } }))),
+  )
+
+export const editPlayer = (p: {
+  groupId: Id
+  player: Omit<Player, 'active'>
+}) =>
+  modify(s =>
+    $(
+      s,
+      Rec.modifyAt(p.groupId, g => ({
+        ...g,
+        players: $(
+          g.players,
+          A.map(a =>
+            a.id === p.player.id ? { ...p.player, active: a.active } : a,
+          ),
+        ),
+      })),
+      O.getOrElseW(() => s),
+    ),
+  )
+
+export const deletePlayer = (p: { groupId: Id; playerId: Id }) =>
+  modify(s =>
+    $(
+      s,
+      Rec.modifyAt(p.groupId, g => ({
+        ...g,
+        players: $(
+          g.players,
+          A.filter(a => a.id !== p.playerId),
+        ),
+      })),
+      O.getOrElseW(() => s),
+    ),
+  )
+
+export const togglePlayerActive = (p: { groupId: Id; playerId: Id }) =>
+  modify(s =>
+    $(
+      s,
+      Rec.modifyAt(p.groupId, g => ({
+        ...g,
+        players: $(
+          g.players,
+          A.map(a => (a.id === p.playerId ? { ...a, active: !a.active } : a)),
+        ),
+      })),
+      O.getOrElseW(() => s),
+    ),
+  )
+
+export const setAllPlayersActive = (p: { groupId: Id; active: boolean }) =>
+  modify(s =>
+    $(
+      s,
+      Rec.modifyAt(p.groupId, g => ({
+        ...g,
+        players: $(
+          g.players,
+          A.map(a => ({ ...a, active: p.active })),
+        ),
+      })),
+      O.getOrElseW(() => s),
+    ),
+  )

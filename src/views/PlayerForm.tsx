@@ -1,4 +1,4 @@
-import { $, A, constant, Eq, IO, IOO, none, O, RA, Rec, Str, Tup } from 'fp'
+import { $, A, constant, Eq, IOO, none, O, RA, Rec, RIO, Str, Tup } from 'fp'
 import { not } from 'fp-ts/Predicate'
 import { useLayoutEffect, useState } from 'react'
 import { Txt } from 'src/components/hyperscript/derivative'
@@ -11,8 +11,15 @@ import {
 import { Input } from 'src/components/Input'
 import { Player, Rating, RatingList, RatingShow } from 'src/datatypes/Player'
 import { Position, PositionDict, PositionOrd } from 'src/datatypes/Position'
-import { getPlayer, groupsSlice } from 'src/redux/slices/groups'
-import { useAppDispatch, useAppSelector } from 'src/redux/store'
+import { useEnv } from 'src/Env'
+import { execute } from 'src/redux'
+import {
+  createPlayer,
+  deletePlayer,
+  editPlayer,
+  getPlayer,
+} from 'src/redux/slices/groups'
+import { useAppSelector } from 'src/redux/store'
 import { RootStackScreenProps } from 'src/routes/RootStack'
 import { theme } from 'src/theme'
 
@@ -35,7 +42,7 @@ const getFormFromData = ({ name, position, rating }: Player): Form => ({
 export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
   const { navigation, route } = props
   const { id, groupId } = route.params
-  const dispatch = useAppDispatch()
+  const env = useEnv()
   const player = useAppSelector(
     $(
       id,
@@ -44,7 +51,7 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
         id => getPlayer({ groupId, id }),
       ),
     ),
-    O.getEq(Eq.eqStrict).equals,
+    O.getEq(Eq.eqStrict),
   )
   const [form, setForm] = useState<Form>(
     $(player, O.match(constant(initialFormState), getFormFromData)),
@@ -70,13 +77,14 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
                     : undefined,
                 }),
                 onPress: $(
-                  groupsSlice.actions.deletePlayer({
-                    groupId,
-                    playerId: id.value,
-                  }),
-                  a => () => dispatch(a),
-                  IO.chainFirst(() => () => navigation.goBack()),
-                ),
+                  execute(
+                    deletePlayer({
+                      groupId,
+                      playerId: id.value,
+                    }),
+                  ),
+                  RIO.chainFirstIOK(() => () => navigation.goBack()),
+                )(env),
               })([
                 MaterialIcons({ name: 'delete', color: tintColor, size: 24 }),
               ]),
@@ -285,17 +293,9 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
         IOO.map(() => id),
         IOO.chainFirstIOK(
           O.matchW(
-            () => (): unknown =>
-              dispatch(
-                groupsSlice.actions.addPlayer({ groupId, player: form }),
-              ),
-            id => (): unknown =>
-              dispatch(
-                groupsSlice.actions.editPlayer({
-                  groupId,
-                  player: { ...form, id },
-                }),
-              ),
+            () => createPlayer({ groupId, player: form })(env),
+            id =>
+              execute(editPlayer({ groupId, player: { ...form, id } }))(env),
           ),
         ),
         IOO.chainFirstIOK(() => () => setForm(initialFormState)),

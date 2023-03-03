@@ -31,7 +31,7 @@ import { div, toFixedLocale } from 'src/utils/Number'
 export const ResultView = (props: RootStackScreenProps<'Result'>) => {
   const { navigation, route } = props
   const { id } = route.params
-  const group = useAppSelector(getGroupById(id), O.getEq(Eq.eqStrict).equals)
+  const group = useAppSelector(getGroupById(id), O.getEq(Eq.eqStrict))
   const parameters = useAppSelector(getParameters)
   const [result, setResult] = useState<Option<Array<Array<Player>>>>(none)
 

@@ -13,8 +13,16 @@ import {
 } from 'src/components/hyperscript/reactNative'
 import { Input } from 'src/components/Input'
 import { Group } from 'src/datatypes/Group'
-import { getGroupById, getGroups, groupsSlice } from 'src/redux/slices/groups'
-import { useAppDispatch, useAppSelector } from 'src/redux/store'
+import { useEnv } from 'src/Env'
+import { execute } from 'src/redux'
+import {
+  createGroup,
+  deleteGroup,
+  editGroup,
+  getGroupById,
+  getGroups,
+} from 'src/redux/slices/groups'
+import { useAppSelector } from 'src/redux/store'
 import { RootStackScreenProps } from 'src/routes/RootStack'
 import { theme } from 'src/theme'
 import { Id } from 'src/utils/Entity'
@@ -120,7 +128,7 @@ const GroupModal = (
     onClose: () => void
   },
 ) => {
-  const dispatch = useAppDispatch()
+  const env = useEnv()
   const group = useAppSelector(
     $(
       props.state,
@@ -129,7 +137,7 @@ const GroupModal = (
       O.map(getGroupById),
       O.getOrElseW(() => () => none),
     ),
-    O.getEq(Eq.eqStrict).equals,
+    O.getEq(Eq.eqStrict),
   )
   const [groupName, setGroupName] = useState('')
 
@@ -280,15 +288,9 @@ const GroupModal = (
                     IOO.fromIO(props.onClose),
                     IOO.chainOptionK(() => group),
                     IOO.matchEW(
-                      () => (): unknown =>
-                        dispatch(groupsSlice.actions.add({ name: groupName })),
-                      g => (): unknown =>
-                        dispatch(
-                          groupsSlice.actions.edit({
-                            id: g.id,
-                            name: groupName,
-                          }),
-                        ),
+                      () => createGroup({ name: groupName })(env),
+                      g =>
+                        execute(editGroup({ id: g.id, name: groupName }))(env),
                     ),
                     IO.chainFirst(() => () => setGroupName('')),
                   ),
@@ -321,9 +323,9 @@ const DeleteGroupModal = (
       O.map(getGroupById),
       O.getOrElseW(() => () => none),
     ),
-    O.getEq(Eq.eqStrict).equals,
+    O.getEq(Eq.eqStrict),
   )
-  const dispatch = useAppDispatch()
+  const env = useEnv()
   return Modal({
     transparent: true,
     visible: O.isSome(props.state),
@@ -435,9 +437,7 @@ const DeleteGroupModal = (
               onPress: $(
                 IOO.fromIO(props.onClose),
                 IOO.chainOptionK(() => group),
-                IOO.chainIOK(
-                  g => () => dispatch(groupsSlice.actions.delete({ id: g.id })),
-                ),
+                IOO.chainIOK(g => execute(deleteGroup({ id: g.id }))(env)),
               ),
             })([Txt({ style: { color: theme.colors.white } })('Excluir')]),
           ]),

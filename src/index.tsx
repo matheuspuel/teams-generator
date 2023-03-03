@@ -1,16 +1,32 @@
-import './utils/ignoreLogs'
-
+import { get } from '@fp-ts/optic'
+import * as SplashScreen from 'expo-splash-screen'
 import { StatusBar } from 'expo-status-bar'
-import { Provider } from 'react-redux'
-import { Splash } from 'src/views/Splash'
-import store from './redux/store'
+import { AppEnv, EnvProvider } from './Env'
+import { LoadedLens } from './redux/slices/core/loading'
+import { store, useAppSelector } from './redux/store'
 import Router from './routes'
+import { runStartupTasks } from './startup'
+
+// eslint-disable-next-line functional/no-expression-statement
+void SplashScreen.preventAutoHideAsync()
+
+const env: AppEnv = { store }
+
+// eslint-disable-next-line functional/no-expression-statement
+void runStartupTasks(env)()
 
 export const AppIndex = () => (
-  <Provider store={store}>
-    <StatusBar style="dark" />
-    <Splash>
-      <Router />
-    </Splash>
-  </Provider>
+  <EnvProvider env={env}>
+    <UI />
+  </EnvProvider>
 )
+
+const UI = () => {
+  const loaded = useAppSelector(get(LoadedLens))
+  return (
+    <>
+      <StatusBar style="dark" />
+      {loaded && <Router />}
+    </>
+  )
+}
