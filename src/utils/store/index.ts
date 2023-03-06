@@ -1,5 +1,7 @@
-import { $, $f, IO, State, Tup } from 'fp'
+import { $, $f, constVoid, Eq, IO, O, State, Tup } from 'fp'
+import { not } from 'fp-ts/Predicate'
 import { legacy_createStore, Store as ReduxStore } from 'redux'
+import { equals } from 'src/utils/Eq'
 
 export type Store<S> = {
   _reduxStore: ReduxStore
@@ -17,15 +19,23 @@ export const makeStore = <S>(initialState: S): Store<S> => {
     execute: f =>
       $(
         () => reduxStore.getState(),
-        IO.map(f),
-        // eslint-disable-next-line functional/no-return-void
-        IO.chainFirst(
-          $f(Tup.snd, nextState => () => {
-            // eslint-disable-next-line functional/no-expression-statement
-            reduxStore.dispatch({ type: 'modify', value: nextState })
-          }),
+        IO.chain(prev =>
+          $(
+            IO.of(f(prev)),
+            IO.chainFirst(
+              $f(
+                Tup.snd,
+                O.fromPredicate(not(equals(Eq.eqStrict)(prev))),
+                O.match(
+                  () => constVoid,
+                  next => () =>
+                    reduxStore.dispatch({ type: 'modify', value: next }),
+                ),
+              ),
+            ),
+            IO.map(Tup.fst),
+          ),
         ),
-        IO.map(Tup.fst),
       ),
     subscribe: effect => {
       const unsubscribe = reduxStore.subscribe(effect)

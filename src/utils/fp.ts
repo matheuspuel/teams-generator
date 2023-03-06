@@ -4,7 +4,7 @@ export * as Bool from 'fp-ts/boolean'
 export * as Console from 'fp-ts/Console'
 export * as E from 'fp-ts/Either'
 export * as EM from 'fp-ts/Endomorphism'
-export * as Eq from 'fp-ts/Eq'
+export * as Eq from './Eq'
 export {
   absurd,
   apply,

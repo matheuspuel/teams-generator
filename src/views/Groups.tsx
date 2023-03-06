@@ -6,16 +6,18 @@ import {
   apply,
   constVoid,
   Eq,
+  identity,
   IO,
   IOO,
   none,
   O,
   Option,
+  S,
   some,
   Str,
 } from 'fp'
 import { useLayoutEffect } from 'react'
-import { Txt } from 'src/components/hyperscript/derivative'
+import { Input, Txt } from 'src/components/hyperscript/derivative'
 import { MaterialIcons } from 'src/components/hyperscript/icons'
 import {
   FlatList,
@@ -24,7 +26,6 @@ import {
   Text,
   View,
 } from 'src/components/hyperscript/reactNative'
-import { Input } from 'src/components/Input'
 import { Group } from 'src/datatypes/Group'
 import { useEnv } from 'src/Env'
 import { execute, replaceSApp } from 'src/redux'
@@ -42,7 +43,7 @@ import {
   setUpsertGroupName,
   UiLens,
 } from 'src/redux/slices/ui'
-import { useAppSelector } from 'src/redux/store'
+import { RootState, useAppSelector } from 'src/redux/store'
 import { RootStackScreenProps } from 'src/routes/RootStack'
 import { theme } from 'src/theme'
 import { Id } from 'src/utils/Entity'
@@ -84,9 +85,17 @@ export const Groups = (props: RootStackScreenProps<'Groups'>) => {
           data: item,
           parentProps: props,
           openEdit: id =>
-            execute(setUpsertGroupModal(some({ id: O.some(id), name: '' })))(
-              env,
-            ),
+            $(
+              S.gets(getGroupById(id)),
+              S.chain(
+                O.match(
+                  () => S.modify<RootState>(identity),
+                  g =>
+                    setUpsertGroupModal(some({ id: O.some(id), name: g.name })),
+                ),
+              ),
+              execute,
+            )(env),
           openDelete: id => execute(setDeleteGroupModal(some({ id })))(env),
         }),
     }),
@@ -106,8 +115,8 @@ export const Groups = (props: RootStackScreenProps<'Groups'>) => {
 const Item = (props: {
   data: Group
   parentProps: RootStackScreenProps<'Groups'>
-  openEdit: (id: Id) => void
-  openDelete: (id: Id) => void
+  openEdit: (id: Id) => IO<void>
+  openDelete: (id: Id) => IO<void>
 }) => {
   const { name, id } = props.data
   const { navigation } = props.parentProps
@@ -136,7 +145,7 @@ const Item = (props: {
         style: { flex: 1, fontWeight: 'bold', color: theme.colors.darkText },
       })(name),
       Pressable({
-        onPress: () => props.openEdit(id),
+        onPress: props.openEdit(id),
         style: { paddingHorizontal: 4 },
       })([
         MaterialIcons({
@@ -147,7 +156,7 @@ const Item = (props: {
       ]),
       Pressable({
         style: { paddingHorizontal: 4 },
-        onPress: () => props.openDelete(id),
+        onPress: props.openDelete(id),
       })([
         MaterialIcons({
           name: 'delete',
@@ -254,7 +263,7 @@ const GroupModal = (
                 Input({
                   placeholder: 'Ex: Futebol de quinta',
                   value: form.name,
-                  onChangeText: $f(setUpsertGroupName, execute, apply(env)),
+                  onChange: $f(setUpsertGroupName, execute, apply(env)),
                   placeholderTextColor: theme.colors.gray[400],
                   cursorColor: theme.colors.darkText,
                   style: ({ isFocused }) => ({

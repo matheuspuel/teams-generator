@@ -1,5 +1,5 @@
 import { get } from '@fp-ts/optic'
-import { $, A, constVoid, Eq, IO, O } from 'fp'
+import { $, $f, A, constVoid, Eq, IO, O, S } from 'fp'
 import { useLayoutEffect } from 'react'
 import { Txt } from 'src/components/hyperscript/derivative'
 import {
@@ -12,23 +12,30 @@ import {
   Pressable,
   View,
 } from 'src/components/hyperscript/reactNative'
+import { Parameters } from 'src/datatypes/Parameters'
 import { Player, PlayerIsActive, RatingShow } from 'src/datatypes/Player'
 import { AppEnv, useEnv } from 'src/Env'
 import { execute, replaceSApp } from 'src/redux'
 import {
   getGroupById,
+  getPlayer,
   setAllPlayersActive,
   togglePlayerActive,
 } from 'src/redux/slices/groups'
 import {
   decrementTeamsCount,
-  getParameters,
   incrementTeamsCount,
+  ParametersLens,
   togglePosition,
   toggleRating,
 } from 'src/redux/slices/parameters'
+import {
+  blankPlayerForm,
+  getPlayerFormFromData,
+  PlayerFormLens,
+} from 'src/redux/slices/playerForm'
 import { UiLens } from 'src/redux/slices/ui'
-import { useAppSelector } from 'src/redux/store'
+import { RootState, useAppSelector } from 'src/redux/store'
 import { RootStackScreenProps } from 'src/routes/RootStack'
 import { theme } from 'src/theme'
 import { Id } from 'src/utils/Entity'
@@ -36,6 +43,7 @@ import { Id } from 'src/utils/Entity'
 export const Group = (props: RootStackScreenProps<'Group'>) => {
   const { navigation } = props
   const env = useEnv()
+  const parameters = useAppSelector(get(ParametersLens))
   const groupId = useAppSelector(get(UiLens.at('selectedGroupId')))
   const group = useAppSelector(
     s =>
@@ -101,9 +109,11 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
               onPress: $(
                 () => navigation.navigate('Player'),
                 IO.chain(() =>
-                  execute(replaceSApp(UiLens.at('selectedPlayerId'))(O.none))(
-                    env,
-                  ),
+                  $(
+                    replaceSApp(UiLens.at('selectedPlayerId'))(O.none),
+                    S.apFirst(replaceSApp(PlayerFormLens)(blankPlayerForm)),
+                    execute,
+                  )(env),
                 ),
               ),
             })([MaterialIcons({ name: 'add', color: tintColor, size: 24 })]),
@@ -139,7 +149,9 @@ export const Group = (props: RootStackScreenProps<'Group'>) => {
         'Sortear',
       ),
     ]),
-    ...(modalParameters ? [ParametersModal(props)] : []),
+    ...(modalParameters
+      ? [ParametersModal({ ...props, env, parameters })]
+      : []),
   ])
 }
 
@@ -156,7 +168,22 @@ const Item = (props: {
     onPress: $(
       () => navigation.navigate('Player'),
       IO.chain(() =>
-        execute(replaceSApp(UiLens.at('selectedPlayerId'))(O.some(id)))(env),
+        $(
+          S.gets(getPlayer({ groupId, id })),
+          S.chain(
+            O.match(
+              () => S.of<RootState, void>(undefined),
+              $f(
+                getPlayerFormFromData,
+                replaceSApp(PlayerFormLens),
+                S.apFirst(
+                  replaceSApp(UiLens.at('selectedPlayerId'))(O.some(id)),
+                ),
+              ),
+            ),
+          ),
+          execute,
+        )(env),
       ),
     ),
   })([
@@ -234,11 +261,15 @@ const Item = (props: {
   ])
 }
 
-const ParametersModal = (props: RootStackScreenProps<'Group'>) => {
-  const { navigation } = props
-  const env = useEnv()
-  const parameters = useAppSelector(getParameters)
-  return Modal({
+const ParametersModal = ({
+  env,
+  parameters,
+  navigation,
+}: RootStackScreenProps<'Group'> & {
+  env: AppEnv
+  parameters: Parameters
+}) =>
+  Modal({
     transparent: true,
     style: { flex: 1 },
     animationType: 'fade',
@@ -458,4 +489,3 @@ const ParametersModal = (props: RootStackScreenProps<'Group'>) => {
       ]),
     ]),
   ])
-}

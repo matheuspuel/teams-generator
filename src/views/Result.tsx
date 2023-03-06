@@ -1,3 +1,4 @@
+import { get } from '@fp-ts/optic'
 import { $, $f, A, constVoid, Eq, IO, none, O, Option, Ord, some, T } from 'fp'
 import { useEffect, useLayoutEffect, useState } from 'react'
 import { Share } from 'react-native'
@@ -23,15 +24,23 @@ import {
 } from 'src/datatypes/Player'
 import { getGroupById } from 'src/redux/slices/groups'
 import { getParameters } from 'src/redux/slices/parameters'
+import { UiLens } from 'src/redux/slices/ui'
 import { useAppSelector } from 'src/redux/store'
 import { RootStackScreenProps } from 'src/routes/RootStack'
 import { theme } from 'src/theme'
 import { div, toFixedLocale } from 'src/utils/Number'
 
 export const ResultView = (props: RootStackScreenProps<'Result'>) => {
-  const { navigation, route } = props
-  const { id } = route.params
-  const group = useAppSelector(getGroupById(id), O.getEq(Eq.eqStrict))
+  const { navigation } = props
+  const id = useAppSelector(get(UiLens.at('selectedGroupId')))
+  const group = useAppSelector(
+    s =>
+      $(
+        id,
+        O.chain(id => getGroupById(id)(s)),
+      ),
+    O.getEq(Eq.eqStrict),
+  )
   const parameters = useAppSelector(getParameters)
   const [result, setResult] = useState<Option<Array<Array<Player>>>>(none)
 

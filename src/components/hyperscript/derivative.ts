@@ -127,12 +127,15 @@ const InputAdapt = ({
   ...otherProps
 }: Omit<
   Exclude<Parameters<typeof TextInput>[0], null | undefined>,
-  'onChangeText' | 'onChange' | 'onFocus' | 'onBlur'
+  'onChangeText' | 'onChange' | 'onFocus' | 'onBlur' | 'style'
 > & {
   value: string
   onChange: (value: string) => IO<void>
   onFocus?: IO<void>
   onBlur?: IO<void>
+  style?:
+    | StyleProp<TextStyle>
+    | ((state: { isFocused: boolean }) => StyleProp<TextStyle>)
 }) => {
   const [isFocused, setIsFocused] = useState(false)
   return TextInput({
@@ -160,7 +163,9 @@ const InputAdapt = ({
         borderRadius: 4,
         backgroundColor: theme.colors.white,
       },
-      otherProps.style,
+      $(otherProps.style, s =>
+        typeof s === 'function' ? s({ isFocused }) : s,
+      ),
     ],
   })
 }

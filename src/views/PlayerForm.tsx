@@ -1,21 +1,23 @@
 import { get } from '@fp-ts/optic'
-import { $, $f, A, apply, IOO, O, RA, Rec, RIO, Str, Tup } from 'fp'
+import { HeaderButtonProps } from '@react-navigation/elements'
+import { $, $f, A, apply, constVoid, IOO, O, RA, Rec, RIO, Str, Tup } from 'fp'
+import { sequenceS } from 'fp-ts/lib/Apply'
 import { not } from 'fp-ts/Predicate'
 import { useLayoutEffect } from 'react'
-import { Txt } from 'src/components/hyperscript/derivative'
+import { Input, Txt } from 'src/components/hyperscript/derivative'
 import { MaterialIcons } from 'src/components/hyperscript/icons'
 import {
   Pressable,
   ScrollView,
   View,
 } from 'src/components/hyperscript/reactNative'
-import { Input } from 'src/components/Input'
 import { RatingList, RatingShow } from 'src/datatypes/Player'
 import { PositionDict, PositionOrd } from 'src/datatypes/Position'
 import { useEnv } from 'src/Env'
 import { execute, replaceSApp } from 'src/redux'
 import { createPlayer, deletePlayer, editPlayer } from 'src/redux/slices/groups'
-import { blankPlayerForm, PlayerFormLens } from 'src/redux/slices/playerForm'
+import { PlayerFormLens } from 'src/redux/slices/playerForm'
+import { UiLens } from 'src/redux/slices/ui'
 import { useAppSelector } from 'src/redux/store'
 import { RootStackScreenProps } from 'src/routes/RootStack'
 import { theme } from 'src/theme'
@@ -24,34 +26,36 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
   const { navigation } = props
   const env = useEnv()
   const form = useAppSelector(get(PlayerFormLens))
+  const id = useAppSelector(get(UiLens.at('selectedPlayerId')))
+  const groupId = useAppSelector(get(UiLens.at('selectedGroupId')))
 
   useLayoutEffect(
     () =>
       navigation.setOptions({
-        headerRight: O.isNone(id)
-          ? undefined
-          : ({ tintColor }) =>
-              Pressable({
-                style: ({ pressed }) => ({
-                  marginRight: 4,
-                  padding: 8,
-                  borderRadius: 100,
-                  backgroundColor: pressed
-                    ? theme.colors.primary[700]
-                    : undefined,
-                }),
-                onPress: $(
-                  execute(
-                    deletePlayer({
-                      groupId,
-                      playerId: id.value,
-                    }),
-                  ),
-                  RIO.chainFirstIOK(() => () => navigation.goBack()),
-                )(env),
-              })([
-                MaterialIcons({ name: 'delete', color: tintColor, size: 24 }),
-              ]),
+        headerRight: $(
+          sequenceS(O.Apply)({ id, groupId }),
+          O.map(
+            ({ id, groupId }) =>
+              ({ tintColor }: HeaderButtonProps) =>
+                Pressable({
+                  style: ({ pressed }) => ({
+                    marginRight: 4,
+                    padding: 8,
+                    borderRadius: 100,
+                    backgroundColor: pressed
+                      ? theme.colors.primary[700]
+                      : undefined,
+                  }),
+                  onPress: $(
+                    execute(deletePlayer({ groupId, playerId: id })),
+                    RIO.chainFirstIOK(() => () => navigation.goBack()),
+                  )(env),
+                })([
+                  MaterialIcons({ name: 'delete', color: tintColor, size: 24 }),
+                ]),
+          ),
+          O.toUndefined,
+        ),
       }),
     [],
   )
@@ -73,7 +77,7 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
           placeholder: 'Ex: Pedro',
           placeholderTextColor: theme.colors.gray[400],
           value: form.name,
-          onChangeText: $f(
+          onChange: $f(
             replaceSApp(PlayerFormLens.at('name')),
             execute,
             apply(env),
@@ -266,16 +270,24 @@ export const PlayerView = (props: RootStackScreenProps<'Player'>) => {
         form.name,
         IOO.fromPredicate(not(Str.isEmpty)),
         IOO.chainFirstIOK(() => () => navigation.goBack()),
-        IOO.map(() => id),
-        IOO.chainFirstIOK(
-          O.matchW(
-            () => createPlayer({ groupId, player: form })(env),
-            id =>
-              execute(editPlayer({ groupId, player: { ...form, id } }))(env),
-          ),
-        ),
         IOO.chainFirstIOK(() =>
-          execute(replaceSApp(PlayerFormLens)(blankPlayerForm))(env),
+          $(
+            groupId,
+            O.matchW(
+              () => constVoid,
+              groupId =>
+                $(
+                  id,
+                  O.matchW(
+                    () => createPlayer({ groupId, player: form })(env),
+                    id =>
+                      execute(editPlayer({ groupId, player: { ...form, id } }))(
+                        env,
+                      ),
+                  ),
+                ),
+            ),
+          ),
         ),
       ),
     })([

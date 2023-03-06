@@ -12,7 +12,11 @@ export const blankPlayerForm: PlayerForm = {
   rating: 5,
 }
 
-const getFormFromData = ({ name, position, rating }: Player): PlayerForm => ({
+export const getPlayerFormFromData = ({
+  name,
+  position,
+  rating,
+}: Player): PlayerForm => ({
   name,
   position,
   rating,
