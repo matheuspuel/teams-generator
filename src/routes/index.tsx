@@ -20,25 +20,3 @@ const Navigator = () => (
 )
 
 export default Navigator
-
-// const navigate: typeof navigationRef['navigate'] = (...args) => {
-//   if (navigationRef.isReady()) {
-//     navigationRef.navigate(...(args as any))
-//   }
-// }
-
-// const popToTop = () => {
-//   if (navigationRef.isReady()) {
-//     if (navigationRef.canGoBack()) {
-//       navigationRef.dispatch(StackActions.popToTop())
-//     }
-//   }
-// }
-
-// const replace: RootStackScreenProps['navigation']['replace'] = (...args) => {
-//   if (navigationRef.isReady()) {
-//     navigationRef.dispatch(StackActions.replace(...(args as [any, any])))
-//   }
-// }
-
-// export const RootNavigation = { navigate, popToTop, replace }

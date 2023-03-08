@@ -1,6 +1,8 @@
 import { get } from '@fp-ts/optic'
 import * as SplashScreen from 'expo-splash-screen'
-import { StatusBar } from 'expo-status-bar'
+import React from 'react'
+import { StatusBar } from './components/hyperscript/expo'
+import { Fragment } from './components/hyperscript/react'
 import { AppEnv, EnvProvider } from './Env'
 import { LoadedLens } from './redux/slices/core/loading'
 import { store, useAppSelector } from './redux/store'
@@ -15,18 +17,11 @@ const env: AppEnv = { store }
 // eslint-disable-next-line functional/no-expression-statement
 void runStartupTasks(env)()
 
-export const AppIndex = () => (
-  <EnvProvider env={env}>
-    <UI />
-  </EnvProvider>
-)
+export const AppIndex = () => EnvProvider({ env })(UI)
 
-const UI = () => {
+const UI_ = () => {
   const loaded = useAppSelector(get(LoadedLens))
-  return (
-    <>
-      <StatusBar style="dark" />
-      {loaded && <Router />}
-    </>
-  )
+  return Fragment([StatusBar({ style: 'dark' }), ...(loaded ? [Router()] : [])])
 }
+
+const UI = React.createElement(UI_)

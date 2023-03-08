@@ -1,6 +1,17 @@
 /* eslint-disable react/display-name */
 import React from 'react'
 
+export const makeComponent =
+  <P extends { children?: unknown }>(type: React.FunctionComponent<P>) =>
+  (props?: (React.Attributes & P) | null) =>
+  (children: ReadonlyArray<React.ReactNode>) =>
+    React.createElement(type, props, ...children)
+
+export const makeComponentWithoutChildren =
+  <P extends object>(type: React.FunctionComponent<P>) =>
+  (props?: (React.Attributes & P) | null) =>
+    React.createElement(type, props)
+
 export const makeComponentFromClass =
   <
     P extends { children?: unknown },
@@ -10,12 +21,6 @@ export const makeComponentFromClass =
     type: React.ClassType<P, T, C>,
   ) =>
   (props?: (React.ClassAttributes<T> & P) | null) =>
-  (children: ReadonlyArray<React.ReactNode>) =>
-    React.createElement(type, props, ...children)
-
-export const makeComponent =
-  <P extends { children?: unknown }>(type: React.FunctionComponent<P>) =>
-  (props?: (React.Attributes & P) | null) =>
   (children: ReadonlyArray<React.ReactNode>) =>
     React.createElement(type, props, ...children)
 
