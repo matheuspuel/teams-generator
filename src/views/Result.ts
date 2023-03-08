@@ -1,10 +1,11 @@
-import { get } from '@fp-ts/optic'
-import { $, $f, A, constVoid, Eq, IO, none, O, Option, Ord, some, T } from 'fp'
-import { useEffect, useLayoutEffect, useState } from 'react'
+import { $, $f, A, constVoid, IO, O, Option, Ord, T } from 'fp'
 import { Share } from 'react-native'
-import { generateRandomBalancedTeams } from 'src/business/distribution'
 import { Txt } from 'src/components/hyperscript/derivative'
 import { MaterialIcons } from 'src/components/hyperscript/icons'
+import {
+  Header,
+  HeaderBackButton,
+} from 'src/components/hyperscript/react-navigation'
 import {
   ActivityIndicator,
   Pressable,
@@ -15,102 +16,80 @@ import {
 import {
   getRatingTotal,
   Player,
-  PlayerIsActive,
   PlayerNameOrd,
   PlayerPositionOrd,
   PlayerRatingOrd,
   RatingShow,
   TeamListShowSensitive,
 } from 'src/datatypes/Player'
-import { getGroupById } from 'src/redux/slices/groups'
-import { getParameters } from 'src/redux/slices/parameters'
-import { UiLens } from 'src/redux/slices/ui'
-import { useAppSelector } from 'src/redux/store'
-import { RootStackScreenProps } from 'src/routes/RootStack'
+import { AppEnv } from 'src/Env'
+import { goBack } from 'src/redux/slices/routes'
 import { theme } from 'src/theme'
 import { div, toFixedLocale } from 'src/utils/Number'
 
-export const ResultView = (props: RootStackScreenProps<'Result'>) => {
-  const { navigation } = props
-  const id = useAppSelector(get(UiLens.at('selectedGroupId')))
-  const group = useAppSelector(
-    s =>
-      $(
-        id,
-        O.chain(id => getGroupById(id)(s)),
-      ),
-    O.getEq(Eq.eqStrict),
-  )
-  const parameters = useAppSelector(getParameters)
-  const [result, setResult] = useState<Option<Array<Array<Player>>>>(none)
-
-  useEffect(
-    $(
-      group,
-      O.map(g => g.players),
-      O.getOrElseW(() => []),
-      A.filter(PlayerIsActive),
-      generateRandomBalancedTeams({
-        position: parameters.position,
-        rating: parameters.rating,
-      })(parameters.teamsCount),
-      IO.chain(s => () => setResult(some(s))),
-    ),
-    [],
-  )
-
-  useLayoutEffect(
-    () =>
-      navigation.setOptions({
-        headerRight: ({ tintColor }) =>
-          Pressable({
-            style: ({ pressed }) => ({
-              marginRight: 4,
-              padding: 8,
-              borderRadius: 100,
-              backgroundColor: pressed ? theme.colors.primary[700] : undefined,
+export const ResultView =
+  ({ result }: { result: Option<Array<Array<Player>>> }) =>
+  (env: AppEnv) =>
+    View({ style: { flex: 1 } })([
+      View({})([
+        Header({
+          title: 'Resultado',
+          headerStyle: { backgroundColor: theme.colors.primary[600] },
+          headerTitleStyle: { color: theme.colors.lightText },
+          headerLeft: () =>
+            HeaderBackButton({
+              onPress: goBack(env),
+              tintColor: theme.colors.lightText,
             }),
-            onPress: $(
-              result,
-              O.match(
-                () => T.of(undefined),
-                $f(
-                  TeamListShowSensitive.show,
-                  t => () => Share.share({ message: t, title: 'Times' }),
-                  T.map(constVoid),
+          headerRight: () =>
+            Pressable({
+              style: ({ pressed }) => ({
+                marginRight: 4,
+                padding: 8,
+                borderRadius: 100,
+                backgroundColor: pressed
+                  ? theme.colors.primary[700]
+                  : undefined,
+              }),
+              onPress: $(
+                result,
+                O.match(
+                  () => T.of(undefined),
+                  $f(
+                    TeamListShowSensitive.show,
+                    t => () => Share.share({ message: t, title: 'Times' }),
+                    T.map(constVoid),
+                  ),
                 ),
+                IO.map(constVoid),
               ),
-              IO.map(constVoid),
-            ),
-          })([MaterialIcons({ name: 'share', color: tintColor, size: 24 })]),
-      }),
-    [result],
-  )
-
-  return $(
-    result,
-    O.matchW(
-      () =>
-        View({ style: { flex: 1, justifyContent: 'center' } })([
-          ActivityIndicator({
-            size: 'large',
-            color: theme.colors.primary[500],
-          }),
-        ]),
-      r =>
+            })([
+              MaterialIcons({
+                name: 'share',
+                color: theme.colors.lightText,
+                size: 24,
+              }),
+            ]),
+        }),
+      ]),
+      ScrollView({ contentContainerStyle: { flexGrow: 1 } })([
         $(
-          ScrollView({ style: { flex: 1 } })([
-            $(
-              r,
-              A.mapWithIndex((i, t) =>
-                TeamItem({ key: i.toString(), index: i, players: t }),
-              ),
+          result,
+          O.matchW(
+            () =>
+              View({ style: { flex: 1, justifyContent: 'center' } })([
+                ActivityIndicator({
+                  size: 'large',
+                  color: theme.colors.primary[500],
+                }),
+              ]),
+            A.mapWithIndex((i, t) =>
+              TeamItem({ key: i.toString(), index: i, players: t }),
             ),
-          ]),
+          ),
         ),
-    ),
-  )
-}
+      ]),
+    ])
 
 const TeamItem = (props: {
   key: string
