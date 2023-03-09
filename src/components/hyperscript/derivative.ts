@@ -201,7 +201,7 @@ export const Label: typeof Txt = props =>
   })
 
 export const FormField =
-  (props: { title: string }) => (children: Array<React.ReactNode>) =>
+  (props: { title: string }) => (children: ReadonlyArray<React.ReactElement>) =>
     View({ style: { margin: 8 } })([Label()(props.title), ...children])
 
 export const EmptyPlaceholder = (text: string) =>

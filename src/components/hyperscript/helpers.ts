@@ -4,7 +4,10 @@ import React from 'react'
 export const makeComponent =
   <P extends { children?: unknown }>(type: React.FunctionComponent<P>) =>
   (props?: (React.Attributes & P) | null) =>
-  (children: ReadonlyArray<React.ReactNode>) =>
+  (
+    children: React.ComponentProps<React.FunctionComponent<P>>['children'] &
+      ReadonlyArray<React.ReactNode>,
+  ) =>
     React.createElement(type, props, ...children)
 
 export const makeComponentWithoutChildren =
@@ -21,7 +24,10 @@ export const makeComponentFromClass =
     type: React.ClassType<P, T, C>,
   ) =>
   (props?: (React.ClassAttributes<T> & P) | null) =>
-  (children: ReadonlyArray<React.ReactNode>) =>
+  (
+    children: React.ComponentProps<C>['children'] &
+      ReadonlyArray<React.ReactNode>,
+  ) =>
     React.createElement(type, props, ...children)
 
 export const makeComponentFromClassWithoutChildren =

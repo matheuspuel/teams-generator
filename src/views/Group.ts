@@ -206,7 +206,7 @@ const Item =
         Pressable({
           style: { marginRight: 8 },
           onPress: execute(togglePlayerActive({ groupId, playerId: id }))(env),
-        })(({ pressed }) =>
+        })(({ pressed }) => [
           active
             ? View({
                 style: {
@@ -233,7 +233,7 @@ const Item =
                   width: 28,
                 },
               })([]),
-        ),
+        ]),
         View({
           style: {
             aspectRatio: 1,
@@ -381,7 +381,7 @@ const ParametersModal =
             Pressable({
               style: { padding: 4 },
               onPress: execute(togglePosition)(env),
-            })(({ pressed }) =>
+            })(({ pressed }) => [
               View({ style: { flexDirection: 'row', alignItems: 'center' } })([
                 parameters.position
                   ? View({
@@ -414,11 +414,11 @@ const ParametersModal =
                   'Considerar posições',
                 ),
               ]),
-            ),
+            ]),
             Pressable({
               style: { padding: 4 },
               onPress: execute(toggleRating)(env),
-            })(({ pressed }) =>
+            })(({ pressed }) => [
               View({ style: { flexDirection: 'row', alignItems: 'center' } })([
                 parameters.rating
                   ? View({
@@ -451,7 +451,7 @@ const ParametersModal =
                   'Considerar habilidade',
                 ),
               ]),
-            ),
+            ]),
           ]),
           View({
             style: { borderTopWidth: 1, borderColor: theme.colors.gray[300] },

@@ -16,6 +16,7 @@ import {
   makeComponentFromClass,
   makeComponentFromClassWithoutChildren,
 } from './helpers'
+import { Fragment } from './react'
 
 export const View = makeComponentFromClass(View_)
 
@@ -29,20 +30,26 @@ export const Text = makeComponentFromClass(Text_)
 
 export const TextInput = makeComponentFromClassWithoutChildren(TextInput_)
 
-// export const Pressable = makeComponent(Pressable_)
 export const Pressable =
   (props?: React.ComponentProps<typeof Pressable_>) =>
   // eslint-disable-next-line react/display-name
   (
     children:
-      | Array<React.ReactNode>
-      | ((state: PressableStateCallbackType) => React.ReactNode),
+      | ReadonlyArray<React.ReactElement>
+      | ((
+          state: PressableStateCallbackType,
+        ) => ReadonlyArray<React.ReactElement>),
   ) =>
     React.createElement(
       Pressable_,
       props,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment
-      ...((typeof children === 'function' ? [children] : children) as any),
+      ...(typeof children === 'function'
+        ? [
+            ((state: PressableStateCallbackType) =>
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              Fragment(children(state))) as any,
+          ]
+        : children),
     )
 
 export const Button = makeComponentFromClassWithoutChildren(Button_)
