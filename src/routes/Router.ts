@@ -67,4 +67,4 @@ export const Router =
               ],
         ),
       ]),
-    ])
+    ])(env)

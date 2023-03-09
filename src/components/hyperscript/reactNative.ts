@@ -12,6 +12,7 @@ import {
   TextInput as TextInput_,
   View as View_,
 } from 'react-native'
+import { $, apply, RA } from 'src/utils/fp'
 import {
   makeComponentFromClass,
   makeComponentFromClassWithoutChildren,
@@ -32,14 +33,15 @@ export const TextInput = makeComponentFromClassWithoutChildren(TextInput_)
 
 export const Pressable =
   (props?: React.ComponentProps<typeof Pressable_>) =>
-  // eslint-disable-next-line react/display-name
-  (
+  <R>(
     children:
-      | ReadonlyArray<React.ReactElement>
+      | ReadonlyArray<(env: R) => React.ReactElement>
       | ((
           state: PressableStateCallbackType,
-        ) => ReadonlyArray<React.ReactElement>),
+        ) => ReadonlyArray<(env: R) => React.ReactElement>),
   ) =>
+  // eslint-disable-next-line react/display-name
+  (env: R) =>
     React.createElement(
       Pressable_,
       props,
@@ -49,7 +51,7 @@ export const Pressable =
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               Fragment(children(state))) as any,
           ]
-        : children),
+        : $(children, RA.map(apply(env)))),
     )
 
 export const Button = makeComponentFromClassWithoutChildren(Button_)

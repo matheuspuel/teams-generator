@@ -70,7 +70,7 @@ export const GroupView =
             HeaderBackButton({
               onPress: goBack(env),
               tintColor: theme.colors.lightText,
-            }),
+            })(env),
           headerRight: () =>
             View({ style: { flexDirection: 'row' } })([
               Pressable({
@@ -128,7 +128,7 @@ export const GroupView =
                   size: 24,
                 }),
               ]),
-            ]),
+            ])(env),
         }),
       ]),
       ...$(
@@ -265,7 +265,7 @@ const Item =
           name,
         ),
       ]),
-    ])
+    ])(env)
 
 const ParametersModal =
   ({ parameters }: { parameters: Parameters }) =>

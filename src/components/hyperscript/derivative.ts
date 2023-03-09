@@ -34,7 +34,7 @@ export const Card: typeof View = props =>
   })
 
 export const Txt = (props?: Parameters<typeof Text>[0]) => (text: string) =>
-  Text(props)([text])
+  Text(props)([() => text])
 
 export const ButtonPressable = (props: {
   onPress: IO<void>
@@ -167,11 +167,13 @@ const InputAdapt = ({
         typeof s === 'function' ? s({ isFocused }) : s,
       ),
     ],
-  })
+  })({})
 }
 
-export const Input = (props: Parameters<typeof InputAdapt>[0]) =>
-  React.createElement(InputAdapt, props)
+export const Input =
+  // eslint-disable-next-line react/display-name
+  (props: Parameters<typeof InputAdapt>[0]) => (_env: unknown) =>
+    React.createElement(InputAdapt, props)
 
 export const Select = (props: {
   text: string
@@ -201,7 +203,8 @@ export const Label: typeof Txt = props =>
   })
 
 export const FormField =
-  (props: { title: string }) => (children: ReadonlyArray<React.ReactElement>) =>
+  (props: { title: string }) =>
+  <R>(children: ReadonlyArray<(env: R) => React.ReactElement>) =>
     View({ style: { margin: 8 } })([Label()(props.title), ...children])
 
 export const EmptyPlaceholder = (text: string) =>

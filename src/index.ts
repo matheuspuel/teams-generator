@@ -21,8 +21,8 @@ const UI_ = () => {
   const model = useAppSelector(identity)
   return Fragment([
     StatusBar({ style: 'dark' }),
-    ...(loaded ? [Router({ model })(env)] : []),
-  ])
+    ...(loaded ? [Router({ model })] : []),
+  ])(env)
 }
 
 const UI = React.createElement(UI_)

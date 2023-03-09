@@ -47,7 +47,7 @@ export const PlayerView =
             HeaderBackButton({
               onPress: goBack(env),
               tintColor: theme.colors.lightText,
-            }),
+            })(env),
           headerRight: $(
             sequenceS(O.Apply)({ id, groupId }),
             O.map(
@@ -72,7 +72,7 @@ export const PlayerView =
                       color: theme.colors.lightText,
                       size: 24,
                     }),
-                  ]),
+                  ])(env),
             ),
             O.toUndefined,
           ),

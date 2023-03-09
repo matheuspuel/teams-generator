@@ -19,6 +19,7 @@ import {
 } from 'fp'
 import { Input, Txt } from 'src/components/hyperscript/derivative'
 import { MaterialIcons } from 'src/components/hyperscript/icons'
+import { Fragment } from 'src/components/hyperscript/react'
 import { Header } from 'src/components/hyperscript/react-navigation'
 import {
   FlatList,
@@ -77,7 +78,7 @@ export const Groups =
                   color: theme.colors.lightText,
                   size: 24,
                 }),
-              ]),
+              ])(env),
           }),
         ]),
         FlatList({
@@ -110,7 +111,7 @@ export const Groups =
             O.chain(({ id }) => id),
             O.chain(id => $(groups, Rec.lookup(id))),
           ),
-        })(env),
+        }),
         DeleteGroupModal({
           state: ui.modalDeleteGroup,
           onClose: execute(setDeleteGroupModal(none))(env),
@@ -178,7 +179,7 @@ const Item =
           }),
         ]),
       ]),
-    ])
+    ])(env)
 
 const GroupModal =
   ({
@@ -363,8 +364,8 @@ const GroupModal =
           ]),
         ]),
       ),
-      O.toNullable,
-    )
+      O.getOrElseW(() => Fragment([])),
+    )(env)
 
 const DeleteGroupModal =
   ({
@@ -438,17 +439,17 @@ const DeleteGroupModal =
               $(
                 group,
                 O.matchW(
-                  () => null,
+                  () => Fragment([]),
                   g =>
                     Text({ style: { color: theme.colors.darkText } })([
-                      'Deseja excluir o grupo ',
+                      () => 'Deseja excluir o grupo ',
                       Txt({
                         style: {
                           fontWeight: 'bold',
                           color: theme.colors.darkText,
                         },
                       })(g.name),
-                      ' e todos os jogadores?',
+                      () => ' e todos os jogadores?',
                     ]),
                 ),
               ),

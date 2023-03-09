@@ -40,7 +40,7 @@ export const ResultView =
             HeaderBackButton({
               onPress: goBack(env),
               tintColor: theme.colors.lightText,
-            }),
+            })(env),
           headerRight: () =>
             Pressable({
               style: ({ pressed }) => ({
@@ -69,7 +69,7 @@ export const ResultView =
                 color: theme.colors.lightText,
                 size: 24,
               }),
-            ]),
+            ])(env),
         }),
       ]),
       ScrollView({ contentContainerStyle: { flexGrow: 1 } })(
@@ -120,15 +120,15 @@ const TeamItem = (props: {
       },
     })(title),
     Text({ style: { color: theme.colors.grayText, fontSize: 12 } })([
-      'Número de jogadores: ',
+      () => 'Número de jogadores: ',
       Txt({})(numPlayers.toString()),
     ]),
     Text({ style: { color: theme.colors.grayText, fontSize: 12 } })([
-      'Média de habilidade: ',
+      () => 'Média de habilidade: ',
       Txt({})(avgRating),
     ]),
     Text({ style: { color: theme.colors.grayText, fontSize: 12 } })([
-      'Total de habilidade: ',
+      () => 'Total de habilidade: ',
       Txt({})(totalRating.toString()),
     ]),
     ...$(
