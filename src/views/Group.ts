@@ -61,7 +61,7 @@ export const GroupView =
       O.getOrElseW(() => []),
     )
     return View({ style: { flex: 1 } })([
-      View({})([
+      View({ style: { backgroundColor: theme.colors.white } })([
         Header({
           title: 'Grupo',
           headerStyle: { backgroundColor: theme.colors.primary[600] },

@@ -53,7 +53,7 @@ export const Groups =
   (env: AppEnv) =>
     View({ style: { flex: 1 }, onLayout: () => void SplashScreen.hideAsync() })(
       [
-        View({})([
+        View({ style: { backgroundColor: theme.colors.white } })([
           Header({
             title: 'Grupos',
             headerStyle: { backgroundColor: theme.colors.primary[600] },

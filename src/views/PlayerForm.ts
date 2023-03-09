@@ -38,7 +38,7 @@ export const PlayerView =
       keyboardShouldPersistTaps: 'handled',
       contentContainerStyle: { flexGrow: 1 },
     })([
-      View({})([
+      View({ style: { backgroundColor: theme.colors.white } })([
         Header({
           title: 'Jogador',
           headerStyle: { backgroundColor: theme.colors.primary[600] },
