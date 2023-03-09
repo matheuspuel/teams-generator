@@ -72,23 +72,24 @@ export const ResultView =
             ]),
         }),
       ]),
-      ScrollView({ contentContainerStyle: { flexGrow: 1 } })([
+      ScrollView({ contentContainerStyle: { flexGrow: 1 } })(
         $(
           result,
           O.matchW(
-            () =>
+            () => [
               View({ style: { flex: 1, justifyContent: 'center' } })([
                 ActivityIndicator({
                   size: 'large',
                   color: theme.colors.primary[500],
                 }),
               ]),
+            ],
             A.mapWithIndex((i, t) =>
               TeamItem({ key: i.toString(), index: i, players: t }),
             ),
           ),
         ),
-      ]),
+      ),
     ])
 
 const TeamItem = (props: {
@@ -130,7 +131,7 @@ const TeamItem = (props: {
       'Total de habilidade: ',
       Txt({})(totalRating.toString()),
     ]),
-    $(
+    ...$(
       props.players,
       A.sortBy([
         PlayerPositionOrd,

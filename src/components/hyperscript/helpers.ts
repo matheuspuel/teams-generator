@@ -6,7 +6,7 @@ export const makeComponent =
   (props?: (React.Attributes & P) | null) =>
   (
     children: React.ComponentProps<React.FunctionComponent<P>>['children'] &
-      ReadonlyArray<React.ReactNode>,
+      ReadonlyArray<Exclude<React.ReactNode, Iterable<unknown>> | string>,
   ) =>
     React.createElement(type, props, ...children)
 
@@ -26,7 +26,7 @@ export const makeComponentFromClass =
   (props?: (React.ClassAttributes<T> & P) | null) =>
   (
     children: React.ComponentProps<C>['children'] &
-      ReadonlyArray<React.ReactNode>,
+      ReadonlyArray<Exclude<React.ReactNode, Iterable<unknown>> | string>,
   ) =>
     React.createElement(type, props, ...children)
 
