@@ -49,8 +49,8 @@ export const Router = ({ model }: { model: RootState }) =>
                     Screen()([
                       PlayerView({
                         form: get(PlayerFormLens)(model),
-                        groupId: get(UiLens.at('selectedPlayerId'))(model),
-                        id: get(UiLens.at('selectedGroupId'))(model),
+                        groupId: get(UiLens.at('selectedGroupId'))(model),
+                        id: get(UiLens.at('selectedPlayerId'))(model),
                       }),
                     ]),
                   ]

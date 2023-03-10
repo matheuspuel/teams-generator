@@ -49,7 +49,7 @@ export const Pressable =
         ? [
             ((state: PressableStateCallbackType) =>
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              Fragment(children(state))) as any,
+              Fragment(children(state))(env)) as any,
           ]
         : $(children, RA.map(apply(env)))),
     )

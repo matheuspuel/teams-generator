@@ -4,12 +4,13 @@ import { Reader, ReaderIO } from 'src/utils/fp'
 import { getViewStyleProp, ViewProps, ViewStyleProps } from './View'
 
 export const Pressable =
-  <R1>(
-    props: ViewProps<R1> & {
-      onPress: ReaderIO<R1, void>
-      pressed?: ViewStyleProps
-    },
-  ) =>
+  <R1>({
+    pressed: pressedProps,
+    ...props
+  }: ViewProps<R1> & {
+    onPress: ReaderIO<R1, void>
+    pressed?: ViewStyleProps
+  }) =>
   <R2>(
     children:
       | ReadonlyArray<Reader<R2, React.ReactElement>>
@@ -20,9 +21,13 @@ export const Pressable =
   (env: R1 & R2) =>
     Pressable_({
       key: props.key,
-      style: props.pressed
+      style: pressedProps
         ? ({ pressed }) =>
-            pressed ? getViewStyleProp(props.pressed) : getViewStyleProp(props)
+            getViewStyleProp(
+              pressed
+                ? ({ ...props, ...pressedProps } as ViewStyleProps)
+                : props,
+            )
         : getViewStyleProp(props),
       onPress: props.onPress,
       onLayout: props.onLayout,

@@ -19,7 +19,7 @@ export const AppIndex = () => {
   const [model, setModel] = React.useState(storeGet(env)())
   // eslint-disable-next-line functional/no-expression-statement
   React.useEffect(() => {
-    const subscription = env.store.subscribe(() =>
+    const subscription = env.store.subscribe(
       $(
         storeGet(env),
         IO.chain(s => () => setModel(s)),
