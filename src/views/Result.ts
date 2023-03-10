@@ -1,18 +1,16 @@
-import { $, $f, A, constVoid, IO, O, Option, Ord, T } from 'fp'
+import { $, $f, A, constVoid, IO, O, Option, Ord, RIO, T } from 'fp'
 import { Share } from 'react-native'
+import { Pressable } from 'src/components/basic/Pressable'
 import { Txt } from 'src/components/hyperscript/derivative'
 import { MaterialIcons } from 'src/components/hyperscript/icons'
 import {
-  Header,
-  HeaderBackButton,
-} from 'src/components/hyperscript/react-navigation'
-import {
   ActivityIndicator,
-  Pressable,
   ScrollView,
   Text,
   View,
 } from 'src/components/hyperscript/reactNative'
+import { Header } from 'src/components/react-navigation/Header'
+import { HeaderBackButton } from 'src/components/react-navigation/HeaderBackButton'
 import {
   getRatingTotal,
   Player,
@@ -22,75 +20,73 @@ import {
   RatingShow,
   TeamListShowSensitive,
 } from 'src/datatypes/Player'
-import { AppEnv } from 'src/Env'
 import { goBack } from 'src/redux/slices/routes'
 import { theme } from 'src/theme'
 import { div, toFixedLocale } from 'src/utils/Number'
 
-export const ResultView =
-  ({ result }: { result: Option<Array<Array<Player>>> }) =>
-  (env: AppEnv) =>
-    View({ style: { flex: 1 } })([
-      View({ style: { backgroundColor: theme.colors.white } })([
-        Header({
-          title: 'Resultado',
-          headerStyle: { backgroundColor: theme.colors.primary[600] },
-          headerTitleStyle: { color: theme.colors.lightText },
-          headerLeft: () =>
-            HeaderBackButton({
-              onPress: goBack(env),
-              tintColor: theme.colors.lightText,
-            })(env),
-          headerRight: () =>
-            Pressable({
-              style: ({ pressed }) => ({
-                marginRight: 4,
-                padding: 8,
-                borderRadius: 100,
-                backgroundColor: pressed
-                  ? theme.colors.primary[700]
-                  : undefined,
-              }),
-              onPress: $(
-                result,
-                O.match(
-                  () => T.of(undefined),
-                  $f(
-                    TeamListShowSensitive.show,
-                    t => () => Share.share({ message: t, title: 'Times' }),
-                    T.map(constVoid),
-                  ),
-                ),
-                IO.map(constVoid),
-              ),
-            })([
-              MaterialIcons({
-                name: 'share',
-                color: theme.colors.lightText,
-                size: 24,
-              }),
-            ])(env),
+export const ResultView = ({
+  result,
+}: {
+  result: Option<Array<Array<Player>>>
+}) =>
+  View({ style: { flex: 1 } })([
+    View({ style: { backgroundColor: theme.colors.white } })([
+      Header({
+        title: 'Resultado',
+        headerStyle: { backgroundColor: theme.colors.primary[600] },
+        headerTitleStyle: { color: theme.colors.lightText },
+        headerLeft: HeaderBackButton({
+          onPress: goBack,
+          tintColor: theme.colors.lightText,
         }),
-      ]),
-      ScrollView({ contentContainerStyle: { flexGrow: 1 } })(
-        $(
-          result,
-          O.matchW(
-            () => [
-              View({ style: { flex: 1, justifyContent: 'center' } })([
-                ActivityIndicator({
-                  size: 'large',
-                  color: theme.colors.primary[500],
-                }),
-              ]),
-            ],
-            A.mapWithIndex((i, t) =>
-              TeamItem({ key: i.toString(), index: i, players: t }),
+        headerRight: Pressable({
+          style: ({ pressed }) => ({
+            marginRight: 4,
+            padding: 8,
+            borderRadius: 100,
+            backgroundColor: pressed ? theme.colors.primary[700] : undefined,
+          }),
+          onPress: $(
+            result,
+            O.match(
+              () => T.of(undefined),
+              $f(
+                TeamListShowSensitive.show,
+                t => () => Share.share({ message: t, title: 'Times' }),
+                T.map(constVoid),
+              ),
             ),
+            IO.map(constVoid),
+            RIO.fromIO,
+          ),
+        })([
+          MaterialIcons({
+            name: 'share',
+            color: theme.colors.lightText,
+            size: 24,
+          }),
+        ]),
+      }),
+    ]),
+    ScrollView({ contentContainerStyle: { flexGrow: 1 } })(
+      $(
+        result,
+        O.matchW(
+          () => [
+            View({ style: { flex: 1, justifyContent: 'center' } })([
+              ActivityIndicator({
+                size: 'large',
+                color: theme.colors.primary[500],
+              }),
+            ]),
+          ],
+          A.mapWithIndex((i, t) =>
+            TeamItem({ key: i.toString(), index: i, players: t }),
           ),
         ),
       ),
-    ])
+    ),
+  ])
 
 const TeamItem = (props: {
   key: string
