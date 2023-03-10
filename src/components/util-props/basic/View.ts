@@ -89,11 +89,10 @@ const toDescriptiveRoundProps = (props?: RoundProps) => ({
   borderBottomRightRadius: props?.roundBR ?? props?.roundB ?? props?.roundR,
 })
 
-type ViewProps<R> = PaddingProps &
+export type ViewStyleProps = PaddingProps &
   MarginProps &
   BorderWidthProps &
   RoundProps & {
-    key?: string
     round?: number
     w?: number
     h?: number
@@ -112,11 +111,80 @@ type ViewProps<R> = PaddingProps &
     shadow?: number
     bg?: Color
     borderColor?: Color
-    onLayout?: ReaderIO<R, void>
     absolute?:
       | false
       | { left?: number; right?: number; top?: number; bottom?: number }
   }
+
+export type ViewProps<R> = ViewStyleProps & {
+  key?: string
+  onLayout?: ReaderIO<R, void>
+}
+
+export type ViewDescriptiveStyleProp = DescriptivePaddingProps &
+  DescriptiveMarginProps & {
+    flex?: number
+    flexDirection?: 'column' | 'row'
+    justifyContent?:
+      | 'center'
+      | 'flex-start'
+      | 'flex-end'
+      | 'space-between'
+      | 'space-around'
+      | 'space-evenly'
+    alignItems?: 'flex-start' | 'flex-end' | 'center' | 'stretch'
+    alignSelf?: 'flex-start' | 'flex-end' | 'center' | 'stretch'
+    borderRadius?: number
+    elevation?: number
+    backgroundColor?: string
+    borderColor?: string
+    width?: number
+    height?: number
+    aspectRatio?: number
+  }
+
+export const getViewStyleProp = (
+  props?: ViewStyleProps,
+): ViewDescriptiveStyleProp => ({
+  ...toDescriptivePaddingProps(props),
+  ...toDescriptiveMarginProps(props),
+  ...toDescriptiveBorderWidthProps(props),
+  ...toDescriptiveRoundProps(props),
+  borderRadius: props?.round,
+  width: props?.w,
+  height: props?.h,
+  aspectRatio: props?.aspectRatio,
+  flex: props?.flex,
+  flexDirection: props?.direction,
+  backgroundColor: props?.bg,
+  borderColor: props?.borderColor,
+  justifyContent:
+    props?.justify === 'start'
+      ? 'flex-start'
+      : props?.justify === 'end'
+      ? 'flex-end'
+      : props?.justify,
+  alignItems:
+    props?.align === 'start'
+      ? 'flex-start'
+      : props?.align === 'end'
+      ? 'flex-end'
+      : props?.align,
+  alignSelf:
+    props?.alignSelf === 'start'
+      ? 'flex-start'
+      : props?.alignSelf === 'end'
+      ? 'flex-end'
+      : props?.alignSelf,
+  elevation: props?.shadow,
+  ...$(
+    props?.absolute
+      ? { ...props.absolute, position: 'absolute' }
+      : props?.absolute === false
+      ? { position: 'relative' }
+      : undefined,
+  ),
+})
 
 export const View =
   <R1>(props?: ViewProps<R1>) =>
@@ -124,45 +192,6 @@ export const View =
   (env: R1 & R2) =>
     View_({
       key: props?.key,
-      style: {
-        ...toDescriptivePaddingProps(props),
-        ...toDescriptiveMarginProps(props),
-        ...toDescriptiveBorderWidthProps(props),
-        ...toDescriptiveRoundProps(props),
-        borderRadius: props?.round,
-        width: props?.w,
-        height: props?.h,
-        aspectRatio: props?.aspectRatio,
-        flex: props?.flex,
-        flexDirection: props?.direction,
-        backgroundColor: props?.bg,
-        borderColor: props?.borderColor,
-        justifyContent:
-          props?.justify === 'start'
-            ? 'flex-start'
-            : props?.justify === 'end'
-            ? 'flex-end'
-            : props?.justify,
-        alignItems:
-          props?.align === 'start'
-            ? 'flex-start'
-            : props?.align === 'end'
-            ? 'flex-end'
-            : props?.align,
-        alignSelf:
-          props?.alignSelf === 'start'
-            ? 'flex-start'
-            : props?.alignSelf === 'end'
-            ? 'flex-end'
-            : props?.alignSelf,
-        elevation: props?.shadow,
-        ...$(
-          props?.absolute
-            ? { ...props.absolute, position: 'absolute' }
-            : props?.absolute === false
-            ? { position: 'relative' }
-            : undefined,
-        ),
-      },
+      style: getViewStyleProp(props),
       onLayout: props?.onLayout?.(env),
     })(children)(env)

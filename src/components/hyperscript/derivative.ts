@@ -167,7 +167,7 @@ const InputAdapt = ({
         typeof s === 'function' ? s({ isFocused }) : s,
       ),
     ],
-  })({})
+  })(null)
 }
 
 export const Input =

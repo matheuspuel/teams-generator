@@ -7,9 +7,9 @@ import {
   ScrollView,
   Text,
 } from 'src/components/hyperscript/reactNative'
-import { Pressable } from 'src/components/safe/basic/Pressable'
 import { Header } from 'src/components/safe/react-navigation/Header'
 import { HeaderBackButton } from 'src/components/safe/react-navigation/HeaderBackButton'
+import { Pressable } from 'src/components/util-props/basic/Pressable'
 import { Row } from 'src/components/util-props/basic/Row'
 import { View } from 'src/components/util-props/basic/View'
 import {
@@ -41,12 +41,10 @@ export const ResultView = ({
           tintColor: theme.colors.lightText,
         }),
         headerRight: Pressable({
-          style: ({ pressed }) => ({
-            marginRight: 4,
-            padding: 8,
-            borderRadius: 100,
-            backgroundColor: pressed ? theme.colors.primary[700] : undefined,
-          }),
+          mr: 4,
+          p: 8,
+          round: 100,
+          pressed: { bg: theme.colors.primary[700] },
           onPress: $(
             result,
             O.match(
@@ -116,15 +114,15 @@ const TeamItem = (props: {
     })(title),
     Text({ style: { color: theme.colors.grayText, fontSize: 12 } })([
       () => 'Número de jogadores: ',
-      Txt({})(numPlayers.toString()),
+      Txt()(numPlayers.toString()),
     ]),
     Text({ style: { color: theme.colors.grayText, fontSize: 12 } })([
       () => 'Média de habilidade: ',
-      Txt({})(avgRating),
+      Txt()(avgRating),
     ]),
     Text({ style: { color: theme.colors.grayText, fontSize: 12 } })([
       () => 'Total de habilidade: ',
-      Txt({})(totalRating.toString()),
+      Txt()(totalRating.toString()),
     ]),
     ...$(
       props.players,

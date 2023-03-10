@@ -6,9 +6,9 @@ import {
 } from 'src/components/hyperscript/icons'
 import { FlatList } from 'src/components/safe/basic/FlatList'
 import { Modal } from 'src/components/safe/basic/Modal'
-import { Pressable } from 'src/components/safe/basic/Pressable'
 import { Header } from 'src/components/safe/react-navigation/Header'
 import { HeaderBackButton } from 'src/components/safe/react-navigation/HeaderBackButton'
+import { Pressable } from 'src/components/util-props/basic/Pressable'
 import { Row } from 'src/components/util-props/basic/Row'
 import { View } from 'src/components/util-props/basic/View'
 import { Group } from 'src/datatypes/Group'
@@ -66,12 +66,10 @@ export const GroupView = ({
         }),
         headerRight: Row()([
           Pressable({
-            style: ({ pressed }) => ({
-              marginRight: 4,
-              padding: 8,
-              borderRadius: 100,
-              backgroundColor: pressed ? theme.colors.primary[700] : undefined,
-            }),
+            mr: 4,
+            p: 8,
+            round: 100,
+            pressed: { bg: theme.colors.primary[700] },
             onPress: $(
               groupId,
               O.match(
@@ -93,12 +91,10 @@ export const GroupView = ({
             }),
           ]),
           Pressable({
-            style: ({ pressed }) => ({
-              marginRight: 4,
-              padding: 8,
-              borderRadius: 100,
-              backgroundColor: pressed ? theme.colors.primary[700] : undefined,
-            }),
+            mr: 4,
+            p: 8,
+            round: 100,
+            pressed: { bg: theme.colors.primary[700] },
             onPress: $(
               navigate('Player'),
               RIO.chain(() =>
@@ -132,12 +128,9 @@ export const GroupView = ({
       A.fromOption,
     ),
     Pressable({
-      style: ({ pressed }) => ({
-        padding: 12,
-        backgroundColor: pressed
-          ? theme.colors.primary[800]
-          : theme.colors.primary[600],
-      }),
+      p: 12,
+      bg: theme.colors.primary[600],
+      pressed: { bg: theme.colors.primary[800] },
       onPress: execute(replaceSApp(UiLens.at('modalParameters'))(true)),
     })([
       Txt({ style: { textAlign: 'center', color: theme.colors.white } })(
@@ -187,7 +180,7 @@ const Item = ({
       shadow: 1,
     })([
       Pressable({
-        style: { marginRight: 8 },
+        mr: 8,
         onPress: execute(togglePlayerActive({ groupId, playerId: id })),
       })(({ pressed }) => [
         active
@@ -251,20 +244,16 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
     onRequestClose: execute(replaceSApp(UiLens.at('modalParameters'))(false)),
   })([
     Pressable({
-      style: {
-        flex: 1,
-        backgroundColor: theme.colors.black + '3f',
-        justifyContent: 'center',
-      },
+      flex: 1,
+      bg: theme.colors.black + '3f',
+      justify: 'center',
       onPress: execute(replaceSApp(UiLens.at('modalParameters'))(false)),
     })([
       Pressable({
-        style: {
-          backgroundColor: theme.colors.white,
-          margin: 48,
-          borderRadius: 8,
-          elevation: 2,
-        },
+        bg: theme.colors.white,
+        m: 48,
+        round: 8,
+        shadow: 2,
         onPress: () => constVoid,
       })([
         Row({ align: 'center', p: 8 })([
@@ -278,13 +267,9 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
             },
           })('Parâmetros'),
           Pressable({
-            style: ({ pressed }) => ({
-              padding: 8,
-              backgroundColor: pressed
-                ? theme.colors.gray[600] + '1f'
-                : undefined,
-              borderRadius: 4,
-            }),
+            p: 8,
+            round: 4,
+            pressed: { bg: theme.colors.gray[600] + '1f' },
             onPress: execute(replaceSApp(UiLens.at('modalParameters'))(false)),
           })([
             MaterialIcons({
@@ -298,13 +283,9 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
         View({ p: 16 })([
           Row({ align: 'center' })([
             Pressable({
-              style: ({ pressed }) => ({
-                padding: 12,
-                backgroundColor: pressed
-                  ? theme.colors.primary[600] + '1f'
-                  : undefined,
-                borderRadius: 4,
-              }),
+              p: 12,
+              round: 4,
+              pressed: { bg: theme.colors.primary[600] + '1f' },
               onPress: execute(decrementTeamsCount),
             })([
               MaterialIcons({
@@ -321,13 +302,9 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
               },
             })(parameters.teamsCount.toString()),
             Pressable({
-              style: ({ pressed }) => ({
-                padding: 12,
-                backgroundColor: pressed
-                  ? theme.colors.primary[600] + '1f'
-                  : undefined,
-                borderRadius: 4,
-              }),
+              p: 12,
+              pressed: { bg: theme.colors.primary[600] + '1f' },
+              round: 4,
               onPress: execute(incrementTeamsCount),
             })([
               MaterialIcons({
@@ -344,42 +321,38 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
               },
             })('Número de times'),
           ]),
-          Pressable({
-            style: { padding: 4 },
-            onPress: execute(togglePosition),
-          })(({ pressed }) => [
-            Row({ align: 'center' })([
-              parameters.position
-                ? View({
-                    borderWidth: 2,
-                    round: 4,
-                    h: 28,
-                    w: 28,
-                    bg: theme.colors.primary[pressed ? 800 : 600],
-                    borderColor: theme.colors.primary[pressed ? 800 : 600],
-                  })([
-                    MaterialIcons({
-                      name: 'check',
-                      size: 24,
-                      color: theme.colors.white,
-                    }),
-                  ])
-                : View({
-                    borderWidth: 2,
-                    round: 4,
-                    borderColor: theme.colors.gray[pressed ? 600 : 400],
-                    h: 28,
-                    w: 28,
-                  })([]),
-              Txt({ style: { margin: 4, fontSize: 14 } })(
-                'Considerar posições',
-              ),
-            ]),
-          ]),
-          Pressable({
-            style: { padding: 4 },
-            onPress: execute(toggleRating),
-          })(({ pressed }) => [
+          Pressable({ p: 4, onPress: execute(togglePosition) })(
+            ({ pressed }) => [
+              Row({ align: 'center' })([
+                parameters.position
+                  ? View({
+                      borderWidth: 2,
+                      round: 4,
+                      h: 28,
+                      w: 28,
+                      bg: theme.colors.primary[pressed ? 800 : 600],
+                      borderColor: theme.colors.primary[pressed ? 800 : 600],
+                    })([
+                      MaterialIcons({
+                        name: 'check',
+                        size: 24,
+                        color: theme.colors.white,
+                      }),
+                    ])
+                  : View({
+                      borderWidth: 2,
+                      round: 4,
+                      borderColor: theme.colors.gray[pressed ? 600 : 400],
+                      h: 28,
+                      w: 28,
+                    })([]),
+                Txt({ style: { margin: 4, fontSize: 14 } })(
+                  'Considerar posições',
+                ),
+              ]),
+            ],
+          ),
+          Pressable({ p: 4, onPress: execute(toggleRating) })(({ pressed }) => [
             Row({ align: 'center' })([
               parameters.rating
                 ? View({
@@ -413,14 +386,10 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
         Row({ p: 16, justify: 'end' })([
           Row()([
             Pressable({
-              style: ({ pressed }) => ({
-                marginRight: 8,
-                padding: 12,
-                backgroundColor: pressed
-                  ? theme.colors.primary[600] + '1f'
-                  : undefined,
-                borderRadius: 4,
-              }),
+              mr: 8,
+              p: 12,
+              round: 4,
+              pressed: { bg: theme.colors.primary[600] + '1f' },
               onPress: execute(
                 replaceSApp(UiLens.at('modalParameters'))(false),
               ),
@@ -428,13 +397,10 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
               Txt({ style: { color: theme.colors.primary[600] } })('Cancelar'),
             ]),
             Pressable({
-              style: ({ pressed }) => ({
-                padding: 12,
-                backgroundColor: pressed
-                  ? theme.colors.primary[800]
-                  : theme.colors.primary[600],
-                borderRadius: 4,
-              }),
+              p: 12,
+              round: 4,
+              bg: theme.colors.primary[600],
+              pressed: { bg: theme.colors.primary[800] },
               onPress: $(
                 execute(replaceSApp(UiLens.at('modalParameters'))(false)),
                 RIO.chain(() => generateResult),

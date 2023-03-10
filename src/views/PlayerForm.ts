@@ -6,9 +6,9 @@ import { Txt } from 'src/components/hyperscript/derivative'
 import { MaterialIcons } from 'src/components/hyperscript/icons'
 import { ScrollView } from 'src/components/hyperscript/reactNative'
 import { Input } from 'src/components/safe/basic/Input'
-import { Pressable } from 'src/components/safe/basic/Pressable'
 import { Header } from 'src/components/safe/react-navigation/Header'
 import { HeaderBackButton } from 'src/components/safe/react-navigation/HeaderBackButton'
+import { Pressable } from 'src/components/util-props/basic/Pressable'
 import { Row } from 'src/components/util-props/basic/Row'
 import { View } from 'src/components/util-props/basic/View'
 import { RatingList, RatingShow } from 'src/datatypes/Player'
@@ -46,14 +46,10 @@ export const PlayerView = ({
           sequenceS(O.Apply)({ id, groupId }),
           O.map(({ id, groupId }) =>
             Pressable({
-              style: ({ pressed }) => ({
-                marginRight: 4,
-                padding: 8,
-                borderRadius: 100,
-                backgroundColor: pressed
-                  ? theme.colors.primary[700]
-                  : undefined,
-              }),
+              mr: 4,
+              p: 8,
+              round: 100,
+              pressed: { bg: theme.colors.primary[700] },
               onPress: $(
                 execute(deletePlayer({ groupId, playerId: id })),
                 RIO.chainFirst(() => goBack),
@@ -117,7 +113,8 @@ export const PlayerView = ({
             A.map(p =>
               Pressable({
                 key: p,
-                style: { flex: 1, alignItems: 'center' },
+                flex: 1,
+                align: 'center',
                 onPress: $(
                   replaceSApp(PlayerFormLens.at('position'))(p),
                   execute,
@@ -231,11 +228,12 @@ export const PlayerView = ({
             RA.map(r =>
               View({ key: r.toString(), flex: 1 })([
                 Pressable({
+                  h: 70,
+                  mt: -35,
                   onPress: $(
                     replaceSApp(PlayerFormLens.at('rating'))(r),
                     execute,
                   ),
-                  style: { height: 70, marginTop: -35 },
                 })([]),
               ]),
             ),
@@ -244,14 +242,11 @@ export const PlayerView = ({
       ]),
     ]),
     Pressable({
-      style: ({ pressed }) => ({
-        padding: 12,
-        backgroundColor: !form.name
-          ? theme.colors.primary[600] + '5f'
-          : pressed
-          ? theme.colors.primary[800]
-          : theme.colors.primary[600],
-      }),
+      p: 12,
+      bg: !form.name
+        ? theme.colors.primary[600] + '5f'
+        : theme.colors.primary[600],
+      pressed: { bg: form.name ? theme.colors.primary[800] : undefined },
       onPress: $(
         form.name,
         O.fromPredicate(not(Str.isEmpty)),
