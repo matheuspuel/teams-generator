@@ -5,7 +5,7 @@ import { Fragment } from './components/hyperscript/react'
 import { AppEnv } from './Env'
 import { storeGet } from './redux'
 import { LoadedLens } from './redux/slices/core/loading'
-import { initialAppState, RootState, store } from './redux/store'
+import { RootState, store } from './redux/store'
 import { Router } from './routes/Router'
 import { runStartupTasks } from './startup'
 import { $, IO } from './utils/fp'
@@ -16,7 +16,7 @@ const env: AppEnv = { store }
 void runStartupTasks(env)()
 
 export const AppIndex = () => {
-  const [model, setModel] = React.useState(initialAppState)
+  const [model, setModel] = React.useState(storeGet(env)())
   // eslint-disable-next-line functional/no-expression-statement
   React.useEffect(() => {
     const subscription = env.store.subscribe(() =>

@@ -30,7 +30,7 @@ export type AppStoreEnv = { store: AppStore }
 
 export const useAppSelector: SelectorHook<RootState> = selectorHook
 
-export const initialAppState: RootState = {
+export const store: AppStore = makeStore<RootState>({
   core: { isLoaded: false },
   groups: emptyGroups,
   parameters: defaultParameters,
@@ -44,6 +44,4 @@ export const initialAppState: RootState = {
     modalParameters: false,
   },
   route: initialRoute,
-}
-
-export const store: AppStore = makeStore<RootState>(initialAppState)
+})
