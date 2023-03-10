@@ -1,16 +1,17 @@
 import { $, $f, A, constVoid, IO, O, Option, Ord, RIO, T } from 'fp'
 import { Share } from 'react-native'
-import { Pressable } from 'src/components/basic/Pressable'
 import { Txt } from 'src/components/hyperscript/derivative'
 import { MaterialIcons } from 'src/components/hyperscript/icons'
 import {
   ActivityIndicator,
   ScrollView,
   Text,
-  View,
 } from 'src/components/hyperscript/reactNative'
-import { Header } from 'src/components/react-navigation/Header'
-import { HeaderBackButton } from 'src/components/react-navigation/HeaderBackButton'
+import { Pressable } from 'src/components/safe/basic/Pressable'
+import { Header } from 'src/components/safe/react-navigation/Header'
+import { HeaderBackButton } from 'src/components/safe/react-navigation/HeaderBackButton'
+import { Row } from 'src/components/util-props/basic/Row'
+import { View } from 'src/components/util-props/basic/View'
 import {
   getRatingTotal,
   Player,
@@ -29,8 +30,8 @@ export const ResultView = ({
 }: {
   result: Option<Array<Array<Player>>>
 }) =>
-  View({ style: { flex: 1 } })([
-    View({ style: { backgroundColor: theme.colors.white } })([
+  View({ flex: 1 })([
+    View({ bg: theme.colors.white })([
       Header({
         title: 'Resultado',
         headerStyle: { backgroundColor: theme.colors.primary[600] },
@@ -73,7 +74,7 @@ export const ResultView = ({
         result,
         O.matchW(
           () => [
-            View({ style: { flex: 1, justifyContent: 'center' } })([
+            View({ flex: 1, justify: 'center' })([
               ActivityIndicator({
                 size: 'large',
                 color: theme.colors.primary[500],
@@ -99,13 +100,11 @@ const TeamItem = (props: {
   const avgRating = toFixedLocale(2)(div(numPlayers)(totalRating))
   return View({
     key: props.key,
-    style: {
-      backgroundColor: theme.colors.white,
-      margin: 4,
-      padding: 4,
-      borderRadius: 8,
-      elevation: 1,
-    },
+    bg: theme.colors.white,
+    m: 4,
+    p: 4,
+    round: 8,
+    shadow: 1,
   })([
     Txt({
       style: {
@@ -139,9 +138,14 @@ const TeamItem = (props: {
   ])
 }
 
-const PlayerItem = (props: { key: string; data: Player }) => {
-  const { name, position, rating } = props.data
-  return View({ key: props.key, style: { flexDirection: 'row', padding: 4 } })([
+const PlayerItem = ({
+  key,
+  data: { name, position, rating },
+}: {
+  key: string
+  data: Player
+}) =>
+  Row({ key: key, p: 4 })([
     Txt({
       style: { color: theme.colors.darkText, fontWeight: 'bold' },
     })(RatingShow.show(rating)),
@@ -150,4 +154,3 @@ const PlayerItem = (props: { key: string; data: Player }) => {
     ),
     Txt({ style: { color: theme.colors.darkText } })(` (${position})`),
   ])
-}

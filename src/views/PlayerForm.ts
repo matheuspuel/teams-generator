@@ -2,13 +2,15 @@ import { Option } from '@fp-ts/core/Option'
 import { $, $f, A, O, RA, Rec, RIO, Str, Tup } from 'fp'
 import { sequenceS } from 'fp-ts/lib/Apply'
 import { not } from 'fp-ts/Predicate'
-import { Input } from 'src/components/basic/Input'
-import { Pressable } from 'src/components/basic/Pressable'
 import { Txt } from 'src/components/hyperscript/derivative'
 import { MaterialIcons } from 'src/components/hyperscript/icons'
-import { ScrollView, View } from 'src/components/hyperscript/reactNative'
-import { Header } from 'src/components/react-navigation/Header'
-import { HeaderBackButton } from 'src/components/react-navigation/HeaderBackButton'
+import { ScrollView } from 'src/components/hyperscript/reactNative'
+import { Input } from 'src/components/safe/basic/Input'
+import { Pressable } from 'src/components/safe/basic/Pressable'
+import { Header } from 'src/components/safe/react-navigation/Header'
+import { HeaderBackButton } from 'src/components/safe/react-navigation/HeaderBackButton'
+import { Row } from 'src/components/util-props/basic/Row'
+import { View } from 'src/components/util-props/basic/View'
 import { RatingList, RatingShow } from 'src/datatypes/Player'
 import { PositionDict, PositionOrd } from 'src/datatypes/Position'
 import { execute, replaceSApp } from 'src/redux'
@@ -31,7 +33,7 @@ export const PlayerView = ({
     keyboardShouldPersistTaps: 'handled',
     contentContainerStyle: { flexGrow: 1 },
   })([
-    View({ style: { backgroundColor: theme.colors.white } })([
+    View({ bg: theme.colors.white })([
       Header({
         title: 'Jogador',
         headerStyle: { backgroundColor: theme.colors.primary[600] },
@@ -68,8 +70,8 @@ export const PlayerView = ({
         ),
       }),
     ]),
-    View({ style: { flex: 1, padding: 4 } })([
-      View({ style: { padding: 4 } })([
+    View({ flex: 1, p: 4 })([
+      View({ p: 4 })([
         Txt({
           style: {
             fontWeight: '500',
@@ -98,7 +100,7 @@ export const PlayerView = ({
           }),
         }),
       ]),
-      View({ style: { padding: 4 } })([
+      View({ p: 4 })([
         Txt({
           style: {
             fontWeight: '500',
@@ -106,7 +108,7 @@ export const PlayerView = ({
             marginVertical: 4,
           },
         })('Posição'),
-        View({ style: { flexDirection: 'row' } })(
+        Row()(
           $(
             PositionDict,
             Rec.toEntries,
@@ -122,16 +124,14 @@ export const PlayerView = ({
                 ),
               })([
                 View({
-                  style: {
-                    aspectRatio: 1,
-                    justifyContent: 'center',
-                    padding: 4,
-                    borderRadius: 9999,
-                    backgroundColor:
-                      form.position === p
-                        ? theme.colors.primary[500]
-                        : theme.colors.primary[500] + '3f',
-                  },
+                  aspectRatio: 1,
+                  justify: 'center',
+                  p: 4,
+                  round: 9999,
+                  bg:
+                    form.position === p
+                      ? theme.colors.primary[500]
+                      : theme.colors.primary[500] + '3f',
                 })([
                   Txt({
                     style: {
@@ -146,7 +146,7 @@ export const PlayerView = ({
           ),
         ),
       ]),
-      View({ style: { padding: 4 } })([
+      View({ p: 4 })([
         Txt({
           style: {
             fontWeight: '500',
@@ -162,20 +162,17 @@ export const PlayerView = ({
             color: theme.colors.primary[600],
           },
         })(RatingShow.show(form.rating)),
-        View({ style: { flexDirection: 'row' } })(
+        Row()(
           $(
             RatingList,
             RA.map(r =>
-              View({ key: r, style: { flex: 1, height: 30 } })(
+              View({ key: r.toString(), flex: 1, h: 30 })(
                 form.rating === r
                   ? [
                       View({
-                        style: {
-                          alignSelf: 'center',
-                          width: 200,
-                          position: 'absolute',
-                          bottom: -15,
-                        },
+                        alignSelf: 'center',
+                        w: 200,
+                        absolute: { bottom: -15 },
                       })([
                         MaterialIcons({
                           name: 'arrow-drop-down',
@@ -192,27 +189,24 @@ export const PlayerView = ({
             ),
           ),
         ),
-        View({ style: { flexDirection: 'row' } })(
+        Row()(
           $(
             RatingList,
             RA.map(r =>
-              View({ key: r, style: { flex: 1 } })([
-                View({ style: { alignItems: 'center' } })([
+              View({ key: r.toString(), flex: 1 })([
+                View({ align: 'center' })([
                   View({
-                    style: {
-                      marginBottom: -1,
-                      marginTop: r % 1 === 0 ? 0 : 4,
-                      height: r % 1 === 0 ? 9 : 5,
-                      width: 4,
-                      backgroundColor: theme.colors.primary[500],
-                      borderRadius: 10,
-                      borderBottomLeftRadius: 0,
-                      borderBottomRightRadius: 0,
-                    },
+                    mb: -1,
+                    mt: r % 1 === 0 ? 0 : 4,
+                    h: r % 1 === 0 ? 9 : 5,
+                    w: 4,
+                    bg: theme.colors.primary[500],
+                    round: 10,
+                    roundB: 0,
                   })([]),
                   ...(r % 1 === 0
                     ? [
-                        View({ style: { position: 'absolute', top: 10 } })([
+                        View({ absolute: { top: 10 } })([
                           Txt({
                             style: {
                               textAlign: 'center',
@@ -230,18 +224,12 @@ export const PlayerView = ({
             ),
           ),
         ),
-        View({
-          style: {
-            height: 4,
-            backgroundColor: theme.colors.primary[500],
-            borderRadius: 10,
-          },
-        })([]),
-        View({ style: { flexDirection: 'row' } })(
+        View({ h: 4, bg: theme.colors.primary[500], round: 10 })([]),
+        Row()(
           $(
             RatingList,
             RA.map(r =>
-              View({ key: r, style: { flex: 1 } })([
+              View({ key: r.toString(), flex: 1 })([
                 Pressable({
                   onPress: $(
                     replaceSApp(PlayerFormLens.at('rating'))(r),

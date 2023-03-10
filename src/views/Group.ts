@@ -1,15 +1,16 @@
 import { $, $f, A, constVoid, O, Option, RIO, S } from 'fp'
-import { FlatList } from 'src/components/basic/FlatList'
-import { Modal } from 'src/components/basic/Modal'
-import { Pressable } from 'src/components/basic/Pressable'
 import { Txt } from 'src/components/hyperscript/derivative'
 import {
   MaterialCommunityIcons,
   MaterialIcons,
 } from 'src/components/hyperscript/icons'
-import { View } from 'src/components/hyperscript/reactNative'
-import { Header } from 'src/components/react-navigation/Header'
-import { HeaderBackButton } from 'src/components/react-navigation/HeaderBackButton'
+import { FlatList } from 'src/components/safe/basic/FlatList'
+import { Modal } from 'src/components/safe/basic/Modal'
+import { Pressable } from 'src/components/safe/basic/Pressable'
+import { Header } from 'src/components/safe/react-navigation/Header'
+import { HeaderBackButton } from 'src/components/safe/react-navigation/HeaderBackButton'
+import { Row } from 'src/components/util-props/basic/Row'
+import { View } from 'src/components/util-props/basic/View'
 import { Group } from 'src/datatypes/Group'
 import { Parameters } from 'src/datatypes/Parameters'
 import { Player, PlayerIsActive, RatingShow } from 'src/datatypes/Player'
@@ -53,8 +54,8 @@ export const GroupView = ({
     O.map(g => g.players),
     O.getOrElseW(() => []),
   )
-  return View({ style: { flex: 1 } })([
-    View({ style: { backgroundColor: theme.colors.white } })([
+  return View({ flex: 1 })([
+    View({ bg: theme.colors.white })([
       Header({
         title: 'Grupo',
         headerStyle: { backgroundColor: theme.colors.primary[600] },
@@ -63,7 +64,7 @@ export const GroupView = ({
           onPress: goBack,
           tintColor: theme.colors.lightText,
         }),
-        headerRight: View({ style: { flexDirection: 'row' } })([
+        headerRight: Row()([
           Pressable({
             style: ({ pressed }) => ({
               marginRight: 4,
@@ -177,16 +178,13 @@ const Item = ({
       ),
     ),
   })([
-    View({
-      style: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: theme.colors.white,
-        margin: 4,
-        padding: 4,
-        borderRadius: 8,
-        elevation: 1,
-      },
+    Row({
+      align: 'center',
+      bg: theme.colors.white,
+      m: 4,
+      p: 4,
+      round: 8,
+      shadow: 1,
     })([
       Pressable({
         style: { marginRight: 8 },
@@ -194,14 +192,12 @@ const Item = ({
       })(({ pressed }) => [
         active
           ? View({
-              style: {
-                borderWidth: 2,
-                borderRadius: 4,
-                height: 28,
-                width: 28,
-                backgroundColor: theme.colors.primary[pressed ? 800 : 600],
-                borderColor: theme.colors.primary[pressed ? 800 : 600],
-              },
+              borderWidth: 2,
+              round: 4,
+              h: 28,
+              w: 28,
+              bg: theme.colors.primary[pressed ? 800 : 600],
+              borderColor: theme.colors.primary[pressed ? 800 : 600],
             })([
               MaterialIcons({
                 name: 'check',
@@ -210,25 +206,21 @@ const Item = ({
               }),
             ])
           : View({
-              style: {
-                borderWidth: 2,
-                borderRadius: 4,
-                borderColor: theme.colors.gray[pressed ? 600 : 400],
-                height: 28,
-                width: 28,
-              },
+              borderWidth: 2,
+              round: 4,
+              borderColor: theme.colors.gray[pressed ? 600 : 400],
+              h: 28,
+              w: 28,
             })([]),
       ]),
       View({
-        style: {
-          aspectRatio: 1,
-          alignSelf: 'stretch',
-          justifyContent: 'center',
-          alignItems: 'center',
-          padding: 4,
-          borderRadius: 9999,
-          backgroundColor: theme.colors.amber[300],
-        },
+        aspectRatio: 1,
+        alignSelf: 'stretch',
+        justify: 'center',
+        align: 'center',
+        p: 4,
+        round: 9999,
+        bg: theme.colors.amber[300],
       })([
         Txt({
           style: {
@@ -275,9 +267,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
         },
         onPress: () => constVoid,
       })([
-        View({
-          style: { flexDirection: 'row', alignItems: 'center', padding: 8 },
-        })([
+        Row({ align: 'center', p: 8 })([
           Txt({
             style: {
               margin: 8,
@@ -304,11 +294,9 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
             }),
           ]),
         ]),
-        View({
-          style: { borderTopWidth: 1, borderColor: theme.colors.gray[300] },
-        })([]),
-        View({ style: { padding: 16 } })([
-          View({ style: { flexDirection: 'row', alignItems: 'center' } })([
+        View({ borderWidthT: 1, borderColor: theme.colors.gray[300] })([]),
+        View({ p: 16 })([
+          Row({ align: 'center' })([
             Pressable({
               style: ({ pressed }) => ({
                 padding: 12,
@@ -360,18 +348,15 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
             style: { padding: 4 },
             onPress: execute(togglePosition),
           })(({ pressed }) => [
-            View({ style: { flexDirection: 'row', alignItems: 'center' } })([
+            Row({ align: 'center' })([
               parameters.position
                 ? View({
-                    style: {
-                      borderWidth: 2,
-                      borderRadius: 4,
-                      height: 28,
-                      width: 28,
-                      backgroundColor:
-                        theme.colors.primary[pressed ? 800 : 600],
-                      borderColor: theme.colors.primary[pressed ? 800 : 600],
-                    },
+                    borderWidth: 2,
+                    round: 4,
+                    h: 28,
+                    w: 28,
+                    bg: theme.colors.primary[pressed ? 800 : 600],
+                    borderColor: theme.colors.primary[pressed ? 800 : 600],
                   })([
                     MaterialIcons({
                       name: 'check',
@@ -380,13 +365,11 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
                     }),
                   ])
                 : View({
-                    style: {
-                      borderWidth: 2,
-                      borderRadius: 4,
-                      borderColor: theme.colors.gray[pressed ? 600 : 400],
-                      height: 28,
-                      width: 28,
-                    },
+                    borderWidth: 2,
+                    round: 4,
+                    borderColor: theme.colors.gray[pressed ? 600 : 400],
+                    h: 28,
+                    w: 28,
                   })([]),
               Txt({ style: { margin: 4, fontSize: 14 } })(
                 'Considerar posições',
@@ -397,18 +380,15 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
             style: { padding: 4 },
             onPress: execute(toggleRating),
           })(({ pressed }) => [
-            View({ style: { flexDirection: 'row', alignItems: 'center' } })([
+            Row({ align: 'center' })([
               parameters.rating
                 ? View({
-                    style: {
-                      borderWidth: 2,
-                      borderRadius: 4,
-                      height: 28,
-                      width: 28,
-                      backgroundColor:
-                        theme.colors.primary[pressed ? 800 : 600],
-                      borderColor: theme.colors.primary[pressed ? 800 : 600],
-                    },
+                    borderWidth: 2,
+                    round: 4,
+                    h: 28,
+                    w: 28,
+                    bg: theme.colors.primary[pressed ? 800 : 600],
+                    borderColor: theme.colors.primary[pressed ? 800 : 600],
                   })([
                     MaterialIcons({
                       name: 'check',
@@ -417,13 +397,11 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
                     }),
                   ])
                 : View({
-                    style: {
-                      borderWidth: 2,
-                      borderRadius: 4,
-                      borderColor: theme.colors.gray[pressed ? 600 : 400],
-                      height: 28,
-                      width: 28,
-                    },
+                    borderWidth: 2,
+                    round: 4,
+                    borderColor: theme.colors.gray[pressed ? 600 : 400],
+                    h: 28,
+                    w: 28,
                   })([]),
               Txt({ style: { margin: 4, fontSize: 14 } })(
                 'Considerar habilidade',
@@ -431,17 +409,9 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
             ]),
           ]),
         ]),
-        View({
-          style: { borderTopWidth: 1, borderColor: theme.colors.gray[300] },
-        })([]),
-        View({
-          style: {
-            flexDirection: 'row',
-            padding: 16,
-            justifyContent: 'flex-end',
-          },
-        })([
-          View({ style: { flexDirection: 'row' } })([
+        View({ borderWidthT: 1, borderColor: theme.colors.gray[300] })([]),
+        Row({ p: 16, justify: 'end' })([
+          Row()([
             Pressable({
               style: ({ pressed }) => ({
                 marginRight: 8,

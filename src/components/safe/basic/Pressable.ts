@@ -1,6 +1,6 @@
 import { ReaderIO } from 'fp'
 import { PressableStateCallbackType } from 'react-native/types'
-import { Pressable as Pressable_ } from '../hyperscript/reactNative'
+import { Pressable as Pressable_ } from '../../hyperscript/reactNative'
 
 type PressableStyle = {
   flex?: number

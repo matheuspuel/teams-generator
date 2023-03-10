@@ -15,15 +15,17 @@ import {
   Str,
   Tup,
 } from 'fp'
-import { FlatList } from 'src/components/basic/FlatList'
-import { Input } from 'src/components/basic/Input'
-import { Modal } from 'src/components/basic/Modal'
-import { Pressable } from 'src/components/basic/Pressable'
 import { Txt } from 'src/components/hyperscript/derivative'
 import { MaterialIcons } from 'src/components/hyperscript/icons'
 import { Fragment } from 'src/components/hyperscript/react'
-import { Text, View } from 'src/components/hyperscript/reactNative'
-import { Header } from 'src/components/react-navigation/Header'
+import { Text } from 'src/components/hyperscript/reactNative'
+import { FlatList } from 'src/components/safe/basic/FlatList'
+import { Input } from 'src/components/safe/basic/Input'
+import { Modal } from 'src/components/safe/basic/Modal'
+import { Pressable } from 'src/components/safe/basic/Pressable'
+import { Header } from 'src/components/safe/react-navigation/Header'
+import { Row } from 'src/components/util-props/basic/Row'
+import { View } from 'src/components/util-props/basic/View'
 import { Group } from 'src/datatypes/Group'
 import { execute, replaceSApp } from 'src/redux'
 import {
@@ -51,8 +53,8 @@ export const Groups = ({
   ui: RootState['ui']
   groups: GroupsState
 }) =>
-  View({ style: { flex: 1 }, onLayout: () => void SplashScreen.hideAsync() })([
-    View({ style: { backgroundColor: theme.colors.white } })([
+  View({ flex: 1, onLayout: RIO.fromIO(SplashScreen.hideAsync) })([
+    View({ bg: theme.colors.white })([
       Header({
         title: 'Grupos',
         headerStyle: { backgroundColor: theme.colors.primary[600] },
@@ -119,16 +121,13 @@ const Item = ({ name, id }: Group) =>
       ),
     ),
   })([
-    View({
-      style: {
-        backgroundColor: theme.colors.white,
-        flexDirection: 'row',
-        alignItems: 'center',
-        margin: 8,
-        padding: 8,
-        borderRadius: 8,
-        elevation: 1,
-      },
+    Row({
+      bg: theme.colors.white,
+      align: 'center',
+      m: 8,
+      p: 8,
+      round: 8,
+      shadow: 1,
     })([
       Txt({
         numberOfLines: 1,
@@ -192,13 +191,7 @@ const GroupModal = ({
             },
             onPress: () => constVoid,
           })([
-            View({
-              style: {
-                flexDirection: 'row',
-                alignItems: 'center',
-                padding: 8,
-              },
-            })([
+            Row({ align: 'center', p: 8 })([
               Txt({
                 style: {
                   margin: 8,
@@ -233,13 +226,8 @@ const GroupModal = ({
                 }),
               ]),
             ]),
-            View({
-              style: {
-                borderTopWidth: 1,
-                borderColor: theme.colors.gray[300],
-              },
-            })([]),
-            View({ style: { padding: 16 } })([
+            View({ borderWidthT: 1, borderColor: theme.colors.gray[300] })([]),
+            View({ p: 16 })([
               View({})([
                 Txt({
                   style: {
@@ -270,20 +258,9 @@ const GroupModal = ({
                 }),
               ]),
             ]),
-            View({
-              style: {
-                borderTopWidth: 1,
-                borderColor: theme.colors.gray[300],
-              },
-            })([]),
-            View({
-              style: {
-                flexDirection: 'row',
-                padding: 16,
-                justifyContent: 'flex-end',
-              },
-            })([
-              View({ style: { flexDirection: 'row' } })([
+            View({ borderWidthT: 1, borderColor: theme.colors.gray[300] })([]),
+            Row({ justify: 'end', p: 16 })([
+              Row()([
                 Pressable({
                   style: ({ pressed }) => ({
                     marginRight: 8,
@@ -376,9 +353,7 @@ const DeleteGroupModal = ({
         },
         onPress: () => constVoid,
       })([
-        View({
-          style: { flexDirection: 'row', alignItems: 'center', padding: 8 },
-        })([
+        Row({ align: 'center', p: 8 })([
           Txt({
             style: {
               margin: 8,
@@ -405,10 +380,8 @@ const DeleteGroupModal = ({
             }),
           ]),
         ]),
-        View({
-          style: { borderTopWidth: 1, borderColor: theme.colors.gray[300] },
-        })([]),
-        View({ style: { padding: 16 } })([
+        View({ borderWidthT: 1, borderColor: theme.colors.gray[300] })([]),
+        View({ p: 16 })([
           Text({})([
             $(
               group,
@@ -429,17 +402,9 @@ const DeleteGroupModal = ({
             ),
           ]),
         ]),
-        View({
-          style: { borderTopWidth: 1, borderColor: theme.colors.gray[300] },
-        })([]),
-        View({
-          style: {
-            flexDirection: 'row',
-            padding: 16,
-            justifyContent: 'flex-end',
-          },
-        })([
-          View({ style: { flexDirection: 'row' } })([
+        View({ borderWidthT: 1, borderColor: theme.colors.gray[300] })([]),
+        Row({ p: 16, justify: 'end' })([
+          Row()([
             Pressable({
               style: ({ pressed }) => ({
                 marginRight: 8,
