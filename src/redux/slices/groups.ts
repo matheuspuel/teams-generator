@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { $, $f, A, constant, O, Rec, RIO, Tup } from 'fp'
+import { $, $f, A, apply, constant, O, Rec, RIO, S, Tup } from 'fp'
 import { Group } from 'src/datatypes/Group'
 import { Player } from 'src/datatypes/Player'
 import { generateId, Id } from 'src/utils/Entity'
@@ -123,17 +123,26 @@ export const togglePlayerActive = (p: { groupId: Id; playerId: Id }) =>
     ),
   )
 
-export const setAllPlayersActive = (p: { groupId: Id; active: boolean }) =>
-  modify(s =>
+export const toggleAllPlayersActive = execute(
+  S.modify(s =>
     $(
-      s,
-      Rec.modifyAt(p.groupId, g => ({
-        ...g,
-        players: $(
-          g.players,
-          A.map(a => ({ ...a, active: p.active })),
-        ),
-      })),
-      O.getOrElseW(() => s),
+      s.ui.selectedGroupId,
+      O.chain(id => $(s.groups, Rec.lookup(id))),
+      O.matchW(
+        () => s,
+        g =>
+          $(
+            g.players,
+            A.every(p => p.active),
+            allActive =>
+              $(
+                g.players,
+                A.map(p => ({ ...p, active: !allActive })),
+              ),
+            Optic.replace(GroupsLens.key(g.id).at('players')),
+            apply(s),
+          ),
+      ),
     ),
-  )
+  ),
+)

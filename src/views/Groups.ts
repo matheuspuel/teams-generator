@@ -4,6 +4,7 @@ import {
   $f,
   A,
   constVoid,
+  Eq,
   identity,
   none,
   O,
@@ -15,6 +16,7 @@ import {
   Str,
   Tup,
 } from 'fp'
+import { memoized, shallowEq } from 'src/components/helpers'
 import { Txt } from 'src/components/hyperscript/derivative'
 import { MaterialIcons } from 'src/components/hyperscript/icons'
 import { Fragment } from 'src/components/hyperscript/react'
@@ -46,55 +48,54 @@ import { RootState } from 'src/redux/store'
 import { theme } from 'src/theme'
 import { Id } from 'src/utils/Entity'
 
-export const Groups = ({
-  ui,
-  groups,
-}: {
-  ui: RootState['ui']
-  groups: GroupsState
-}) =>
-  View({ flex: 1, onLayout: RIO.fromIO(SplashScreen.hideAsync) })([
-    View({ bg: theme.colors.white })([
-      Header({
-        title: 'Grupos',
-        headerStyle: { backgroundColor: theme.colors.primary[600] },
-        headerTitleStyle: { color: theme.colors.lightText },
-        headerRight: Pressable({
-          mr: 4,
-          p: 8,
-          round: 100,
-          pressed: { bg: theme.colors.primary[700] },
-          onPress: execute(setUpsertGroupModal(some({ id: O.none, name: '' }))),
-        })([
-          MaterialIcons({
-            name: 'add',
-            color: theme.colors.lightText,
-            size: 24,
-          }),
-        ]),
+export const Groups = memoized('Groups')(
+  Eq.struct({ ui: shallowEq }),
+  ({ ui, groups }: { ui: RootState['ui']; groups: GroupsState }) =>
+    View({ flex: 1, onLayout: RIO.fromIO(SplashScreen.hideAsync) })([
+      View({ bg: theme.colors.white })([
+        Header({
+          title: 'Grupos',
+          headerStyle: { backgroundColor: theme.colors.primary[600] },
+          headerTitleStyle: { color: theme.colors.lightText },
+          headerRight: Pressable({
+            mr: 4,
+            p: 8,
+            round: 100,
+            pressed: { bg: theme.colors.primary[700] },
+            onPress: execute(
+              setUpsertGroupModal(some({ id: O.none, name: '' })),
+            ),
+          })([
+            MaterialIcons({
+              name: 'add',
+              color: theme.colors.lightText,
+              size: 24,
+            }),
+          ]),
+        }),
+      ]),
+      FlatList({
+        data: $(groups, Rec.toEntries, A.map(Tup.snd)),
+        renderItem: Item,
+      }),
+      GroupModal({
+        state: ui.modalUpsertGroup,
+        group: $(
+          ui.modalUpsertGroup,
+          O.chain(({ id }) => id),
+          O.chain(id => $(groups, Rec.lookup(id))),
+        ),
+      }),
+      DeleteGroupModal({
+        state: ui.modalDeleteGroup,
+        group: $(
+          ui.modalDeleteGroup,
+          O.map(({ id }) => id),
+          O.chain(id => $(groups, Rec.lookup(id))),
+        ),
       }),
     ]),
-    FlatList({
-      data: $(groups, Rec.toEntries, A.map(Tup.snd)),
-      renderItem: Item,
-    }),
-    GroupModal({
-      state: ui.modalUpsertGroup,
-      group: $(
-        ui.modalUpsertGroup,
-        O.chain(({ id }) => id),
-        O.chain(id => $(groups, Rec.lookup(id))),
-      ),
-    }),
-    DeleteGroupModal({
-      state: ui.modalDeleteGroup,
-      group: $(
-        ui.modalDeleteGroup,
-        O.map(({ id }) => id),
-        O.chain(id => $(groups, Rec.lookup(id))),
-      ),
-    }),
-  ])
+)
 
 const openEdit = (id: Id) =>
   $(
@@ -110,7 +111,7 @@ const openEdit = (id: Id) =>
 
 const openDelete = (id: Id) => execute(setDeleteGroupModal(some({ id })))
 
-const Item = ({ name, id }: Group) =>
+const Item = memoized('GroupItem')(shallowEq, ({ name, id }: Group) =>
   Pressable({
     onPress: $(
       navigate('Group'),
@@ -146,7 +147,8 @@ const Item = ({ name, id }: Group) =>
         }),
       ]),
     ]),
-  ])
+  ]),
+)
 
 const GroupModal = ({
   state,
