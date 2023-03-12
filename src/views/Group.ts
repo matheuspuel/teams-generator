@@ -5,18 +5,16 @@ import {
   memoizedConst,
   shallowEq,
 } from 'src/components/helpers'
-import { Txt } from 'src/components/hyperscript/derivative'
-import {
-  MaterialCommunityIcons,
-  MaterialIcons,
-} from 'src/components/hyperscript/icons'
 import { FlatList } from 'src/components/safe/basic/FlatList'
 import { Modal } from 'src/components/safe/basic/Modal'
-import { Header } from 'src/components/safe/react-navigation/Header'
-import { HeaderBackButton } from 'src/components/safe/react-navigation/HeaderBackButton'
 import { Pressable } from 'src/components/util-props/basic/Pressable'
 import { Row } from 'src/components/util-props/basic/Row'
+import { Txt } from 'src/components/util-props/basic/Txt'
 import { View } from 'src/components/util-props/basic/View'
+import { MaterialCommunityIcons } from 'src/components/util-props/icons/MaterialCommunityIcons'
+import { MaterialIcons } from 'src/components/util-props/icons/MaterialIcons'
+import { Header } from 'src/components/util-props/react-navigation/Header'
+import { HeaderBackButton } from 'src/components/util-props/react-navigation/HeaderBackButton'
 import { Group } from 'src/datatypes/Group'
 import { Parameters } from 'src/datatypes/Parameters'
 import { Player, RatingShow } from 'src/datatypes/Player'
@@ -41,7 +39,8 @@ import { generateResult } from 'src/redux/slices/result'
 import { goBack, navigate } from 'src/redux/slices/routes'
 import { UiLens } from 'src/redux/slices/ui'
 import { RootState } from 'src/redux/store'
-import { theme } from 'src/theme'
+import { colors } from 'src/theme'
+import { withOpacity } from 'src/utils/Color'
 import { Id } from 'src/utils/Entity'
 
 const onOpenParametersModal = execute(
@@ -134,39 +133,35 @@ export const GroupView = memoized('GroupScreen')(
       }),
       Pressable({
         p: 12,
-        bg: theme.colors.primary[600],
-        pressed: { bg: theme.colors.primary[800] },
+        bg: colors.primary.$5,
+        pressed: { bg: colors.primary.$7 },
         onPress: onOpenParametersModal,
-      })([
-        Txt({ style: { textAlign: 'center', color: theme.colors.white } })(
-          'Sortear',
-        ),
-      ]),
+      })([Txt({ align: 'center', color: colors.white })('Sortear')]),
       ...(modalParameters ? [ParametersModal({ parameters })] : []),
     ]),
 )
 
 const GroupHeader = memoizedConst('GroupHeader')(
-  View({ bg: theme.colors.white })([
+  View({ bg: colors.white })([
     Header({
       title: 'Grupo',
-      headerStyle: { backgroundColor: theme.colors.primary[600] },
-      headerTitleStyle: { color: theme.colors.lightText },
+      headerStyle: { backgroundColor: colors.primary.$5 },
+      headerTitleStyle: { color: colors.lightText },
       headerLeft: HeaderBackButton({
         onPress: goBack,
-        tintColor: theme.colors.lightText,
+        tintColor: colors.lightText,
       }),
       headerRight: Row()([
         Pressable({
           mr: 4,
           p: 8,
           round: 100,
-          pressed: { bg: theme.colors.primary[700] },
+          pressed: { bg: colors.primary.$6 },
           onPress: toggleAllPlayersActive,
         })([
           MaterialCommunityIcons({
             name: 'checkbox-multiple-outline',
-            color: theme.colors.lightText,
+            color: colors.lightText,
             size: 24,
           }),
         ]),
@@ -174,15 +169,9 @@ const GroupHeader = memoizedConst('GroupHeader')(
           mr: 4,
           p: 8,
           round: 100,
-          pressed: { bg: theme.colors.primary[700] },
+          pressed: { bg: colors.primary.$6 },
           onPress: onPressAddPlayer,
-        })([
-          MaterialIcons({
-            name: 'add',
-            color: theme.colors.lightText,
-            size: 24,
-          }),
-        ]),
+        })([MaterialIcons({ name: 'add', color: colors.lightText, size: 24 })]),
       ]),
     }),
   ]),
@@ -194,7 +183,7 @@ const Item = memoized('GroupItem')(
     Pressable({ onPress: onPressItem(id) })([
       Row({
         align: 'center',
-        bg: theme.colors.white,
+        bg: colors.white,
         m: 4,
         p: 4,
         round: 8,
@@ -208,19 +197,19 @@ const Item = memoized('GroupItem')(
                   round: 4,
                   h: 28,
                   w: 28,
-                  bg: theme.colors.primary[pressed ? 800 : 600],
-                  borderColor: theme.colors.primary[pressed ? 800 : 600],
+                  bg: colors.primary[pressed ? '$7' : '$5'],
+                  borderColor: colors.primary[pressed ? '$7' : '$5'],
                 })([
                   MaterialIcons({
                     name: 'check',
                     size: 24,
-                    color: theme.colors.white,
+                    color: colors.white,
                   }),
                 ])
               : View({
                   borderWidth: 2,
                   round: 4,
-                  borderColor: theme.colors.gray[pressed ? 600 : 400],
+                  borderColor: colors.gray[pressed ? '$5' : '$3'],
                   h: 28,
                   w: 28,
                 })([]),
@@ -233,27 +222,19 @@ const Item = memoized('GroupItem')(
           align: 'center',
           p: 4,
           round: 9999,
-          bg: theme.colors.amber[300],
+          bg: colors.yellow.$3,
         })([
           Txt({
-            style: {
-              fontSize: 16,
-              fontWeight: 'bold',
-              color: theme.colors.darkText,
-              lineHeight: 19,
-            },
+            size: 16,
+            weight: 600,
+            color: colors.darkText,
+            lineHeight: 19,
           })(position),
         ]),
-        Txt({
-          style: {
-            marginHorizontal: 8,
-            fontWeight: 'bold',
-            color: theme.colors.darkText,
-          },
-        })(RatingShow.show(rating)),
-        Txt({ style: { color: theme.colors.darkText }, numberOfLines: 1 })(
-          name,
+        Txt({ mx: 8, weight: 600, color: colors.darkText })(
+          RatingShow.show(rating),
         ),
+        Txt({ color: colors.darkText, numberOfLines: 1 })(name),
       ]),
     ]),
 )
@@ -268,12 +249,12 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
   })([
     Pressable({
       flex: 1,
-      bg: theme.colors.black + '3f',
+      bg: withOpacity(63)(colors.black),
       justify: 'center',
       onPress: onCloseParametersModal,
     })([
       Pressable({
-        bg: theme.colors.white,
+        bg: colors.white,
         m: 48,
         round: 8,
         shadow: 2,
@@ -281,68 +262,52 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
       })([
         Row({ align: 'center', p: 8 })([
           Txt({
-            style: {
-              margin: 8,
-              flex: 1,
-              fontSize: 16,
-              fontWeight: '600',
-              color: theme.colors.darkText,
-            },
+            m: 8,
+            flex: 1,
+            size: 16,
+            weight: 600,
+            color: colors.darkText,
           })('Parâmetros'),
           Pressable({
             p: 8,
             round: 4,
-            pressed: { bg: theme.colors.gray[600] + '1f' },
+            pressed: { bg: withOpacity(31)(colors.gray.$5) },
             onPress: onCloseParametersModal,
           })([
-            MaterialIcons({
-              name: 'close',
-              size: 24,
-              color: theme.colors.gray[500],
-            }),
+            MaterialIcons({ name: 'close', size: 24, color: colors.gray.$4 }),
           ]),
         ]),
-        View({ borderWidthT: 1, borderColor: theme.colors.gray[300] })([]),
+        View({ borderWidthT: 1, borderColor: colors.gray.$2 })([]),
         View({ p: 16 })([
           Row({ align: 'center' })([
             Pressable({
               p: 12,
               round: 4,
-              pressed: { bg: theme.colors.primary[600] + '1f' },
+              pressed: { bg: withOpacity(31)(colors.primary.$5) },
               onPress: onDecrementTeamsCount,
             })([
               MaterialIcons({
                 name: 'remove',
                 size: 24,
-                color: theme.colors.primary[600],
+                color: colors.primary.$5,
               }),
             ]),
-            Txt({
-              style: {
-                padding: 8,
-                fontWeight: 'bold',
-                color: theme.colors.darkText,
-              },
-            })(parameters.teamsCount.toString()),
+            Txt({ p: 8, weight: 600, color: colors.darkText })(
+              parameters.teamsCount.toString(),
+            ),
             Pressable({
               p: 12,
-              pressed: { bg: theme.colors.primary[600] + '1f' },
+              pressed: { bg: withOpacity(31)(colors.primary.$5) },
               round: 4,
               onPress: onIncrementTeamsCount,
             })([
               MaterialIcons({
                 name: 'add',
                 size: 24,
-                color: theme.colors.primary[600],
+                color: colors.primary.$5,
               }),
             ]),
-            Txt({
-              style: {
-                flex: 1,
-                paddingLeft: 8,
-                color: theme.colors.darkText,
-              },
-            })('Número de times'),
+            Txt({ flex: 1, pl: 8, color: colors.darkText })('Número de times'),
           ]),
           Pressable({ p: 4, onPress: onTogglePosition })(({ pressed }) => [
             Row({ align: 'center' })([
@@ -352,25 +317,23 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
                     round: 4,
                     h: 28,
                     w: 28,
-                    bg: theme.colors.primary[pressed ? 800 : 600],
-                    borderColor: theme.colors.primary[pressed ? 800 : 600],
+                    bg: colors.primary[pressed ? '$7' : '$5'],
+                    borderColor: colors.primary[pressed ? '$7' : '$5'],
                   })([
                     MaterialIcons({
                       name: 'check',
                       size: 24,
-                      color: theme.colors.white,
+                      color: colors.white,
                     }),
                   ])
                 : View({
                     borderWidth: 2,
                     round: 4,
-                    borderColor: theme.colors.gray[pressed ? 600 : 400],
+                    borderColor: colors.gray[pressed ? '$5' : '$3'],
                     h: 28,
                     w: 28,
                   })([]),
-              Txt({ style: { margin: 4, fontSize: 14 } })(
-                'Considerar posições',
-              ),
+              Txt({ m: 4, size: 14 })('Considerar posições'),
             ]),
           ]),
           Pressable({ p: 4, onPress: onToggleRating })(({ pressed }) => [
@@ -381,47 +344,43 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
                     round: 4,
                     h: 28,
                     w: 28,
-                    bg: theme.colors.primary[pressed ? 800 : 600],
-                    borderColor: theme.colors.primary[pressed ? 800 : 600],
+                    bg: colors.primary[pressed ? '$7' : '$5'],
+                    borderColor: colors.primary[pressed ? '$7' : '$5'],
                   })([
                     MaterialIcons({
                       name: 'check',
                       size: 24,
-                      color: theme.colors.white,
+                      color: colors.white,
                     }),
                   ])
                 : View({
                     borderWidth: 2,
                     round: 4,
-                    borderColor: theme.colors.gray[pressed ? 600 : 400],
+                    borderColor: colors.gray[pressed ? '$5' : '$3'],
                     h: 28,
                     w: 28,
                   })([]),
-              Txt({ style: { margin: 4, fontSize: 14 } })(
-                'Considerar habilidade',
-              ),
+              Txt({ m: 4, size: 14 })('Considerar habilidade'),
             ]),
           ]),
         ]),
-        View({ borderWidthT: 1, borderColor: theme.colors.gray[300] })([]),
+        View({ borderWidthT: 1, borderColor: colors.gray.$2 })([]),
         Row({ p: 16, justify: 'end' })([
           Row()([
             Pressable({
               mr: 8,
               p: 12,
               round: 4,
-              pressed: { bg: theme.colors.primary[600] + '1f' },
+              pressed: { bg: withOpacity(31)(colors.primary.$5) },
               onPress: onCloseParametersModal,
-            })([
-              Txt({ style: { color: theme.colors.primary[600] } })('Cancelar'),
-            ]),
+            })([Txt({ color: colors.primary.$5 })('Cancelar')]),
             Pressable({
               p: 12,
               round: 4,
-              bg: theme.colors.primary[600],
-              pressed: { bg: theme.colors.primary[800] },
+              bg: colors.primary.$5,
+              pressed: { bg: colors.primary.$7 },
               onPress: onShuffle,
-            })([Txt({ style: { color: theme.colors.white } })('Sortear')]),
+            })([Txt({ color: colors.white })('Sortear')]),
           ]),
         ]),
       ]),

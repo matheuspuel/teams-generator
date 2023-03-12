@@ -1,4 +1,5 @@
 import { View as View_ } from 'src/components/hyperscript/reactNative'
+import { Color, toHex } from 'src/utils/Color'
 import { $, Reader, ReaderIO } from 'src/utils/fp'
 
 type DirectionName =
@@ -16,17 +17,15 @@ type Spacing = number
 
 type LineWidth = number
 
-type Color = string
-
 type DescriptivePaddingProps = {
   [k in `padding${DirectionName}`]?: number
 }
 
-type PaddingProps = {
+export type PaddingProps = {
   [k in `p${DirectionToken}`]?: Spacing
 }
 
-const toDescriptivePaddingProps = (
+export const toDescriptivePaddingProps = (
   props?: PaddingProps,
 ): DescriptivePaddingProps => ({
   padding: props?.p,
@@ -42,11 +41,11 @@ type DescriptiveMarginProps = {
   [k in `margin${DirectionName}`]?: number
 }
 
-type MarginProps = {
+export type MarginProps = {
   [k in `m${DirectionToken}`]?: Spacing
 }
 
-const toDescriptiveMarginProps = (
+export const toDescriptiveMarginProps = (
   props?: MarginProps,
 ): DescriptiveMarginProps => ({
   margin: props?.m,
@@ -58,11 +57,11 @@ const toDescriptiveMarginProps = (
   marginBottom: props?.mb,
 })
 
-type BorderWidthProps = {
+export type BorderWidthProps = {
   [k in `borderWidth${Uppercase<DirectionToken>}`]?: LineWidth
 }
 
-const toDescriptiveBorderWidthProps = (props?: BorderWidthProps) => ({
+export const toDescriptiveBorderWidthProps = (props?: BorderWidthProps) => ({
   borderWidth: props?.borderWidth,
   borderLeftWidth: props?.borderWidthL ?? props?.borderWidthX,
   borderRightWidth: props?.borderWidthR ?? props?.borderWidthX,
@@ -70,7 +69,7 @@ const toDescriptiveBorderWidthProps = (props?: BorderWidthProps) => ({
   borderBottomWidth: props?.borderWidthB ?? props?.borderWidthY,
 })
 
-type RoundProps = {
+export type RoundProps = {
   round?: number
   roundTL?: number
   roundTR?: number
@@ -81,7 +80,7 @@ type RoundProps = {
   | { roundL?: never; roundR?: never; roundT?: number; roundB?: number }
 )
 
-const toDescriptiveRoundProps = (props?: RoundProps) => ({
+export const toDescriptiveRoundProps = (props?: RoundProps) => ({
   borderRadius: props?.round,
   borderTopLeftRadius: props?.roundTL ?? props?.roundT ?? props?.roundL,
   borderTopRightRadius: props?.roundTR ?? props?.roundT ?? props?.roundR,
@@ -93,7 +92,6 @@ export type ViewStyleProps = PaddingProps &
   MarginProps &
   BorderWidthProps &
   RoundProps & {
-    round?: number
     w?: number
     h?: number
     aspectRatio?: number
@@ -156,8 +154,8 @@ export const getViewStyleProp = (
   aspectRatio: props?.aspectRatio,
   flex: props?.flex,
   flexDirection: props?.direction,
-  backgroundColor: props?.bg,
-  borderColor: props?.borderColor,
+  backgroundColor: props?.bg ? toHex(props.bg) : undefined,
+  borderColor: props?.borderColor ? toHex(props.borderColor) : undefined,
   justifyContent:
     props?.justify === 'start'
       ? 'flex-start'

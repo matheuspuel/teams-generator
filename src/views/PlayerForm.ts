@@ -2,15 +2,15 @@ import { get } from '@fp-ts/optic'
 import { $, $f, A, Apply, O, RA, Rec, RIO, S, Str, Tup } from 'fp'
 import { not } from 'fp-ts/Predicate'
 import { memoizedConst } from 'src/components/helpers'
-import { Txt } from 'src/components/hyperscript/derivative'
-import { MaterialIcons } from 'src/components/hyperscript/icons'
 import { ScrollView } from 'src/components/hyperscript/reactNative'
-import { Input } from 'src/components/safe/basic/Input'
-import { Header } from 'src/components/safe/react-navigation/Header'
-import { HeaderBackButton } from 'src/components/safe/react-navigation/HeaderBackButton'
+import { Input } from 'src/components/util-props/basic/Input'
 import { Pressable } from 'src/components/util-props/basic/Pressable'
 import { Row } from 'src/components/util-props/basic/Row'
+import { Txt } from 'src/components/util-props/basic/Txt'
 import { View } from 'src/components/util-props/basic/View'
+import { MaterialIcons } from 'src/components/util-props/icons/MaterialIcons'
+import { Header } from 'src/components/util-props/react-navigation/Header'
+import { HeaderBackButton } from 'src/components/util-props/react-navigation/HeaderBackButton'
 import { RatingList, RatingShow } from 'src/datatypes/Player'
 import { PositionDict, PositionOrd } from 'src/datatypes/Position'
 import { execute, replaceSApp } from 'src/redux'
@@ -22,7 +22,8 @@ import {
 import { PlayerForm, PlayerFormLens } from 'src/redux/slices/playerForm'
 import { goBack } from 'src/redux/slices/routes'
 import { UiLens } from 'src/redux/slices/ui'
-import { theme } from 'src/theme'
+import { colors } from 'src/theme'
+import { withOpacity } from 'src/utils/Color'
 
 const onChangeName = $f(replaceSApp(PlayerFormLens.at('name')), execute)
 
@@ -69,42 +70,27 @@ export const PlayerView = ({
     ScreenHeader,
     View({ flex: 1, p: 4 })([
       View({ p: 4 })([
-        Txt({
-          style: {
-            fontWeight: '500',
-            color: theme.colors.gray[500],
-            marginVertical: 4,
-          },
-        })('Nome'),
+        Txt({ weight: 500, color: colors.gray.$4, my: 4 })('Nome'),
         Input({
           placeholder: 'Ex: Pedro',
-          placeholderTextColor: theme.colors.gray[400],
+          placeholderTextColor: colors.gray.$3,
           value: name,
           onChange: onChangeName,
-          cursorColor: theme.colors.darkText,
-          style: ({ isFocused }) => ({
-            fontSize: 12,
-            padding: 8,
-            paddingHorizontal: 14,
-            borderWidth: 1,
-            borderRadius: 4,
-            borderColor: isFocused
-              ? theme.colors.primary[600]
-              : theme.colors.gray[300],
-            backgroundColor: isFocused
-              ? theme.colors.primary[600] + '1f'
-              : undefined,
-          }),
+          cursorColor: colors.darkText,
+          fontSize: 12,
+          p: 8,
+          px: 14,
+          borderWidth: 1,
+          round: 4,
+          borderColor: colors.gray.$2,
+          focused: {
+            bg: withOpacity(31)(colors.primary.$5),
+            borderColor: colors.primary.$5,
+          },
         }),
       ]),
       View({ p: 4 })([
-        Txt({
-          style: {
-            fontWeight: '500',
-            color: theme.colors.gray[500],
-            marginVertical: 4,
-          },
-        })('Posição'),
+        Txt({ weight: 500, color: colors.gray.$4, my: 4 })('Posição'),
         Row()(
           $(
             PositionDict,
@@ -125,16 +111,12 @@ export const PlayerView = ({
                   round: 9999,
                   bg:
                     position === p
-                      ? theme.colors.primary[500]
-                      : theme.colors.primary[500] + '3f',
+                      ? colors.primary.$4
+                      : withOpacity(63)(colors.primary.$4),
                 })([
-                  Txt({
-                    style: {
-                      fontSize: 14,
-                      textAlign: 'center',
-                      color: theme.colors.lightText,
-                    },
-                  })(p),
+                  Txt({ size: 14, align: 'center', color: colors.lightText })(
+                    p,
+                  ),
                 ]),
               ]),
             ),
@@ -142,20 +124,12 @@ export const PlayerView = ({
         ),
       ]),
       View({ p: 4 })([
+        Txt({ weight: 500, color: colors.gray.$4, my: 4 })('Habilidade'),
         Txt({
-          style: {
-            fontWeight: '500',
-            color: theme.colors.gray[500],
-            marginVertical: 4,
-          },
-        })('Habilidade'),
-        Txt({
-          style: {
-            textAlign: 'center',
-            fontSize: 24,
-            fontWeight: '700',
-            color: theme.colors.primary[600],
-          },
+          align: 'center',
+          size: 24,
+          weight: 700,
+          color: colors.primary.$5,
         })(RatingShow.show(rating)),
         Row()(
           $(
@@ -171,11 +145,9 @@ export const PlayerView = ({
                       })([
                         MaterialIcons({
                           name: 'arrow-drop-down',
-                          style: {
-                            fontSize: 60,
-                            textAlign: 'center',
-                            color: theme.colors.primary[600],
-                          },
+                          size: 60,
+                          align: 'center',
+                          color: colors.primary.$5,
                         }),
                       ]),
                     ]
@@ -195,7 +167,7 @@ export const PlayerView = ({
                     mt: r % 1 === 0 ? 0 : 4,
                     h: r % 1 === 0 ? 9 : 5,
                     w: 4,
-                    bg: theme.colors.primary[500],
+                    bg: colors.primary.$4,
                     round: 10,
                     roundB: 0,
                   })([]),
@@ -203,13 +175,11 @@ export const PlayerView = ({
                     ? [
                         View({ absolute: { top: 10 } })([
                           Txt({
-                            style: {
-                              textAlign: 'center',
-                              fontSize: 12,
-                              color: theme.colors.primary[500],
-                              fontWeight: '900',
-                              width: 100,
-                            },
+                            align: 'center',
+                            size: 12,
+                            color: colors.primary.$4,
+                            weight: 900,
+                            w: 100,
                           })(r.toString()),
                         ]),
                       ]
@@ -219,7 +189,7 @@ export const PlayerView = ({
             ),
           ),
         ),
-        View({ h: 4, bg: theme.colors.primary[500], round: 10 })([]),
+        View({ h: 4, bg: colors.primary.$4, round: 10 })([]),
         Row()(
           $(
             RatingList,
@@ -234,39 +204,37 @@ export const PlayerView = ({
     ]),
     Pressable({
       p: 12,
-      bg: !name ? theme.colors.primary[600] + '5f' : theme.colors.primary[600],
-      pressed: { bg: name ? theme.colors.primary[800] : undefined },
+      bg: !name ? withOpacity(95)(colors.primary.$5) : colors.primary.$5,
+      pressed: { bg: name ? colors.primary.$7 : undefined },
       onPress: onSave,
     })([
       Txt({
-        style: {
-          textAlign: 'center',
-          color: !name ? theme.colors.white + '5f' : theme.colors.white,
-        },
+        align: 'center',
+        color: !name ? withOpacity(95)(colors.white) : colors.white,
       })('Gravar'),
     ]),
   ])
 
 const ScreenHeader = memoizedConst('Header')(
-  View({ bg: theme.colors.white })([
+  View({ bg: colors.white })([
     Header({
       title: 'Jogador',
-      headerStyle: { backgroundColor: theme.colors.primary[600] },
-      headerTitleStyle: { color: theme.colors.lightText },
+      headerStyle: { backgroundColor: colors.primary.$5 },
+      headerTitleStyle: { color: colors.lightText },
       headerLeft: HeaderBackButton({
         onPress: goBack,
-        tintColor: theme.colors.lightText,
+        tintColor: colors.lightText,
       }),
       headerRight: Pressable({
         mr: 4,
         p: 8,
         round: 100,
-        pressed: { bg: theme.colors.primary[700] },
+        pressed: { bg: colors.primary.$6 },
         onPress: deleteCurrentPlayer,
       })([
         MaterialIcons({
           name: 'delete',
-          color: theme.colors.lightText,
+          color: colors.lightText,
           size: 24,
         }),
       ]),

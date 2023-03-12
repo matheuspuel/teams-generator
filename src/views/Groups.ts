@@ -17,17 +17,17 @@ import {
 } from 'fp'
 import { not } from 'fp-ts/Predicate'
 import { memoized, memoizedConst } from 'src/components/helpers'
-import { Txt } from 'src/components/hyperscript/derivative'
-import { MaterialIcons } from 'src/components/hyperscript/icons'
 import { Fragment } from 'src/components/hyperscript/react'
 import { Text } from 'src/components/hyperscript/reactNative'
 import { FlatList } from 'src/components/safe/basic/FlatList'
-import { Input } from 'src/components/safe/basic/Input'
 import { Modal } from 'src/components/safe/basic/Modal'
-import { Header } from 'src/components/safe/react-navigation/Header'
+import { Input } from 'src/components/util-props/basic/Input'
 import { Pressable } from 'src/components/util-props/basic/Pressable'
 import { Row } from 'src/components/util-props/basic/Row'
+import { Txt } from 'src/components/util-props/basic/Txt'
 import { View } from 'src/components/util-props/basic/View'
+import { MaterialIcons } from 'src/components/util-props/icons/MaterialIcons'
+import { Header } from 'src/components/util-props/react-navigation/Header'
 import { Group } from 'src/datatypes/Group'
 import { execute, replaceSApp, storeGet } from 'src/redux'
 import {
@@ -45,7 +45,8 @@ import {
   UiLens,
 } from 'src/redux/slices/ui'
 import { RootState } from 'src/redux/store'
-import { theme } from 'src/theme'
+import { colors } from 'src/theme'
+import { toHex, withOpacity } from 'src/utils/Color'
 import { Id } from 'src/utils/Entity'
 import { Optic } from 'src/utils/Optic'
 
@@ -151,24 +152,18 @@ export const Groups = memoized('Groups')(
 )
 
 const ScreenHeader = memoizedConst('Header')(
-  View({ bg: theme.colors.white })([
+  View({ bg: colors.white })([
     Header({
       title: 'Grupos',
-      headerStyle: { backgroundColor: theme.colors.primary[600] },
-      headerTitleStyle: { color: theme.colors.lightText },
+      headerStyle: { backgroundColor: colors.primary.$5 },
+      headerTitleStyle: { color: colors.lightText },
       headerRight: Pressable({
         mr: 4,
         p: 8,
         round: 100,
-        pressed: { bg: theme.colors.primary[700] },
+        pressed: { bg: colors.primary.$6 },
         onPress: onOpenNewGroupModal,
-      })([
-        MaterialIcons({
-          name: 'add',
-          color: theme.colors.lightText,
-          size: 24,
-        }),
-      ]),
+      })([MaterialIcons({ name: 'add', color: colors.lightText, size: 24 })]),
     }),
   ]),
 )
@@ -178,30 +173,21 @@ const Item = memoized('GroupItem')(
   ({ name, id }: Group) =>
     Pressable({ onPress: onSelectGroup(id) })([
       Row({
-        bg: theme.colors.white,
+        bg: colors.white,
         align: 'center',
         m: 8,
         p: 8,
         round: 8,
         shadow: 1,
       })([
-        Txt({
-          numberOfLines: 1,
-          style: { flex: 1, fontWeight: 'bold', color: theme.colors.darkText },
-        })(name),
+        Txt({ numberOfLines: 1, flex: 1, weight: 600, color: colors.darkText })(
+          name,
+        ),
         Pressable({ onPress: onOpenEdit(id), px: 4 })([
-          MaterialIcons({
-            name: 'edit',
-            size: 24,
-            color: theme.colors.gray[500],
-          }),
+          MaterialIcons({ name: 'edit', size: 24, color: colors.gray.$4 }),
         ]),
         Pressable({ px: 4, onPress: onOpenDelete(id) })([
-          MaterialIcons({
-            name: 'delete',
-            color: theme.colors.gray[500],
-            size: 24,
-          }),
+          MaterialIcons({ name: 'delete', color: colors.gray.$4, size: 24 }),
         ]),
       ]),
     ]),
@@ -225,12 +211,12 @@ const GroupModal = ({
       })([
         Pressable({
           flex: 1,
-          bg: theme.colors.black + '3f',
+          bg: withOpacity(63)(colors.black),
           justify: 'center',
           onPress: onCloseGroupModal,
         })([
           Pressable({
-            bg: theme.colors.white,
+            bg: colors.white,
             m: 48,
             round: 8,
             shadow: 2,
@@ -238,13 +224,11 @@ const GroupModal = ({
           })([
             Row({ align: 'center', p: 8 })([
               Txt({
-                style: {
-                  margin: 8,
-                  flex: 1,
-                  fontSize: 16,
-                  fontWeight: '600',
-                  color: theme.colors.darkText,
-                },
+                m: 8,
+                flex: 1,
+                size: 16,
+                weight: 600,
+                color: colors.darkText,
               })(
                 $(
                   state,
@@ -258,79 +242,64 @@ const GroupModal = ({
               Pressable({
                 p: 8,
                 round: 4,
-                pressed: { bg: theme.colors.gray[600] + '1f' },
+                pressed: { bg: withOpacity(31)(colors.gray.$5) },
                 onPress: onCloseGroupModal,
               })([
                 MaterialIcons({
                   name: 'close',
                   size: 24,
-                  color: theme.colors.gray[500],
+                  color: colors.gray.$4,
                 }),
               ]),
             ]),
-            View({ borderWidthT: 1, borderColor: theme.colors.gray[300] })([]),
+            View({ borderWidthT: 1, borderColor: colors.gray.$2 })([]),
             View({ p: 16 })([
               View()([
-                Txt({
-                  style: {
-                    fontWeight: '500',
-                    color: theme.colors.gray[500],
-                    marginVertical: 4,
-                  },
-                })('Nome do grupo'),
+                Txt({ weight: 500, color: colors.gray.$4, my: 4 })(
+                  'Nome do grupo',
+                ),
                 Input({
                   placeholder: 'Ex: Futebol de quinta',
                   value: form.name,
                   onChange: onChangeGroupName,
-                  placeholderTextColor: theme.colors.gray[400],
-                  cursorColor: theme.colors.darkText,
-                  style: ({ isFocused }) => ({
-                    fontSize: 12,
-                    padding: 8,
-                    paddingHorizontal: 14,
-                    borderWidth: 1,
-                    borderRadius: 4,
-                    borderColor: isFocused
-                      ? theme.colors.primary[600]
-                      : theme.colors.gray[300],
-                    backgroundColor: isFocused
-                      ? theme.colors.primary[600] + '1f'
-                      : undefined,
-                  }),
+                  placeholderTextColor: colors.gray.$3,
+                  cursorColor: colors.darkText,
+                  fontSize: 12,
+                  p: 8,
+                  px: 14,
+                  borderWidth: 1,
+                  round: 4,
+                  borderColor: colors.gray.$2,
+                  focused: {
+                    bg: withOpacity(31)(colors.primary.$5),
+                    borderColor: colors.primary.$5,
+                  },
                 }),
               ]),
             ]),
-            View({ borderWidthT: 1, borderColor: theme.colors.gray[300] })([]),
+            View({ borderWidthT: 1, borderColor: colors.gray.$2 })([]),
             Row({ justify: 'end', p: 16 })([
               Row()([
                 Pressable({
                   mr: 8,
                   p: 12,
                   round: 4,
-                  pressed: { bg: theme.colors.primary[600] + '1f' },
+                  pressed: { bg: withOpacity(31)(colors.primary.$5) },
                   onPress: onCloseGroupModal,
-                })([
-                  Txt({ style: { color: theme.colors.primary[600] } })(
-                    'Cancelar',
-                  ),
-                ]),
+                })([Txt({ color: colors.primary.$5 })('Cancelar')]),
                 Pressable({
                   p: 12,
                   round: 4,
                   bg: !form.name
-                    ? theme.colors.primary[600] + '5f'
-                    : theme.colors.primary[600],
-                  pressed: {
-                    bg: form.name ? theme.colors.primary[800] : undefined,
-                  },
+                    ? withOpacity(95)(colors.primary.$5)
+                    : colors.primary.$5,
+                  pressed: { bg: form.name ? colors.primary.$7 : undefined },
                   onPress: onSaveGroup,
                 })([
                   Txt({
-                    style: {
-                      color: !form.name
-                        ? theme.colors.white + '5f'
-                        : theme.colors.white,
-                    },
+                    color: !form.name
+                      ? withOpacity(95)(colors.white)
+                      : colors.white,
                   })('Gravar'),
                 ]),
               ]),
@@ -359,41 +328,31 @@ const DeleteGroupModal = ({
   })([
     Pressable({
       flex: 1,
-      bg: theme.colors.black + '3f',
+      bg: withOpacity(63)(colors.black),
       justify: 'center',
       onPress: onCloseDeleteModal,
     })([
       Pressable({
-        bg: theme.colors.white,
+        bg: colors.white,
         m: 48,
         round: 8,
         shadow: 2,
         onPress: doNothing,
       })([
         Row({ align: 'center', p: 8 })([
-          Txt({
-            style: {
-              margin: 8,
-              flex: 1,
-              fontSize: 16,
-              fontWeight: '600',
-              color: theme.colors.darkText,
-            },
-          })('Excluir grupo'),
+          Txt({ m: 8, flex: 1, size: 16, weight: 600, color: colors.darkText })(
+            'Excluir grupo',
+          ),
           Pressable({
             p: 8,
             round: 4,
-            pressed: { bg: theme.colors.gray[600] + '1f' },
+            pressed: { bg: withOpacity(31)(colors.gray.$5) },
             onPress: onCloseDeleteModal,
           })([
-            MaterialIcons({
-              name: 'close',
-              size: 24,
-              color: theme.colors.gray[500],
-            }),
+            MaterialIcons({ name: 'close', size: 24, color: colors.gray.$4 }),
           ]),
         ]),
-        View({ borderWidthT: 1, borderColor: theme.colors.gray[300] })([]),
+        View({ borderWidthT: 1, borderColor: colors.gray.$2 })([]),
         View({ p: 16 })([
           Text()([
             $(
@@ -401,39 +360,32 @@ const DeleteGroupModal = ({
               O.matchW(
                 () => Fragment([]),
                 g =>
-                  Text({ style: { color: theme.colors.darkText } })([
+                  Text({ style: { color: toHex(colors.darkText) } })([
                     () => 'Deseja excluir o grupo ',
-                    Txt({
-                      style: {
-                        fontWeight: 'bold',
-                        color: theme.colors.darkText,
-                      },
-                    })(g.name),
+                    Txt({ weight: 600, color: colors.darkText })(g.name),
                     () => ' e todos os jogadores?',
                   ]),
               ),
             ),
           ]),
         ]),
-        View({ borderWidthT: 1, borderColor: theme.colors.gray[300] })([]),
+        View({ borderWidthT: 1, borderColor: colors.gray.$2 })([]),
         Row({ p: 16, justify: 'end' })([
           Row()([
             Pressable({
               mr: 8,
               p: 12,
               round: 4,
-              pressed: { bg: theme.colors.danger[600] + '1f' },
+              pressed: { bg: withOpacity(31)(colors.danger.$5) },
               onPress: onCloseDeleteModal,
-            })([
-              Txt({ style: { color: theme.colors.danger[600] } })('Cancelar'),
-            ]),
+            })([Txt({ color: colors.danger.$5 })('Cancelar')]),
             Pressable({
               p: 12,
               round: 4,
-              bg: theme.colors.danger[600],
-              pressed: { bg: theme.colors.danger[800] },
+              bg: colors.danger.$5,
+              pressed: { bg: colors.danger.$7 },
               onPress: onDeleteGroup,
-            })([Txt({ style: { color: theme.colors.white } })('Excluir')]),
+            })([Txt({ color: colors.white })('Excluir')]),
           ]),
         ]),
       ]),

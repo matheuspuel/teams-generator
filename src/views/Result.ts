@@ -1,17 +1,14 @@
 import { $, $f, A, constVoid, IO, O, Option, Ord, RIO, T } from 'fp'
 import { Share } from 'react-native'
-import { Txt } from 'src/components/hyperscript/derivative'
-import { MaterialIcons } from 'src/components/hyperscript/icons'
-import {
-  ActivityIndicator,
-  ScrollView,
-  Text,
-} from 'src/components/hyperscript/reactNative'
-import { Header } from 'src/components/safe/react-navigation/Header'
-import { HeaderBackButton } from 'src/components/safe/react-navigation/HeaderBackButton'
+import { ScrollView, Text } from 'src/components/hyperscript/reactNative'
+import { ActivityIndicator } from 'src/components/util-props/basic/ActivityIndicator'
 import { Pressable } from 'src/components/util-props/basic/Pressable'
 import { Row } from 'src/components/util-props/basic/Row'
+import { Txt } from 'src/components/util-props/basic/Txt'
 import { View } from 'src/components/util-props/basic/View'
+import { MaterialIcons } from 'src/components/util-props/icons/MaterialIcons'
+import { Header } from 'src/components/util-props/react-navigation/Header'
+import { HeaderBackButton } from 'src/components/util-props/react-navigation/HeaderBackButton'
 import {
   getRatingTotal,
   Player,
@@ -22,7 +19,8 @@ import {
   TeamListShowSensitive,
 } from 'src/datatypes/Player'
 import { goBack } from 'src/redux/slices/routes'
-import { theme } from 'src/theme'
+import { colors } from 'src/theme'
+import { toHex } from 'src/utils/Color'
 import { div, toFixedLocale } from 'src/utils/Number'
 
 export const ResultView = ({
@@ -31,20 +29,20 @@ export const ResultView = ({
   result: Option<Array<Array<Player>>>
 }) =>
   View({ flex: 1 })([
-    View({ bg: theme.colors.white })([
+    View({ bg: colors.white })([
       Header({
         title: 'Resultado',
-        headerStyle: { backgroundColor: theme.colors.primary[600] },
-        headerTitleStyle: { color: theme.colors.lightText },
+        headerStyle: { backgroundColor: colors.primary.$5 },
+        headerTitleStyle: { color: colors.lightText },
         headerLeft: HeaderBackButton({
           onPress: goBack,
-          tintColor: theme.colors.lightText,
+          tintColor: colors.lightText,
         }),
         headerRight: Pressable({
           mr: 4,
           p: 8,
           round: 100,
-          pressed: { bg: theme.colors.primary[700] },
+          pressed: { bg: colors.primary.$6 },
           onPress: $(
             result,
             O.match(
@@ -59,11 +57,7 @@ export const ResultView = ({
             RIO.fromIO,
           ),
         })([
-          MaterialIcons({
-            name: 'share',
-            color: theme.colors.lightText,
-            size: 24,
-          }),
+          MaterialIcons({ name: 'share', color: colors.lightText, size: 24 }),
         ]),
       }),
     ]),
@@ -73,10 +67,7 @@ export const ResultView = ({
         O.matchW(
           () => [
             View({ flex: 1, justify: 'center' })([
-              ActivityIndicator({
-                size: 'large',
-                color: theme.colors.primary[500],
-              }),
+              ActivityIndicator({ color: colors.primary.$4 }),
             ]),
           ],
           A.mapWithIndex((i, t) =>
@@ -98,29 +89,24 @@ const TeamItem = (props: {
   const avgRating = toFixedLocale(2)(div(numPlayers)(totalRating))
   return View({
     key: props.key,
-    bg: theme.colors.white,
+    bg: colors.white,
     m: 4,
     p: 4,
     round: 8,
     shadow: 1,
   })([
-    Txt({
-      style: {
-        color: theme.colors.darkText,
-        textAlign: 'center',
-        fontSize: 16,
-        fontWeight: 'bold',
-      },
-    })(title),
-    Text({ style: { color: theme.colors.grayText, fontSize: 12 } })([
+    Txt({ color: colors.darkText, align: 'center', size: 16, weight: 600 })(
+      title,
+    ),
+    Text({ style: { color: toHex(colors.grayText), fontSize: 12 } })([
       () => 'Número de jogadores: ',
       Txt()(numPlayers.toString()),
     ]),
-    Text({ style: { color: theme.colors.grayText, fontSize: 12 } })([
+    Text({ style: { color: toHex(colors.grayText), fontSize: 12 } })([
       () => 'Média de habilidade: ',
       Txt()(avgRating),
     ]),
-    Text({ style: { color: theme.colors.grayText, fontSize: 12 } })([
+    Text({ style: { color: toHex(colors.grayText), fontSize: 12 } })([
       () => 'Total de habilidade: ',
       Txt()(totalRating.toString()),
     ]),
@@ -144,11 +130,7 @@ const PlayerItem = ({
   data: Player
 }) =>
   Row({ key: key, p: 4 })([
-    Txt({
-      style: { color: theme.colors.darkText, fontWeight: 'bold' },
-    })(RatingShow.show(rating)),
-    Txt({ style: { color: theme.colors.darkText }, numberOfLines: 1 })(
-      ` - ${name}`,
-    ),
-    Txt({ style: { color: theme.colors.darkText } })(` (${position})`),
+    Txt({ color: colors.darkText, weight: 600 })(RatingShow.show(rating)),
+    Txt({ color: colors.darkText, numberOfLines: 1 })(` - ${name}`),
+    Txt({ color: colors.darkText })(` (${position})`),
   ])

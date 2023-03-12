@@ -1,7 +1,11 @@
 import { PressableStateCallbackType } from 'react-native/types'
 import { Pressable as Pressable_ } from 'src/components/safe/basic/Pressable'
-import { Reader, ReaderIO } from 'src/utils/fp'
+import { Reader, ReaderIO, Rec } from 'src/utils/fp'
 import { getViewStyleProp, ViewProps, ViewStyleProps } from './View'
+
+const merge = Rec.getUnionSemigroup({
+  concat: (a, b) => (b === undefined ? a : b),
+}).concat
 
 export const Pressable =
   <R1>({
@@ -23,11 +27,7 @@ export const Pressable =
       key: props.key,
       style: pressedProps
         ? ({ pressed }) =>
-            getViewStyleProp(
-              pressed
-                ? ({ ...props, ...pressedProps } as ViewStyleProps)
-                : props,
-            )
+            getViewStyleProp(pressed ? merge(props, pressedProps) : props)
         : getViewStyleProp(props),
       onPress: props.onPress,
       onLayout: props.onLayout,
