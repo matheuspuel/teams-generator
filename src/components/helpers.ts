@@ -1,4 +1,4 @@
-import { $f, Endomorphism, Eq } from 'fp'
+import { $f, A, Endomorphism, Eq, Rec } from 'fp'
 import React from 'react'
 import { shallowEqual } from 'react-redux'
 
@@ -135,3 +135,18 @@ export const memoized =
     )
 
 export const shallowEq = Eq.fromEquals<unknown>(shallowEqual)
+
+export const deepEq: Eq.Eq<unknown> = Eq.fromEquals((a, b) =>
+  a === b
+    ? true
+    : Array.isArray(a)
+    ? Array.isArray(b) && A.getEq(deepEq).equals(a, b)
+    : typeof a === 'object' &&
+      typeof b === 'object' &&
+      a !== null &&
+      b !== null &&
+      Rec.getEq(deepEq).equals(
+        a as Record<string, unknown>,
+        b as Record<string, unknown>,
+      ),
+)

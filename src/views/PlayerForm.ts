@@ -1,7 +1,7 @@
-import { Option } from '@fp-ts/core/Option'
-import { $, $f, A, O, RA, Rec, RIO, Str, Tup } from 'fp'
-import { sequenceS } from 'fp-ts/lib/Apply'
+import { get } from '@fp-ts/optic'
+import { $, $f, A, Apply, O, RA, Rec, RIO, S, Str, Tup } from 'fp'
 import { not } from 'fp-ts/Predicate'
+import { memoizedConst } from 'src/components/helpers'
 import { Txt } from 'src/components/hyperscript/derivative'
 import { MaterialIcons } from 'src/components/hyperscript/icons'
 import { ScrollView } from 'src/components/hyperscript/reactNative'
@@ -14,58 +14,59 @@ import { View } from 'src/components/util-props/basic/View'
 import { RatingList, RatingShow } from 'src/datatypes/Player'
 import { PositionDict, PositionOrd } from 'src/datatypes/Position'
 import { execute, replaceSApp } from 'src/redux'
-import { createPlayer, deletePlayer, editPlayer } from 'src/redux/slices/groups'
+import {
+  createPlayer,
+  deleteCurrentPlayer,
+  editPlayer,
+} from 'src/redux/slices/groups'
 import { PlayerForm, PlayerFormLens } from 'src/redux/slices/playerForm'
 import { goBack } from 'src/redux/slices/routes'
+import { UiLens } from 'src/redux/slices/ui'
 import { theme } from 'src/theme'
-import { Id } from 'src/utils/Entity'
+
+const onChangeName = $f(replaceSApp(PlayerFormLens.at('name')), execute)
+
+const onChangePosition = $f(replaceSApp(PlayerFormLens.at('position')), execute)
+
+const onChangeRating = $f(replaceSApp(PlayerFormLens.at('rating')), execute)
+
+const onSave = $(
+  Apply.sequenceS(S.Apply)({
+    form: $(
+      S.gets(get(PlayerFormLens)),
+      S.map(O.fromPredicate(not(f => Str.isEmpty(f.name)))),
+    ),
+    groupId: S.gets(get(UiLens.at('selectedGroupId'))),
+    playerId: $(S.gets(get(UiLens.at('selectedPlayerId'))), S.map(O.some)),
+  }),
+  S.map(Apply.sequenceS(O.Apply)),
+  execute,
+  RIO.chain(
+    O.matchW(
+      () => RIO.of(undefined),
+      ({ form, groupId, playerId }) =>
+        $(
+          playerId,
+          O.matchW(
+            () => createPlayer({ groupId, player: form }),
+            id => execute(editPlayer({ groupId, player: { ...form, id } })),
+          ),
+          RIO.apFirst(goBack),
+        ),
+    ),
+  ),
+)
 
 export const PlayerView = ({
-  form,
-  id,
-  groupId,
+  form: { name, position, rating },
 }: {
   form: PlayerForm
-  id: Option<Id>
-  groupId: Option<Id>
 }) =>
   ScrollView({
     keyboardShouldPersistTaps: 'handled',
     contentContainerStyle: { flexGrow: 1 },
   })([
-    View({ bg: theme.colors.white })([
-      Header({
-        title: 'Jogador',
-        headerStyle: { backgroundColor: theme.colors.primary[600] },
-        headerTitleStyle: { color: theme.colors.lightText },
-        headerLeft: HeaderBackButton({
-          onPress: goBack,
-          tintColor: theme.colors.lightText,
-        }),
-        headerRight: $(
-          sequenceS(O.Apply)({ id, groupId }),
-          O.map(({ id, groupId }) =>
-            Pressable({
-              mr: 4,
-              p: 8,
-              round: 100,
-              pressed: { bg: theme.colors.primary[700] },
-              onPress: $(
-                execute(deletePlayer({ groupId, playerId: id })),
-                RIO.chainFirst(() => goBack),
-              ),
-            })([
-              MaterialIcons({
-                name: 'delete',
-                color: theme.colors.lightText,
-                size: 24,
-              }),
-            ]),
-          ),
-          O.toUndefined,
-        ),
-      }),
-    ]),
+    ScreenHeader,
     View({ flex: 1, p: 4 })([
       View({ p: 4 })([
         Txt({
@@ -78,8 +79,8 @@ export const PlayerView = ({
         Input({
           placeholder: 'Ex: Pedro',
           placeholderTextColor: theme.colors.gray[400],
-          value: form.name,
-          onChange: $f(replaceSApp(PlayerFormLens.at('name')), execute),
+          value: name,
+          onChange: onChangeName,
           cursorColor: theme.colors.darkText,
           style: ({ isFocused }) => ({
             fontSize: 12,
@@ -115,10 +116,7 @@ export const PlayerView = ({
                 key: p,
                 flex: 1,
                 align: 'center',
-                onPress: $(
-                  replaceSApp(PlayerFormLens.at('position'))(p),
-                  execute,
-                ),
+                onPress: onChangePosition(p),
               })([
                 View({
                   aspectRatio: 1,
@@ -126,7 +124,7 @@ export const PlayerView = ({
                   p: 4,
                   round: 9999,
                   bg:
-                    form.position === p
+                    position === p
                       ? theme.colors.primary[500]
                       : theme.colors.primary[500] + '3f',
                 })([
@@ -158,13 +156,13 @@ export const PlayerView = ({
             fontWeight: '700',
             color: theme.colors.primary[600],
           },
-        })(RatingShow.show(form.rating)),
+        })(RatingShow.show(rating)),
         Row()(
           $(
             RatingList,
             RA.map(r =>
               View({ key: r.toString(), flex: 1, h: 30 })(
-                form.rating === r
+                rating === r
                   ? [
                       View({
                         alignSelf: 'center',
@@ -227,14 +225,7 @@ export const PlayerView = ({
             RatingList,
             RA.map(r =>
               View({ key: r.toString(), flex: 1 })([
-                Pressable({
-                  h: 70,
-                  mt: -35,
-                  onPress: $(
-                    replaceSApp(PlayerFormLens.at('rating'))(r),
-                    execute,
-                  ),
-                })([]),
+                Pressable({ h: 70, mt: -35, onPress: onChangeRating(r) })([]),
               ]),
             ),
           ),
@@ -243,49 +234,42 @@ export const PlayerView = ({
     ]),
     Pressable({
       p: 12,
-      bg: !form.name
-        ? theme.colors.primary[600] + '5f'
-        : theme.colors.primary[600],
-      pressed: { bg: form.name ? theme.colors.primary[800] : undefined },
-      onPress: $(
-        form.name,
-        O.fromPredicate(not(Str.isEmpty)),
-        O.match(
-          () => RIO.of(undefined),
-          () =>
-            $(
-              goBack,
-              RIO.chain(() =>
-                $(
-                  groupId,
-                  O.match(
-                    () => RIO.of(undefined),
-                    groupId =>
-                      $(
-                        id,
-                        O.matchW(
-                          () => createPlayer({ groupId, player: form }),
-                          id =>
-                            execute(
-                              editPlayer({
-                                groupId,
-                                player: { ...form, id },
-                              }),
-                            ),
-                        ),
-                      ),
-                  ),
-                ),
-              ),
-            ),
-        ),
-      ),
+      bg: !name ? theme.colors.primary[600] + '5f' : theme.colors.primary[600],
+      pressed: { bg: name ? theme.colors.primary[800] : undefined },
+      onPress: onSave,
     })([
       Txt({
         style: {
           textAlign: 'center',
-          color: !form.name ? theme.colors.white + '5f' : theme.colors.white,
+          color: !name ? theme.colors.white + '5f' : theme.colors.white,
         },
       })('Gravar'),
     ]),
   ])
+
+const ScreenHeader = memoizedConst('Header')(
+  View({ bg: theme.colors.white })([
+    Header({
+      title: 'Jogador',
+      headerStyle: { backgroundColor: theme.colors.primary[600] },
+      headerTitleStyle: { color: theme.colors.lightText },
+      headerLeft: HeaderBackButton({
+        onPress: goBack,
+        tintColor: theme.colors.lightText,
+      }),
+      headerRight: Pressable({
+        mr: 4,
+        p: 8,
+        round: 100,
+        pressed: { bg: theme.colors.primary[700] },
+        onPress: deleteCurrentPlayer,
+      })([
+        MaterialIcons({
+          name: 'delete',
+          color: theme.colors.lightText,
+          size: 24,
+        }),
+      ]),
+    }),
+  ]),
+)

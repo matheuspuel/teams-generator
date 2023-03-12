@@ -1,5 +1,10 @@
-import { $, $f, A, constVoid, Eq, O, Option, RIO, S } from 'fp'
-import { memoized, memoizedConst, shallowEq } from 'src/components/helpers'
+import { $, $f, Eq, O, Option, RIO, S } from 'fp'
+import {
+  deepEq,
+  memoized,
+  memoizedConst,
+  shallowEq,
+} from 'src/components/helpers'
 import { Txt } from 'src/components/hyperscript/derivative'
 import {
   MaterialCommunityIcons,
@@ -17,7 +22,7 @@ import { Parameters } from 'src/datatypes/Parameters'
 import { Player, RatingShow } from 'src/datatypes/Player'
 import { execute, replaceSApp } from 'src/redux'
 import {
-  getPlayer,
+  getPlayerFromActiveGroup,
   toggleAllPlayersActive,
   togglePlayerActive,
 } from 'src/redux/slices/groups'
@@ -39,47 +44,99 @@ import { RootState } from 'src/redux/store'
 import { theme } from 'src/theme'
 import { Id } from 'src/utils/Entity'
 
+const onOpenParametersModal = execute(
+  replaceSApp(UiLens.at('modalParameters'))(true),
+)
+
+const onPressAddPlayer = $(
+  navigate('Player'),
+  RIO.chain(() =>
+    $(
+      replaceSApp(UiLens.at('selectedPlayerId'))(O.none),
+      S.apFirst(replaceSApp(PlayerFormLens)(blankPlayerForm)),
+      execute,
+    ),
+  ),
+)
+
+const onPressItem = (playerId: Id) =>
+  $(
+    navigate('Player'),
+    RIO.chain(() =>
+      $(
+        getPlayerFromActiveGroup({ playerId }),
+        S.chain(
+          O.match(
+            () => S.of<RootState, void>(undefined),
+            $f(
+              getPlayerFormFromData,
+              replaceSApp(PlayerFormLens),
+              S.apFirst(
+                replaceSApp(UiLens.at('selectedPlayerId'))(O.some(playerId)),
+              ),
+            ),
+          ),
+        ),
+        execute,
+      ),
+    ),
+  )
+
+const onTogglePlayerActive = (id: Id) =>
+  execute(togglePlayerActive({ playerId: id }))
+
+const onCloseParametersModal = execute(
+  replaceSApp(UiLens.at('modalParameters'))(false),
+)
+
+const doNothing = RIO.of(undefined)
+
+const onDecrementTeamsCount = execute(decrementTeamsCount)
+
+const onIncrementTeamsCount = execute(incrementTeamsCount)
+
+const onTogglePosition = execute(togglePosition)
+
+const onToggleRating = execute(toggleRating)
+
+const onShuffle = $(
+  onCloseParametersModal,
+  RIO.chain(() => generateResult),
+  RIO.chain(() => navigate('Result')),
+)
+
 export const GroupView = memoized('GroupScreen')(
   Eq.struct({
-    parameters: shallowEq,
-    groupId: O.getEq(Eq.eqStrict),
+    parameters: deepEq,
     group: O.getEq(shallowEq),
     modalParameters: Eq.eqStrict,
   }),
   ({
     parameters,
-    groupId,
     group,
     modalParameters,
   }: {
     parameters: Parameters
-    groupId: Option<Id>
     group: Option<Group>
     modalParameters: boolean
   }) =>
     View({ flex: 1 })([
       GroupHeader,
-      ...$(
-        groupId,
-        O.map(groupId =>
-          FlatList({
-            data: $(
-              group,
-              O.map(g => g.players),
-              O.getOrElseW(() => []),
-            ),
-            keyExtractor: ({ id }) => id,
-            renderItem: item => Item({ data: item, groupId }),
-            initialNumToRender: 20,
-          }),
+      FlatList({
+        data: $(
+          group,
+          O.map(g => g.players),
+          O.getOrElseW(() => []),
         ),
-        A.fromOption,
-      ),
+        keyExtractor: ({ id }) => id,
+        renderItem: Item,
+        initialNumToRender: 20,
+      }),
       Pressable({
         p: 12,
         bg: theme.colors.primary[600],
         pressed: { bg: theme.colors.primary[800] },
-        onPress: execute(replaceSApp(UiLens.at('modalParameters'))(true)),
+        onPress: onOpenParametersModal,
       })([
         Txt({ style: { textAlign: 'center', color: theme.colors.white } })(
           'Sortear',
@@ -118,16 +175,7 @@ const GroupHeader = memoizedConst('GroupHeader')(
           p: 8,
           round: 100,
           pressed: { bg: theme.colors.primary[700] },
-          onPress: $(
-            navigate('Player'),
-            RIO.chain(() =>
-              $(
-                replaceSApp(UiLens.at('selectedPlayerId'))(O.none),
-                S.apFirst(replaceSApp(PlayerFormLens)(blankPlayerForm)),
-                execute,
-              ),
-            ),
-          ),
+          onPress: onPressAddPlayer,
         })([
           MaterialIcons({
             name: 'add',
@@ -141,37 +189,9 @@ const GroupHeader = memoizedConst('GroupHeader')(
 )
 
 const Item = memoized('GroupItem')(
-  Eq.struct({ data: shallowEq, groupId: Eq.eqStrict }),
-  ({
-    data: { id, name, position, rating, active },
-    groupId,
-  }: {
-    data: Player
-    groupId: Id
-  }) =>
-    Pressable({
-      onPress: $(
-        navigate('Player'),
-        RIO.chain(() =>
-          $(
-            S.gets(getPlayer({ groupId, id })),
-            S.chain(
-              O.match(
-                () => S.of<RootState, void>(undefined),
-                $f(
-                  getPlayerFormFromData,
-                  replaceSApp(PlayerFormLens),
-                  S.apFirst(
-                    replaceSApp(UiLens.at('selectedPlayerId'))(O.some(id)),
-                  ),
-                ),
-              ),
-            ),
-            execute,
-          ),
-        ),
-      ),
-    })([
+  deepEq,
+  ({ id, name, position, rating, active }: Player) =>
+    Pressable({ onPress: onPressItem(id) })([
       Row({
         align: 'center',
         bg: theme.colors.white,
@@ -180,33 +200,32 @@ const Item = memoized('GroupItem')(
         round: 8,
         shadow: 1,
       })([
-        Pressable({
-          mr: 8,
-          onPress: execute(togglePlayerActive({ groupId, playerId: id })),
-        })(({ pressed }) => [
-          active
-            ? View({
-                borderWidth: 2,
-                round: 4,
-                h: 28,
-                w: 28,
-                bg: theme.colors.primary[pressed ? 800 : 600],
-                borderColor: theme.colors.primary[pressed ? 800 : 600],
-              })([
-                MaterialIcons({
-                  name: 'check',
-                  size: 24,
-                  color: theme.colors.white,
-                }),
-              ])
-            : View({
-                borderWidth: 2,
-                round: 4,
-                borderColor: theme.colors.gray[pressed ? 600 : 400],
-                h: 28,
-                w: 28,
-              })([]),
-        ]),
+        Pressable({ mr: 8, onPress: onTogglePlayerActive(id) })(
+          ({ pressed }) => [
+            active
+              ? View({
+                  borderWidth: 2,
+                  round: 4,
+                  h: 28,
+                  w: 28,
+                  bg: theme.colors.primary[pressed ? 800 : 600],
+                  borderColor: theme.colors.primary[pressed ? 800 : 600],
+                })([
+                  MaterialIcons({
+                    name: 'check',
+                    size: 24,
+                    color: theme.colors.white,
+                  }),
+                ])
+              : View({
+                  borderWidth: 2,
+                  round: 4,
+                  borderColor: theme.colors.gray[pressed ? 600 : 400],
+                  h: 28,
+                  w: 28,
+                })([]),
+          ],
+        ),
         View({
           aspectRatio: 1,
           alignSelf: 'stretch',
@@ -245,20 +264,20 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
     style: { flex: 1 },
     animationType: 'fade',
     statusBarTranslucent: true,
-    onRequestClose: execute(replaceSApp(UiLens.at('modalParameters'))(false)),
+    onRequestClose: onCloseParametersModal,
   })([
     Pressable({
       flex: 1,
       bg: theme.colors.black + '3f',
       justify: 'center',
-      onPress: execute(replaceSApp(UiLens.at('modalParameters'))(false)),
+      onPress: onCloseParametersModal,
     })([
       Pressable({
         bg: theme.colors.white,
         m: 48,
         round: 8,
         shadow: 2,
-        onPress: () => constVoid,
+        onPress: doNothing,
       })([
         Row({ align: 'center', p: 8 })([
           Txt({
@@ -274,7 +293,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
             p: 8,
             round: 4,
             pressed: { bg: theme.colors.gray[600] + '1f' },
-            onPress: execute(replaceSApp(UiLens.at('modalParameters'))(false)),
+            onPress: onCloseParametersModal,
           })([
             MaterialIcons({
               name: 'close',
@@ -290,7 +309,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
               p: 12,
               round: 4,
               pressed: { bg: theme.colors.primary[600] + '1f' },
-              onPress: execute(decrementTeamsCount),
+              onPress: onDecrementTeamsCount,
             })([
               MaterialIcons({
                 name: 'remove',
@@ -309,7 +328,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
               p: 12,
               pressed: { bg: theme.colors.primary[600] + '1f' },
               round: 4,
-              onPress: execute(incrementTeamsCount),
+              onPress: onIncrementTeamsCount,
             })([
               MaterialIcons({
                 name: 'add',
@@ -325,38 +344,36 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
               },
             })('Número de times'),
           ]),
-          Pressable({ p: 4, onPress: execute(togglePosition) })(
-            ({ pressed }) => [
-              Row({ align: 'center' })([
-                parameters.position
-                  ? View({
-                      borderWidth: 2,
-                      round: 4,
-                      h: 28,
-                      w: 28,
-                      bg: theme.colors.primary[pressed ? 800 : 600],
-                      borderColor: theme.colors.primary[pressed ? 800 : 600],
-                    })([
-                      MaterialIcons({
-                        name: 'check',
-                        size: 24,
-                        color: theme.colors.white,
-                      }),
-                    ])
-                  : View({
-                      borderWidth: 2,
-                      round: 4,
-                      borderColor: theme.colors.gray[pressed ? 600 : 400],
-                      h: 28,
-                      w: 28,
-                    })([]),
-                Txt({ style: { margin: 4, fontSize: 14 } })(
-                  'Considerar posições',
-                ),
-              ]),
-            ],
-          ),
-          Pressable({ p: 4, onPress: execute(toggleRating) })(({ pressed }) => [
+          Pressable({ p: 4, onPress: onTogglePosition })(({ pressed }) => [
+            Row({ align: 'center' })([
+              parameters.position
+                ? View({
+                    borderWidth: 2,
+                    round: 4,
+                    h: 28,
+                    w: 28,
+                    bg: theme.colors.primary[pressed ? 800 : 600],
+                    borderColor: theme.colors.primary[pressed ? 800 : 600],
+                  })([
+                    MaterialIcons({
+                      name: 'check',
+                      size: 24,
+                      color: theme.colors.white,
+                    }),
+                  ])
+                : View({
+                    borderWidth: 2,
+                    round: 4,
+                    borderColor: theme.colors.gray[pressed ? 600 : 400],
+                    h: 28,
+                    w: 28,
+                  })([]),
+              Txt({ style: { margin: 4, fontSize: 14 } })(
+                'Considerar posições',
+              ),
+            ]),
+          ]),
+          Pressable({ p: 4, onPress: onToggleRating })(({ pressed }) => [
             Row({ align: 'center' })([
               parameters.rating
                 ? View({
@@ -394,9 +411,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
               p: 12,
               round: 4,
               pressed: { bg: theme.colors.primary[600] + '1f' },
-              onPress: execute(
-                replaceSApp(UiLens.at('modalParameters'))(false),
-              ),
+              onPress: onCloseParametersModal,
             })([
               Txt({ style: { color: theme.colors.primary[600] } })('Cancelar'),
             ]),
@@ -405,11 +420,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
               round: 4,
               bg: theme.colors.primary[600],
               pressed: { bg: theme.colors.primary[800] },
-              onPress: $(
-                execute(replaceSApp(UiLens.at('modalParameters'))(false)),
-                RIO.chain(() => generateResult),
-                RIO.chain(() => navigate('Result')),
-              ),
+              onPress: onShuffle,
             })([Txt({ style: { color: theme.colors.white } })('Sortear')]),
           ]),
         ]),

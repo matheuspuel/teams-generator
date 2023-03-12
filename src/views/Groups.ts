@@ -3,7 +3,6 @@ import {
   $,
   $f,
   A,
-  constVoid,
   Eq,
   identity,
   none,
@@ -16,7 +15,8 @@ import {
   Str,
   Tup,
 } from 'fp'
-import { memoized, shallowEq } from 'src/components/helpers'
+import { not } from 'fp-ts/Predicate'
+import { memoized, memoizedConst } from 'src/components/helpers'
 import { Txt } from 'src/components/hyperscript/derivative'
 import { MaterialIcons } from 'src/components/hyperscript/icons'
 import { Fragment } from 'src/components/hyperscript/react'
@@ -29,7 +29,7 @@ import { Pressable } from 'src/components/util-props/basic/Pressable'
 import { Row } from 'src/components/util-props/basic/Row'
 import { View } from 'src/components/util-props/basic/View'
 import { Group } from 'src/datatypes/Group'
-import { execute, replaceSApp } from 'src/redux'
+import { execute, replaceSApp, storeGet } from 'src/redux'
 import {
   createGroup,
   deleteGroup,
@@ -47,57 +47,17 @@ import {
 import { RootState } from 'src/redux/store'
 import { theme } from 'src/theme'
 import { Id } from 'src/utils/Entity'
+import { Optic } from 'src/utils/Optic'
 
-export const Groups = memoized('Groups')(
-  Eq.struct({ ui: shallowEq }),
-  ({ ui, groups }: { ui: RootState['ui']; groups: GroupsState }) =>
-    View({ flex: 1, onLayout: RIO.fromIO(SplashScreen.hideAsync) })([
-      View({ bg: theme.colors.white })([
-        Header({
-          title: 'Grupos',
-          headerStyle: { backgroundColor: theme.colors.primary[600] },
-          headerTitleStyle: { color: theme.colors.lightText },
-          headerRight: Pressable({
-            mr: 4,
-            p: 8,
-            round: 100,
-            pressed: { bg: theme.colors.primary[700] },
-            onPress: execute(
-              setUpsertGroupModal(some({ id: O.none, name: '' })),
-            ),
-          })([
-            MaterialIcons({
-              name: 'add',
-              color: theme.colors.lightText,
-              size: 24,
-            }),
-          ]),
-        }),
-      ]),
-      FlatList({
-        data: $(groups, Rec.toEntries, A.map(Tup.snd)),
-        renderItem: Item,
-      }),
-      GroupModal({
-        state: ui.modalUpsertGroup,
-        group: $(
-          ui.modalUpsertGroup,
-          O.chain(({ id }) => id),
-          O.chain(id => $(groups, Rec.lookup(id))),
-        ),
-      }),
-      DeleteGroupModal({
-        state: ui.modalDeleteGroup,
-        group: $(
-          ui.modalDeleteGroup,
-          O.map(({ id }) => id),
-          O.chain(id => $(groups, Rec.lookup(id))),
-        ),
-      }),
-    ]),
+const doNothing = RIO.of<unknown, void>(undefined)
+
+const onUIMount = RIO.fromIO(SplashScreen.hideAsync)
+
+const onOpenNewGroupModal = execute(
+  setUpsertGroupModal(some({ id: O.none, name: '' })),
 )
 
-const openEdit = (id: Id) =>
+const onOpenEdit = (id: Id) =>
   $(
     S.gets(getGroupById(id)),
     S.chain(
@@ -109,53 +69,148 @@ const openEdit = (id: Id) =>
     execute,
   )
 
-const openDelete = (id: Id) => execute(setDeleteGroupModal(some({ id })))
+const onOpenDelete = (id: Id) => execute(setDeleteGroupModal(some({ id })))
 
-const Item = memoized('GroupItem')(shallowEq, ({ name, id }: Group) =>
-  Pressable({
-    onPress: $(
-      navigate('Group'),
-      RIO.chain(() =>
-        execute(replaceSApp(UiLens.at('selectedGroupId'))(O.some(id))),
-      ),
+const onSelectGroup = (id: Id) =>
+  $(
+    navigate('Group'),
+    RIO.chain(() =>
+      execute(replaceSApp(UiLens.at('selectedGroupId'))(O.some(id))),
     ),
-  })([
-    Row({
-      bg: theme.colors.white,
-      align: 'center',
-      m: 8,
-      p: 8,
-      round: 8,
-      shadow: 1,
-    })([
-      Txt({
-        numberOfLines: 1,
-        style: { flex: 1, fontWeight: 'bold', color: theme.colors.darkText },
-      })(name),
-      Pressable({ onPress: openEdit(id), px: 4 })([
+  )
+
+const onCloseGroupModal = execute(setUpsertGroupModal(none))
+
+const onChangeGroupName = $f(setUpsertGroupName, execute)
+
+const onSaveGroup = $(
+  storeGet,
+  RIO.chain(s =>
+    $(
+      s.ui.modalUpsertGroup,
+      O.filter(not(m => Str.isEmpty(m.name))),
+      O.map(m =>
+        $(
+          m.id,
+          O.matchW(
+            () => createGroup({ name: m.name }),
+            id => execute(editGroup({ id, name: m.name })),
+          ),
+          RIO.apFirst(execute(setUpsertGroupModal(O.none))),
+        ),
+      ),
+      O.getOrElseW(() => doNothing),
+    ),
+  ),
+)
+
+const onCloseDeleteModal = execute(setDeleteGroupModal(none))
+
+const onDeleteGroup = $(
+  S.gets(Optic.get(UiLens.at('modalDeleteGroup'))),
+  S.chain(
+    O.match(
+      () => S.of<RootState, void>(undefined),
+      ({ id }) => deleteGroup({ id }),
+    ),
+  ),
+  S.apFirst(setDeleteGroupModal(none)),
+  execute,
+)
+
+export const Groups = memoized('Groups')(
+  Eq.struct({
+    ui: Eq.struct({
+      modalDeleteGroup: Eq.eqStrict,
+      modalUpsertGroup: Eq.eqStrict,
+    }),
+  }),
+  ({
+    ui: { modalDeleteGroup, modalUpsertGroup },
+    groups,
+  }: {
+    ui: RootState['ui']
+    groups: GroupsState
+  }) =>
+    View({ flex: 1, onLayout: onUIMount })([
+      ScreenHeader,
+      FlatList({
+        data: $(groups, Rec.toEntries, A.map(Tup.snd)),
+        renderItem: Item,
+      }),
+      GroupModal({ state: modalUpsertGroup }),
+      DeleteGroupModal({
+        state: modalDeleteGroup,
+        group: $(
+          modalDeleteGroup,
+          O.map(({ id }) => id),
+          O.chain(id => $(groups, Rec.lookup(id))),
+        ),
+      }),
+    ]),
+)
+
+const ScreenHeader = memoizedConst('Header')(
+  View({ bg: theme.colors.white })([
+    Header({
+      title: 'Grupos',
+      headerStyle: { backgroundColor: theme.colors.primary[600] },
+      headerTitleStyle: { color: theme.colors.lightText },
+      headerRight: Pressable({
+        mr: 4,
+        p: 8,
+        round: 100,
+        pressed: { bg: theme.colors.primary[700] },
+        onPress: onOpenNewGroupModal,
+      })([
         MaterialIcons({
-          name: 'edit',
+          name: 'add',
+          color: theme.colors.lightText,
           size: 24,
-          color: theme.colors.gray[500],
         }),
       ]),
-      Pressable({ px: 4, onPress: openDelete(id) })([
-        MaterialIcons({
-          name: 'delete',
-          color: theme.colors.gray[500],
-          size: 24,
-        }),
+    }),
+  ]),
+)
+
+const Item = memoized('GroupItem')(
+  Eq.struct({ name: Eq.eqStrict, id: Eq.eqStrict }),
+  ({ name, id }: Group) =>
+    Pressable({ onPress: onSelectGroup(id) })([
+      Row({
+        bg: theme.colors.white,
+        align: 'center',
+        m: 8,
+        p: 8,
+        round: 8,
+        shadow: 1,
+      })([
+        Txt({
+          numberOfLines: 1,
+          style: { flex: 1, fontWeight: 'bold', color: theme.colors.darkText },
+        })(name),
+        Pressable({ onPress: onOpenEdit(id), px: 4 })([
+          MaterialIcons({
+            name: 'edit',
+            size: 24,
+            color: theme.colors.gray[500],
+          }),
+        ]),
+        Pressable({ px: 4, onPress: onOpenDelete(id) })([
+          MaterialIcons({
+            name: 'delete',
+            color: theme.colors.gray[500],
+            size: 24,
+          }),
+        ]),
       ]),
     ]),
-  ]),
 )
 
 const GroupModal = ({
   state,
-  group,
 }: {
   state: Option<{ id: Option<Id>; name: string }>
-  group: Option<Group>
 }) =>
   $(
     state,
@@ -166,20 +221,20 @@ const GroupModal = ({
         style: { flex: 1 },
         animationType: 'fade',
         statusBarTranslucent: true,
-        onRequestClose: execute(setUpsertGroupModal(none)),
+        onRequestClose: onCloseGroupModal,
       })([
         Pressable({
           flex: 1,
           bg: theme.colors.black + '3f',
           justify: 'center',
-          onPress: execute(setUpsertGroupModal(none)),
+          onPress: onCloseGroupModal,
         })([
           Pressable({
             bg: theme.colors.white,
             m: 48,
             round: 8,
             shadow: 2,
-            onPress: () => constVoid,
+            onPress: doNothing,
           })([
             Row({ align: 'center', p: 8 })([
               Txt({
@@ -193,6 +248,7 @@ const GroupModal = ({
               })(
                 $(
                   state,
+                  O.chain(s => s.id),
                   O.match(
                     () => 'Novo grupo',
                     () => 'Editar grupo',
@@ -203,7 +259,7 @@ const GroupModal = ({
                 p: 8,
                 round: 4,
                 pressed: { bg: theme.colors.gray[600] + '1f' },
-                onPress: execute(setUpsertGroupModal(none)),
+                onPress: onCloseGroupModal,
               })([
                 MaterialIcons({
                   name: 'close',
@@ -225,7 +281,7 @@ const GroupModal = ({
                 Input({
                   placeholder: 'Ex: Futebol de quinta',
                   value: form.name,
-                  onChange: $f(setUpsertGroupName, execute),
+                  onChange: onChangeGroupName,
                   placeholderTextColor: theme.colors.gray[400],
                   cursorColor: theme.colors.darkText,
                   style: ({ isFocused }) => ({
@@ -252,7 +308,7 @@ const GroupModal = ({
                   p: 12,
                   round: 4,
                   pressed: { bg: theme.colors.primary[600] + '1f' },
-                  onPress: execute(setUpsertGroupModal(none)),
+                  onPress: onCloseGroupModal,
                 })([
                   Txt({ style: { color: theme.colors.primary[600] } })(
                     'Cancelar',
@@ -267,23 +323,7 @@ const GroupModal = ({
                   pressed: {
                     bg: form.name ? theme.colors.primary[800] : undefined,
                   },
-                  onPress: Str.isEmpty(form.name)
-                    ? () => constVoid
-                    : $(
-                        execute(setUpsertGroupModal(O.none)),
-                        RIO.apFirst(
-                          $(
-                            group,
-                            O.matchW(
-                              () => createGroup({ name: form.name }),
-                              g =>
-                                execute(
-                                  editGroup({ id: g.id, name: form.name }),
-                                ),
-                            ),
-                          ),
-                        ),
-                      ),
+                  onPress: onSaveGroup,
                 })([
                   Txt({
                     style: {
@@ -315,20 +355,20 @@ const DeleteGroupModal = ({
     style: { flex: 1 },
     animationType: 'fade',
     statusBarTranslucent: true,
-    onRequestClose: execute(setDeleteGroupModal(none)),
+    onRequestClose: onCloseDeleteModal,
   })([
     Pressable({
       flex: 1,
       bg: theme.colors.black + '3f',
       justify: 'center',
-      onPress: execute(setDeleteGroupModal(none)),
+      onPress: onCloseDeleteModal,
     })([
       Pressable({
         bg: theme.colors.white,
         m: 48,
         round: 8,
         shadow: 2,
-        onPress: RIO.of(undefined),
+        onPress: doNothing,
       })([
         Row({ align: 'center', p: 8 })([
           Txt({
@@ -344,7 +384,7 @@ const DeleteGroupModal = ({
             p: 8,
             round: 4,
             pressed: { bg: theme.colors.gray[600] + '1f' },
-            onPress: execute(setDeleteGroupModal(none)),
+            onPress: onCloseDeleteModal,
           })([
             MaterialIcons({
               name: 'close',
@@ -383,7 +423,7 @@ const DeleteGroupModal = ({
               p: 12,
               round: 4,
               pressed: { bg: theme.colors.danger[600] + '1f' },
-              onPress: execute(setDeleteGroupModal(none)),
+              onPress: onCloseDeleteModal,
             })([
               Txt({ style: { color: theme.colors.danger[600] } })('Cancelar'),
             ]),
@@ -392,18 +432,7 @@ const DeleteGroupModal = ({
               round: 4,
               bg: theme.colors.danger[600],
               pressed: { bg: theme.colors.danger[800] },
-              onPress: $(
-                execute(setDeleteGroupModal(none)),
-                RIO.apFirst(
-                  $(
-                    group,
-                    O.matchW(
-                      () => () => constVoid,
-                      g => execute(deleteGroup({ id: g.id })),
-                    ),
-                  ),
-                ),
-              ),
+              onPress: onDeleteGroup,
             })([Txt({ style: { color: theme.colors.white } })('Excluir')]),
           ]),
         ]),

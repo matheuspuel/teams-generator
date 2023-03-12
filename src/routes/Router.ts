@@ -37,7 +37,6 @@ export const Router = ({ model }: { model: RootState }) =>
                       id => getGroupById(id)(model),
                     ),
                   ),
-                  groupId: get(UiLens.at('selectedGroupId'))(model),
                   modalParameters: get(UiLens.at('modalParameters'))(model),
                   parameters: get(ParametersLens)(model),
                 }),
@@ -45,15 +44,7 @@ export const Router = ({ model }: { model: RootState }) =>
               ...(route === 'Group'
                 ? []
                 : route === 'Player'
-                ? [
-                    Screen()([
-                      PlayerView({
-                        form: get(PlayerFormLens)(model),
-                        groupId: get(UiLens.at('selectedGroupId'))(model),
-                        id: get(UiLens.at('selectedPlayerId'))(model),
-                      }),
-                    ]),
-                  ]
+                ? [Screen()([PlayerView({ form: get(PlayerFormLens)(model) })])]
                 : route === 'Result'
                 ? [Screen()([ResultView({ result: get(ResultLens)(model) })])]
                 : absurd<never>(route)),

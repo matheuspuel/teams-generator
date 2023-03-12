@@ -1,6 +1,7 @@
 import { get, replace } from '@fp-ts/optic'
 import { $, $f, absurd, Tup } from 'fp'
 import { execute, replaceSApp, RootOptic } from 'src/redux'
+import { RootState } from '../store'
 
 export const RouteLens = RootOptic.at('route')
 
@@ -10,7 +11,7 @@ export const initialRoute: Route = 'Groups'
 
 export const navigate = $f(replaceSApp(RouteLens), execute)
 
-export const goBack = execute(s =>
+const goBackS = (s: RootState) =>
   $(
     get(RouteLens)(s),
     (r): [{ shouldBubbleUpEvent: boolean }, Route] =>
@@ -27,5 +28,6 @@ export const goBack = execute(s =>
               : absurd<never>(r),
           ],
     Tup.mapSnd(route => replace(RouteLens)(route)(s)),
-  ),
-)
+  )
+
+export const goBack = execute(goBackS)
