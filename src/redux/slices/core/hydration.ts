@@ -3,7 +3,7 @@ import { $, $f, constVoid, RT, T, TO } from 'fp'
 import { defaultParameters } from 'src/datatypes/Parameters'
 import { dispatch, storeGet } from 'src/redux'
 import { AppStoreEnv } from 'src/redux/store'
-import { GroupsStorage, ParametersStorage } from 'src/storage'
+import { GroupsStorage, ParametersStorage } from 'src/services/Storage'
 import { emptyGroups, GroupsLens } from '../groups'
 import { ParametersLens } from '../parameters'
 

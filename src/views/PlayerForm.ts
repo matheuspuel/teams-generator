@@ -23,7 +23,7 @@ import { PlayerForm, PlayerFormLens } from 'src/redux/slices/playerForm'
 import { goBack } from 'src/redux/slices/routes'
 import { UiLens } from 'src/redux/slices/ui'
 import { colors } from 'src/theme'
-import { withOpacity } from 'src/utils/Color'
+import { shade, withOpacity } from 'src/utils/Color'
 
 const onChangeName = $f(replaceSApp(PlayerFormLens.at('name')), execute)
 
@@ -111,8 +111,8 @@ export const PlayerView = ({
                   round: 9999,
                   bg:
                     position === p
-                      ? colors.primary.$4
-                      : withOpacity(63)(colors.primary.$4),
+                      ? colors.primary.$5
+                      : withOpacity(63)(colors.primary.$5),
                 })([
                   Txt({ size: 14, align: 'center', color: colors.lightText })(
                     p,
@@ -205,7 +205,7 @@ export const PlayerView = ({
     Pressable({
       p: 12,
       bg: !name ? withOpacity(95)(colors.primary.$5) : colors.primary.$5,
-      pressed: { bg: name ? colors.primary.$7 : undefined },
+      pressed: { bg: name ? shade(0.4)(colors.primary.$5) : undefined },
       onPress: onSave,
     })([
       Txt({
@@ -229,7 +229,7 @@ const ScreenHeader = memoizedConst('Header')(
         mr: 4,
         p: 8,
         round: 100,
-        pressed: { bg: colors.primary.$6 },
+        pressed: { bg: withOpacity(47)(colors.black) },
         onPress: deleteCurrentPlayer,
       })([
         MaterialIcons({

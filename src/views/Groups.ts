@@ -46,7 +46,7 @@ import {
 } from 'src/redux/slices/ui'
 import { RootState } from 'src/redux/store'
 import { colors } from 'src/theme'
-import { toHex, withOpacity } from 'src/utils/Color'
+import { shade, toHex, withOpacity } from 'src/utils/Color'
 import { Id } from 'src/utils/Entity'
 import { Optic } from 'src/utils/Optic'
 
@@ -161,7 +161,7 @@ const ScreenHeader = memoizedConst('Header')(
         mr: 4,
         p: 8,
         round: 100,
-        pressed: { bg: colors.primary.$6 },
+        pressed: { bg: withOpacity(47)(colors.black) },
         onPress: onOpenNewGroupModal,
       })([MaterialIcons({ name: 'add', color: colors.lightText, size: 24 })]),
     }),
@@ -293,7 +293,9 @@ const GroupModal = ({
                   bg: !form.name
                     ? withOpacity(95)(colors.primary.$5)
                     : colors.primary.$5,
-                  pressed: { bg: form.name ? colors.primary.$7 : undefined },
+                  pressed: {
+                    bg: form.name ? shade(0.4)(colors.primary.$5) : undefined,
+                  },
                   onPress: onSaveGroup,
                 })([
                   Txt({
@@ -383,7 +385,7 @@ const DeleteGroupModal = ({
               p: 12,
               round: 4,
               bg: colors.danger.$5,
-              pressed: { bg: colors.danger.$7 },
+              pressed: { bg: shade(0.4)(colors.danger.$5) },
               onPress: onDeleteGroup,
             })([Txt({ color: colors.white })('Excluir')]),
           ]),

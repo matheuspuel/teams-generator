@@ -40,7 +40,7 @@ import { goBack, navigate } from 'src/redux/slices/routes'
 import { UiLens } from 'src/redux/slices/ui'
 import { RootState } from 'src/redux/store'
 import { colors } from 'src/theme'
-import { withOpacity } from 'src/utils/Color'
+import { shade, withOpacity } from 'src/utils/Color'
 import { Id } from 'src/utils/Entity'
 
 const onOpenParametersModal = execute(
@@ -134,7 +134,7 @@ export const GroupView = memoized('GroupScreen')(
       Pressable({
         p: 12,
         bg: colors.primary.$5,
-        pressed: { bg: colors.primary.$7 },
+        pressed: { bg: shade(0.4)(colors.primary.$5) },
         onPress: onOpenParametersModal,
       })([Txt({ align: 'center', color: colors.white })('Sortear')]),
       ...(modalParameters ? [ParametersModal({ parameters })] : []),
@@ -156,7 +156,7 @@ const GroupHeader = memoizedConst('GroupHeader')(
           mr: 4,
           p: 8,
           round: 100,
-          pressed: { bg: colors.primary.$6 },
+          pressed: { bg: withOpacity(47)(colors.black) },
           onPress: toggleAllPlayersActive,
         })([
           MaterialCommunityIcons({
@@ -169,7 +169,7 @@ const GroupHeader = memoizedConst('GroupHeader')(
           mr: 4,
           p: 8,
           round: 100,
-          pressed: { bg: colors.primary.$6 },
+          pressed: { bg: withOpacity(47)(colors.black) },
           onPress: onPressAddPlayer,
         })([MaterialIcons({ name: 'add', color: colors.lightText, size: 24 })]),
       ]),
@@ -378,7 +378,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
               p: 12,
               round: 4,
               bg: colors.primary.$5,
-              pressed: { bg: colors.primary.$7 },
+              pressed: { bg: shade(0.4)(colors.primary.$5) },
               onPress: onShuffle,
             })([Txt({ color: colors.white })('Sortear')]),
           ]),

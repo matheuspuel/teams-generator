@@ -20,7 +20,7 @@ import {
 } from 'src/datatypes/Player'
 import { goBack } from 'src/redux/slices/routes'
 import { colors } from 'src/theme'
-import { toHex } from 'src/utils/Color'
+import { toHex, withOpacity } from 'src/utils/Color'
 import { div, toFixedLocale } from 'src/utils/Number'
 
 export const ResultView = ({
@@ -42,7 +42,7 @@ export const ResultView = ({
           mr: 4,
           p: 8,
           round: 100,
-          pressed: { bg: colors.primary.$6 },
+          pressed: { bg: withOpacity(47)(colors.black) },
           onPress: $(
             result,
             O.match(
