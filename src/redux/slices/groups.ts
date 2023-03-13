@@ -9,13 +9,12 @@ import {
   identity,
   O,
   Option,
-  Predicate,
+  RA,
   Rec,
   RIO,
   S,
   Tup,
 } from 'fp'
-import { Refinement } from 'fp-ts/lib/Refinement'
 import { Group } from 'src/datatypes/Group'
 import { Player } from 'src/datatypes/Player'
 import { generateId, Id } from 'src/utils/Entity'
@@ -46,7 +45,7 @@ const getPlayer = (args: { groupId: Id; id: Id }) =>
     $f(
       getGroupById(args.groupId),
       O.match(constant([]), g => g.players),
-      A.findFirst(p => p.id === args.id),
+      RA.findFirst(p => p.id === args.id),
     ),
   )
 
@@ -86,7 +85,7 @@ const addPlayer = (args: { groupId: Id; player: Omit<Player, 'active'> }) =>
       s,
       Rec.modifyAt(args.groupId, g => ({
         ...g,
-        players: A.append({ ...args.player, active: true })(g.players),
+        players: RA.append({ ...args.player, active: true })(g.players),
       })),
       O.getOrElseW(() => s),
     ),
@@ -115,7 +114,7 @@ export const editPlayer = (p: {
         ...g,
         players: $(
           g.players,
-          A.map(a =>
+          RA.map(a =>
             a.id === p.player.id ? { ...p.player, active: a.active } : a,
           ),
         ),
@@ -133,26 +132,13 @@ export const deleteCurrentPlayer = execute(
       }),
       O.map(({ groupId, playerId }) =>
         Optic.modify(GroupsLens.key(groupId).at('players'))(
-          A.filter(p => p.id !== playerId),
+          RA.filter(p => p.id !== playerId),
         )(s),
       ),
       O.getOrElse(() => s),
     ),
   ),
 )
-
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-const OpticFindFirst: {
-  <C extends A, B extends A, A = C>(
-    refinement: Refinement<A, B>,
-    message?: string,
-  ): Optic.Optional<Array<C>, B>
-  <B extends A, A = B>(
-    predicate: Predicate<A>,
-    message?: string,
-  ): Optic.Optional<Array<B>, B>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-} = Optic.findFirst as any
 
 export const togglePlayerActive = ({ playerId }: { playerId: Id }) =>
   $(
@@ -164,7 +150,7 @@ export const togglePlayerActive = ({ playerId }: { playerId: Id }) =>
           modifySApp(
             GroupsLens.key(groupId)
               .at('players')
-              .compose(OpticFindFirst(p => p.id === playerId))
+              .compose(Optic.findFirst(p => p.id === playerId))
               .at('active'),
           )(a => !a),
       ),
@@ -181,11 +167,11 @@ export const toggleAllPlayersActive = execute(
         g =>
           $(
             g.players,
-            A.every(p => p.active),
+            RA.every(p => p.active),
             allActive =>
               $(
                 g.players,
-                A.map(p => ({ ...p, active: !allActive })),
+                RA.map(p => ({ ...p, active: !allActive })),
               ),
             Optic.replace(GroupsLens.key(g.id).at('players')),
             apply(s),

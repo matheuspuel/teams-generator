@@ -1,4 +1,4 @@
-import { $, D, identity, Num, Ord, Show } from 'fp'
+import { $, D, identity, Num, Ord, Rec, Show } from 'fp'
 
 export const PositionDict = {
   G: null,
@@ -10,16 +10,7 @@ export const PositionDict = {
 }
 
 export type Position = keyof typeof PositionDict
-
-export const PositionFromString: D.Decoder<string, Position> = D.fromRefinement(
-  (v): v is Position => true,
-  'Position',
-)
-
-export const Position: D.Decoder<unknown, Position> = $(
-  D.string,
-  D.compose(PositionFromString),
-)
+export const Position: D.Schema<Position> = D.literal(...Rec.keys(PositionDict))
 
 const PositionOrder: Record<Position, number> = {
   G: 1,

@@ -9,16 +9,7 @@ export const RatingList = [
 ] as const
 
 export type Rating = (typeof RatingList)[number]
-
-export const RatingFromNumber: D.Decoder<number, Rating> = D.fromRefinement(
-  (v): v is Rating => true,
-  'Rating',
-)
-
-export const Rating: D.Decoder<unknown, Rating> = $(
-  D.number,
-  D.compose(RatingFromNumber),
-)
+export const Rating: D.Schema<Rating> = D.literal(...RatingList)
 
 export const RatingShow: Show.Show<Rating> = {
   show: r => (r === 10 ? r.toString() : r.toFixed(1)).replace('.', ','),
@@ -31,8 +22,7 @@ export type Player = {
   position: Position
   active: boolean
 }
-
-export const Player: D.Decoder<unknown, Player> = D.struct({
+export const Player = D.struct({
   id: Id,
   name: D.string,
   rating: Rating,

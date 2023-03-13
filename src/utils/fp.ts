@@ -47,7 +47,7 @@ export * as TO from 'fp-ts/TaskOption'
 export * as TT from 'fp-ts/TaskThese'
 export * as Th from 'fp-ts/These'
 export * as Tup from 'fp-ts/Tuple'
-export * as D from 'io-ts/Decoder'
+export * as D from '@effect/schema'
 import * as IO_ from 'fp-ts/IO'
 import * as Ord_ from 'fp-ts/Ord'
 

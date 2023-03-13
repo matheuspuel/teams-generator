@@ -15,11 +15,11 @@
     "postversion": "SET APP_VARIANT=production&& expo-cli publish --release-channel production"
   },
   "dependencies": {
-    "@effect/data": "0.1.2",
+    "@effect/data": "0.4.1",
+    "@effect/schema": "0.0.5",
     "@expo/config-types": "48.0.0",
     "@expo/vector-icons": "13.0.0",
-    "@fp-ts/core": "0.2.1",
-    "@fp-ts/optic": "0.2.0",
+    "@fp-ts/optic": "0.5.0",
     "@react-native-async-storage/async-storage": "~1.17.11",
     "@react-navigation/native": "^6.0.13",
     "@react-navigation/stack": "^6.3.4",
@@ -31,7 +31,6 @@
     "expo-status-bar": "~1.4.2",
     "expo-updates": "~0.16.3",
     "fp-ts": "^2.13.1",
-    "io-ts": "^2.2.19",
     "lodash.throttle": "^4.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",

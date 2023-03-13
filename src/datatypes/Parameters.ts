@@ -6,7 +6,7 @@ export type Parameters = {
   rating: boolean
 }
 
-export const Parameters: D.Decoder<unknown, Parameters> = D.struct({
+export const Parameters: D.Schema<Parameters> = D.struct({
   teamsCount: D.number,
   position: D.boolean,
   rating: D.boolean,

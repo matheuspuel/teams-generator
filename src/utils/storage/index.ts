@@ -1,5 +1,4 @@
-import { $, $f, O, TE, TO } from 'fp'
-import { Decoder } from 'io-ts/lib/Decoder'
+import { $, $f, D, O, TE, TO } from 'fp'
 import { SimpleStorage } from './simpleStorage'
 
 export type Storage<A> = {
@@ -11,9 +10,9 @@ export type Storage<A> = {
 
 export const createStorage: <A>(args: {
   key: string
-  decoder: Decoder<unknown, A>
-}) => Storage<A> = ({ key, decoder }) => ({
-  get: $(key, SimpleStorage.get, TO.chainEitherK(decoder.decode)),
+  schema: D.Schema<A>
+}) => Storage<A> = ({ key, schema }) => ({
+  get: $(key, SimpleStorage.get, TO.chainOptionK(D.getOption(schema))),
   set: SimpleStorage.set(key),
   remove: SimpleStorage.remove(key),
   setOrRemove: $f(
