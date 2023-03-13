@@ -58,6 +58,8 @@ const onSave = $(
   ),
 )
 
+const onDelete = $(deleteCurrentPlayer, RIO.apFirst(goBack))
+
 export const PlayerView = ({
   form: { name, position, rating },
 }: {
@@ -230,7 +232,7 @@ const ScreenHeader = memoizedConst('Header')(
         p: 8,
         round: 100,
         pressed: { bg: withOpacity(47)(colors.black) },
-        onPress: deleteCurrentPlayer,
+        onPress: onDelete,
       })([
         MaterialIcons({
           name: 'delete',
