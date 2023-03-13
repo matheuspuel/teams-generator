@@ -6,8 +6,10 @@ import {
   Apply,
   apply,
   constant,
+  get,
   identity,
   O,
+  Optic,
   Option,
   RA,
   Rec,
@@ -18,7 +20,6 @@ import {
 import { Group } from 'src/datatypes/Group'
 import { Player } from 'src/datatypes/Player'
 import { generateId, Id } from 'src/utils/Entity'
-import { get, Optic } from 'src/utils/Optic'
 import { execute, modifySApp, RootOptic } from '..'
 import { RootState } from '../store'
 import { UiLens } from './ui'

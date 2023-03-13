@@ -1,5 +1,4 @@
-import { Num, Ord } from 'fp'
-import { Optic } from 'src/utils/Optic'
+import { Num, Optic, Ord } from 'fp'
 import { modifySApp, RootOptic } from '..'
 
 export const ParametersLens = RootOptic.at('parameters')

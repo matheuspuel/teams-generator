@@ -7,6 +7,7 @@ import {
   identity,
   none,
   O,
+  Optic,
   Option,
   Rec,
   RIO,
@@ -48,7 +49,6 @@ import { RootState } from 'src/redux/store'
 import { colors } from 'src/theme'
 import { shade, toHex, withOpacity } from 'src/utils/Color'
 import { Id } from 'src/utils/Entity'
-import { Optic } from 'src/utils/Optic'
 
 const doNothing = RIO.of<unknown, void>(undefined)
 

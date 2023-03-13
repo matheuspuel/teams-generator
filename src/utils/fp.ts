@@ -50,6 +50,7 @@ export * as Tup from 'fp-ts/Tuple'
 export * as D from '@effect/schema'
 import * as IO_ from 'fp-ts/IO'
 import * as Ord_ from 'fp-ts/Ord'
+export * as Optic from './Optic'
 
 export { Either, Left, Right, left, right, isLeft, isRight } from 'fp-ts/Either'
 export { Endomorphism } from 'fp-ts/Endomorphism'
@@ -64,6 +65,7 @@ export { Task } from 'fp-ts/Task'
 export { TaskEither } from 'fp-ts/TaskEither'
 export { TaskOption } from 'fp-ts/TaskOption'
 export { These, Both, both, isBoth } from 'fp-ts/These'
+export { replace, get, modify } from './Optic'
 
 export const IO = IO_
 export type IO<A> = IO_.IO<A>

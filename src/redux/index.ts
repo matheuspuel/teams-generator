@@ -1,6 +1,5 @@
-import { $, ReaderIO, S } from 'fp'
+import { $, Optic, ReaderIO, S } from 'fp'
 import { Endomorphism } from 'fp-ts/Endomorphism'
-import { Optic } from 'src/utils/Optic'
 import { AppStoreEnv, RootState } from './store'
 
 export const execute =
