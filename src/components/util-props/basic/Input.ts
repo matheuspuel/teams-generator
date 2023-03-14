@@ -1,7 +1,4 @@
 import { ReaderIO } from 'fp-ts/lib/ReaderIO'
-import { Input as Input_ } from 'src/components/hyperscript/derivative'
-import { Color, toHex } from 'src/utils/Color'
-import { Rec } from 'src/utils/fp'
 import {
   BorderWidthProps,
   MarginProps,
@@ -11,7 +8,10 @@ import {
   toDescriptiveMarginProps,
   toDescriptivePaddingProps,
   toDescriptiveRoundProps,
-} from './View'
+} from 'src/components/custom/basic/View'
+import { Input as Input_ } from 'src/components/hyperscript/derivative'
+import { Color, toHex } from 'src/utils/Color'
+import { Rec } from 'src/utils/fp'
 
 const merge = Rec.getUnionSemigroup({
   concat: (a, b) => (b === undefined ? a : b),

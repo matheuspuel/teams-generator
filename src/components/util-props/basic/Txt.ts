@@ -1,11 +1,11 @@
-import { Text } from 'src/components/hyperscript/reactNative'
-import { Color, toHex } from 'src/utils/Color'
 import {
   MarginProps,
   PaddingProps,
   toDescriptiveMarginProps,
   toDescriptivePaddingProps,
-} from './View'
+} from 'src/components/custom/basic/View'
+import { Text } from 'src/components/hyperscript/reactNative'
+import { Color, toHex } from 'src/utils/Color'
 
 type TxtProps = PaddingProps &
   MarginProps & {

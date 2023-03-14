@@ -1,6 +1,6 @@
 import { ReaderIO } from 'fp'
 import { PressableStateCallbackType } from 'react-native/types'
-import { ViewDescriptiveStyleProp } from 'src/components/util-props/basic/View'
+import { ViewDescriptiveStyleProp } from 'src/components/custom/basic/View'
 import { Pressable as Pressable_ } from '../../hyperscript/reactNative'
 
 export const Pressable =

@@ -1,10 +1,5 @@
-import { ActivityIndicator as ActivityIndicator_ } from 'src/components/hyperscript/reactNative'
-import { Color, toHex } from 'src/utils/Color'
+import { ActivityIndicator as ActivityIndicator_ } from 'src/components/custom/basic/ActivityIndicator'
+import { makeComponentWithoutChildren } from 'src/components/hyperscript/helpers'
 
-type ActivityIndicatorProps = { size?: 'large' | 'small'; color?: Color }
-
-export const ActivityIndicator = (props?: ActivityIndicatorProps) =>
-  ActivityIndicator_({
-    size: props?.size ?? 'large',
-    color: props?.color ? toHex(props.color) : undefined,
-  })
+export const ActivityIndicator =
+  makeComponentWithoutChildren(ActivityIndicator_)
