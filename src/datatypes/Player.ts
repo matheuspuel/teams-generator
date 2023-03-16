@@ -1,7 +1,7 @@
 import { $, $f, A, D, Num, Ord, Show, Str } from 'fp'
 import { Id } from 'src/utils/Entity'
 import { avg } from 'src/utils/Number'
-import { Position, PositionAbrvShow, PositionOrd } from './Position'
+import { Position, PositionAbbreviationShow, PositionOrd } from './Position'
 
 export const RatingList = [
   0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9,
@@ -49,7 +49,7 @@ export const PlayerRatingOrd: Ord<Player> = $(
 
 export const PlayerShow: Show.Show<Player> = {
   show: p =>
-    `${RatingShow.show(p.rating)} - ${p.name} (${PositionAbrvShow.show(
+    `${RatingShow.show(p.rating)} - ${p.name} (${PositionAbbreviationShow.show(
       p.position,
     )})`,
 }
@@ -71,7 +71,7 @@ export const TeamListShow: Show.Show<Array<Array<Player>>> = {
 }
 
 export const PlayerShowSensitive: Show.Show<Player> = {
-  show: p => `${p.name} (${PositionAbrvShow.show(p.position)})`,
+  show: p => `${p.name} (${PositionAbbreviationShow.show(p.position)})`,
 }
 
 export const PlayerListShowSensitive: Show.Show<Array<Player>> = {

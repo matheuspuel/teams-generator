@@ -1,4 +1,5 @@
 import MaterialCommunityIcons_ from '@expo/vector-icons/MaterialCommunityIcons'
+import React from 'react'
 import { Color, toHex } from 'src/utils/datatypes/Color'
 
 type IconProps = {
@@ -8,7 +9,7 @@ type IconProps = {
   align?: 'left' | 'right' | 'center'
 }
 
-export const MaterialCommunityIcons = (props: IconProps) => (
+export const MaterialCommunityIcons = ({ x: props }: { x: IconProps }) => (
   <MaterialCommunityIcons_
     {...{
       name: props.name,

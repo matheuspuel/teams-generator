@@ -12,7 +12,7 @@ export const createStorage: <A>(args: {
   key: string
   schema: D.Schema<A>
 }) => Storage<A> = ({ key, schema }) => ({
-  get: $(key, SimpleStorage.get, TO.chainOptionK(D.getOption(schema))),
+  get: $(key, SimpleStorage.get, TO.chainOptionK(D.decodeOption(schema))),
   set: SimpleStorage.set(key),
   remove: SimpleStorage.remove(key),
   setOrRemove: $f(

@@ -1,6 +1,8 @@
+import { $, IO } from 'fp'
 import { View as View_ } from 'react-native'
 import { Color, toHex } from 'src/utils/datatypes/Color'
-import { $, IO } from 'src/utils/fp'
+
+export type Elements = React.ReactElement | ReadonlyArray<React.ReactElement>
 
 type DirectionName =
   | ''
@@ -92,6 +94,9 @@ export type ViewStyleProps = PaddingProps &
   MarginProps &
   BorderWidthProps &
   RoundProps & {
+    gap?: number
+    gapX?: number
+    gapY?: number
     w?: number
     h?: number
     aspectRatio?: number
@@ -116,11 +121,13 @@ export type ViewStyleProps = PaddingProps &
 
 export type ViewProps = ViewStyleProps & {
   onLayout?: IO<void>
-  children: ReadonlyArray<React.ReactElement>
 }
 
 export type ViewDescriptiveStyleProp = DescriptivePaddingProps &
   DescriptiveMarginProps & {
+    gap?: number
+    rowGap?: number
+    columnGap?: number
     flex?: number
     flexDirection?: 'column' | 'row'
     justifyContent?:
@@ -148,7 +155,9 @@ export const getViewStyleProp = (
   ...toDescriptiveMarginProps(props),
   ...toDescriptiveBorderWidthProps(props),
   ...toDescriptiveRoundProps(props),
-  borderRadius: props?.round,
+  gap: props?.gap,
+  rowGap: props?.gapX,
+  columnGap: props?.gapY,
   width: props?.w,
   height: props?.h,
   aspectRatio: props?.aspectRatio,
@@ -184,12 +193,18 @@ export const getViewStyleProp = (
   ),
 })
 
-export const View = (props: ViewProps) => (
+export const View = ({
+  x: props,
+  children,
+}: {
+  x: ViewProps
+  children: Elements
+}) => (
   <View_
     {...{
       style: getViewStyleProp(props),
-      onLayout: props.onLayout,
-      children: props.children,
+      onLayout: props?.onLayout,
+      children: children,
     }}
   />
 )

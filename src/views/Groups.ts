@@ -156,14 +156,14 @@ const ScreenHeader = memoizedConst('Header')(
     Header({
       title: 'Grupos',
       headerStyle: { backgroundColor: colors.primary.$5 },
-      headerTitleStyle: { color: colors.lightText },
+      headerTitleStyle: { color: colors.text.light },
       headerRight: Pressable({
         mr: 4,
         p: 8,
         round: 100,
         pressed: { bg: withOpacity(47)(colors.black) },
         onPress: onOpenNewGroupModal,
-      })([MaterialIcons({ name: 'add', color: colors.lightText, size: 24 })]),
+      })([MaterialIcons({ name: 'add', color: colors.text.light, size: 24 })]),
     }),
   ]),
 )
@@ -180,9 +180,12 @@ const Item = memoized('GroupItem')(
         round: 8,
         shadow: 1,
       })([
-        Txt({ numberOfLines: 1, flex: 1, weight: 600, color: colors.darkText })(
-          name,
-        ),
+        Txt({
+          numberOfLines: 1,
+          flex: 1,
+          weight: 600,
+          color: colors.text.dark,
+        })(name),
         Pressable({ onPress: onOpenEdit(id), px: 4 })([
           MaterialIcons({ name: 'edit', size: 24, color: colors.gray.$4 }),
         ]),
@@ -228,7 +231,7 @@ const GroupModal = ({
                 flex: 1,
                 size: 16,
                 weight: 600,
-                color: colors.darkText,
+                color: colors.text.dark,
               })(
                 $(
                   state,
@@ -263,7 +266,7 @@ const GroupModal = ({
                   value: form.name,
                   onChange: onChangeGroupName,
                   placeholderTextColor: colors.gray.$3,
-                  cursorColor: colors.darkText,
+                  cursorColor: colors.text.dark,
                   fontSize: 12,
                   p: 8,
                   px: 14,
@@ -342,9 +345,13 @@ const DeleteGroupModal = ({
         onPress: doNothing,
       })([
         Row({ align: 'center', p: 8 })([
-          Txt({ m: 8, flex: 1, size: 16, weight: 600, color: colors.darkText })(
-            'Excluir grupo',
-          ),
+          Txt({
+            m: 8,
+            flex: 1,
+            size: 16,
+            weight: 600,
+            color: colors.text.dark,
+          })('Excluir grupo'),
           Pressable({
             p: 8,
             round: 4,
@@ -362,9 +369,9 @@ const DeleteGroupModal = ({
               O.matchW(
                 () => Fragment([]),
                 g =>
-                  Text({ style: { color: toHex(colors.darkText) } })([
+                  Text({ style: { color: toHex(colors.text.dark) } })([
                     () => 'Deseja excluir o grupo ',
-                    Txt({ weight: 600, color: colors.darkText })(g.name),
+                    Txt({ weight: 600, color: colors.text.dark })(g.name),
                     () => ' e todos os jogadores?',
                   ]),
               ),

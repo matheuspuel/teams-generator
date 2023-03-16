@@ -1,8 +1,8 @@
+import { $, IO } from 'fp'
 import React from 'react'
 import { TextInput } from 'react-native'
 import { colors } from 'src/theme'
-import { Color, toHex } from 'src/utils/datatypes/Color'
-import { IO, Rec } from 'src/utils/fp'
+import { Color } from 'src/utils/datatypes'
 import {
   BorderWidthProps,
   MarginProps,
@@ -13,10 +13,6 @@ import {
   toDescriptivePaddingProps,
   toDescriptiveRoundProps,
 } from './View'
-
-const merge = Rec.getUnionSemigroup({
-  concat: (a, b) => (b === undefined ? a : b),
-}).concat
 
 type InputStyleProps = PaddingProps &
   MarginProps &
@@ -29,6 +25,7 @@ type InputStyleProps = PaddingProps &
     alignSelf?: 'start' | 'end' | 'center' | 'stretch'
     bg?: Color
     borderColor?: Color
+    fontColor?: Color
   }
 
 const getStyleProp = (props?: InputStyleProps) =>
@@ -41,18 +38,24 @@ const getStyleProp = (props?: InputStyleProps) =>
     width: props?.w,
     height: props?.h,
     flex: props?.flex,
-    backgroundColor: props?.bg ? toHex(props.bg) : undefined,
-    borderColor: props?.borderColor ? toHex(props.borderColor) : undefined,
+    backgroundColor: props?.bg ? Color.toHex(props.bg) : undefined,
+    borderColor: props?.borderColor
+      ? Color.toHex(props.borderColor)
+      : undefined,
     alignSelf:
       props?.alignSelf === 'start'
         ? 'flex-start'
         : props?.alignSelf === 'end'
         ? 'flex-end'
         : props?.alignSelf,
+    fontSize: props?.fontSize,
+    color: Color.toHex(props?.fontColor ?? colors.text.dark),
   } as const)
 
-export const Input = (
-  props: InputStyleProps & {
+export const Input = ({
+  x: props,
+}: {
+  x: InputStyleProps & {
     value: string
     onChange: (value: string) => IO<void>
     onFocus?: IO<void>
@@ -61,8 +64,9 @@ export const Input = (
     placeholderTextColor?: Color
     cursorColor?: Color
     focused?: InputStyleProps
-  },
-) => {
+    baseColor?: Color
+  }
+}) => {
   const [isFocused, setIsFocused] = React.useState(false)
   return (
     <TextInput
@@ -70,40 +74,46 @@ export const Input = (
         value: props.value,
         onChangeText: t => props.onChange(t)(),
         onFocus: () => {
-          // eslint-disable-next-line functional/no-expression-statement
+          // eslint-disable-next-line functional/no-expression-statements
           setIsFocused(true)
-          // eslint-disable-next-line functional/no-expression-statement
+          // eslint-disable-next-line functional/no-expression-statements
           props.onFocus?.()
         },
         onBlur: () => {
-          // eslint-disable-next-line functional/no-expression-statement
+          // eslint-disable-next-line functional/no-expression-statements
           setIsFocused(false)
-          // eslint-disable-next-line functional/no-expression-statement
+          // eslint-disable-next-line functional/no-expression-statements
           props.onBlur?.()
         },
         placeholder: props.placeholder,
         placeholderTextColor: props.placeholderTextColor
-          ? toHex(props.placeholderTextColor)
+          ? Color.toHex(props.placeholderTextColor)
           : undefined,
-        cursorColor: props.cursorColor ? toHex(props.cursorColor) : undefined,
-        style: [
+        cursorColor: props.cursorColor
+          ? Color.toHex(props.cursorColor)
+          : undefined,
+        style: $(
           {
             borderWidth: 1,
-            borderColor: toHex(colors.gray.$2),
-            padding: 8,
-            borderRadius: 4,
+            borderColor: colors.gray.$2,
+            p: 8,
+            round: 4,
+            ...props,
           },
-          props.focused
-            ? getStyleProp(
-                isFocused
-                  ? merge(props, {
-                      borderColor: toHex(colors.primary.$2),
-                      ...props.focused,
-                    })
-                  : props,
-              )
-            : getStyleProp(props),
-        ],
+          defaultProps =>
+            isFocused
+              ? ({
+                  ...defaultProps,
+                  borderColor: props.baseColor ?? colors.primary.$5,
+                  bg: Color.withOpacity(31)(
+                    props.baseColor ?? colors.primary.$5,
+                  ),
+                  ...props.focused,
+                } as object)
+              : defaultProps,
+          getStyleProp,
+          s => ({ ...s, outline: 'none' }),
+        ),
       }}
     />
   )

@@ -1,21 +1,22 @@
+import { IO, Rec } from 'fp'
 import { Pressable as Pressable_ } from 'react-native'
 import { PressableStateCallbackType } from 'react-native/types'
-import { IO, Rec } from 'src/utils/fp'
-import { getViewStyleProp, ViewProps, ViewStyleProps } from './View'
+import { Elements, getViewStyleProp, ViewProps, ViewStyleProps } from './View'
 
 const merge = Rec.getUnionSemigroup({
   concat: (a, b) => (b === undefined ? a : b),
 }).concat
 
 export const Pressable = ({
-  pressed: pressedProps,
-  ...props
-}: ViewProps & {
-  onPress: IO<void>
-  pressed?: ViewStyleProps
-  children:
-    | ReadonlyArray<React.ReactElement>
-    | ((state: PressableStateCallbackType) => ReadonlyArray<React.ReactElement>)
+  x: { pressed: pressedProps, ...props },
+  children,
+}: {
+  x: ViewProps & {
+    onPress: IO<void>
+    pressed?: ViewStyleProps
+    isEnabled?: boolean
+  }
+  children: Elements | ((state: PressableStateCallbackType) => Elements)
 }) => (
   <Pressable_
     {...{
@@ -25,7 +26,8 @@ export const Pressable = ({
         : getViewStyleProp(props),
       onPress: props.onPress,
       onLayout: props.onLayout,
-      children: props.children,
+      children: children,
+      disabled: props.isEnabled === false,
     }}
   />
 )

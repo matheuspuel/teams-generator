@@ -78,7 +78,7 @@ export const PlayerView = ({
           placeholderTextColor: colors.gray.$3,
           value: name,
           onChange: onChangeName,
-          cursorColor: colors.darkText,
+          cursorColor: colors.text.dark,
           fontSize: 12,
           p: 8,
           px: 14,
@@ -116,7 +116,7 @@ export const PlayerView = ({
                       ? colors.primary.$5
                       : withOpacity(63)(colors.primary.$5),
                 })([
-                  Txt({ size: 14, align: 'center', color: colors.lightText })(
+                  Txt({ size: 14, align: 'center', color: colors.text.light })(
                     p,
                   ),
                 ]),
@@ -222,10 +222,10 @@ const ScreenHeader = memoizedConst('Header')(
     Header({
       title: 'Jogador',
       headerStyle: { backgroundColor: colors.primary.$5 },
-      headerTitleStyle: { color: colors.lightText },
+      headerTitleStyle: { color: colors.text.light },
       headerLeft: HeaderBackButton({
         onPress: goBack,
-        tintColor: colors.lightText,
+        tintColor: colors.text.light,
       }),
       headerRight: Pressable({
         mr: 4,
@@ -236,7 +236,7 @@ const ScreenHeader = memoizedConst('Header')(
       })([
         MaterialIcons({
           name: 'delete',
-          color: colors.lightText,
+          color: colors.text.light,
           size: 24,
         }),
       ]),

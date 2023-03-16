@@ -1,4 +1,5 @@
 import { Text } from 'react-native'
+import { colors } from 'src/theme'
 import { Color, toHex } from 'src/utils/datatypes/Color'
 import {
   MarginProps,
@@ -18,17 +19,22 @@ type TxtProps = PaddingProps &
     numberOfLines?: number
     w?: number
     h?: number
-    children: string
   }
 
-export const Txt = (props: TxtProps) => (
+export const Txt = ({
+  x: props,
+  children,
+}: {
+  x?: TxtProps
+  children: string
+}) => (
   <Text
     {...{
       style: {
         ...toDescriptivePaddingProps(props),
         ...toDescriptiveMarginProps(props),
         flex: props?.flex,
-        color: props?.color ? toHex(props.color) : undefined,
+        color: toHex(props?.color ?? colors.text.dark),
         textAlign: props?.align,
         fontSize: props?.size,
         fontWeight: props?.weight ? `${props.weight}` : undefined,
@@ -37,7 +43,7 @@ export const Txt = (props: TxtProps) => (
         height: props?.h,
       },
       numberOfLines: props?.numberOfLines,
-      children: props.children,
+      children: children,
     }}
   />
 )

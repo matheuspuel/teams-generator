@@ -7,7 +7,7 @@ import { Parameters } from '../datatypes/Parameters'
 
 export const GroupsStorage = createStorage<GroupsState>({
   key: 'core/groups',
-  schema: D.record(Id, Group),
+  schema: D.record(Id as any, Group) as any,
 })
 
 export const ParametersStorage = createStorage<Parameters>({

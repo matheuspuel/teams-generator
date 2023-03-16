@@ -33,10 +33,10 @@ export const ResultView = ({
       Header({
         title: 'Resultado',
         headerStyle: { backgroundColor: colors.primary.$5 },
-        headerTitleStyle: { color: colors.lightText },
+        headerTitleStyle: { color: colors.text.light },
         headerLeft: HeaderBackButton({
           onPress: goBack,
-          tintColor: colors.lightText,
+          tintColor: colors.text.light,
         }),
         headerRight: Pressable({
           mr: 4,
@@ -57,7 +57,7 @@ export const ResultView = ({
             RIO.fromIO,
           ),
         })([
-          MaterialIcons({ name: 'share', color: colors.lightText, size: 24 }),
+          MaterialIcons({ name: 'share', color: colors.text.light, size: 24 }),
         ]),
       }),
     ]),
@@ -95,18 +95,18 @@ const TeamItem = (props: {
     round: 8,
     shadow: 1,
   })([
-    Txt({ color: colors.darkText, align: 'center', size: 16, weight: 600 })(
+    Txt({ color: colors.text.dark, align: 'center', size: 16, weight: 600 })(
       title,
     ),
-    Text({ style: { color: Color.toHex(colors.grayText), fontSize: 12 } })([
+    Text({ style: { color: Color.toHex(colors.text.gray), fontSize: 12 } })([
       () => 'Número de jogadores: ',
       Txt()(numPlayers.toString()),
     ]),
-    Text({ style: { color: Color.toHex(colors.grayText), fontSize: 12 } })([
+    Text({ style: { color: Color.toHex(colors.text.gray), fontSize: 12 } })([
       () => 'Média de habilidade: ',
       Txt()(avgRating),
     ]),
-    Text({ style: { color: Color.toHex(colors.grayText), fontSize: 12 } })([
+    Text({ style: { color: Color.toHex(colors.text.gray), fontSize: 12 } })([
       () => 'Total de habilidade: ',
       Txt()(totalRating.toString()),
     ]),
@@ -130,7 +130,7 @@ const PlayerItem = ({
   data: Player
 }) =>
   Row({ key: key, p: 4 })([
-    Txt({ color: colors.darkText, weight: 600 })(RatingShow.show(rating)),
-    Txt({ color: colors.darkText, numberOfLines: 1 })(` - ${name}`),
-    Txt({ color: colors.darkText })(` (${position})`),
+    Txt({ color: colors.text.dark, weight: 600 })(RatingShow.show(rating)),
+    Txt({ color: colors.text.dark, numberOfLines: 1 })(` - ${name}`),
+    Txt({ color: colors.text.dark })(` (${position})`),
   ])

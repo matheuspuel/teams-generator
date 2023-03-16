@@ -26,4 +26,4 @@ export const PositionOrd: Ord<Position> = $(
   Ord.contramap(a => PositionOrder[a]),
 )
 
-export const PositionAbrvShow: Show.Show<Position> = { show: identity }
+export const PositionAbbreviationShow: Show.Show<Position> = { show: identity }

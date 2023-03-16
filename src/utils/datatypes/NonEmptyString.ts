@@ -6,7 +6,7 @@ export const NonEmptyString = $(
   D.nonEmpty(),
   D.brand('NonEmptyString'),
 )
-export type NonEmptyString = D.Infer<typeof NonEmptyString>
+export type NonEmptyString = D.To<typeof NonEmptyString>
 
 export const NonEmptyStringOf = <S extends string>(
   s: S extends ''

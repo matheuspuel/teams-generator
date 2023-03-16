@@ -146,10 +146,10 @@ const GroupHeader = memoizedConst('GroupHeader')(
     Header({
       title: 'Grupo',
       headerStyle: { backgroundColor: colors.primary.$5 },
-      headerTitleStyle: { color: colors.lightText },
+      headerTitleStyle: { color: colors.text.light },
       headerLeft: HeaderBackButton({
         onPress: goBack,
-        tintColor: colors.lightText,
+        tintColor: colors.text.light,
       }),
       headerRight: Row()([
         Pressable({
@@ -161,7 +161,7 @@ const GroupHeader = memoizedConst('GroupHeader')(
         })([
           MaterialCommunityIcons({
             name: 'checkbox-multiple-outline',
-            color: colors.lightText,
+            color: colors.text.light,
             size: 24,
           }),
         ]),
@@ -171,7 +171,9 @@ const GroupHeader = memoizedConst('GroupHeader')(
           round: 100,
           pressed: { bg: Color.withOpacity(47)(colors.black) },
           onPress: onPressAddPlayer,
-        })([MaterialIcons({ name: 'add', color: colors.lightText, size: 24 })]),
+        })([
+          MaterialIcons({ name: 'add', color: colors.text.light, size: 24 }),
+        ]),
       ]),
     }),
   ]),
@@ -227,14 +229,14 @@ const Item = memoized('GroupItem')(
           Txt({
             size: 16,
             weight: 600,
-            color: colors.darkText,
+            color: colors.text.dark,
             lineHeight: 19,
           })(position),
         ]),
-        Txt({ mx: 8, weight: 600, color: colors.darkText })(
+        Txt({ mx: 8, weight: 600, color: colors.text.dark })(
           RatingShow.show(rating),
         ),
-        Txt({ color: colors.darkText, numberOfLines: 1 })(name),
+        Txt({ color: colors.text.dark, numberOfLines: 1 })(name),
       ]),
     ]),
 )
@@ -266,7 +268,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
             flex: 1,
             size: 16,
             weight: 600,
-            color: colors.darkText,
+            color: colors.text.dark,
           })('Parâmetros'),
           Pressable({
             p: 8,
@@ -292,7 +294,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
                 color: colors.primary.$5,
               }),
             ]),
-            Txt({ p: 8, weight: 600, color: colors.darkText })(
+            Txt({ p: 8, weight: 600, color: colors.text.dark })(
               parameters.teamsCount.toString(),
             ),
             Pressable({
@@ -307,7 +309,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
                 color: colors.primary.$5,
               }),
             ]),
-            Txt({ flex: 1, pl: 8, color: colors.darkText })('Número de times'),
+            Txt({ flex: 1, pl: 8, color: colors.text.dark })('Número de times'),
           ]),
           Pressable({ p: 4, onPress: onTogglePosition })(({ pressed }) => [
             Row({ align: 'center' })([

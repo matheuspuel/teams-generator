@@ -5,7 +5,7 @@ import { Fragment } from 'src/components/hyperscript/react'
 import { $, apply, RA, Reader, ReaderIO } from 'src/utils/fp'
 
 export type PressableProps<R> = Omit<
-  React.ComponentProps<typeof Pressable_>,
+  React.ComponentProps<typeof Pressable_>['x'],
   'children' | 'onPress' | 'onLayout'
 > & {
   key?: string
@@ -28,10 +28,12 @@ export const Pressable =
       Pressable_,
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       {
-        ...props,
-        onPress: props.onPress(env),
-        onLayout: props.onLayout?.(env),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        x: {
+          ...props,
+          onPress: props.onPress(env),
+          onLayout: props.onLayout?.(env),
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        },
       } as any,
       ...(typeof children === 'function'
         ? [
