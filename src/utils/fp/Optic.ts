@@ -1,7 +1,7 @@
 import * as E from '@effect/data/Either'
 import * as O from '@effect/data/Option'
 import { prism, Prism } from '@fp-ts/optic'
-import { Option } from './fp'
+import { Option } from '.'
 
 export * from '@fp-ts/optic'
 

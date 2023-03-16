@@ -47,7 +47,7 @@ import {
 } from 'src/redux/slices/ui'
 import { RootState } from 'src/redux/store'
 import { colors } from 'src/theme'
-import { shade, toHex, withOpacity } from 'src/utils/Color'
+import { shade, toHex, withOpacity } from 'src/utils/datatypes/Color'
 import { Id } from 'src/utils/Entity'
 
 const doNothing = RIO.of<unknown, void>(undefined)

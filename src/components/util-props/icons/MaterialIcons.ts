@@ -1,5 +1,5 @@
 import { MaterialIcons as MaterialIcons_ } from 'src/components/hyperscript/icons'
-import { Color, toHex } from 'src/utils/Color'
+import { Color, toHex } from 'src/utils/datatypes/Color'
 
 type IconProps = {
   name: NonNullable<Parameters<typeof MaterialIcons_>[0]>['name']

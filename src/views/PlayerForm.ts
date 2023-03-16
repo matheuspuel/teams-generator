@@ -23,7 +23,7 @@ import { PlayerForm, PlayerFormLens } from 'src/redux/slices/playerForm'
 import { goBack } from 'src/redux/slices/routes'
 import { UiLens } from 'src/redux/slices/ui'
 import { colors } from 'src/theme'
-import { shade, withOpacity } from 'src/utils/Color'
+import { shade, withOpacity } from 'src/utils/datatypes/Color'
 
 const onChangeName = $f(replaceSApp(PlayerFormLens.at('name')), execute)
 

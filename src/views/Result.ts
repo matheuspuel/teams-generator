@@ -20,7 +20,7 @@ import {
 } from 'src/datatypes/Player'
 import { goBack } from 'src/redux/slices/routes'
 import { colors } from 'src/theme'
-import { toHex, withOpacity } from 'src/utils/Color'
+import { Color } from 'src/utils/datatypes'
 import { div, toFixedLocale } from 'src/utils/Number'
 
 export const ResultView = ({
@@ -42,7 +42,7 @@ export const ResultView = ({
           mr: 4,
           p: 8,
           round: 100,
-          pressed: { bg: withOpacity(47)(colors.black) },
+          pressed: { bg: Color.withOpacity(47)(colors.black) },
           onPress: $(
             result,
             O.match(
@@ -98,15 +98,15 @@ const TeamItem = (props: {
     Txt({ color: colors.darkText, align: 'center', size: 16, weight: 600 })(
       title,
     ),
-    Text({ style: { color: toHex(colors.grayText), fontSize: 12 } })([
+    Text({ style: { color: Color.toHex(colors.grayText), fontSize: 12 } })([
       () => 'Número de jogadores: ',
       Txt()(numPlayers.toString()),
     ]),
-    Text({ style: { color: toHex(colors.grayText), fontSize: 12 } })([
+    Text({ style: { color: Color.toHex(colors.grayText), fontSize: 12 } })([
       () => 'Média de habilidade: ',
       Txt()(avgRating),
     ]),
-    Text({ style: { color: toHex(colors.grayText), fontSize: 12 } })([
+    Text({ style: { color: Color.toHex(colors.grayText), fontSize: 12 } })([
       () => 'Total de habilidade: ',
       Txt()(totalRating.toString()),
     ]),

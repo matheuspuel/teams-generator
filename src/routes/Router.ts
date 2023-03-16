@@ -13,7 +13,7 @@ import { ResultLens } from 'src/redux/slices/result'
 import { UiLens } from 'src/redux/slices/ui'
 import { RootState } from 'src/redux/store'
 import { colors } from 'src/theme'
-import { toHex } from 'src/utils/Color'
+import { Color } from 'src/utils/datatypes'
 import { $, absurd, O } from 'src/utils/fp'
 import { GroupView } from 'src/views/Group'
 import { Groups } from 'src/views/Groups'
@@ -21,7 +21,9 @@ import { PlayerView } from 'src/views/PlayerForm'
 import { ResultView } from 'src/views/Result'
 
 export const Router = ({ model }: { model: RootState }) =>
-  SafeAreaProvider({ style: { backgroundColor: toHex(colors.background) } })([
+  SafeAreaProvider({
+    style: { backgroundColor: Color.toHex(colors.background) },
+  })([
     StatusBar({ style: 'light' }),
     ScreenStack({ style: StyleSheet.absoluteFill })([
       Screen()([Groups({ groups: model.groups, ui: model.ui })]),

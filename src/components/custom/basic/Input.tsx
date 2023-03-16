@@ -1,7 +1,7 @@
 import React from 'react'
 import { TextInput } from 'react-native'
 import { colors } from 'src/theme'
-import { Color, toHex } from 'src/utils/Color'
+import { Color, toHex } from 'src/utils/datatypes/Color'
 import { IO, Rec } from 'src/utils/fp'
 import {
   BorderWidthProps,

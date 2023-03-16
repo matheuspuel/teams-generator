@@ -1,5 +1,5 @@
 import { View as View_ } from 'react-native'
-import { Color, toHex } from 'src/utils/Color'
+import { Color, toHex } from 'src/utils/datatypes/Color'
 import { $, IO } from 'src/utils/fp'
 
 type DirectionName =

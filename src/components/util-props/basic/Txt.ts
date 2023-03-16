@@ -5,7 +5,7 @@ import {
   toDescriptivePaddingProps,
 } from 'src/components/custom/basic/View'
 import { Text } from 'src/components/hyperscript/reactNative'
-import { Color, toHex } from 'src/utils/Color'
+import { Color, toHex } from 'src/utils/datatypes/Color'
 
 type TxtProps = PaddingProps &
   MarginProps & {

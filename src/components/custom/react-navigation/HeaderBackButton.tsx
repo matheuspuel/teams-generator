@@ -1,6 +1,6 @@
 import HeaderBackButton_ from '@react-navigation/elements/src/Header/HeaderBackButton'
 import { colors } from 'src/theme'
-import { Color, toHex } from 'src/utils/Color'
+import { Color, toHex } from 'src/utils/datatypes/Color'
 import { IO } from 'src/utils/fp'
 
 export const HeaderBackButton = (props: {

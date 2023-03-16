@@ -1,4 +1,4 @@
-import { color, palette } from 'src/utils/Color'
+import { color, palette } from 'src/utils/datatypes/Color'
 
 export const theme = {
   colors: {

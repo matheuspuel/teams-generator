@@ -1,5 +1,5 @@
 import { Text } from 'react-native'
-import { Color, toHex } from 'src/utils/Color'
+import { Color, toHex } from 'src/utils/datatypes/Color'
 import {
   MarginProps,
   PaddingProps,

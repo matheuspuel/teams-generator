@@ -1,5 +1,5 @@
 import { $, D } from 'fp'
-import { fatal } from './Error'
+import { fatal } from '../Error'
 
 export const NonEmptyString = $(
   D.string,

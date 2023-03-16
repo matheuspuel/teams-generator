@@ -1,5 +1,5 @@
 import MaterialCommunityIcons_ from '@expo/vector-icons/MaterialCommunityIcons'
-import { Color, toHex } from 'src/utils/Color'
+import { Color, toHex } from 'src/utils/datatypes/Color'
 
 type IconProps = {
   name: React.ComponentProps<typeof MaterialCommunityIcons_>['name']

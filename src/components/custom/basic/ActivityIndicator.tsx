@@ -1,5 +1,5 @@
 import { ActivityIndicator as ActivityIndicator_ } from 'react-native'
-import { Color, toHex } from 'src/utils/Color'
+import { Color, toHex } from 'src/utils/datatypes/Color'
 
 type ActivityIndicatorProps = { size?: 'large' | 'small'; color?: Color }
 

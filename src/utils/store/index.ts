@@ -1,7 +1,6 @@
 import { $, $f, constVoid, Eq, IO, O, State, Tup } from 'fp'
 import { not } from 'fp-ts/Predicate'
 import { legacy_createStore, Store as ReduxStore } from 'redux'
-import { equals } from 'src/utils/Eq'
 
 export type Store<S> = {
   _reduxStore: ReduxStore
@@ -25,7 +24,7 @@ export const makeStore = <S>(initialState: S): Store<S> => {
             IO.chainFirst(
               $f(
                 Tup.snd,
-                O.fromPredicate(not(equals(Eq.eqStrict)(prev))),
+                O.fromPredicate(not(Eq.equals(Eq.eqStrict)(prev))),
                 O.match(
                   () => constVoid,
                   next => () =>

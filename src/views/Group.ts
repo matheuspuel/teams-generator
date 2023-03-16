@@ -40,7 +40,7 @@ import { goBack, navigate } from 'src/redux/slices/routes'
 import { UiLens } from 'src/redux/slices/ui'
 import { RootState } from 'src/redux/store'
 import { colors } from 'src/theme'
-import { shade, withOpacity } from 'src/utils/Color'
+import { Color } from 'src/utils/datatypes'
 import { Id } from 'src/utils/Entity'
 
 const onOpenParametersModal = execute(
@@ -134,7 +134,7 @@ export const GroupView = memoized('GroupScreen')(
       Pressable({
         p: 12,
         bg: colors.primary.$5,
-        pressed: { bg: shade(0.4)(colors.primary.$5) },
+        pressed: { bg: Color.shade(0.4)(colors.primary.$5) },
         onPress: onOpenParametersModal,
       })([Txt({ align: 'center', color: colors.white })('Sortear')]),
       ...(modalParameters ? [ParametersModal({ parameters })] : []),
@@ -156,7 +156,7 @@ const GroupHeader = memoizedConst('GroupHeader')(
           mr: 4,
           p: 8,
           round: 100,
-          pressed: { bg: withOpacity(47)(colors.black) },
+          pressed: { bg: Color.withOpacity(47)(colors.black) },
           onPress: toggleAllPlayersActive,
         })([
           MaterialCommunityIcons({
@@ -169,7 +169,7 @@ const GroupHeader = memoizedConst('GroupHeader')(
           mr: 4,
           p: 8,
           round: 100,
-          pressed: { bg: withOpacity(47)(colors.black) },
+          pressed: { bg: Color.withOpacity(47)(colors.black) },
           onPress: onPressAddPlayer,
         })([MaterialIcons({ name: 'add', color: colors.lightText, size: 24 })]),
       ]),
@@ -249,7 +249,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
   })([
     Pressable({
       flex: 1,
-      bg: withOpacity(63)(colors.black),
+      bg: Color.withOpacity(63)(colors.black),
       justify: 'center',
       onPress: onCloseParametersModal,
     })([
@@ -271,7 +271,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
           Pressable({
             p: 8,
             round: 4,
-            pressed: { bg: withOpacity(31)(colors.gray.$5) },
+            pressed: { bg: Color.withOpacity(31)(colors.gray.$5) },
             onPress: onCloseParametersModal,
           })([
             MaterialIcons({ name: 'close', size: 24, color: colors.gray.$4 }),
@@ -283,7 +283,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
             Pressable({
               p: 12,
               round: 4,
-              pressed: { bg: withOpacity(31)(colors.primary.$5) },
+              pressed: { bg: Color.withOpacity(31)(colors.primary.$5) },
               onPress: onDecrementTeamsCount,
             })([
               MaterialIcons({
@@ -297,7 +297,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
             ),
             Pressable({
               p: 12,
-              pressed: { bg: withOpacity(31)(colors.primary.$5) },
+              pressed: { bg: Color.withOpacity(31)(colors.primary.$5) },
               round: 4,
               onPress: onIncrementTeamsCount,
             })([
@@ -371,14 +371,14 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
               mr: 8,
               p: 12,
               round: 4,
-              pressed: { bg: withOpacity(31)(colors.primary.$5) },
+              pressed: { bg: Color.withOpacity(31)(colors.primary.$5) },
               onPress: onCloseParametersModal,
             })([Txt({ color: colors.primary.$5 })('Cancelar')]),
             Pressable({
               p: 12,
               round: 4,
               bg: colors.primary.$5,
-              pressed: { bg: shade(0.4)(colors.primary.$5) },
+              pressed: { bg: Color.shade(0.4)(colors.primary.$5) },
               onPress: onShuffle,
             })([Txt({ color: colors.white })('Sortear')]),
           ]),

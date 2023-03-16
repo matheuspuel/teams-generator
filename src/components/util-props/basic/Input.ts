@@ -10,7 +10,7 @@ import {
   toDescriptiveRoundProps,
 } from 'src/components/custom/basic/View'
 import { Input as Input_ } from 'src/components/hyperscript/derivative'
-import { Color, toHex } from 'src/utils/Color'
+import { Color, toHex } from 'src/utils/datatypes/Color'
 import { Rec } from 'src/utils/fp'
 
 const merge = Rec.getUnionSemigroup({

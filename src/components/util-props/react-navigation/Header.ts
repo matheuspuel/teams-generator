@@ -1,5 +1,5 @@
 import { Header as Header_ } from 'src/components/safe/react-navigation/Header'
-import { Color, toHex } from 'src/utils/Color'
+import { Color, toHex } from 'src/utils/datatypes/Color'
 import { $ } from 'src/utils/fp'
 
 export const Header =

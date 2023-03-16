@@ -2,7 +2,7 @@ import { $, IO } from 'fp'
 import React, { useState } from 'react'
 import { StyleProp, TextStyle } from 'react-native'
 import { colors } from 'src/theme'
-import { toHex } from 'src/utils/Color'
+import { toHex } from 'src/utils/datatypes/Color'
 import { TextInput } from './reactNative'
 
 const InputAdapt = ({

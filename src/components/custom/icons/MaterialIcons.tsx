@@ -1,5 +1,5 @@
 import MaterialIcons_ from '@expo/vector-icons/MaterialIcons'
-import { Color, toHex } from 'src/utils/Color'
+import { Color, toHex } from 'src/utils/datatypes/Color'
 
 type IconProps = {
   name: React.ComponentProps<typeof MaterialIcons_>['name']
