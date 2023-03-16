@@ -18,27 +18,27 @@ import { HeaderBackButton } from 'src/components/util-props/react-navigation/Hea
 import { Group } from 'src/datatypes/Group'
 import { Parameters } from 'src/datatypes/Parameters'
 import { Player, RatingShow } from 'src/datatypes/Player'
-import { execute, replaceSApp } from 'src/redux'
+import { RootState } from 'src/model'
+import { execute, replaceSApp } from 'src/services/Store'
 import {
   getPlayerFromActiveGroup,
   toggleAllPlayersActive,
   togglePlayerActive,
-} from 'src/redux/slices/groups'
+} from 'src/slices/groups'
 import {
   decrementTeamsCount,
   incrementTeamsCount,
   togglePosition,
   toggleRating,
-} from 'src/redux/slices/parameters'
+} from 'src/slices/parameters'
 import {
   blankPlayerForm,
   getPlayerFormFromData,
   PlayerFormLens,
-} from 'src/redux/slices/playerForm'
-import { generateResult } from 'src/redux/slices/result'
-import { goBack, navigate } from 'src/redux/slices/routes'
-import { UiLens } from 'src/redux/slices/ui'
-import { RootState } from 'src/redux/store'
+} from 'src/slices/playerForm'
+import { generateResult } from 'src/slices/result'
+import { goBack, navigate } from 'src/slices/routes'
+import { UiLens } from 'src/slices/ui'
 import { colors } from 'src/theme'
 import { Color } from 'src/utils/datatypes'
 import { Id } from 'src/utils/Entity'

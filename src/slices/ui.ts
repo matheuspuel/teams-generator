@@ -1,5 +1,6 @@
 import { Optic } from 'fp'
-import { replaceSApp, RootOptic } from '..'
+import { replaceSApp } from 'src/services/Store'
+import { RootOptic } from '.'
 
 export const UiLens = RootOptic.at('ui')
 

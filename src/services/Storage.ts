@@ -1,9 +1,9 @@
 import { D } from 'fp'
+import { GroupsState } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
 import { createStorage } from 'src/utils/storage'
 import { Group } from '../datatypes/Group'
 import { Parameters } from '../datatypes/Parameters'
-import { GroupsState } from '../redux/slices/groups'
 
 export const GroupsStorage = createStorage<GroupsState>({
   key: 'core/groups',

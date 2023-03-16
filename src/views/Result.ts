@@ -18,7 +18,7 @@ import {
   RatingShow,
   TeamListShowSensitive,
 } from 'src/datatypes/Player'
-import { goBack } from 'src/redux/slices/routes'
+import { goBack } from 'src/slices/routes'
 import { colors } from 'src/theme'
 import { Color } from 'src/utils/datatypes'
 import { div, toFixedLocale } from 'src/utils/Number'

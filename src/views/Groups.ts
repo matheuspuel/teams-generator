@@ -30,22 +30,22 @@ import { View } from 'src/components/util-props/basic/View'
 import { MaterialIcons } from 'src/components/util-props/icons/MaterialIcons'
 import { Header } from 'src/components/util-props/react-navigation/Header'
 import { Group } from 'src/datatypes/Group'
-import { execute, replaceSApp, storeGet } from 'src/redux'
+import { RootState } from 'src/model'
+import { execute, replaceSApp, storeGet } from 'src/services/Store'
 import {
   createGroup,
   deleteGroup,
   editGroup,
   getGroupById,
   GroupsState,
-} from 'src/redux/slices/groups'
-import { navigate } from 'src/redux/slices/routes'
+} from 'src/slices/groups'
+import { navigate } from 'src/slices/routes'
 import {
   setDeleteGroupModal,
   setUpsertGroupModal,
   setUpsertGroupName,
   UiLens,
-} from 'src/redux/slices/ui'
-import { RootState } from 'src/redux/store'
+} from 'src/slices/ui'
 import { colors } from 'src/theme'
 import { shade, toHex, withOpacity } from 'src/utils/datatypes/Color'
 import { Id } from 'src/utils/Entity'

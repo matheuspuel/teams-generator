@@ -1,3 +1,3 @@
-import { RootOptic } from 'src/redux'
+import { RootOptic } from '..'
 
 export const LoadedLens = RootOptic.at('core').at('isLoaded')

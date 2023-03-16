@@ -1,12 +1,10 @@
 import { O, Option } from 'fp'
 import { defaultParameters, Parameters } from 'src/datatypes/Parameters'
+import { emptyGroups, GroupsState } from 'src/slices/groups'
+import { blankPlayerForm, PlayerForm } from 'src/slices/playerForm'
+import { GeneratedResult } from 'src/slices/result'
+import { initialRoute, Route } from 'src/slices/routes'
 import { Id } from 'src/utils/Entity'
-import { makeStore, Store } from 'src/utils/store'
-import { selectorHook, SelectorHook } from 'src/utils/store/react/selector'
-import { emptyGroups, GroupsState } from './slices/groups'
-import { blankPlayerForm, PlayerForm } from './slices/playerForm'
-import { GeneratedResult } from './slices/result'
-import { initialRoute, Route } from './slices/routes'
 
 export type RootState = {
   core: { isLoaded: boolean }
@@ -24,13 +22,7 @@ export type RootState = {
   route: Route
 }
 
-export type AppStore = Store<RootState>
-
-export type AppStoreEnv = { store: AppStore }
-
-export const useAppSelector: SelectorHook<RootState> = selectorHook
-
-export const store: AppStore = makeStore<RootState>({
+export const initialStoreState = {
   core: { isLoaded: false },
   groups: emptyGroups,
   parameters: defaultParameters,
@@ -44,4 +36,4 @@ export const store: AppStore = makeStore<RootState>({
     modalParameters: false,
   },
   route: initialRoute,
-})
+}

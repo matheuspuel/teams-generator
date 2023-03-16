@@ -1,6 +1,11 @@
 import { $, Optic, ReaderIO, S } from 'fp'
 import { Endomorphism } from 'fp-ts/Endomorphism'
-import { AppStoreEnv, RootState } from './store'
+import { RootState } from 'src/model'
+import { Store } from 'src/utils/store'
+
+export type AppStore = Store<RootState>
+
+export type AppStoreEnv = { store: AppStore }
 
 export const execute =
   <A>(f: S.State<RootState, A>) =>
@@ -25,5 +30,3 @@ export const replaceSApp: <A>(
   optic: Optic.PolySetter<RootState, RootState, A>,
 ) => (a: A) => S.State<RootState, void> = optic => a =>
   $(Optic.replace(optic)(a), modifyRoot)
-
-export const RootOptic = Optic.id<RootState>()

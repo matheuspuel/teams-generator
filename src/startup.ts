@@ -1,13 +1,12 @@
 import * as SplashScreen from 'expo-splash-screen'
 import { $, $f, replace, RT } from 'fp'
 import throttle from 'lodash.throttle'
-import { hydrate, saveState } from 'src/redux/slices/core/hydration'
+import { hydrate, saveState } from 'src/slices/core/hydration'
+import { goBack } from 'src/slices/routes'
 import { milliseconds } from 'src/utils/datatypes/Duration'
-import { dispatch } from './redux'
-import { LoadedLens } from './redux/slices/core/loading'
-import { goBack } from './redux/slices/routes'
-import { AppStoreEnv } from './redux/store'
 import { HardwareBackPressObserver } from './services/BackHandler'
+import { AppStoreEnv, dispatch } from './services/Store'
+import { LoadedLens } from './slices/core/loading'
 
 export const runStartupTasks = $(
   $(

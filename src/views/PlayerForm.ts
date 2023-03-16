@@ -13,15 +13,15 @@ import { Header } from 'src/components/util-props/react-navigation/Header'
 import { HeaderBackButton } from 'src/components/util-props/react-navigation/HeaderBackButton'
 import { RatingList, RatingShow } from 'src/datatypes/Player'
 import { PositionDict, PositionOrd } from 'src/datatypes/Position'
-import { execute, replaceSApp } from 'src/redux'
+import { execute, replaceSApp } from 'src/services/Store'
 import {
   createPlayer,
   deleteCurrentPlayer,
   editPlayer,
-} from 'src/redux/slices/groups'
-import { PlayerForm, PlayerFormLens } from 'src/redux/slices/playerForm'
-import { goBack } from 'src/redux/slices/routes'
-import { UiLens } from 'src/redux/slices/ui'
+} from 'src/slices/groups'
+import { PlayerForm, PlayerFormLens } from 'src/slices/playerForm'
+import { goBack } from 'src/slices/routes'
+import { UiLens } from 'src/slices/ui'
 import { colors } from 'src/theme'
 import { shade, withOpacity } from 'src/utils/datatypes/Color'
 

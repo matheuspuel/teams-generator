@@ -19,9 +19,10 @@ import {
 } from 'fp'
 import { Group } from 'src/datatypes/Group'
 import { Player } from 'src/datatypes/Player'
+import { RootState } from 'src/model'
+import { execute, modifySApp } from 'src/services/Store'
 import { generateId, Id } from 'src/utils/Entity'
-import { execute, modifySApp, RootOptic } from '..'
-import { RootState } from '../store'
+import { RootOptic } from '.'
 import { UiLens } from './ui'
 
 export const GroupsLens = RootOptic.at('groups')

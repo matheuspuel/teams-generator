@@ -1,9 +1,8 @@
 import { get, replace } from '@fp-ts/optic'
 import { $, $f, constVoid, RT, T, TO } from 'fp'
 import { defaultParameters } from 'src/datatypes/Parameters'
-import { dispatch, storeGet } from 'src/redux'
-import { AppStoreEnv } from 'src/redux/store'
 import { GroupsStorage, ParametersStorage } from 'src/services/Storage'
+import { AppStoreEnv, dispatch, storeGet } from 'src/services/Store'
 import { emptyGroups, GroupsLens } from '../groups'
 import { ParametersLens } from '../parameters'
 
