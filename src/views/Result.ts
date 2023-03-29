@@ -18,8 +18,8 @@ import {
   RatingShow,
   TeamListShowSensitive,
 } from 'src/datatypes/Player'
+import { defaultColors } from 'src/services/Theme/default'
 import { goBack } from 'src/slices/routes'
-import { colors } from 'src/theme'
 import { Color } from 'src/utils/datatypes'
 import { div, toFixedLocale } from 'src/utils/Number'
 
@@ -29,20 +29,20 @@ export const ResultView = ({
   result: Option<Array<Array<Player>>>
 }) =>
   View({ flex: 1 })([
-    View({ bg: colors.white })([
+    View({ bg: defaultColors.white })([
       Header({
         title: 'Resultado',
-        headerStyle: { backgroundColor: colors.primary.$5 },
-        headerTitleStyle: { color: colors.text.light },
+        headerStyle: { backgroundColor: defaultColors.primary.$5 },
+        headerTitleStyle: { color: defaultColors.text.light },
         headerLeft: HeaderBackButton({
           onPress: goBack,
-          tintColor: colors.text.light,
+          tintColor: defaultColors.text.light,
         }),
         headerRight: Pressable({
           mr: 4,
           p: 8,
           round: 100,
-          pressed: { bg: Color.withOpacity(47)(colors.black) },
+          pressed: { bg: Color.withOpacity(47)(defaultColors.black) },
           onPress: $(
             result,
             O.match(
@@ -57,7 +57,11 @@ export const ResultView = ({
             RIO.fromIO,
           ),
         })([
-          MaterialIcons({ name: 'share', color: colors.text.light, size: 24 }),
+          MaterialIcons({
+            name: 'share',
+            color: defaultColors.text.light,
+            size: 24,
+          }),
         ]),
       }),
     ]),
@@ -67,7 +71,7 @@ export const ResultView = ({
         O.matchW(
           () => [
             View({ flex: 1, justify: 'center' })([
-              ActivityIndicator({ color: colors.primary.$4 }),
+              ActivityIndicator({ color: defaultColors.primary.$4 }),
             ]),
           ],
           A.mapWithIndex((i, t) =>
@@ -89,27 +93,27 @@ const TeamItem = (props: {
   const avgRating = toFixedLocale(2)(div(numPlayers)(totalRating))
   return View({
     key: props.key,
-    bg: colors.white,
+    bg: defaultColors.white,
     m: 4,
     p: 4,
     round: 8,
     shadow: 1,
   })([
-    Txt({ color: colors.text.dark, align: 'center', size: 16, weight: 600 })(
-      title,
-    ),
-    Text({ style: { color: Color.toHex(colors.text.gray), fontSize: 12 } })([
-      () => 'Número de jogadores: ',
-      Txt()(numPlayers.toString()),
-    ]),
-    Text({ style: { color: Color.toHex(colors.text.gray), fontSize: 12 } })([
-      () => 'Média de habilidade: ',
-      Txt()(avgRating),
-    ]),
-    Text({ style: { color: Color.toHex(colors.text.gray), fontSize: 12 } })([
-      () => 'Total de habilidade: ',
-      Txt()(totalRating.toString()),
-    ]),
+    Txt({
+      color: defaultColors.text.dark,
+      align: 'center',
+      size: 16,
+      weight: 600,
+    })(title),
+    Text({
+      style: { color: Color.toHex(defaultColors.text.gray), fontSize: 12 },
+    })([() => 'Número de jogadores: ', Txt()(numPlayers.toString())]),
+    Text({
+      style: { color: Color.toHex(defaultColors.text.gray), fontSize: 12 },
+    })([() => 'Média de habilidade: ', Txt()(avgRating)]),
+    Text({
+      style: { color: Color.toHex(defaultColors.text.gray), fontSize: 12 },
+    })([() => 'Total de habilidade: ', Txt()(totalRating.toString())]),
     ...$(
       props.players,
       A.sortBy([
@@ -130,7 +134,9 @@ const PlayerItem = ({
   data: Player
 }) =>
   Row({ key: key, p: 4 })([
-    Txt({ color: colors.text.dark, weight: 600 })(RatingShow.show(rating)),
-    Txt({ color: colors.text.dark, numberOfLines: 1 })(` - ${name}`),
-    Txt({ color: colors.text.dark })(` (${position})`),
+    Txt({ color: defaultColors.text.dark, weight: 600 })(
+      RatingShow.show(rating),
+    ),
+    Txt({ color: defaultColors.text.dark, numberOfLines: 1 })(` - ${name}`),
+    Txt({ color: defaultColors.text.dark })(` (${position})`),
   ])

@@ -7,14 +7,14 @@ import {
 } from 'src/components/hyperscript/react-native-screens'
 import { SafeAreaProvider } from 'src/components/hyperscript/safe-area-context'
 import { RootState } from 'src/model'
+import { defaultColors } from 'src/services/Theme/default'
 import { getGroupById } from 'src/slices/groups'
 import { ParametersLens } from 'src/slices/parameters'
 import { PlayerFormLens } from 'src/slices/playerForm'
 import { ResultLens } from 'src/slices/result'
 import { UiLens } from 'src/slices/ui'
-import { colors } from 'src/theme'
 import { Color } from 'src/utils/datatypes'
-import { $, absurd, O } from 'src/utils/fp'
+import { $, O, absurd } from 'src/utils/fp'
 import { GroupView } from 'src/views/Group'
 import { Groups } from 'src/views/Groups'
 import { PlayerView } from 'src/views/PlayerForm'
@@ -22,7 +22,7 @@ import { ResultView } from 'src/views/Result'
 
 export const Router = ({ model }: { model: RootState }) =>
   SafeAreaProvider({
-    style: { backgroundColor: Color.toHex(colors.background) },
+    style: { backgroundColor: Color.toHex(defaultColors.background) },
   })([
     StatusBar({ style: 'light' }),
     ScreenStack({ style: StyleSheet.absoluteFill })([

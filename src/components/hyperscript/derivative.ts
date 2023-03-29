@@ -1,7 +1,7 @@
 import { $, IO } from 'fp'
 import React, { useState } from 'react'
 import { StyleProp, TextStyle } from 'react-native'
-import { colors } from 'src/theme'
+import { defaultColors } from 'src/services/Theme/default'
 import { toHex } from 'src/utils/datatypes/Color'
 import { TextInput } from './reactNative'
 
@@ -39,10 +39,12 @@ const InputAdapt = ({
     style: [
       {
         borderWidth: 1,
-        borderColor: toHex(isFocused ? colors.primary.$2 : colors.gray.$2),
+        borderColor: toHex(
+          isFocused ? defaultColors.primary.$2 : defaultColors.gray.$2,
+        ),
         padding: 8,
         borderRadius: 4,
-        backgroundColor: toHex(colors.white),
+        backgroundColor: toHex(defaultColors.white),
       },
       $(otherProps.style, s =>
         typeof s === 'function' ? s({ isFocused }) : s,

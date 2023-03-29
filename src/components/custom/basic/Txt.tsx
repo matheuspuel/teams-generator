@@ -1,5 +1,5 @@
 import { Text } from 'react-native'
-import { colors } from 'src/theme'
+import { defaultColors } from 'src/services/Theme/default'
 import { Color, toHex } from 'src/utils/datatypes/Color'
 import {
   MarginProps,
@@ -34,7 +34,7 @@ export const Txt = ({
         ...toDescriptivePaddingProps(props),
         ...toDescriptiveMarginProps(props),
         flex: props?.flex,
-        color: toHex(props?.color ?? colors.text.dark),
+        color: toHex(props?.color ?? defaultColors.text.dark),
         textAlign: props?.align,
         fontSize: props?.size,
         fontWeight: props?.weight ? `${props.weight}` : undefined,

@@ -1,7 +1,6 @@
 import { $, ReaderIO, Rec } from 'fp'
 import { Pressable as Pressable_ } from 'react-native'
 import { PressableStateCallbackType } from 'react-native/types'
-import { Elements } from 'src/components/custom/basic/View'
 import { Color } from 'src/utils/datatypes'
 import { JSXElementsChildren } from '../types'
 import { ViewProps, ViewStyleProps } from './View'
@@ -14,7 +13,7 @@ export type PressableProps<R> = ViewProps<R> & {
 
 export type PressableArgs<R> = {
   x: PressableProps<R>
-  children:
+  children?:
     | JSXElementsChildren
     | ((state: PressableStateCallbackType) => JSXElementsChildren)
   env: R
@@ -107,8 +106,6 @@ const getRawProps = <R extends unknown>({
     ),
 })
 
-export const Pressable = <R extends unknown>(args: {
-  x: PressableProps<R>
-  children: Elements | ((state: PressableStateCallbackType) => Elements)
-  env: R
-}) => <Pressable_ {...getRawProps(args)} />
+export const Pressable = <R extends unknown>(args: PressableArgs<R>) => (
+  <Pressable_ {...getRawProps(args)} />
+)

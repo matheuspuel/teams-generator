@@ -1,7 +1,7 @@
 import { $, IO } from 'fp'
 import React from 'react'
 import { TextInput } from 'react-native'
-import { colors } from 'src/theme'
+import { defaultColors } from 'src/services/Theme/default'
 import { Color } from 'src/utils/datatypes'
 import {
   BorderWidthProps,
@@ -49,7 +49,7 @@ const getStyleProp = (props?: InputStyleProps) =>
         ? 'flex-end'
         : props?.alignSelf,
     fontSize: props?.fontSize,
-    color: Color.toHex(props?.fontColor ?? colors.text.dark),
+    color: Color.toHex(props?.fontColor ?? defaultColors.text.dark),
   } as const)
 
 export const Input = ({
@@ -95,7 +95,7 @@ export const Input = ({
         style: $(
           {
             borderWidth: 1,
-            borderColor: colors.gray.$2,
+            borderColor: defaultColors.gray.$2,
             p: 8,
             round: 4,
             ...props,
@@ -104,9 +104,9 @@ export const Input = ({
             isFocused
               ? ({
                   ...defaultProps,
-                  borderColor: props.baseColor ?? colors.primary.$5,
+                  borderColor: props.baseColor ?? defaultColors.primary.$5,
                   bg: Color.withOpacity(31)(
-                    props.baseColor ?? colors.primary.$5,
+                    props.baseColor ?? defaultColors.primary.$5,
                   ),
                   ...props.focused,
                 } as object)

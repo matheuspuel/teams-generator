@@ -1,5 +1,7 @@
-import { get } from '@fp-ts/optic'
+import 'react-native-gesture-handler'
+
 import React from 'react'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { StatusBar } from './components/hyperscript/expo'
 import { Fragment } from './components/hyperscript/react'
 import { RootState } from './model'
@@ -7,11 +9,12 @@ import { Router } from './routes/Router'
 import { AppEnv } from './services'
 import { storeGet } from './services/Store'
 import { store } from './services/Store/default'
+import { defaultTheme } from './services/Theme/default'
 import { LoadedLens } from './slices/core/loading'
 import { runStartupTasks } from './startup'
-import { $, IO } from './utils/fp'
+import { $, IO, get } from './utils/fp'
 
-const env: AppEnv = { store }
+const env: AppEnv = { store, theme: defaultTheme }
 
 // eslint-disable-next-line functional/no-expression-statement
 void runStartupTasks(env)()
@@ -28,7 +31,11 @@ export const AppIndex = () => {
     )
     return subscription.unsubscribe
   }, [])
-  return UI(model)(env)
+  return React.createElement(
+    GestureHandlerRootView,
+    { style: { flex: 1 } },
+    UI(model)(env),
+  )
 }
 
 const UI = (model: RootState) =>

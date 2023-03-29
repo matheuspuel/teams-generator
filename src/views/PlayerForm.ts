@@ -14,6 +14,7 @@ import { HeaderBackButton } from 'src/components/util-props/react-navigation/Hea
 import { RatingList, RatingShow } from 'src/datatypes/Player'
 import { PositionDict, PositionOrd } from 'src/datatypes/Position'
 import { execute, replaceSApp } from 'src/services/Store'
+import { defaultColors } from 'src/services/Theme/default'
 import {
   createPlayer,
   deleteCurrentPlayer,
@@ -22,7 +23,6 @@ import {
 import { PlayerForm, PlayerFormLens } from 'src/slices/playerForm'
 import { goBack } from 'src/slices/routes'
 import { UiLens } from 'src/slices/ui'
-import { colors } from 'src/theme'
 import { shade, withOpacity } from 'src/utils/datatypes/Color'
 
 const onChangeName = $f(replaceSApp(PlayerFormLens.at('name')), execute)
@@ -72,27 +72,27 @@ export const PlayerView = ({
     ScreenHeader,
     View({ flex: 1, p: 4 })([
       View({ p: 4 })([
-        Txt({ weight: 500, color: colors.gray.$4, my: 4 })('Nome'),
+        Txt({ weight: 500, color: defaultColors.gray.$4, my: 4 })('Nome'),
         Input({
           placeholder: 'Ex: Pedro',
-          placeholderTextColor: colors.gray.$3,
+          placeholderTextColor: defaultColors.gray.$3,
           value: name,
           onChange: onChangeName,
-          cursorColor: colors.text.dark,
+          cursorColor: defaultColors.text.dark,
           fontSize: 12,
           p: 8,
           px: 14,
           borderWidth: 1,
           round: 4,
-          borderColor: colors.gray.$2,
+          borderColor: defaultColors.gray.$2,
           focused: {
-            bg: withOpacity(31)(colors.primary.$5),
-            borderColor: colors.primary.$5,
+            bg: withOpacity(31)(defaultColors.primary.$5),
+            borderColor: defaultColors.primary.$5,
           },
         }),
       ]),
       View({ p: 4 })([
-        Txt({ weight: 500, color: colors.gray.$4, my: 4 })('Posição'),
+        Txt({ weight: 500, color: defaultColors.gray.$4, my: 4 })('Posição'),
         Row()(
           $(
             PositionDict,
@@ -113,12 +113,14 @@ export const PlayerView = ({
                   round: 9999,
                   bg:
                     position === p
-                      ? colors.primary.$5
-                      : withOpacity(63)(colors.primary.$5),
+                      ? defaultColors.primary.$5
+                      : withOpacity(63)(defaultColors.primary.$5),
                 })([
-                  Txt({ size: 14, align: 'center', color: colors.text.light })(
-                    p,
-                  ),
+                  Txt({
+                    size: 14,
+                    align: 'center',
+                    color: defaultColors.text.light,
+                  })(p),
                 ]),
               ]),
             ),
@@ -126,12 +128,12 @@ export const PlayerView = ({
         ),
       ]),
       View({ p: 4 })([
-        Txt({ weight: 500, color: colors.gray.$4, my: 4 })('Habilidade'),
+        Txt({ weight: 500, color: defaultColors.gray.$4, my: 4 })('Habilidade'),
         Txt({
           align: 'center',
           size: 24,
           weight: 700,
-          color: colors.primary.$5,
+          color: defaultColors.primary.$5,
         })(RatingShow.show(rating)),
         Row()(
           $(
@@ -149,7 +151,7 @@ export const PlayerView = ({
                           name: 'arrow-drop-down',
                           size: 60,
                           align: 'center',
-                          color: colors.primary.$5,
+                          color: defaultColors.primary.$5,
                         }),
                       ]),
                     ]
@@ -169,7 +171,7 @@ export const PlayerView = ({
                     mt: r % 1 === 0 ? 0 : 4,
                     h: r % 1 === 0 ? 9 : 5,
                     w: 4,
-                    bg: colors.primary.$4,
+                    bg: defaultColors.primary.$4,
                     round: 10,
                     roundB: 0,
                   })([]),
@@ -179,7 +181,7 @@ export const PlayerView = ({
                           Txt({
                             align: 'center',
                             size: 12,
-                            color: colors.primary.$4,
+                            color: defaultColors.primary.$4,
                             weight: 900,
                             w: 100,
                           })(r.toString()),
@@ -191,7 +193,7 @@ export const PlayerView = ({
             ),
           ),
         ),
-        View({ h: 4, bg: colors.primary.$4, round: 10 })([]),
+        View({ h: 4, bg: defaultColors.primary.$4, round: 10 })([]),
         Row()(
           $(
             RatingList,
@@ -206,37 +208,41 @@ export const PlayerView = ({
     ]),
     Pressable({
       p: 12,
-      bg: !name ? withOpacity(95)(colors.primary.$5) : colors.primary.$5,
-      pressed: { bg: name ? shade(0.4)(colors.primary.$5) : undefined },
+      bg: !name
+        ? withOpacity(95)(defaultColors.primary.$5)
+        : defaultColors.primary.$5,
+      pressed: { bg: name ? shade(0.4)(defaultColors.primary.$5) : undefined },
       onPress: onSave,
     })([
       Txt({
         align: 'center',
-        color: !name ? withOpacity(95)(colors.white) : colors.white,
+        color: !name
+          ? withOpacity(95)(defaultColors.white)
+          : defaultColors.white,
       })('Gravar'),
     ]),
   ])
 
 const ScreenHeader = memoizedConst('Header')(
-  View({ bg: colors.white })([
+  View({ bg: defaultColors.white })([
     Header({
       title: 'Jogador',
-      headerStyle: { backgroundColor: colors.primary.$5 },
-      headerTitleStyle: { color: colors.text.light },
+      headerStyle: { backgroundColor: defaultColors.primary.$5 },
+      headerTitleStyle: { color: defaultColors.text.light },
       headerLeft: HeaderBackButton({
         onPress: goBack,
-        tintColor: colors.text.light,
+        tintColor: defaultColors.text.light,
       }),
       headerRight: Pressable({
         mr: 4,
         p: 8,
         round: 100,
-        pressed: { bg: withOpacity(47)(colors.black) },
+        pressed: { bg: withOpacity(47)(defaultColors.black) },
         onPress: onDelete,
       })([
         MaterialIcons({
           name: 'delete',
-          color: colors.text.light,
+          color: defaultColors.text.light,
           size: 24,
         }),
       ]),

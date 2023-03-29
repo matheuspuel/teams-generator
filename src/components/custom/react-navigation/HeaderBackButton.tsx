@@ -1,5 +1,5 @@
 import HeaderBackButton_ from '@react-navigation/elements/src/Header/HeaderBackButton'
-import { colors } from 'src/theme'
+import { defaultColors } from 'src/services/Theme/default'
 import { Color, toHex } from 'src/utils/datatypes/Color'
 import { IO } from 'src/utils/fp'
 
@@ -10,7 +10,7 @@ export const HeaderBackButton = (props: {
   <HeaderBackButton_
     {...{
       ...props,
-      tintColor: toHex(props.tintColor ?? colors.white),
+      tintColor: toHex(props.tintColor ?? defaultColors.white),
     }}
   />
 )

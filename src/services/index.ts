@@ -1,3 +1,4 @@
 import { AppStoreEnv } from './Store'
+import { AppThemeEnv } from './Theme'
 
-export type AppEnv = AppStoreEnv
+export type AppEnv = AppStoreEnv & AppThemeEnv

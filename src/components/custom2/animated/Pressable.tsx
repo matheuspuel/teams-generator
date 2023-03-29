@@ -1,41 +1,21 @@
 import { $, Reader, ReaderIO } from 'fp'
 import React from 'react'
-import { View as View_ } from 'react-native'
+import { RectButton } from 'react-native-gesture-handler'
+import { ViewProps } from 'src/components/custom2/react-native/View'
 import { Color } from 'src/utils/datatypes'
-import {
-  AbsolutePositionProps,
-  BorderWidthProps,
-  FlexChildProps,
-  FlexContainerProps,
-  GapProps,
-  JSXElementsChildren,
-  MarginProps,
-  PaddingProps,
-  RoundProps,
-} from '../types'
+import { JSXElementsChildren } from '../types'
 
-export type ViewStyleProps<R> = PaddingProps &
-  MarginProps &
-  BorderWidthProps &
-  RoundProps &
-  GapProps &
-  FlexContainerProps &
-  FlexChildProps &
-  AbsolutePositionProps & {
-    w?: number
-    h?: number
-    aspectRatio?: number
-    shadow?: number
-    bg?: Reader<R, Color>
-    borderColor?: Reader<R, Color>
-  }
-
-export type ViewProps<R> = ViewStyleProps<R> & {
-  onLayout?: ReaderIO<R, void>
+export type PressableProps<R> = Omit<ViewProps<R>, 'onLayout'> & {
+  onPress: ReaderIO<R, void>
+  isEnabled?: boolean
+  rippleColor?: Reader<R, Color>
+  rippleOpacity?: number
+  borderless?: boolean
+  foreground?: boolean
 }
 
-export type ViewArgs<R> = {
-  x: ViewProps<R>
+export type PressableArgs<R> = {
+  x: PressableProps<R>
   children?: JSXElementsChildren
   env: R
 }
@@ -44,9 +24,21 @@ const getRawProps = <R extends unknown>({
   x: props,
   children,
   env,
-}: ViewArgs<R>): React.ComponentProps<typeof View_> => ({
-  onLayout: props?.onLayout?.(env),
+}: PressableArgs<R>): React.ComponentProps<typeof RectButton> => ({
   children: children,
+  onPress: () => props.isEnabled !== false && props.onPress(env)(),
+  rippleColor:
+    props.isEnabled !== false
+      ? props.rippleColor
+        ? $(
+            props.rippleColor(env),
+            Color.withOpacity(Math.round((props.rippleOpacity ?? 1) * 255)),
+            Color.toHex,
+          )
+        : undefined
+      : 'transparent',
+  borderless: props.borderless,
+  foreground: props.foreground,
   style: {
     padding: props?.p,
     paddingHorizontal: props?.px,
@@ -113,6 +105,6 @@ const getRawProps = <R extends unknown>({
   },
 })
 
-export const View = <R extends unknown>(args: ViewArgs<R>) => (
-  <View_ {...getRawProps(args)} />
+export const Pressable = <R extends unknown>(args: PressableArgs<R>) => (
+  <RectButton {...getRawProps(args)} />
 )

@@ -1,6 +1,6 @@
 import { color, palette } from 'src/utils/datatypes/Color'
 
-export const theme = {
+export const defaultTheme = {
   colors: {
     background: color(242, 242, 242),
     text: {
@@ -17,4 +17,4 @@ export const theme = {
   },
 }
 
-export const colors = theme.colors
+export const defaultColors = defaultTheme.colors

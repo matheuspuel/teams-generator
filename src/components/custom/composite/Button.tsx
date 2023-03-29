@@ -1,5 +1,5 @@
 import React from 'react'
-import { colors } from 'src/theme'
+import { defaultColors } from 'src/services/Theme/default'
 import { Color } from 'src/utils/datatypes'
 import { shade } from 'src/utils/datatypes/Color'
 import { Pressable } from '../basic/Pressable'
@@ -18,13 +18,13 @@ export const Button = ({ x: props, children }: ButtonProps) => (
       round: 4,
       bg:
         props.isEnabled ?? true
-          ? props.baseColor ?? colors.primary.$5
-          : colors.gray.$2,
+          ? props.baseColor ?? defaultColors.primary.$5
+          : defaultColors.gray.$2,
       ...props,
       pressed: {
         bg:
           props.pressed?.bg ??
-          shade(0.3)(props.bg ?? props.baseColor ?? colors.primary.$5),
+          shade(0.3)(props.bg ?? props.baseColor ?? defaultColors.primary.$5),
         ...props.pressed,
       },
     }}
