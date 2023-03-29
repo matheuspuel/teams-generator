@@ -19,18 +19,18 @@ import {
 } from 'fp'
 import { not } from 'fp-ts/Predicate'
 import { memoized, memoizedConst } from 'src/components/helpers'
-import { Fragment } from 'src/components/hyperscript/react'
 import { Text } from 'src/components/hyperscript/reactNative'
 import {
+  FlatList,
+  Fragment,
+  MaterialIcons,
   Modal,
   Pressable,
   Row,
   TextInput,
   View,
 } from 'src/components/hyperscript2'
-import { FlatList } from 'src/components/safe/basic/FlatList'
 import { Txt } from 'src/components/util-props/basic/Txt'
-import { MaterialIcons } from 'src/components/util-props/icons/MaterialIcons'
 import { Header } from 'src/components/util-props/react-navigation/Header'
 import { Group } from 'src/datatypes/Group'
 import { RootState } from 'src/model'
@@ -168,13 +168,7 @@ const ScreenHeader = memoizedConst('Header')(
         p: 8,
         borderless: true,
         foreground: true,
-      })([
-        MaterialIcons({
-          name: 'add',
-          color: defaultColors.text.light,
-          size: 24,
-        }),
-      ]),
+      })([MaterialIcons({ name: 'add', color: Colors.text.light, size: 24 })]),
     }),
   ]),
 )
@@ -199,24 +193,14 @@ const Item = memoized('GroupItem')(
         color: defaultColors.text.dark,
       })(name),
       Pressable({ onPress: onOpenEdit(id), borderless: true, py: 8, px: 4 })([
-        MaterialIcons({
-          name: 'edit',
-          size: 24,
-          color: defaultColors.gray.$4,
-        }),
+        MaterialIcons({ name: 'edit', size: 24, color: Colors.gray.$4 }),
       ]),
       Pressable({
         onPress: onOpenDelete(id),
         borderless: true,
         py: 8,
         px: 4,
-      })([
-        MaterialIcons({
-          name: 'delete',
-          color: defaultColors.gray.$4,
-          size: 24,
-        }),
-      ]),
+      })([MaterialIcons({ name: 'delete', color: Colors.gray.$4, size: 24 })]),
     ]),
 )
 
@@ -273,7 +257,7 @@ const GroupModal = ({
                 MaterialIcons({
                   name: 'close',
                   size: 24,
-                  color: defaultColors.gray.$4,
+                  color: Colors.gray.$4,
                 }),
               ]),
             ]),
@@ -376,11 +360,7 @@ const DeleteGroupModal = ({
             color: defaultColors.text.dark,
           })('Excluir grupo'),
           Pressable({ onPress: onCloseDeleteModal, p: 8, round: 4 })([
-            MaterialIcons({
-              name: 'close',
-              size: 24,
-              color: defaultColors.gray.$4,
-            }),
+            MaterialIcons({ name: 'close', size: 24, color: Colors.gray.$4 }),
           ]),
         ]),
         View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
