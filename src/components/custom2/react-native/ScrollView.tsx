@@ -9,6 +9,7 @@ export type ScrollViewContainerStyleProps<R> = PaddingProps &
 
 export type ScrollViewProps<R> = ScrollViewStyleProps<R> & {
   removeClippedSubviews?: boolean
+  keyboardShouldPersistTaps?: 'always' | 'never' | 'handled'
   contentContainerStyle?: ScrollViewContainerStyleProps<R>
 }
 
@@ -25,6 +26,7 @@ const getRawProps = <R extends unknown>({
 }: ScrollViewArgs<R>): React.ComponentProps<typeof ScrollView_> => ({
   children: children,
   removeClippedSubviews: props.removeClippedSubviews,
+  keyboardShouldPersistTaps: props.keyboardShouldPersistTaps,
   contentContainerStyle: {
     padding: props.contentContainerStyle?.p,
     paddingHorizontal: props.contentContainerStyle?.px,
