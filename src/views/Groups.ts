@@ -19,24 +19,23 @@ import {
 } from 'fp'
 import { not } from 'fp-ts/Predicate'
 import { memoized, memoizedConst } from 'src/components/helpers'
-import { Text } from 'src/components/hyperscript/reactNative'
 import {
   FlatList,
   Fragment,
+  Header,
   MaterialIcons,
   Modal,
   Pressable,
   Row,
   TextInput,
+  Txt,
+  TxtContext,
   View,
 } from 'src/components/hyperscript2'
-import { Txt } from 'src/components/util-props/basic/Txt'
-import { Header } from 'src/components/util-props/react-navigation/Header'
 import { Group } from 'src/datatypes/Group'
 import { RootState } from 'src/model'
 import { execute, replaceSApp, storeGet } from 'src/services/Store'
 import { Colors } from 'src/services/Theme'
-import { defaultColors } from 'src/services/Theme/default'
 import {
   createGroup,
   deleteGroup,
@@ -51,7 +50,7 @@ import {
   setUpsertGroupName,
   UiLens,
 } from 'src/slices/ui'
-import { toHex, withOpacity } from 'src/utils/datatypes/Color'
+import { withOpacity } from 'src/utils/datatypes/Color'
 import { Id } from 'src/utils/Entity'
 
 const doNothing = RIO.of<unknown, void>(undefined)
@@ -160,8 +159,8 @@ const ScreenHeader = memoizedConst('Header')(
   View({ bg: Colors.white })([
     Header({
       title: 'Grupos',
-      headerStyle: { backgroundColor: defaultColors.primary.$5 },
-      headerTitleStyle: { color: defaultColors.text.light },
+      headerStyle: { backgroundColor: Colors.primary.$5 },
+      headerTitleStyle: { color: Colors.text.light },
       headerRight: Pressable({
         onPress: onOpenNewGroupModal,
         mr: 4,
@@ -190,7 +189,7 @@ const Item = memoized('GroupItem')(
         flex: 1,
         p: 8,
         weight: 600,
-        color: defaultColors.text.dark,
+        color: Colors.text.dark,
       })(name),
       Pressable({ onPress: onOpenEdit(id), borderless: true, py: 8, px: 4 })([
         MaterialIcons({ name: 'edit', size: 24, color: Colors.gray.$4 }),
@@ -224,15 +223,13 @@ const GroupModal = ({
           flex: 1,
           justify: 'center',
           bg: $(Colors.black, R.map(withOpacity(63))),
-          rippleColor: Colors.black,
-          rippleOpacity: 0,
         })([
           Pressable({
+            onPress: doNothing,
             bg: Colors.white,
             m: 48,
             round: 8,
             shadow: 2,
-            onPress: doNothing,
             rippleColor: Colors.black,
             rippleOpacity: 0,
           })([
@@ -242,7 +239,7 @@ const GroupModal = ({
                 flex: 1,
                 size: 16,
                 weight: 600,
-                color: defaultColors.text.dark,
+                color: Colors.text.dark,
               })(
                 $(
                   state,
@@ -263,57 +260,53 @@ const GroupModal = ({
             ]),
             View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
             View({ p: 16 })([
-              View()([
-                Txt({ weight: 500, color: defaultColors.gray.$4, my: 4 })(
-                  'Nome do grupo',
-                ),
-                TextInput({
-                  placeholder: 'Ex: Futebol de quinta',
-                  value: form.name,
-                  onChange: onChangeGroupName,
-                  placeholderTextColor: Colors.gray.$3,
-                  cursorColor: Colors.text.dark,
-                  fontSize: 12,
-                  p: 8,
-                  px: 14,
-                  borderWidth: 1,
-                  round: 4,
-                  borderColor: Colors.gray.$2,
-                  focused: {
-                    bg: $(Colors.primary.$5, R.map(withOpacity(31))),
-                    borderColor: Colors.primary.$5,
-                  },
-                }),
-              ]),
+              Txt({ weight: 500, color: Colors.gray.$4, my: 4 })(
+                'Nome do grupo',
+              ),
+              TextInput({
+                placeholder: 'Ex: Futebol de quinta',
+                value: form.name,
+                onChange: onChangeGroupName,
+                placeholderTextColor: Colors.gray.$3,
+                cursorColor: Colors.text.dark,
+                fontSize: 12,
+                p: 8,
+                px: 14,
+                borderWidth: 1,
+                round: 4,
+                borderColor: Colors.gray.$2,
+                focused: {
+                  bg: $(Colors.primary.$5, R.map(withOpacity(31))),
+                  borderColor: Colors.primary.$5,
+                },
+              }),
             ]),
             View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
             Row({ justify: 'end', p: 16 })([
-              Row()([
-                Pressable({
-                  onPress: onCloseGroupModal,
-                  mr: 8,
-                  p: 12,
-                  round: 4,
-                  rippleColor: Colors.primary.$5,
-                  rippleOpacity: 0.15,
-                })([Txt({ color: defaultColors.primary.$5 })('Cancelar')]),
-                Pressable({
-                  p: 12,
-                  round: 4,
-                  bg: !form.name
-                    ? $(Colors.primary.$5, R.map(withOpacity(95)))
-                    : Colors.primary.$5,
-                  onPress: onSaveGroup,
-                  isEnabled: !!form.name,
-                  rippleColor: Colors.black,
-                  rippleOpacity: 0.5,
-                })([
-                  Txt({
-                    color: !form.name
-                      ? withOpacity(95)(defaultColors.white)
-                      : defaultColors.white,
-                  })('Gravar'),
-                ]),
+              Pressable({
+                onPress: onCloseGroupModal,
+                mr: 8,
+                p: 12,
+                round: 4,
+                rippleColor: Colors.primary.$5,
+                rippleOpacity: 0.15,
+              })([Txt({ color: Colors.primary.$5 })('Cancelar')]),
+              Pressable({
+                p: 12,
+                round: 4,
+                bg: !form.name
+                  ? $(Colors.primary.$5, R.map(withOpacity(95)))
+                  : Colors.primary.$5,
+                onPress: onSaveGroup,
+                isEnabled: !!form.name,
+                rippleColor: Colors.black,
+                rippleOpacity: 0.5,
+              })([
+                Txt({
+                  color: !form.name
+                    ? $(Colors.white, R.map(withOpacity(95)))
+                    : Colors.white,
+                })('Gravar'),
               ]),
             ]),
           ]),
@@ -339,17 +332,19 @@ const DeleteGroupModal = ({
     onRequestClose: onCloseDeleteModal,
   })([
     Pressable({
+      onPress: onCloseDeleteModal,
       flex: 1,
       bg: $(Colors.black, R.map(withOpacity(63))),
       justify: 'center',
-      onPress: onCloseDeleteModal,
     })([
       Pressable({
+        onPress: doNothing,
         bg: Colors.white,
         m: 48,
         round: 8,
         shadow: 2,
-        onPress: doNothing,
+        rippleColor: Colors.black,
+        rippleOpacity: 0,
       })([
         Row({ align: 'center', p: 8 })([
           Txt({
@@ -357,48 +352,44 @@ const DeleteGroupModal = ({
             flex: 1,
             size: 16,
             weight: 600,
-            color: defaultColors.text.dark,
+            color: Colors.text.dark,
           })('Excluir grupo'),
           Pressable({ onPress: onCloseDeleteModal, p: 8, round: 4 })([
             MaterialIcons({ name: 'close', size: 24, color: Colors.gray.$4 }),
           ]),
         ]),
         View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
-        View({ p: 16 })([
-          Text()([
-            $(
-              group,
-              O.map(g =>
-                Text({ style: { color: toHex(defaultColors.text.dark) } })([
-                  () => 'Deseja excluir o grupo ',
-                  Txt({ weight: 600, color: defaultColors.text.dark })(g.name),
-                  () => ' e todos os jogadores?',
-                ]),
-              ),
-              O.getOrElseW(() => Fragment([])),
+        View({ p: 16 })(
+          $(
+            group,
+            O.map(g =>
+              TxtContext({ color: Colors.text.dark })([
+                Txt()('Deseja excluir o grupo '),
+                Txt({ weight: 600, color: Colors.text.dark })(g.name),
+                Txt()(' e todos os jogadores?'),
+              ]),
             ),
-          ]),
-        ]),
+            A.fromOption,
+          ),
+        ),
         View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
         Row({ p: 16, justify: 'end' })([
-          Row()([
-            Pressable({
-              mr: 8,
-              p: 12,
-              round: 4,
-              rippleColor: Colors.danger.$5,
-              rippleOpacity: 0.15,
-              onPress: onCloseDeleteModal,
-            })([Txt({ color: defaultColors.danger.$5 })('Cancelar')]),
-            Pressable({
-              p: 12,
-              round: 4,
-              bg: Colors.danger.$5,
-              rippleColor: Colors.black,
-              rippleOpacity: 0.5,
-              onPress: onDeleteGroup,
-            })([Txt({ color: defaultColors.white })('Excluir')]),
-          ]),
+          Pressable({
+            mr: 8,
+            p: 12,
+            round: 4,
+            rippleColor: Colors.danger.$5,
+            rippleOpacity: 0.15,
+            onPress: onCloseDeleteModal,
+          })([Txt({ color: Colors.danger.$5 })('Cancelar')]),
+          Pressable({
+            p: 12,
+            round: 4,
+            bg: Colors.danger.$5,
+            rippleColor: Colors.black,
+            rippleOpacity: 0.5,
+            onPress: onDeleteGroup,
+          })([Txt({ color: Colors.white })('Excluir')]),
         ]),
       ]),
     ]),

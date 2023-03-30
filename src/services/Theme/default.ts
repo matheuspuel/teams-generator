@@ -11,7 +11,7 @@ export const defaultTheme = {
     white: color(255, 255, 255),
     black: color(0, 0, 0),
     primary: palette(color(19, 109, 21)),
-    danger: palette(color(244, 63, 94)),
+    danger: palette(color(220, 38, 38)),
     gray: palette(color(82, 82, 91)),
     yellow: palette(color(234, 179, 8)),
   },
