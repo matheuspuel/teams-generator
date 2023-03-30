@@ -1,26 +1,27 @@
-import { $, $f, Eq, O, Option, RIO, S } from 'fp'
+import { $, $f, Eq, O, Option, R, RIO, S } from 'fp'
 import {
   deepEq,
   memoized,
   memoizedConst,
   shallowEq,
 } from 'src/components/helpers'
-import { FlatList } from 'src/components/safe/basic/FlatList'
-import { Modal } from 'src/components/safe/basic/Modal'
-import { Pressable } from 'src/components/util-props/basic/Pressable'
-import { Row } from 'src/components/util-props/basic/Row'
-import { Txt } from 'src/components/util-props/basic/Txt'
-import { View } from 'src/components/util-props/basic/View'
-import { MaterialCommunityIcons } from 'src/components/util-props/icons/MaterialCommunityIcons'
-import { MaterialIcons } from 'src/components/util-props/icons/MaterialIcons'
-import { Header } from 'src/components/util-props/react-navigation/Header'
-import { HeaderBackButton } from 'src/components/util-props/react-navigation/HeaderBackButton'
+import {
+  FlatList,
+  Header,
+  MaterialCommunityIcons,
+  MaterialIcons,
+  Modal,
+  Pressable,
+  Row,
+  Txt,
+  View,
+} from 'src/components/hyperscript2'
 import { Group } from 'src/datatypes/Group'
 import { Parameters } from 'src/datatypes/Parameters'
 import { Player, RatingShow } from 'src/datatypes/Player'
 import { RootState } from 'src/model'
 import { execute, replaceSApp } from 'src/services/Store'
-import { defaultColors } from 'src/services/Theme/default'
+import { Colors } from 'src/services/Theme'
 import {
   getPlayerFromActiveGroup,
   toggleAllPlayersActive,
@@ -41,7 +42,7 @@ import { generateResult } from 'src/slices/result'
 import { goBack, navigate } from 'src/slices/routes'
 import { UiLens } from 'src/slices/ui'
 import { Id } from 'src/utils/Entity'
-import { Color } from 'src/utils/datatypes'
+import { withOpacity } from 'src/utils/datatypes/Color'
 
 const onOpenParametersModal = execute(
   replaceSApp(UiLens.at('modalParameters'))(true),
@@ -129,54 +130,61 @@ export const GroupView = memoized('GroupScreen')(
         ),
         keyExtractor: ({ id }) => id,
         renderItem: Item,
-        initialNumToRender: 20,
+        initialNumToRender: 16,
+        contentContainerStyle: { p: 8, gap: 8 },
       }),
       Pressable({
-        p: 12,
-        bg: defaultColors.primary.$5,
-        pressed: { bg: Color.shade(0.4)(defaultColors.primary.$5) },
         onPress: onOpenParametersModal,
-      })([Txt({ align: 'center', color: defaultColors.white })('Sortear')]),
+        p: 16,
+        bg: Colors.primary.$5,
+        rippleColor: Colors.black,
+        rippleOpacity: 0.5,
+      })([Txt({ align: 'center', color: Colors.white })('Sortear')]),
       ...(modalParameters ? [ParametersModal({ parameters })] : []),
     ]),
 )
 
 const GroupHeader = memoizedConst('GroupHeader')(
-  View({ bg: defaultColors.white })([
+  View({ bg: Colors.white })([
     Header({
       title: 'Grupo',
-      headerStyle: { backgroundColor: defaultColors.primary.$5 },
-      headerTitleStyle: { color: defaultColors.text.light },
-      headerLeft: HeaderBackButton({
+      headerStyle: { backgroundColor: Colors.primary.$5 },
+      headerTitleStyle: { color: Colors.text.light },
+      headerLeft: Pressable({
         onPress: goBack,
-        tintColor: defaultColors.text.light,
-      }),
+        ml: 4,
+        p: 8,
+        borderless: true,
+        foreground: true,
+      })([
+        MaterialIcons({
+          name: 'arrow-back',
+          color: Colors.text.light,
+          size: 24,
+        }),
+      ]),
       headerRight: Row()([
         Pressable({
+          onPress: toggleAllPlayersActive,
           mr: 4,
           p: 8,
-          round: 100,
-          pressed: { bg: Color.withOpacity(47)(defaultColors.black) },
-          onPress: toggleAllPlayersActive,
+          borderless: true,
+          foreground: true,
         })([
           MaterialCommunityIcons({
             name: 'checkbox-multiple-outline',
-            color: defaultColors.text.light,
+            color: Colors.text.light,
             size: 24,
           }),
         ]),
         Pressable({
+          onPress: onPressAddPlayer,
           mr: 4,
           p: 8,
-          round: 100,
-          pressed: { bg: Color.withOpacity(47)(defaultColors.black) },
-          onPress: onPressAddPlayer,
+          borderless: true,
+          foreground: true,
         })([
-          MaterialIcons({
-            name: 'add',
-            color: defaultColors.text.light,
-            size: 24,
-          }),
+          MaterialIcons({ name: 'add', color: Colors.text.light, size: 24 }),
         ]),
       ]),
     }),
@@ -186,85 +194,92 @@ const GroupHeader = memoizedConst('GroupHeader')(
 const Item = memoized('GroupItem')(
   deepEq,
   ({ id, name, position, rating, active }: Player) =>
-    Pressable({ onPress: onPressItem(id) })([
-      Row({
-        align: 'center',
-        bg: defaultColors.white,
-        m: 4,
-        p: 4,
-        round: 8,
-        shadow: 1,
+    Pressable({
+      onPress: onPressItem(id),
+      direction: 'row',
+      align: 'center',
+      gap: 8,
+      round: 8,
+      shadow: 1,
+      bg: Colors.white,
+    })([
+      Pressable({
+        onPress: onTogglePlayerActive(id),
+        borderless: true,
+        p: 8,
+        mr: -8,
+        rippleColor: Colors.primary.$5,
+        rippleOpacity: 0.15,
       })([
-        Pressable({ mr: 8, onPress: onTogglePlayerActive(id) })(
-          ({ pressed }) => [
-            active
-              ? View({
-                  borderWidth: 2,
-                  round: 4,
-                  h: 28,
-                  w: 28,
-                  bg: defaultColors.primary[pressed ? '$7' : '$5'],
-                  borderColor: defaultColors.primary[pressed ? '$7' : '$5'],
-                })([
-                  MaterialIcons({
-                    name: 'check',
-                    size: 24,
-                    color: defaultColors.white,
-                  }),
-                ])
-              : View({
-                  borderWidth: 2,
-                  round: 4,
-                  borderColor: defaultColors.gray[pressed ? '$5' : '$3'],
-                  h: 28,
-                  w: 28,
-                })([]),
-          ],
-        ),
-        View({
-          aspectRatio: 1,
-          alignSelf: 'stretch',
-          justify: 'center',
-          align: 'center',
-          p: 4,
-          round: 9999,
-          bg: defaultColors.yellow.$3,
-        })([
-          Txt({
-            size: 16,
-            weight: 600,
-            color: defaultColors.text.dark,
-            lineHeight: 19,
-          })(position),
-        ]),
-        Txt({ mx: 8, weight: 600, color: defaultColors.text.dark })(
-          RatingShow.show(rating),
-        ),
-        Txt({ color: defaultColors.text.dark, numberOfLines: 1 })(name),
+        active
+          ? View({
+              borderWidth: 2,
+              round: 4,
+              h: 28,
+              w: 28,
+              bg: Colors.primary.$5,
+              borderColor: Colors.primary.$5,
+            })([
+              MaterialIcons({
+                name: 'check',
+                size: 24,
+                color: Colors.white,
+              }),
+            ])
+          : View({
+              borderWidth: 2,
+              round: 4,
+              borderColor: Colors.gray.$3,
+              h: 28,
+              w: 28,
+            })([]),
       ]),
+      View({
+        aspectRatio: 1,
+        alignSelf: 'stretch',
+        justify: 'center',
+        align: 'center',
+        p: 4,
+        my: 4,
+        round: 9999,
+        bg: Colors.yellow.$3,
+      })([
+        Txt({
+          size: 18,
+          weight: 600,
+          color: Colors.text.dark,
+          lineHeight: 19,
+        })(position),
+      ]),
+      Txt({ size: 18, weight: 600, color: Colors.text.dark })(
+        RatingShow.show(rating),
+      ),
+      Txt({ my: 8, color: Colors.text.dark, numberOfLines: 1 })(name),
     ]),
 )
 
 const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
   Modal({
     transparent: true,
-    style: { flex: 1 },
+    flex: 1,
     animationType: 'fade',
     statusBarTranslucent: true,
     onRequestClose: onCloseParametersModal,
   })([
     Pressable({
-      flex: 1,
-      bg: Color.withOpacity(63)(defaultColors.black),
-      justify: 'center',
       onPress: onCloseParametersModal,
+      flex: 1,
+      justify: 'center',
+      bg: $(Colors.black, R.map(withOpacity(63))),
     })([
       Pressable({
-        bg: defaultColors.white,
+        onPress: doNothing,
+        bg: Colors.white,
         m: 48,
         round: 8,
         shadow: 2,
-        onPress: doNothing,
+        rippleColor: Colors.black,
+        rippleOpacity: 0,
       })([
         Row({ align: 'center', p: 8 })([
           Txt({
@@ -272,127 +287,132 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
             flex: 1,
             size: 16,
             weight: 600,
-            color: defaultColors.text.dark,
+            color: Colors.text.dark,
           })('Parâmetros'),
           Pressable({
             p: 8,
             round: 4,
-            pressed: { bg: Color.withOpacity(31)(defaultColors.gray.$5) },
             onPress: onCloseParametersModal,
           })([
-            MaterialIcons({
-              name: 'close',
-              size: 24,
-              color: defaultColors.gray.$4,
-            }),
+            MaterialIcons({ name: 'close', size: 24, color: Colors.gray.$4 }),
           ]),
         ]),
-        View({ borderWidthT: 1, borderColor: defaultColors.gray.$2 })([]),
+        View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
         View({ p: 16 })([
           Row({ align: 'center' })([
             Pressable({
-              p: 12,
-              round: 4,
-              pressed: { bg: Color.withOpacity(31)(defaultColors.primary.$5) },
               onPress: onDecrementTeamsCount,
+              p: 12,
+              borderless: true,
+              rippleColor: Colors.primary.$5,
+              rippleOpacity: 0.15,
             })([
               MaterialIcons({
                 name: 'remove',
                 size: 24,
-                color: defaultColors.primary.$5,
+                color: Colors.primary.$5,
               }),
             ]),
-            Txt({ p: 8, weight: 600, color: defaultColors.text.dark })(
+            Txt({ p: 8, weight: 600, color: Colors.text.dark })(
               parameters.teamsCount.toString(),
             ),
             Pressable({
-              p: 12,
-              pressed: { bg: Color.withOpacity(31)(defaultColors.primary.$5) },
-              round: 4,
               onPress: onIncrementTeamsCount,
+              p: 12,
+              borderless: true,
+              rippleColor: Colors.primary.$5,
+              rippleOpacity: 0.15,
             })([
               MaterialIcons({
                 name: 'add',
                 size: 24,
-                color: defaultColors.primary.$5,
+                color: Colors.primary.$5,
               }),
             ]),
-            Txt({ flex: 1, pl: 8, color: defaultColors.text.dark })(
-              'Número de times',
-            ),
+            Txt({ flex: 1, pl: 8, color: Colors.text.dark })('Número de times'),
           ]),
-          Pressable({ p: 4, onPress: onTogglePosition })(({ pressed }) => [
-            Row({ align: 'center' })([
-              parameters.position
-                ? View({
-                    borderWidth: 2,
-                    round: 4,
-                    h: 28,
-                    w: 28,
-                    bg: defaultColors.primary[pressed ? '$7' : '$5'],
-                    borderColor: defaultColors.primary[pressed ? '$7' : '$5'],
-                  })([
-                    MaterialIcons({
-                      name: 'check',
-                      size: 24,
-                      color: defaultColors.white,
-                    }),
-                  ])
-                : View({
-                    borderWidth: 2,
-                    round: 4,
-                    borderColor: defaultColors.gray[pressed ? '$5' : '$3'],
-                    h: 28,
-                    w: 28,
-                  })([]),
-              Txt({ m: 4, size: 14 })('Considerar posições'),
-            ]),
+          Pressable({
+            onPress: onTogglePosition,
+            direction: 'row',
+            align: 'center',
+            p: 8,
+            round: 8,
+          })([
+            parameters.position
+              ? View({
+                  borderWidth: 2,
+                  round: 4,
+                  h: 28,
+                  w: 28,
+                  bg: Colors.primary.$5,
+                  borderColor: Colors.primary.$5,
+                })([
+                  MaterialIcons({
+                    name: 'check',
+                    size: 24,
+                    color: Colors.white,
+                  }),
+                ])
+              : View({
+                  borderWidth: 2,
+                  round: 4,
+                  borderColor: Colors.gray.$3,
+                  h: 28,
+                  w: 28,
+                })([]),
+            Txt({ m: 4, size: 14 })('Considerar posições'),
           ]),
-          Pressable({ p: 4, onPress: onToggleRating })(({ pressed }) => [
-            Row({ align: 'center' })([
-              parameters.rating
-                ? View({
-                    borderWidth: 2,
-                    round: 4,
-                    h: 28,
-                    w: 28,
-                    bg: defaultColors.primary[pressed ? '$7' : '$5'],
-                    borderColor: defaultColors.primary[pressed ? '$7' : '$5'],
-                  })([
-                    MaterialIcons({
-                      name: 'check',
-                      size: 24,
-                      color: defaultColors.white,
-                    }),
-                  ])
-                : View({
-                    borderWidth: 2,
-                    round: 4,
-                    borderColor: defaultColors.gray[pressed ? '$5' : '$3'],
-                    h: 28,
-                    w: 28,
-                  })([]),
-              Txt({ m: 4, size: 14 })('Considerar habilidade'),
-            ]),
+          Pressable({
+            onPress: onToggleRating,
+            direction: 'row',
+            align: 'center',
+            p: 8,
+            round: 8,
+          })([
+            parameters.rating
+              ? View({
+                  borderWidth: 2,
+                  round: 4,
+                  h: 28,
+                  w: 28,
+                  bg: Colors.primary.$5,
+                  borderColor: Colors.primary.$5,
+                })([
+                  MaterialIcons({
+                    name: 'check',
+                    size: 24,
+                    color: Colors.white,
+                  }),
+                ])
+              : View({
+                  borderWidth: 2,
+                  round: 4,
+                  borderColor: Colors.gray.$3,
+                  h: 28,
+                  w: 28,
+                })([]),
+            Txt({ m: 4, size: 14 })('Considerar habilidade'),
           ]),
         ]),
-        View({ borderWidthT: 1, borderColor: defaultColors.gray.$2 })([]),
+        View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
         Row({ p: 16, justify: 'end' })([
           Row()([
             Pressable({
+              onPress: onCloseParametersModal,
               mr: 8,
               p: 12,
               round: 4,
-              pressed: { bg: Color.withOpacity(31)(defaultColors.primary.$5) },
-              onPress: onCloseParametersModal,
-            })([Txt({ color: defaultColors.primary.$5 })('Cancelar')]),
+              rippleColor: Colors.primary.$5,
+              rippleOpacity: 0.15,
+            })([Txt({ color: Colors.primary.$5 })('Cancelar')]),
             Pressable({
+              onPress: onShuffle,
               p: 12,
               round: 4,
-              bg: defaultColors.primary.$5,
-              pressed: { bg: Color.shade(0.4)(defaultColors.primary.$5) },
-              onPress: onShuffle,
-            })([Txt({ color: defaultColors.white })('Sortear')]),
+              bg: Colors.primary.$5,
+              rippleColor: Colors.black,
+              rippleOpacity: 0.5,
+            })([Txt({ color: Colors.white })('Sortear')]),
           ]),
         ]),
       ]),

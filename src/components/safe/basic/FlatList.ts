@@ -7,12 +7,14 @@ export const FlatList =
     renderItem: (item: A, index: number) => (env: R) => React.ReactElement
     keyExtractor?: (item: A, index: number) => string
     initialNumToRender?: number
+    maxToRenderPerBatch?: number
     contentContainerStyle?: { gap?: number; p?: number }
   }) =>
   (env: R) =>
     FlatList_<A>({
       ...props,
       renderItem: ({ item, index }) => props.renderItem(item, index)(env),
+      maxToRenderPerBatch: props.maxToRenderPerBatch,
       contentContainerStyle: {
         gap: props.contentContainerStyle?.gap,
         padding: props.contentContainerStyle?.p,

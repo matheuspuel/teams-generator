@@ -1,5 +1,6 @@
 import React from 'react'
 import { FlatList as FlatList_ } from 'react-native'
+import { $ } from 'src/utils/fp'
 import { GapProps, PaddingProps } from '../types'
 
 export type FlatListStyleProps<R> = {}
@@ -11,7 +12,19 @@ export type FlatListProps<R, A> = FlatListStyleProps<R> & {
   data: ReadonlyArray<A>
   renderItem: (item: A, index: number) => (env: R) => React.ReactElement
   keyExtractor?: (item: A, index: number) => string
+  getItemLayout?: (
+    data: A[],
+    index: number,
+  ) => {
+    length: number
+    offset: number
+    index: number
+  }
+  removeClippedSubviews?: boolean
   initialNumToRender?: number
+  maxToRenderPerBatch?: number
+  updateCellsBatchingPeriod?: number
+  windowSize?: number
   contentContainerStyle?: FlatListContainerStyleProps<R>
 }
 
@@ -27,7 +40,14 @@ const getRawProps = <R extends unknown, A>({
   data: props.data,
   renderItem: ({ item, index }) => props.renderItem(item, index)(env),
   keyExtractor: props.keyExtractor,
+  getItemLayout: $(props.getItemLayout, f =>
+    f ? (data, index) => f(data ?? [], index) : undefined,
+  ),
+  removeClippedSubviews: props.removeClippedSubviews,
   initialNumToRender: props.initialNumToRender,
+  maxToRenderPerBatch: props.maxToRenderPerBatch,
+  updateCellsBatchingPeriod: props.updateCellsBatchingPeriod,
+  windowSize: props.windowSize,
   contentContainerStyle: {
     padding: props.contentContainerStyle?.p,
     paddingHorizontal: props.contentContainerStyle?.px,
