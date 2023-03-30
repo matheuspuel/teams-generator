@@ -1,6 +1,6 @@
 import React from 'react'
-import { TextInput as TextInput_ } from 'src/components/custom2'
-import { TextInputProps } from 'src/components/custom2/react-native/TextInput'
+import { TextInput as TextInput_ } from 'src/components/custom'
+import { TextInputProps } from 'src/components/custom/react-native/TextInput'
 
 export const TextInput =
   <P extends TextInputProps<any>>(props: P) =>

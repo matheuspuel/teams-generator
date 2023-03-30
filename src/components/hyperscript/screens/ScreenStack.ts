@@ -3,8 +3,8 @@ import React from 'react'
 import {
   ScreenStack as ScreenStack_,
   ScreenStackProps,
-} from 'src/components/custom2/screens/ScreenStack'
-import { Element } from 'src/components/custom2/types'
+} from 'src/components/custom/screens/ScreenStack'
+import { Element } from 'src/components/custom/types'
 import { $, apply, RA } from 'src/utils/fp'
 
 export const ScreenStack =

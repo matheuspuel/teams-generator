@@ -1,5 +1,5 @@
-import { MaterialCommunityIcons as MaterialCommunityIcons_ } from 'src/components/custom2'
-import { IconProps } from 'src/components/custom2/icons/MaterialCommunityIcons'
+import { MaterialCommunityIcons as MaterialCommunityIcons_ } from 'src/components/custom'
+import { IconProps } from 'src/components/custom/icons/MaterialCommunityIcons'
 
 export const MaterialCommunityIcons =
   <R,>(props: IconProps<R>) =>

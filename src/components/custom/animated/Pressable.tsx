@@ -1,7 +1,7 @@
 import { $, Reader, ReaderIO } from 'fp'
 import React from 'react'
 import { RectButton } from 'react-native-gesture-handler'
-import { ViewProps } from 'src/components/custom2/react-native/View'
+import { ViewProps } from 'src/components/custom/react-native/View'
 import { Color } from 'src/utils/datatypes'
 import { JSXElementsChildren } from '../types'
 

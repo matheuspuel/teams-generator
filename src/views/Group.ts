@@ -15,7 +15,7 @@ import {
   Row,
   Txt,
   View,
-} from 'src/components/hyperscript2'
+} from 'src/components/hyperscript'
 import { Group } from 'src/datatypes/Group'
 import { Parameters } from 'src/datatypes/Parameters'
 import { Player, RatingShow } from 'src/datatypes/Player'

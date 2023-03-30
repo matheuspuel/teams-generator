@@ -3,8 +3,8 @@ import React from 'react'
 import {
   Screen as Screen_,
   ScreenProps,
-} from 'src/components/custom2/screens/Screen'
-import { Element } from 'src/components/custom2/types'
+} from 'src/components/custom/screens/Screen'
+import { Element } from 'src/components/custom/types'
 import { $, apply, RA } from 'src/utils/fp'
 
 export const Screen =

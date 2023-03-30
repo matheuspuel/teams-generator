@@ -1,7 +1,7 @@
 import {
   StatusBar as StatusBar_,
   StatusBarProps,
-} from 'src/components/custom2/expo/StatusBar'
+} from 'src/components/custom/expo/StatusBar'
 
 export const StatusBar =
   <R>(props: StatusBarProps<R>) =>

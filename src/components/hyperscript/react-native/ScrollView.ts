@@ -1,8 +1,8 @@
 import { $, RA, Reader, apply } from 'fp'
 import React from 'react'
-import { ScrollView as ScrollView_ } from 'src/components/custom2'
-import { ScrollViewProps } from 'src/components/custom2/react-native/ScrollView'
-import { Element } from 'src/components/custom2/types'
+import { ScrollView as ScrollView_ } from 'src/components/custom'
+import { ScrollViewProps } from 'src/components/custom/react-native/ScrollView'
+import { Element } from 'src/components/custom/types'
 
 export const ScrollView =
   <R1>(props: ScrollViewProps<R1> = {}) =>

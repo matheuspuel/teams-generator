@@ -31,7 +31,7 @@ import {
   Txt,
   TxtContext,
   View,
-} from 'src/components/hyperscript2'
+} from 'src/components/hyperscript'
 import { Group } from 'src/datatypes/Group'
 import { RootState } from 'src/model'
 import { execute, replaceSApp, storeGet } from 'src/services/Store'

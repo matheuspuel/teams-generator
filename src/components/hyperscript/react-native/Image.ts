@@ -1,5 +1,5 @@
-import { Image as Image_ } from 'src/components/custom2'
-import { ImageProps } from 'src/components/custom2/react-native/Image'
+import { Image as Image_ } from 'src/components/custom'
+import { ImageProps } from 'src/components/custom/react-native/Image'
 
 export const Image =
   <R>(props: ImageProps<R>) =>

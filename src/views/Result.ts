@@ -10,7 +10,7 @@ import {
   Txt,
   TxtContext,
   View,
-} from 'src/components/hyperscript2'
+} from 'src/components/hyperscript'
 import {
   getRatingTotal,
   Player,

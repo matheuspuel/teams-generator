@@ -3,8 +3,8 @@ import React from 'react'
 import {
   SafeAreaProvider as SafeAreaProvider_,
   SafeAreaProviderProps,
-} from 'src/components/custom2/safe-area/SafeAreaProvider'
-import { Element } from 'src/components/custom2/types'
+} from 'src/components/custom/safe-area/SafeAreaProvider'
+import { Element } from 'src/components/custom/types'
 import { $, apply, RA } from 'src/utils/fp'
 
 export const SafeAreaProvider =

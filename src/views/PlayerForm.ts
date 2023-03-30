@@ -11,7 +11,7 @@ import {
   TextInput,
   Txt,
   View,
-} from 'src/components/hyperscript2'
+} from 'src/components/hyperscript'
 import { RatingList, RatingShow } from 'src/datatypes/Player'
 import { PositionDict, PositionOrd } from 'src/datatypes/Position'
 import { execute, replaceSApp } from 'src/services/Store'
