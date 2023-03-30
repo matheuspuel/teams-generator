@@ -1,14 +1,16 @@
-import { $, $f, A, constVoid, IO, O, Option, Ord, RIO, T } from 'fp'
+import { $, $f, A, constVoid, get, O, Option, Ord, RTE, S, T } from 'fp'
 import { Share } from 'react-native'
-import { ScrollView, Text } from 'src/components/hyperscript/reactNative'
-import { ActivityIndicator } from 'src/components/util-props/basic/ActivityIndicator'
-import { Pressable } from 'src/components/util-props/basic/Pressable'
-import { Row } from 'src/components/util-props/basic/Row'
-import { Txt } from 'src/components/util-props/basic/Txt'
-import { View } from 'src/components/util-props/basic/View'
-import { MaterialIcons } from 'src/components/util-props/icons/MaterialIcons'
-import { Header } from 'src/components/util-props/react-navigation/Header'
-import { HeaderBackButton } from 'src/components/util-props/react-navigation/HeaderBackButton'
+import {
+  ActivityIndicator,
+  Header,
+  MaterialIcons,
+  Pressable,
+  Row,
+  ScrollView,
+  Txt,
+  TxtContext,
+  View,
+} from 'src/components/hyperscript2'
 import {
   getRatingTotal,
   Player,
@@ -18,10 +20,26 @@ import {
   RatingShow,
   TeamListShowSensitive,
 } from 'src/datatypes/Player'
-import { defaultColors } from 'src/services/Theme/default'
+import { execute } from 'src/services/Store'
+import { Colors } from 'src/services/Theme'
+import { ResultLens } from 'src/slices/result'
 import { goBack } from 'src/slices/routes'
-import { Color } from 'src/utils/datatypes'
 import { div, toFixedLocale } from 'src/utils/Number'
+
+const onShareTeamList = $(
+  execute(S.gets(get(ResultLens))),
+  RTE.rightReaderIO,
+  RTE.chainTaskK(
+    O.match(
+      () => T.of(undefined),
+      $f(
+        TeamListShowSensitive.show,
+        t => () => Share.share({ message: t, title: 'Times' }),
+        T.map(constVoid),
+      ),
+    ),
+  ),
+)
 
 export const ResultView = ({
   result,
@@ -29,39 +47,32 @@ export const ResultView = ({
   result: Option<Array<Array<Player>>>
 }) =>
   View({ flex: 1 })([
-    View({ bg: defaultColors.white })([
+    View({ bg: Colors.white })([
       Header({
         title: 'Resultado',
-        headerStyle: { backgroundColor: defaultColors.primary.$5 },
-        headerTitleStyle: { color: defaultColors.text.light },
-        headerLeft: HeaderBackButton({
+        headerStyle: { backgroundColor: Colors.primary.$5 },
+        headerTitleStyle: { color: Colors.text.light },
+        headerLeft: Pressable({
           onPress: goBack,
-          tintColor: defaultColors.text.light,
-        }),
-        headerRight: Pressable({
-          mr: 4,
+          ml: 4,
           p: 8,
-          round: 100,
-          pressed: { bg: Color.withOpacity(47)(defaultColors.black) },
-          onPress: $(
-            result,
-            O.match(
-              () => T.of(undefined),
-              $f(
-                TeamListShowSensitive.show,
-                t => () => Share.share({ message: t, title: 'Times' }),
-                T.map(constVoid),
-              ),
-            ),
-            IO.map(constVoid),
-            RIO.fromIO,
-          ),
+          borderless: true,
+          foreground: true,
         })([
           MaterialIcons({
-            name: 'share',
-            color: defaultColors.text.light,
+            name: 'arrow-back',
+            color: Colors.text.light,
             size: 24,
           }),
+        ]),
+        headerRight: Pressable({
+          onPress: onShareTeamList,
+          mr: 4,
+          p: 8,
+          borderless: true,
+          foreground: true,
+        })([
+          MaterialIcons({ name: 'share', color: Colors.text.light, size: 24 }),
         ]),
       }),
     ]),
@@ -71,7 +82,7 @@ export const ResultView = ({
         O.matchW(
           () => [
             View({ flex: 1, justify: 'center' })([
-              ActivityIndicator({ color: defaultColors.primary.$4 }),
+              ActivityIndicator({ color: Colors.primary.$4 }),
             ]),
           ],
           A.mapWithIndex((i, t) =>
@@ -93,27 +104,30 @@ const TeamItem = (props: {
   const avgRating = toFixedLocale(2)(div(numPlayers)(totalRating))
   return View({
     key: props.key,
-    bg: defaultColors.white,
+    bg: Colors.white,
     m: 4,
     p: 4,
     round: 8,
     shadow: 1,
   })([
     Txt({
-      color: defaultColors.text.dark,
+      color: Colors.text.dark,
       align: 'center',
       size: 16,
       weight: 600,
     })(title),
-    Text({
-      style: { color: Color.toHex(defaultColors.text.gray), fontSize: 12 },
-    })([() => 'Número de jogadores: ', Txt()(numPlayers.toString())]),
-    Text({
-      style: { color: Color.toHex(defaultColors.text.gray), fontSize: 12 },
-    })([() => 'Média de habilidade: ', Txt()(avgRating)]),
-    Text({
-      style: { color: Color.toHex(defaultColors.text.gray), fontSize: 12 },
-    })([() => 'Total de habilidade: ', Txt()(totalRating.toString())]),
+    TxtContext({ color: Colors.text.gray, size: 12 })([
+      Txt()('Número de jogadores: '),
+      Txt()(numPlayers.toString()),
+    ]),
+    TxtContext({ color: Colors.text.gray, size: 12 })([
+      Txt()('Média de habilidade: '),
+      Txt()(avgRating),
+    ]),
+    TxtContext({ color: Colors.text.gray, size: 12 })([
+      Txt()('Total de habilidade: '),
+      Txt()(totalRating.toString()),
+    ]),
     ...$(
       props.players,
       A.sortBy([
@@ -134,9 +148,7 @@ const PlayerItem = ({
   data: Player
 }) =>
   Row({ key: key, p: 4 })([
-    Txt({ color: defaultColors.text.dark, weight: 600 })(
-      RatingShow.show(rating),
-    ),
-    Txt({ color: defaultColors.text.dark, numberOfLines: 1 })(` - ${name}`),
-    Txt({ color: defaultColors.text.dark })(` (${position})`),
+    Txt({ color: Colors.text.dark, weight: 600 })(RatingShow.show(rating)),
+    Txt({ color: Colors.text.dark, numberOfLines: 1 })(` - ${name}`),
+    Txt({ color: Colors.text.dark })(` (${position})`),
   ])

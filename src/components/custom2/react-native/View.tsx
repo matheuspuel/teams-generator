@@ -22,6 +22,7 @@ export type ViewStyleProps<R> = PaddingProps &
   FlexContainerProps &
   FlexChildProps &
   AbsolutePositionProps & {
+    key?: string
     w?: number
     h?: number
     aspectRatio?: number
@@ -44,7 +45,8 @@ const getRawProps = <R extends unknown>({
   x: props,
   children,
   env,
-}: ViewArgs<R>): React.ComponentProps<typeof View_> => ({
+}: ViewArgs<R>): React.ComponentProps<typeof View_> & { key?: string } => ({
+  key: props.key,
   onLayout: props?.onLayout?.(env),
   children: children,
   style: {
