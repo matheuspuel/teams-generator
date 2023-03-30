@@ -1,7 +1,7 @@
 import { Reader } from 'fp-ts/lib/Reader'
 import { Text as Text_ } from 'react-native'
-import { MarginProps, PaddingProps } from 'src/components/custom/basic/View'
 import { Color } from 'src/utils/datatypes'
+import { MarginProps, PaddingProps } from '../types'
 
 export type TextStyleProps<R> = PaddingProps &
   MarginProps & {
