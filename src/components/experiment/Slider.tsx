@@ -1,4 +1,5 @@
 import React from 'react'
+import { View } from 'react-native'
 import {
   Gesture,
   GestureDetector,
@@ -11,13 +12,13 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated'
-import { IO } from 'src/utils/fp'
+import { $, IO, R, apply } from 'src/utils/fp'
 
 export const Slider = ({
   step,
-  onChange,
+  onChange: onChange_,
 }: {
-  step: 0.05
+  step: number
   onChange: (percentage: number) => IO<void>
 }) => {
   const paddingHorizontal = 40
@@ -45,6 +46,8 @@ export const Slider = ({
     return Math.round(v / step) * step
   }
 
+  const onChange = $(onChange_, R.map(apply(null)))
+
   const gesture = Gesture.Pan()
     .onBegin(e => {
       const n = getResultPercentage(e)
@@ -64,7 +67,7 @@ export const Slider = ({
   }))
   return (
     <GestureDetector gesture={gesture}>
-      <Animated.View
+      <View
         style={{
           paddingHorizontal: paddingHorizontal,
           paddingVertical: paddingVertical,
@@ -92,7 +95,7 @@ export const Slider = ({
             ]}
           />
         </Animated.View>
-      </Animated.View>
+      </View>
     </GestureDetector>
   )
 }

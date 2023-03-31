@@ -142,6 +142,7 @@ export const Groups = memoized('Groups')(
         data: $(groups, Rec.toEntries, A.map(Tup.snd)),
         renderItem: Item,
         contentContainerStyle: { p: 8, gap: 8 },
+        initialNumToRender: 16,
       }),
       GroupModal({ state: modalUpsertGroup }),
       DeleteGroupModal({
