@@ -16,9 +16,10 @@ import { Fragment, Txt, View } from 'src/components/hyperscript'
 import { Rating } from 'src/datatypes'
 import { AppThemeEnv, Colors } from 'src/services/Theme'
 import { Color } from 'src/utils/datatypes'
-import { $, R, RA, ReaderIO, apply } from 'src/utils/fp'
+import { $, apply, R, RA, ReaderIO } from 'src/utils/fp'
 
 export type RatingSliderProps<R extends unknown> = {
+  initialPercentage: number
   step: number
   onChange: (percentage: number) => ReaderIO<R, void>
 }
@@ -29,7 +30,7 @@ export type RatingSliderArgs<R extends unknown> = {
 }
 
 const RatingSlider_ = <R extends unknown>({
-  x: { step, onChange: onChange_ },
+  x: { initialPercentage, step, onChange: onChange_ },
   env,
 }: RatingSliderArgs<R & AppThemeEnv>) => {
   const paddingHorizontal = 16
@@ -89,9 +90,11 @@ const RatingSlider_ = <R extends unknown>({
         }}
       >
         <Animated.View
-          onLayout={e =>
-            setWidth(e.nativeEvent.layout.width - trackWidth - tickWidth)
-          }
+          onLayout={e => {
+            const width = e.nativeEvent.layout.width - trackWidth - tickWidth
+            setWidth(width)
+            position.value = initialPercentage * width
+          }}
           style={{
             height: trackWidth,
             borderRadius: trackWidth / 2,

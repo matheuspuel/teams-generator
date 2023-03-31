@@ -164,6 +164,7 @@ export const RatingField = (rating: Rating) =>
       color: Colors.primary.$5,
     })(Rating.Show.show(rating)),
     RatingSlider({
+      initialPercentage: rating / 10,
       step: 0.05,
       onChange: $f(
         v => Math.round(v * 20) / 2,
