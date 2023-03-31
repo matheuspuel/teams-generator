@@ -1,5 +1,5 @@
 import { get, replace } from '@fp-ts/optic'
-import { $, $f, absurd, Tup } from 'fp'
+import { $, Tup, absurd } from 'fp'
 import { RootState } from 'src/model'
 import { execute, replaceSApp } from 'src/services/Store'
 import { RootOptic } from '.'
@@ -10,9 +10,9 @@ export type Route = 'Groups' | 'Group' | 'Player' | 'Result'
 
 export const initialRoute: Route = 'Groups'
 
-export const navigate = $f(replaceSApp(RouteLens), execute)
+export const navigate = replaceSApp(RouteLens)
 
-const goBackS = (s: RootState) =>
+export const goBack = (s: RootState) =>
   $(
     get(RouteLens)(s),
     (r): [{ shouldBubbleUpEvent: boolean }, Route] =>
@@ -31,4 +31,4 @@ const goBackS = (s: RootState) =>
     Tup.mapSnd(route => replace(RouteLens)(route)(s)),
   )
 
-export const goBack = execute(goBackS)
+export const onGoBack = execute(goBack)

@@ -39,11 +39,13 @@ import {
   getPlayerFormFromData,
 } from 'src/slices/playerForm'
 import { eraseResult, generateResult } from 'src/slices/result'
-import { goBack, navigate } from 'src/slices/routes'
+import { navigate, onGoBack } from 'src/slices/routes'
 import { UiLens } from 'src/slices/ui'
 import { Id } from 'src/utils/Entity'
 import { Duration } from 'src/utils/datatypes'
 import { withOpacity } from 'src/utils/datatypes/Color'
+
+const closeParametersModal = replaceSApp(UiLens.at('modalParameters'))(false)
 
 const onOpenParametersModal = execute(
   replaceSApp(UiLens.at('modalParameters'))(true),
@@ -51,19 +53,19 @@ const onOpenParametersModal = execute(
 
 const onPressAddPlayer = $(
   navigate('Player'),
-  RIO.chain(() =>
+  S.chain(() =>
     $(
       replaceSApp(UiLens.at('selectedPlayerId'))(O.none),
       S.apFirst(replaceSApp(PlayerFormLens)(blankPlayerForm)),
-      execute,
     ),
   ),
+  execute,
 )
 
 const onPressItem = (playerId: Id) =>
   $(
     navigate('Player'),
-    RIO.chain(() =>
+    S.chain(() =>
       $(
         getPlayerFromActiveGroup({ playerId }),
         S.chain(
@@ -78,17 +80,15 @@ const onPressItem = (playerId: Id) =>
             ),
           ),
         ),
-        execute,
       ),
     ),
+    execute,
   )
 
 const onTogglePlayerActive = (id: Id) =>
   execute(togglePlayerActive({ playerId: id }))
 
-const onCloseParametersModal = execute(
-  replaceSApp(UiLens.at('modalParameters'))(false),
-)
+const onCloseParametersModal = execute(closeParametersModal)
 
 const doNothing = RIO.of(undefined)
 
@@ -106,10 +106,11 @@ const wait =
     new Promise(res => setTimeout(() => res(), time))
 
 const onShuffle = $(
-  RIO.Do,
-  RIO.chain(() => eraseResult),
-  RIO.chain(() => navigate('Result')),
-  RIO.chain(() => onCloseParametersModal),
+  S.of<RootState, void>(undefined),
+  S.chain(() => eraseResult),
+  S.chain(() => navigate('Result')),
+  S.chain(() => closeParametersModal),
+  execute,
   RT.fromReaderIO,
   RT.chainFirstTaskK(() => wait(0)),
   RT.chainReaderIOK(() => generateResult),
@@ -161,7 +162,7 @@ const GroupHeader = memoizedConst('GroupHeader')(
       headerStyle: { backgroundColor: Colors.primary.$5 },
       headerTitleStyle: { color: Colors.text.light },
       headerLeft: Pressable({
-        onPress: goBack,
+        onPress: onGoBack,
         ml: 4,
         p: 8,
         borderless: true,

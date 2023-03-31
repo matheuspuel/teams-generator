@@ -78,9 +78,8 @@ const onOpenDelete = (id: Id) => execute(setDeleteGroupModal(some({ id })))
 const onSelectGroup = (id: Id) =>
   $(
     navigate('Group'),
-    RIO.chain(() =>
-      execute(replaceSApp(UiLens.at('selectedGroupId'))(O.some(id))),
-    ),
+    S.chain(() => replaceSApp(UiLens.at('selectedGroupId'))(O.some(id))),
+    execute,
   )
 
 const onCloseGroupModal = execute(setUpsertGroupModal(none))

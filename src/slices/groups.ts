@@ -125,20 +125,18 @@ export const editPlayer = (p: {
     ),
   )
 
-export const deleteCurrentPlayer = execute(
-  S.modify(s =>
-    $(
-      Apply.sequenceS(O.Apply)({
-        groupId: s.ui.selectedGroupId,
-        playerId: s.ui.selectedPlayerId,
-      }),
-      O.map(({ groupId, playerId }) =>
-        Optic.modify(GroupsLens.key(groupId).at('players'))(
-          RA.filter(p => p.id !== playerId),
-        )(s),
-      ),
-      O.getOrElse(() => s),
+export const deleteCurrentPlayer = S.modify((s: RootState) =>
+  $(
+    Apply.sequenceS(O.Apply)({
+      groupId: s.ui.selectedGroupId,
+      playerId: s.ui.selectedPlayerId,
+    }),
+    O.map(({ groupId, playerId }) =>
+      Optic.modify(GroupsLens.key(groupId).at('players'))(
+        RA.filter(p => p.id !== playerId),
+      )(s),
     ),
+    O.getOrElse(() => s),
   ),
 )
 

@@ -23,7 +23,7 @@ import {
   editPlayer,
 } from 'src/slices/groups'
 import { PlayerForm, PlayerFormLens } from 'src/slices/playerForm'
-import { goBack } from 'src/slices/routes'
+import { goBack, onGoBack } from 'src/slices/routes'
 import { UiLens } from 'src/slices/ui'
 import { withOpacity } from 'src/utils/datatypes/Color'
 import { RatingSlider } from './components/RatingSlider'
@@ -55,13 +55,13 @@ const onSave = $(
             () => createPlayer({ groupId, player: form }),
             id => execute(editPlayer({ groupId, player: { ...form, id } })),
           ),
-          RIO.apFirst(goBack),
+          RIO.apFirst(onGoBack),
         ),
     ),
   ),
 )
 
-const onDelete = $(deleteCurrentPlayer, RIO.apFirst(goBack))
+const onDelete = $(deleteCurrentPlayer, S.apFirst(goBack), execute)
 
 const ScreenHeader = memoizedConst('Header')(
   View({ bg: Colors.white })([
@@ -70,7 +70,7 @@ const ScreenHeader = memoizedConst('Header')(
       headerStyle: { backgroundColor: Colors.primary.$5 },
       headerTitleStyle: { color: Colors.text.light },
       headerLeft: Pressable({
-        onPress: goBack,
+        onPress: onGoBack,
         ml: 4,
         p: 8,
         borderless: true,

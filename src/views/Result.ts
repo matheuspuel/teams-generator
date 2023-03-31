@@ -23,7 +23,7 @@ import {
 import { execute } from 'src/services/Store'
 import { Colors } from 'src/services/Theme'
 import { ResultLens } from 'src/slices/result'
-import { goBack } from 'src/slices/routes'
+import { onGoBack } from 'src/slices/routes'
 import { div, toFixedLocale } from 'src/utils/Number'
 
 const onShareTeamList = $(
@@ -53,7 +53,7 @@ export const ResultView = ({
         headerStyle: { backgroundColor: Colors.primary.$5 },
         headerTitleStyle: { color: Colors.text.light },
         headerLeft: Pressable({
-          onPress: goBack,
+          onPress: onGoBack,
           ml: 4,
           p: 8,
           borderless: true,
