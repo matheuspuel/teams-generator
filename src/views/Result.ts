@@ -20,7 +20,7 @@ import {
   RatingShow,
   TeamListShowSensitive,
 } from 'src/datatypes/Player'
-import { execute } from 'src/services/Store'
+import { execute } from 'src/services/StateRef'
 import { Colors } from 'src/services/Theme'
 import { ResultLens } from 'src/slices/result'
 import { onGoBack } from 'src/slices/routes'

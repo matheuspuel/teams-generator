@@ -1,7 +1,7 @@
 import { get, replace } from '@fp-ts/optic'
 import { $, Tup, absurd } from 'fp'
 import { RootState } from 'src/model'
-import { execute, replaceSApp } from 'src/services/Store'
+import { execute, replaceSApp } from 'src/services/StateRef'
 import { RootOptic } from '.'
 
 export const RouteLens = RootOptic.at('route')

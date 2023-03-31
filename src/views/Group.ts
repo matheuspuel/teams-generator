@@ -20,7 +20,7 @@ import { Group } from 'src/datatypes/Group'
 import { Parameters } from 'src/datatypes/Parameters'
 import { Player, RatingShow } from 'src/datatypes/Player'
 import { RootState } from 'src/model'
-import { execute, replaceSApp } from 'src/services/Store'
+import { execute, replaceSApp } from 'src/services/StateRef'
 import { Colors } from 'src/services/Theme'
 import {
   getPlayerFromActiveGroup,

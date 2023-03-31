@@ -1,18 +1,23 @@
-import { get, replace } from '@fp-ts/optic'
-import { $, $f, constVoid, RT, T, TO } from 'fp'
+import { get } from '@fp-ts/optic'
+import { $, $f, RT, S, T, TO, constVoid } from 'fp'
 import { defaultParameters } from 'src/datatypes/Parameters'
+import {
+  AppStateRefEnv,
+  execute,
+  getRootState,
+  replaceSApp,
+} from 'src/services/StateRef'
 import { GroupsStorage, ParametersStorage } from 'src/services/Storage'
-import { AppStoreEnv, dispatch, storeGet } from 'src/services/Store'
-import { emptyGroups, GroupsLens } from '../groups'
+import { GroupsLens, emptyGroups } from '../groups'
 import { ParametersLens } from '../parameters'
 
 export const saveState = $(
-  RT.fromReaderIO(storeGet),
+  RT.fromReaderIO(execute(getRootState)),
   RT.chainFirstIOK($f(get(GroupsLens), GroupsStorage.set)),
   RT.chainFirstIOK($f(get(ParametersLens), ParametersStorage.set)),
 )
 
-export const hydrate = (env: AppStoreEnv) =>
+export const hydrate = (env: AppStateRefEnv) =>
   $(
     T.Do,
     T.apS(
@@ -30,11 +35,10 @@ export const hydrate = (env: AppStoreEnv) =>
       ),
     ),
     T.chainFirstIOK(p =>
-      dispatch(
-        $f(
-          replace(GroupsLens)(p.groups),
-          replace(ParametersLens)(p.parameters),
-        ),
+      $(
+        replaceSApp(GroupsLens)(p.groups),
+        S.apFirst(replaceSApp(ParametersLens)(p.parameters)),
+        execute,
       )(env),
     ),
     T.map(constVoid),

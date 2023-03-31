@@ -1,4 +1,4 @@
-import { AppStoreEnv } from './Store'
+import { AppStateRefEnv } from './StateRef'
 import { AppThemeEnv } from './Theme'
 
-export type AppEnv = AppStoreEnv & AppThemeEnv
+export type AppEnv = AppStateRefEnv & AppThemeEnv

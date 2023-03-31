@@ -15,7 +15,7 @@ import {
 } from 'src/components/hyperscript'
 import { Rating, RatingShow } from 'src/datatypes/Player'
 import { Position, PositionDict, PositionOrd } from 'src/datatypes/Position'
-import { execute, replaceSApp } from 'src/services/Store'
+import { execute, replaceSApp } from 'src/services/StateRef'
 import { Colors } from 'src/services/Theme'
 import {
   createPlayer,

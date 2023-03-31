@@ -17,7 +17,7 @@ import {
 import { Group } from 'src/datatypes/Group'
 import { Player } from 'src/datatypes/Player'
 import { RootState } from 'src/model'
-import { execute, modifySApp } from 'src/services/Store'
+import { execute, modifySApp } from 'src/services/StateRef'
 import { generateId, Id } from 'src/utils/Entity'
 import { RootOptic } from '.'
 import { UiLens } from './ui'

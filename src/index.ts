@@ -7,28 +7,28 @@ import { StatusBar } from './components/hyperscript/expo/StatusBar'
 import { RootState } from './model'
 import { Router } from './routes/Router'
 import { AppEnv } from './services'
-import { storeGet } from './services/Store'
-import { store } from './services/Store/default'
+import { execute, getRootState, subscribe } from './services/StateRef'
+import { defaultStateRef } from './services/StateRef/default'
 import { defaultTheme } from './services/Theme/default'
 import { LoadedLens } from './slices/core/loading'
 import { runStartupTasks } from './startup'
-import { $, IO, get } from './utils/fp'
+import { $, RIO, get } from './utils/fp'
 
-const env: AppEnv = { store, theme: defaultTheme }
+const env: AppEnv = { stateRef: defaultStateRef, theme: defaultTheme }
 
 // eslint-disable-next-line functional/no-expression-statement
 void runStartupTasks(env)()
 
 export const AppIndex = () => {
-  const [model, setModel] = React.useState(storeGet(env)())
+  const [model, setModel] = React.useState(execute(getRootState)(env)())
   // eslint-disable-next-line functional/no-expression-statement
   React.useEffect(() => {
-    const subscription = env.store.subscribe(
+    const subscription = subscribe(
       $(
-        storeGet(env),
-        IO.chain(s => () => setModel(s)),
+        execute(getRootState),
+        RIO.chainIOK(s => () => setModel(s)),
       ),
-    )()
+    )(env)()
     return subscription.unsubscribe
   }, [])
   return React.createElement(

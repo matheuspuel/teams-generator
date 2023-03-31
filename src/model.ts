@@ -1,9 +1,9 @@
 import { O, Option } from 'fp'
-import { defaultParameters, Parameters } from 'src/datatypes/Parameters'
-import { emptyGroups, GroupsState } from 'src/slices/groups'
-import { blankPlayerForm, PlayerForm } from 'src/slices/playerForm'
+import { Parameters, defaultParameters } from 'src/datatypes/Parameters'
+import { GroupsState, emptyGroups } from 'src/slices/groups'
+import { PlayerForm, blankPlayerForm } from 'src/slices/playerForm'
 import { GeneratedResult } from 'src/slices/result'
-import { initialRoute, Route } from 'src/slices/routes'
+import { Route, initialRoute } from 'src/slices/routes'
 import { Id } from 'src/utils/Entity'
 
 export type RootState = {
@@ -22,7 +22,7 @@ export type RootState = {
   route: Route
 }
 
-export const initialStoreState = {
+export const initialAppState = {
   core: { isLoaded: false },
   groups: emptyGroups,
   parameters: defaultParameters,

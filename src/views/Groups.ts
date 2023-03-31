@@ -34,7 +34,7 @@ import {
 } from 'src/components/hyperscript'
 import { Group } from 'src/datatypes/Group'
 import { RootState } from 'src/model'
-import { execute, replaceSApp, storeGet } from 'src/services/Store'
+import { execute, getSApp, replaceSApp } from 'src/services/StateRef'
 import { Colors } from 'src/services/Theme'
 import {
   createGroup,
@@ -87,10 +87,9 @@ const onCloseGroupModal = execute(setUpsertGroupModal(none))
 const onChangeGroupName = $f(setUpsertGroupName, execute)
 
 const onSaveGroup = $(
-  storeGet,
-  RIO.chain(s =>
-    $(
-      s.ui.modalUpsertGroup,
+  execute(getSApp(UiLens.at('modalUpsertGroup'))),
+  RIO.chain(
+    $f(
       O.filter(not(m => Str.isEmpty(m.name))),
       O.map(m =>
         $(
