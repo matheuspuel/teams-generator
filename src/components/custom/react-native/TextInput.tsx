@@ -28,6 +28,7 @@ export type TextInputProps<R> = TextInputStyleProps<R> & {
   onChange: (value: string) => ReaderIO<R, void>
   onFocus?: ReaderIO<R, void>
   onBlur?: ReaderIO<R, void>
+  autoFocus?: boolean
   placeholder?: string
   placeholderTextColor?: Reader<R, Color>
   cursorColor?: Reader<R, Color>
@@ -55,6 +56,7 @@ const getRawProps =
     onChangeText: t => props.onChange(t)(env)(),
     onFocus: () => (state.setIsFocused(true), props.onFocus?.(env)()),
     onBlur: () => (state.setIsFocused(false), props.onBlur?.(env)()),
+    autoFocus: props.autoFocus,
     placeholder: props.placeholder,
     placeholderTextColor: props.placeholderTextColor
       ? Color.toHex(props.placeholderTextColor(env))

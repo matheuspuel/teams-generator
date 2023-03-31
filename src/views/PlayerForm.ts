@@ -3,6 +3,7 @@ import { $, $f, A, Apply, D, O, R, Rec, RIO, S, Str, Tup } from 'fp'
 import { not } from 'fp-ts/Predicate'
 import { memoizedConst } from 'src/components/helpers'
 import {
+  Fragment,
   Header,
   MaterialIcons,
   Pressable,
@@ -98,6 +99,7 @@ const NameField = (name: string) =>
   View({ p: 4 })([
     Txt({ weight: 500, color: Colors.gray.$4, my: 4 })('Nome'),
     TextInput({
+      autoFocus: true,
       placeholder: 'Ex: Pedro',
       placeholderTextColor: Colors.gray.$3,
       value: name,
@@ -195,15 +197,17 @@ export const PlayerView = ({
 }: {
   form: PlayerForm
 }) =>
-  ScrollView({
-    keyboardShouldPersistTaps: 'handled',
-    contentContainerStyle: { flexGrow: 1 },
-  })([
+  Fragment([
     ScreenHeader,
-    View({ flex: 1, p: 4 })([
-      NameField(name),
-      PositionField(position),
-      RatingField(rating),
+    ScrollView({
+      keyboardShouldPersistTaps: 'always',
+      contentContainerStyle: { flexGrow: 1 },
+    })([
+      View({ flex: 1, p: 4 })([
+        NameField(name),
+        PositionField(position),
+        RatingField(rating),
+      ]),
     ]),
     SaveButton({ isEnabled: !!name }),
   ])
