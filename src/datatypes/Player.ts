@@ -1,7 +1,11 @@
 import { $, $f, A, D, Num, Ord, Show as Show_, Str } from 'fp'
 import { Id } from 'src/utils/Entity'
 import { avg } from 'src/utils/Number'
-import { Position, Rating } from './'
+import * as Position from './Position'
+import * as Rating from './Rating'
+
+type Position = Position.Position
+type Rating = Rating.Rating
 
 export type Player = {
   id: Id

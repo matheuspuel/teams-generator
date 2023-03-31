@@ -1,8 +1,12 @@
 import { $, $f, A, IO, none, Num, O, Ord, Rec, some, Tup } from 'fp'
 import * as Monoid from 'fp-ts/Monoid'
-import { Player, Position } from 'src/datatypes'
+import * as Player from 'src/datatypes/Player'
+import * as Position from 'src/datatypes/Position'
 import { findFirstMapWithIndex } from 'src/utils/Array'
-import { randomizeArray } from '../utils/Random'
+import { randomizeArray } from 'src/utils/Random'
+
+type Player = Player.Player
+type Position = Position.Position
 
 const getFitOrdByDevianceFns = (
   fns: Array<(teams: Array<Array<Player>>) => number>,
