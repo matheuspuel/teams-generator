@@ -1,4 +1,4 @@
-import { $, $f, Eq, O, Option, R, RIO, S } from 'fp'
+import { $, $f, Eq, O, Option, R, RIO, RT, S, Task } from 'fp'
 import {
   deepEq,
   memoized,
@@ -38,10 +38,11 @@ import {
   blankPlayerForm,
   getPlayerFormFromData,
 } from 'src/slices/playerForm'
-import { generateResult } from 'src/slices/result'
+import { eraseResult, generateResult } from 'src/slices/result'
 import { goBack, navigate } from 'src/slices/routes'
 import { UiLens } from 'src/slices/ui'
 import { Id } from 'src/utils/Entity'
+import { Duration } from 'src/utils/datatypes'
 import { withOpacity } from 'src/utils/datatypes/Color'
 
 const onOpenParametersModal = execute(
@@ -99,10 +100,19 @@ const onTogglePosition = execute(togglePosition)
 
 const onToggleRating = execute(toggleRating)
 
+const wait =
+  (time: Duration): Task<void> =>
+  () =>
+    new Promise(res => setTimeout(() => res(), time))
+
 const onShuffle = $(
-  onCloseParametersModal,
-  RIO.chain(() => generateResult),
+  RIO.Do,
+  RIO.chain(() => eraseResult),
   RIO.chain(() => navigate('Result')),
+  RIO.chain(() => onCloseParametersModal),
+  RT.fromReaderIO,
+  RT.chainFirstTaskK(() => wait(0)),
+  RT.chainReaderIOK(() => generateResult),
 )
 
 export const GroupView = memoized('GroupScreen')(

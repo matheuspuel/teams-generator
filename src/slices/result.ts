@@ -12,6 +12,8 @@ export const ResultLens = RootOptic.at('result')
 
 export type GeneratedResult = Array<Array<Player>>
 
+export const eraseResult = execute(replaceSApp(ResultLens)(O.none))
+
 export const generateResult = $(
   execute(
     S.gets(s =>
