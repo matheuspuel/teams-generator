@@ -66,5 +66,14 @@
     "tsconfig-paths": "^4.2.0",
     "tsutils": "^3.21.0",
     "typescript": "^5.0.2"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "@babel/preset-env",
+        "@types/node",
+        "expo-modules-autolinking"
+      ]
+    }
   }
 }
