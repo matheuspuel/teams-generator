@@ -10,6 +10,7 @@ export type TextStyleProps<R> = PaddingProps &
     align?: 'center' | 'left' | 'right' | 'justify'
     size?: number
     lineHeight?: number
+    includeFontPadding?: boolean
     weight?: 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900
     numberOfLines?: number
     w?: number
@@ -54,6 +55,7 @@ const getRawProps = <R extends unknown>({
     fontSize: props?.size,
     fontWeight: props?.weight ? `${props.weight}` : undefined,
     lineHeight: props?.lineHeight,
+    includeFontPadding: props?.includeFontPadding,
   },
 })
 

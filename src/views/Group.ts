@@ -238,17 +238,17 @@ const Item = memoized('GroupItem')(
         aspectRatio: 1,
         alignSelf: 'stretch',
         justify: 'center',
-        align: 'center',
         p: 4,
         my: 4,
         round: 9999,
         bg: Colors.yellow.$3,
       })([
         Txt({
+          align: 'center',
+          includeFontPadding: false,
           size: 18,
           weight: 600,
           color: Colors.text.dark,
-          lineHeight: 19,
         })(position),
       ]),
       Txt({ size: 18, weight: 600, color: Colors.text.dark })(

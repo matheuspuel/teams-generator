@@ -145,7 +145,7 @@ const PositionField = (position: Position) =>
                   ? Colors.primary.$5
                   : $(Colors.primary.$5, R.map(withOpacity(63))),
             })([
-              Txt({ size: 14, align: 'center', color: Colors.text.light })(p),
+              Txt({ size: 18, align: 'center', color: Colors.text.light })(p),
             ]),
           ]),
         ),
