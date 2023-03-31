@@ -1,44 +1,58 @@
-import { $, $f, constVoid, Eq, IO, O, State, Tup } from 'fp'
-import { not } from 'fp-ts/Predicate'
-import { legacy_createStore, Store as ReduxStore } from 'redux'
+import { $, Eq, IO, State, Tup } from 'fp'
 
 export type Store<S> = {
-  _reduxStore: ReduxStore
   execute: <A>(f: State<S, A>) => IO<A>
-  subscribe: (effect: IO<void>) => { unsubscribe: IO<void> }
+  subscribe: (effect: IO<void>) => IO<{ unsubscribe: IO<void> }>
 }
 
 export const makeStore = <S>(initialState: S): Store<S> => {
-  const reduxStore = legacy_createStore(
-    (state: S | undefined, action: { type: 'modify'; value: S }) =>
-      state === undefined ? initialState : action.value,
-  )
-  return {
-    _reduxStore: reduxStore,
-    execute: f =>
-      $(
-        () => reduxStore.getState(),
-        IO.chain(prev =>
-          $(
-            IO.of(f(prev)),
-            IO.chainFirst(
-              $f(
-                Tup.snd,
-                O.fromPredicate(not(Eq.equals(Eq.eqStrict)(prev))),
-                O.match(
-                  () => constVoid,
-                  next => () =>
-                    reduxStore.dispatch({ type: 'modify', value: next }),
+  let state: S = initialState
+  const ref = {
+    getState: () => state,
+    setState: (nextState: S) => () => {
+      state = nextState
+    },
+  }
+  let subscriptions: Array<IO<void>> = []
+  const observable = {
+    subscribe: (f: IO<void>) => () => {
+      subscriptions.push(f)
+      return {
+        unsubscribe: () => {
+          subscriptions = subscriptions.filter(i => i !== f)
+        },
+      }
+    },
+    dispatch: () => {
+      subscriptions.map(f => f())
+    },
+  }
+  const execute: Store<S>['execute'] = f =>
+    $(
+      () => ref.getState(),
+      IO.chain(prev =>
+        $(f(prev), result =>
+          $(Tup.snd(result), next =>
+            Eq.equals(Eq.eqStrict)(prev)(next)
+              ? IO.of(Tup.fst(result))
+              : $(
+                  ref.getState,
+                  IO.chain(current =>
+                    Eq.equals(Eq.eqStrict)(prev)(current)
+                      ? $(
+                          ref.setState(next),
+                          IO.chain(() => observable.dispatch),
+                          IO.map(() => Tup.fst(result)),
+                        )
+                      : execute(f),
+                  ),
                 ),
-              ),
-            ),
-            IO.map(Tup.fst),
           ),
         ),
       ),
-    subscribe: effect => {
-      const unsubscribe = reduxStore.subscribe(effect)
-      return { unsubscribe }
-    },
+    )
+  return {
+    execute,
+    subscribe: observable.subscribe,
   }
 }

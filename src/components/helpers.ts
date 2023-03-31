@@ -1,6 +1,5 @@
 import { $f, A, Endomorphism, Eq, Rec } from 'fp'
 import React from 'react'
-import { shallowEqual } from 'react-redux'
 
 type Element = React.ReactElement
 
@@ -134,7 +133,7 @@ export const memoized =
       ),
     )
 
-export const shallowEq = Eq.fromEquals<unknown>(shallowEqual)
+export const shallowEq = Rec.getEq(Eq.eqStrict)
 
 export const deepEq: Eq.Eq<unknown> = Eq.fromEquals((a, b) =>
   a === b

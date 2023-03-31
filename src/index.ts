@@ -28,7 +28,7 @@ export const AppIndex = () => {
         storeGet(env),
         IO.chain(s => () => setModel(s)),
       ),
-    )
+    )()
     return subscription.unsubscribe
   }, [])
   return React.createElement(

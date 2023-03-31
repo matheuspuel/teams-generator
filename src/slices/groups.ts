@@ -1,8 +1,6 @@
-import { createSelector } from '@reduxjs/toolkit'
 import {
   $,
   $f,
-  A,
   Apply,
   apply,
   constant,
@@ -15,7 +13,6 @@ import {
   Rec,
   RIO,
   S,
-  Tup,
 } from 'fp'
 import { Group } from 'src/datatypes/Group'
 import { Player } from 'src/datatypes/Player'
@@ -34,11 +31,6 @@ export const emptyGroups: GroupsState = {}
 const modify = modifySApp(GroupsLens)
 
 export const getGroupsRecord = Optic.get(GroupsLens)
-
-export const getGroups = createSelector(
-  getGroupsRecord,
-  $f(Rec.toEntries, A.map(Tup.snd)),
-)
 
 export const getGroupById = (id: Id) => $f(getGroupsRecord, Rec.lookup(id))
 
