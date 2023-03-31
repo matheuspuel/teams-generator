@@ -1,19 +1,7 @@
-import { $, $f, A, D, Num, Ord, Show, Str } from 'fp'
+import { $, $f, A, D, Num, Ord, Show as Show_, Str } from 'fp'
 import { Id } from 'src/utils/Entity'
 import { avg } from 'src/utils/Number'
-import { Position, PositionAbbreviationShow, PositionOrd } from './Position'
-
-export const RatingList = [
-  0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9,
-  9.5, 10,
-] as const
-
-export type Rating = (typeof RatingList)[number]
-export const Rating: D.Schema<Rating> = D.literal(...RatingList)
-
-export const RatingShow: Show.Show<Rating> = {
-  show: r => (r === 10 ? r.toString() : r.toFixed(1)).replace('.', ','),
-}
+import { Position, Rating } from './'
 
 export type Player = {
   id: Id
@@ -22,69 +10,72 @@ export type Player = {
   position: Position
   active: boolean
 }
-export const Player = D.struct({
+
+export const Schema = D.struct({
   id: Id,
   name: D.string,
-  rating: Rating,
-  position: Position,
+  rating: Rating.Schema,
+  position: Position.Schema,
   active: D.boolean,
 })
 
-export const PlayerIsActive = (p: Player) => p.active
+export const Player = Schema
 
-export const PlayerPositionOrd: Ord<Player> = $(
-  PositionOrd,
+export const isActive = (p: Player) => p.active
+
+export const PositionOrd: Ord<Player> = $(
+  Position.Ord,
   Ord.contramap(p => p.position),
 )
 
-export const PlayerNameOrd: Ord<Player> = $(
+export const NameOrd: Ord<Player> = $(
   Str.Ord,
   Ord.contramap(p => p.name),
 )
 
-export const PlayerRatingOrd: Ord<Player> = $(
+export const RatingOrd: Ord<Player> = $(
   Num.Ord,
   Ord.contramap(p => p.rating),
 )
 
-export const PlayerShow: Show.Show<Player> = {
+export const Show: Show_.Show<Player> = {
   show: p =>
-    `${RatingShow.show(p.rating)} - ${p.name} (${PositionAbbreviationShow.show(
-      p.position,
-    )})`,
+    `${Rating.Show.show(p.rating)} - ${
+      p.name
+    } (${Position.AbbreviationShow.show(p.position)})`,
 }
 
-export const PlayerListShow: Show.Show<Array<Player>> = {
+export const ListShow: Show_.Show<Array<Player>> = {
   show: $f(
-    A.sortBy([PlayerPositionOrd, Ord.reverse(PlayerRatingOrd), PlayerNameOrd]),
-    A.map(PlayerShow.show),
+    A.sortBy([PositionOrd, Ord.reverse(RatingOrd), NameOrd]),
+    A.map(Show.show),
     A.intercalate(Str.Monoid)('\n'),
   ),
 }
 
-export const TeamListShow: Show.Show<Array<Array<Player>>> = {
+export const TeamListShow: Show_.Show<Array<Array<Player>>> = {
   show: $f(
-    A.map(PlayerListShow.show),
+    A.map(ListShow.show),
     A.mapWithIndex((i, t) => `Time ${i + 1}\n\n${t}`),
     A.intercalate(Str.Monoid)('\n\n'),
   ),
 }
 
-export const PlayerShowSensitive: Show.Show<Player> = {
-  show: p => `${p.name} (${PositionAbbreviationShow.show(p.position)})`,
+export const ShowSensitive: Show_.Show<Player> = {
+  show: p => `${p.name} (${Position.AbbreviationShow.show(p.position)})`,
 }
 
-export const PlayerListShowSensitive: Show.Show<Array<Player>> = {
+export const ListShowSensitive: Show_.Show<Array<Player>> = {
   show: $f(
-    A.sortBy([PlayerPositionOrd, PlayerNameOrd]),
-    A.map(PlayerShowSensitive.show),
+    A.sortBy([PositionOrd, NameOrd]),
+    A.map(ShowSensitive.show),
     A.intercalate(Str.Monoid)('\n'),
   ),
 }
 
-export const TeamListShowSensitive: Show.Show<Array<Array<Player>>> = {
+export const TeamListShowSensitive: Show_.Show<Array<Array<Player>>> = {
   show: $f(
-    A.map(PlayerListShowSensitive.show),
+    A.map(ListShowSensitive.show),
     A.mapWithIndex((i, t) => `Time ${i + 1}\n\n${t}`),
     A.intercalate(Str.Monoid)('\n\n'),
   ),

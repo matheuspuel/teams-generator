@@ -16,9 +16,7 @@ import {
   Txt,
   View,
 } from 'src/components/hyperscript'
-import { Group } from 'src/datatypes/Group'
-import { Parameters } from 'src/datatypes/Parameters'
-import { Player, RatingShow } from 'src/datatypes/Player'
+import { Group, Parameters, Player, Rating } from 'src/datatypes'
 import { RootState } from 'src/model'
 import { execute, replaceSApp } from 'src/services/StateRef'
 import { Colors } from 'src/services/Theme'
@@ -268,7 +266,7 @@ const Item = memoized('GroupItem')(
         })(position),
       ]),
       Txt({ size: 18, weight: 600, color: Colors.text.dark })(
-        RatingShow.show(rating),
+        Rating.Show.show(rating),
       ),
       Txt({ my: 8, color: Colors.text.dark, numberOfLines: 1 })(name),
     ]),

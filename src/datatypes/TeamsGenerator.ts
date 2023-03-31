@@ -1,7 +1,6 @@
 import { $, $f, A, IO, none, Num, O, Ord, Rec, some, Tup } from 'fp'
 import * as Monoid from 'fp-ts/Monoid'
-import { getRatingAvg, Player } from 'src/datatypes/Player'
-import { Position, PositionDict } from 'src/datatypes/Position'
+import { Player, Position } from 'src/datatypes'
 import { findFirstMapWithIndex } from 'src/utils/Array'
 import { randomizeArray } from '../utils/Random'
 
@@ -14,12 +13,10 @@ const getFitOrdByDevianceFns = (
     Monoid.concatAll(Ord.getMonoid<Array<Array<Player>>>()),
   )
 
-export const getResultPositionDeviance = (
-  teams: Array<Array<Player>>,
-): number =>
+const getResultPositionDeviance = (teams: Array<Array<Player>>): number =>
   $(teams, A.flatten, allPlayers =>
     $(
-      PositionDict,
+      Position.Dict,
       Rec.toEntries,
       A.map(Tup.fst),
       A.foldMap(Num.MonoidSum)(pos =>
@@ -39,9 +36,12 @@ export const getResultPositionDeviance = (
     ),
   )
 
-export const getResultRatingDeviance = (teams: Array<Array<Player>>): number =>
-  $(teams, A.flatten, getRatingAvg, overallAvg =>
-    $(teams, A.foldMap(Num.MonoidSum)($f(getRatingAvg, deviance(overallAvg)))),
+const getResultRatingDeviance = (teams: Array<Array<Player>>): number =>
+  $(teams, A.flatten, Player.getRatingAvg, overallAvg =>
+    $(
+      teams,
+      A.foldMap(Num.MonoidSum)($f(Player.getRatingAvg, deviance(overallAvg))),
+    ),
   )
 
 const balanceTeams: (

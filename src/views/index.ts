@@ -4,11 +4,11 @@ import React from 'react'
 import { GestureHandlerRootView } from 'src/components/hyperscript/gesture-handler/GestureHandlerRootView'
 import { StatusBar } from '../components/hyperscript/expo/StatusBar'
 import { RootState } from '../model'
-import { Router } from '../routes/Router'
 import { AppEnv } from '../services'
 import { execute, getRootState, subscribe } from '../services/StateRef'
 import { LoadedLens } from '../slices/core/loading'
 import { $, RIO, get } from '../utils/fp'
+import { Router } from './Router'
 
 export const UI = ({ env }: { env: AppEnv }) => {
   const [model, setModel] = React.useState(execute(getRootState)(env)())

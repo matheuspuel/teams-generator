@@ -1,6 +1,6 @@
 import { get } from '@fp-ts/optic'
 import { $, $f, RT, S, T, TO, constVoid } from 'fp'
-import { defaultParameters } from 'src/datatypes/Parameters'
+import { Parameters } from 'src/datatypes'
 import {
   AppStateRefEnv,
   execute,
@@ -31,7 +31,7 @@ export const hydrate = (env: AppStateRefEnv) =>
       'parameters',
       $(
         ParametersStorage.get,
-        TO.getOrElseW(() => T.of(defaultParameters)),
+        TO.getOrElseW(() => T.of(Parameters.initial)),
       ),
     ),
     T.chainFirstIOK(p =>

@@ -1,7 +1,6 @@
 import { get } from '@fp-ts/optic'
 import { $, $f, O, RA, Rec, RIO, S } from 'fp'
-import { generateRandomBalancedTeams } from 'src/business/distribution'
-import { Player, PlayerIsActive } from 'src/datatypes/Player'
+import { Player, TeamsGenerator } from 'src/datatypes'
 import { execute, replaceSApp } from 'src/services/StateRef'
 import { RootOptic } from '.'
 import { GroupsLens } from './groups'
@@ -22,14 +21,14 @@ export const generateResult = $(
         O.chain(id => $(get(GroupsLens)(s), Rec.lookup(id))),
         O.map(g => g.players),
         O.getOrElseW(() => []),
-        RA.filter(PlayerIsActive),
+        RA.filter(Player.isActive),
         RA.toArray,
         players => ({ players, parameters: get(ParametersLens)(s) }),
       ),
     ),
   ),
   RIO.chainIOK(({ players, parameters }) =>
-    generateRandomBalancedTeams({
+    TeamsGenerator.generateRandomBalancedTeams({
       position: parameters.position,
       rating: parameters.rating,
     })(parameters.teamsCount)(players),

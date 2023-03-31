@@ -1,5 +1,5 @@
 import { O, Option } from 'fp'
-import { Parameters, defaultParameters } from 'src/datatypes/Parameters'
+import { Parameters } from 'src/datatypes'
 import { GroupsState, emptyGroups } from 'src/slices/groups'
 import { PlayerForm, blankPlayerForm } from 'src/slices/playerForm'
 import { GeneratedResult } from 'src/slices/result'
@@ -25,7 +25,7 @@ export type RootState = {
 export const initialAppState = {
   core: { isLoaded: false },
   groups: emptyGroups,
-  parameters: defaultParameters,
+  parameters: Parameters.initial,
   playerForm: blankPlayerForm,
   result: O.none,
   ui: {

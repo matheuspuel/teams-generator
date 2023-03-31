@@ -13,7 +13,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import { Fragment, Txt, View } from 'src/components/hyperscript'
-import { RatingList } from 'src/datatypes/Player'
+import { Rating } from 'src/datatypes'
 import { AppThemeEnv, Colors } from 'src/services/Theme'
 import { Color } from 'src/utils/datatypes'
 import { $, R, RA, ReaderIO, apply } from 'src/utils/fp'
@@ -99,7 +99,7 @@ const RatingSlider_ = <R extends unknown>({
           }}
         >
           {$(
-            RatingList,
+            Rating.List,
             RA.map(r =>
               View({
                 key: r.toString(),

@@ -1,6 +1,6 @@
-import { $, D, identity, Num, Ord, Rec, Show } from 'fp'
+import { $, D, identity, Num, Ord as Ord_, Rec, Show } from 'fp'
 
-export const PositionDict = {
+export const Dict = {
   G: null,
   Z: null,
   LE: null,
@@ -9,10 +9,13 @@ export const PositionDict = {
   A: null,
 }
 
-export type Position = keyof typeof PositionDict
-export const Position: D.Schema<Position> = D.literal(...Rec.keys(PositionDict))
+export type Position = keyof typeof Dict
 
-const PositionOrder: Record<Position, number> = {
+export const Schema: D.Schema<Position> = D.literal(...Rec.keys(Dict))
+
+export const Position = Schema
+
+const order: Record<Position, number> = {
   G: 1,
   Z: 2,
   LE: 3,
@@ -21,9 +24,9 @@ const PositionOrder: Record<Position, number> = {
   A: 6,
 }
 
-export const PositionOrd: Ord<Position> = $(
+export const Ord: Ord_<Position> = $(
   Num.Ord,
-  Ord.contramap(a => PositionOrder[a]),
+  Ord_.contramap(a => order[a]),
 )
 
-export const PositionAbbreviationShow: Show.Show<Position> = { show: identity }
+export const AbbreviationShow: Show.Show<Position> = { show: identity }

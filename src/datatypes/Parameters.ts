@@ -6,13 +6,15 @@ export type Parameters = {
   rating: boolean
 }
 
-export const Parameters: D.Schema<Parameters> = D.struct({
+export const Schema: D.Schema<Parameters> = D.struct({
   teamsCount: D.number,
   position: D.boolean,
   rating: D.boolean,
 })
 
-export const defaultParameters: Parameters = {
+export const Parameters = Schema
+
+export const initial: Parameters = {
   teamsCount: 2,
   position: true,
   rating: true,

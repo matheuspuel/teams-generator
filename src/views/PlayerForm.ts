@@ -13,8 +13,7 @@ import {
   Txt,
   View,
 } from 'src/components/hyperscript'
-import { Rating, RatingShow } from 'src/datatypes/Player'
-import { Position, PositionDict, PositionOrd } from 'src/datatypes/Position'
+import { Position, Rating } from 'src/datatypes'
 import { execute, replaceSApp } from 'src/services/StateRef'
 import { Colors } from 'src/services/Theme'
 import {
@@ -123,10 +122,10 @@ const PositionField = (position: Position) =>
     Txt({ weight: 500, color: Colors.gray.$4, my: 4 })('Posição'),
     Row({ justify: 'space-evenly' })(
       $(
-        PositionDict,
+        Position.Dict,
         Rec.toEntries,
         A.map(Tup.fst),
-        A.sort(PositionOrd),
+        A.sort(Position.Ord),
         A.map(p =>
           Pressable({
             key: p,
@@ -163,12 +162,12 @@ export const RatingField = (rating: Rating) =>
       size: 24,
       weight: 700,
       color: Colors.primary.$5,
-    })(RatingShow.show(rating)),
+    })(Rating.Show.show(rating)),
     RatingSlider({
       step: 0.05,
       onChange: $f(
         v => Math.round(v * 20) / 2,
-        D.decodeOption(Rating),
+        D.decodeOption(Rating.Schema),
         O.map(onChangeRating),
         O.getOrElseW(() => RIO.of(undefined)),
       ),

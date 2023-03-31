@@ -14,8 +14,7 @@ import {
   RIO,
   S,
 } from 'fp'
-import { Group } from 'src/datatypes/Group'
-import { Player } from 'src/datatypes/Player'
+import { Group, Player } from 'src/datatypes'
 import { RootState } from 'src/model'
 import { execute, modifySApp } from 'src/services/StateRef'
 import { generateId, Id } from 'src/utils/Entity'

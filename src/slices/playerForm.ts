@@ -1,5 +1,4 @@
-import { Player, Rating } from 'src/datatypes/Player'
-import { Position } from 'src/datatypes/Position'
+import { Player, Position, Rating } from 'src/datatypes'
 import { RootOptic } from '.'
 
 export const PlayerFormLens = RootOptic.at('playerForm')

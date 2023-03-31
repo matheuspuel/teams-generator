@@ -32,7 +32,7 @@ import {
   TxtContext,
   View,
 } from 'src/components/hyperscript'
-import { Group } from 'src/datatypes/Group'
+import { Group } from 'src/datatypes'
 import { RootState } from 'src/model'
 import { execute, getSApp, replaceSApp } from 'src/services/StateRef'
 import { Colors } from 'src/services/Theme'

@@ -11,15 +11,7 @@ import {
   TxtContext,
   View,
 } from 'src/components/hyperscript'
-import {
-  getRatingTotal,
-  Player,
-  PlayerNameOrd,
-  PlayerPositionOrd,
-  PlayerRatingOrd,
-  RatingShow,
-  TeamListShowSensitive,
-} from 'src/datatypes/Player'
+import { Player, Rating } from 'src/datatypes'
 import { execute } from 'src/services/StateRef'
 import { Colors } from 'src/services/Theme'
 import { ResultLens } from 'src/slices/result'
@@ -33,7 +25,7 @@ const onShareTeamList = $(
     O.match(
       () => T.of(undefined),
       $f(
-        TeamListShowSensitive.show,
+        Player.TeamListShowSensitive.show,
         t => () => Share.share({ message: t, title: 'Times' }),
         T.map(constVoid),
       ),
@@ -100,7 +92,7 @@ const TeamItem = (props: {
 }) => {
   const title = `Time ${props.index + 1}`
   const numPlayers = props.players.length
-  const totalRating = getRatingTotal(props.players)
+  const totalRating = Player.getRatingTotal(props.players)
   const avgRating = toFixedLocale(2)(div(numPlayers)(totalRating))
   return View({
     key: props.key,
@@ -131,9 +123,9 @@ const TeamItem = (props: {
     ...$(
       props.players,
       A.sortBy([
-        PlayerPositionOrd,
-        Ord.reverse(PlayerRatingOrd),
-        PlayerNameOrd,
+        Player.PositionOrd,
+        Ord.reverse(Player.RatingOrd),
+        Player.NameOrd,
       ]),
       A.map(p => PlayerItem({ key: p.id, data: p })),
     ),
@@ -148,7 +140,7 @@ const PlayerItem = ({
   data: Player
 }) =>
   Row({ key: key, p: 4 })([
-    Txt({ color: Colors.text.dark, weight: 600 })(RatingShow.show(rating)),
+    Txt({ color: Colors.text.dark, weight: 600 })(Rating.Show.show(rating)),
     Txt({ color: Colors.text.dark, numberOfLines: 1 })(` - ${name}`),
     Txt({ color: Colors.text.dark })(` (${position})`),
   ])

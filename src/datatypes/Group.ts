@@ -8,8 +8,10 @@ export type Group = {
   players: ReadonlyArray<Player>
 }
 
-export const Group = D.struct({
+export const Schema = D.struct({
   id: Id,
   name: D.string,
   players: D.array(Player),
 })
+
+export const Group = Schema

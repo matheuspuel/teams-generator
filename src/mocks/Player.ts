@@ -1,4 +1,4 @@
-import { Player } from 'src/datatypes/Player'
+import { Player } from 'src/datatypes'
 import { Id } from 'src/utils/Entity'
 
 export const playersMock: Array<Player> = [
@@ -23,6 +23,6 @@ export const playersMock: Array<Player> = [
   { id: '19' as Id, name: 'Moa', rating: 5, position: 'A', active: true },
   { id: '20' as Id, name: 'Neto', rating: 5, position: 'A', active: true },
   { id: '21' as Id, name: 'Lucas', rating: 7, position: 'Z', active: true },
-  { id: '22' as Id, name: 'Jevinho', rating: 3, position: 'LD', active: true },
+  { id: '22' as Id, name: 'Jeferson', rating: 3, position: 'LD', active: true },
   { id: '23' as Id, name: 'Clóvis', rating: 7, position: 'Z', active: true },
 ]
