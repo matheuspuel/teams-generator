@@ -360,7 +360,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
                   h: 28,
                   w: 28,
                 })([]),
-            Txt({ m: 4, size: 14 })('Considerar posições'),
+            Txt({ ml: 8, size: 14 })('Considerar posições'),
           ]),
           Pressable({
             onPress: onToggleRating,
@@ -391,7 +391,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
                   h: 28,
                   w: 28,
                 })([]),
-            Txt({ m: 4, size: 14 })('Considerar habilidade'),
+            Txt({ ml: 8, size: 14 })('Considerar habilidade'),
           ]),
         ]),
         View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
