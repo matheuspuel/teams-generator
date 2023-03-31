@@ -1,7 +1,7 @@
 {
   "name": "sorteio-times",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "experiment": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/experiment.ts",
     "start": "SET APP_VARIANT=development&& expo start",
