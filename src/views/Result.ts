@@ -82,7 +82,7 @@ export const ResultView = ({
         O.matchW(
           () => [
             View({ flex: 1, justify: 'center' })([
-              ActivityIndicator({ color: Colors.primary.$4 }),
+              ActivityIndicator({ color: Colors.primary.$5 }),
             ]),
           ],
           A.mapWithIndex((i, t) =>

@@ -140,7 +140,12 @@ export const Groups = memoized('Groups')(
       FlatList({
         data: $(groups, Rec.toEntries, A.map(Tup.snd)),
         renderItem: Item,
-        contentContainerStyle: { p: 8, gap: 8 },
+        ListEmptyComponent: View({ flex: 1, justify: 'center' })([
+          Txt({ align: 'center', size: 16, color: Colors.gray.$3 })(
+            'Nenhum grupo cadastrado',
+          ),
+        ]),
+        contentContainerStyle: { flexGrow: 1, p: 8, gap: 8 },
         initialNumToRender: 16,
       }),
       GroupModal({ state: modalUpsertGroup }),

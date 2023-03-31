@@ -141,8 +141,13 @@ export const GroupView = memoized('GroupScreen')(
         ),
         keyExtractor: ({ id }) => id,
         renderItem: Item,
+        ListEmptyComponent: View({ flex: 1, justify: 'center' })([
+          Txt({ align: 'center', size: 16, color: Colors.gray.$3 })(
+            'Nenhum jogador cadastrado',
+          ),
+        ]),
+        contentContainerStyle: { flexGrow: 1, p: 8, gap: 8 },
         initialNumToRender: 16,
-        contentContainerStyle: { p: 8, gap: 8 },
       }),
       Pressable({
         onPress: onOpenParametersModal,
