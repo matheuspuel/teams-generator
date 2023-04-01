@@ -4,7 +4,7 @@ import { SafeAreaProvider } from 'src/components/hyperscript/safe-area/SafeAreaP
 import { Screen } from 'src/components/hyperscript/screens/Screen'
 import { ScreenStack } from 'src/components/hyperscript/screens/ScreenStack'
 import { RootState } from 'src/model'
-import { $op } from 'src/model/Optics'
+import { root } from 'src/model/Optics'
 import { Colors } from 'src/services/Theme'
 import { getGroupById } from 'src/slices/groups'
 import { $, absurd, O } from 'src/utils/fp'
@@ -25,14 +25,14 @@ export const Router = ({ model }: { model: RootState }) =>
               Screen()([
                 GroupView({
                   group: $(
-                    get($op.ui.selectedGroupId.$)(model),
+                    get(root.ui.selectedGroupId.$)(model),
                     O.match(
                       () => O.none,
                       id => getGroupById(id)(model),
                     ),
                   ),
-                  modalParameters: get($op.ui.modalParameters.$)(model),
-                  parameters: get($op.parameters.$)(model),
+                  modalParameters: get(root.ui.modalParameters.$)(model),
+                  parameters: get(root.parameters.$)(model),
                 }),
               ]),
               ...(route === 'Group'
@@ -40,11 +40,15 @@ export const Router = ({ model }: { model: RootState }) =>
                 : route === 'Player'
                 ? [
                     Screen()([
-                      PlayerView({ form: get($op.playerForm.$)(model) }),
+                      PlayerView({ form: get(root.playerForm.$)(model) }),
                     ]),
                   ]
                 : route === 'Result'
-                ? [Screen()([ResultView({ result: get($op.result.$)(model) })])]
+                ? [
+                    Screen()([
+                      ResultView({ result: get(root.result.$)(model) }),
+                    ]),
+                  ]
                 : absurd<never>(route)),
             ],
       ),

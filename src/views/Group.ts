@@ -18,7 +18,7 @@ import {
 } from 'src/components/hyperscript'
 import { Group, Parameters, Player, Rating } from 'src/datatypes'
 import { RootState } from 'src/model'
-import { $op } from 'src/model/Optics'
+import { root } from 'src/model/Optics'
 import { execute, replaceSApp } from 'src/services/StateRef'
 import { Colors } from 'src/services/Theme'
 import {
@@ -39,18 +39,18 @@ import { Duration } from 'src/utils/datatypes'
 import { withOpacity } from 'src/utils/datatypes/Color'
 import { Id } from 'src/utils/Entity'
 
-const closeParametersModal = replaceSApp($op.ui.modalParameters.$)(false)
+const closeParametersModal = replaceSApp(root.ui.modalParameters.$)(false)
 
 const onOpenParametersModal = execute(
-  replaceSApp($op.ui.modalParameters.$)(true),
+  replaceSApp(root.ui.modalParameters.$)(true),
 )
 
 const onPressAddPlayer = $(
   navigate('Player'),
   S.chain(() =>
     $(
-      replaceSApp($op.ui.selectedPlayerId.$)(O.none),
-      S.apFirst(replaceSApp($op.playerForm.$)(blankPlayerForm)),
+      replaceSApp(root.ui.selectedPlayerId.$)(O.none),
+      S.apFirst(replaceSApp(root.playerForm.$)(blankPlayerForm)),
     ),
   ),
   execute,
@@ -67,9 +67,9 @@ const onPressItem = (playerId: Id) =>
             () => S.of<RootState, void>(undefined),
             $f(
               getPlayerFormFromData,
-              replaceSApp($op.playerForm.$),
+              replaceSApp(root.playerForm.$),
               S.apFirst(
-                replaceSApp($op.ui.selectedPlayerId.$)(O.some(playerId)),
+                replaceSApp(root.ui.selectedPlayerId.$)(O.some(playerId)),
               ),
             ),
           ),

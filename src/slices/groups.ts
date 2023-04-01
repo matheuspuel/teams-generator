@@ -16,7 +16,7 @@ import {
 } from 'fp'
 import { Group, Player } from 'src/datatypes'
 import { RootState } from 'src/model'
-import { $op } from 'src/model/Optics'
+import { root } from 'src/model/Optics'
 import { execute, modifySApp } from 'src/services/StateRef'
 import { generateId, Id } from 'src/utils/Entity'
 
@@ -24,9 +24,9 @@ export type GroupsState = Record<Id, Group>
 
 export const emptyGroups: GroupsState = {}
 
-const modify = modifySApp($op.groups.$)
+const modify = modifySApp(root.groups.$)
 
-export const getGroupsRecord = Optic.get($op.groups.$)
+export const getGroupsRecord = Optic.get(root.groups.$)
 
 export const getGroupById = (id: Id) => $f(getGroupsRecord, Rec.lookup(id))
 
@@ -41,7 +41,7 @@ const getPlayer = (args: { groupId: Id; id: Id }) =>
 
 export const getPlayerFromActiveGroup = (args: { playerId: Id }) =>
   $(
-    S.gets(get($op.ui.selectedGroupId.$)),
+    S.gets(get(root.ui.selectedGroupId.$)),
     S.chain(
       O.match(
         () => S.of<RootState, Option<Player>>(O.none),
@@ -120,7 +120,7 @@ export const deleteCurrentPlayer = S.modify((s: RootState) =>
       playerId: s.ui.selectedPlayerId,
     }),
     O.map(({ groupId, playerId }) =>
-      Optic.modify($op.groups.id(groupId).players.$)(
+      Optic.modify(root.groups.id(groupId).players.$)(
         RA.filter(p => p.id !== playerId),
       )(s),
     ),
@@ -130,12 +130,12 @@ export const deleteCurrentPlayer = S.modify((s: RootState) =>
 
 export const togglePlayerActive = ({ playerId }: { playerId: Id }) =>
   $(
-    S.gets(get($op.ui.selectedGroupId.$)),
+    S.gets(get(root.ui.selectedGroupId.$)),
     S.chain(
       O.match(
         () => S.modify<RootState>(identity),
         groupId =>
-          modifySApp($op.groups.id(groupId).players.id(playerId).active.$)(
+          modifySApp(root.groups.id(groupId).players.id(playerId).active.$)(
             a => !a,
           ),
       ),
@@ -158,7 +158,7 @@ export const toggleAllPlayersActive = execute(
                 g.players,
                 RA.map(p => ({ ...p, active: !allActive })),
               ),
-            Optic.replace($op.groups.id(g.id).players.$),
+            Optic.replace(root.groups.id(g.id).players.$),
             apply(s),
           ),
       ),

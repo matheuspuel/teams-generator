@@ -2,7 +2,7 @@ import { $, Optic } from 'fp'
 import { RootState } from 'src/model'
 import { Id } from 'src/utils/Entity'
 
-export const $op = $(Optic.id<RootState>(), root => ({
+export const root = $(Optic.id<RootState>(), root => ({
   $: root,
   core: {
     loaded: { $: root.at('core').at('isLoaded') },

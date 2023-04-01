@@ -1,7 +1,7 @@
 import { get } from '@fp-ts/optic'
 import { $, $f, constVoid, RT, S, T, TO } from 'fp'
 import { Parameters } from 'src/datatypes'
-import { $op } from 'src/model/Optics'
+import { root } from 'src/model/Optics'
 import {
   AppStateRefEnv,
   execute,
@@ -14,8 +14,8 @@ import {} from '../parameters'
 
 export const saveState = $(
   RT.fromReaderIO(execute(getRootState)),
-  RT.chainFirstIOK($f(get($op.groups.$), GroupsStorage.set)),
-  RT.chainFirstIOK($f(get($op.parameters.$), ParametersStorage.set)),
+  RT.chainFirstIOK($f(get(root.groups.$), GroupsStorage.set)),
+  RT.chainFirstIOK($f(get(root.parameters.$), ParametersStorage.set)),
 )
 
 export const hydrate = (env: AppStateRefEnv) =>
@@ -37,8 +37,8 @@ export const hydrate = (env: AppStateRefEnv) =>
     ),
     T.chainFirstIOK(p =>
       $(
-        replaceSApp($op.groups.$)(p.groups),
-        S.apFirst(replaceSApp($op.parameters.$)(p.parameters)),
+        replaceSApp(root.groups.$)(p.groups),
+        S.apFirst(replaceSApp(root.parameters.$)(p.parameters)),
         execute,
       )(env),
     ),

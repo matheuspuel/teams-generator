@@ -13,7 +13,7 @@ import { hydrate, saveState } from 'src/slices/core/hydration'
 import { onGoBack } from 'src/slices/routes'
 import { milliseconds } from 'src/utils/datatypes/Duration'
 import { UI } from 'src/views'
-import { $op } from './model/Optics'
+import { root } from './model/Optics'
 
 const runStartupTasks = $(
   RT.fromIO(SplashScreen.preventAutoHideAsync),
@@ -22,7 +22,7 @@ const runStartupTasks = $(
   RT.chainFirstReaderIOKW(() =>
     subscribe($f(saveState, f => throttle(() => f(), $(1000, milliseconds)))),
   ),
-  RT.chainFirstReaderIOKW(() => execute(replaceSApp($op.core.loaded.$)(true))),
+  RT.chainFirstReaderIOKW(() => execute(replaceSApp(root.core.loaded.$)(true))),
 )
 
 const env: AppEnv = { stateRef: defaultStateRef, theme: defaultTheme }
