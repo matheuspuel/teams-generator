@@ -15,7 +15,7 @@ export type SafeAreaProviderArgs<R> = {
   env: R
 }
 
-const getRawProps = <R extends unknown>({
+const getRawProps = <R,>({
   x: props,
   children,
   env,
@@ -28,6 +28,6 @@ const getRawProps = <R extends unknown>({
   },
 })
 
-export const SafeAreaProvider = <R extends unknown>(
-  args: SafeAreaProviderArgs<R>,
-) => <SafeAreaProvider_ {...getRawProps(args)} />
+export const SafeAreaProvider = <R,>(args: SafeAreaProviderArgs<R>) => (
+  <SafeAreaProvider_ {...getRawProps(args)} />
+)

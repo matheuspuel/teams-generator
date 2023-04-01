@@ -14,7 +14,7 @@ export type ImageArgs<R> = {
   env: R
 }
 
-const getRawProps = <R extends unknown>({
+const getRawProps = <R,>({
   x: props,
   env,
 }: ImageArgs<R>): React.ComponentProps<typeof Image_> => ({
@@ -22,6 +22,6 @@ const getRawProps = <R extends unknown>({
   style: { width: props.w, height: props.h },
 })
 
-export const Image = <R extends unknown>(args: ImageArgs<R>) => (
+export const Image = <R,>(args: ImageArgs<R>) => (
   <Image_ {...getRawProps(args)} />
 )

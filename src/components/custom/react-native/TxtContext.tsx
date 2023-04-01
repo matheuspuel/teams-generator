@@ -9,7 +9,7 @@ export type TxtContextArgs<R> = {
   env: R
 }
 
-const getRawProps = <R extends unknown>({
+const getRawProps = <R,>({
   x: props,
   children,
   env,
@@ -42,6 +42,6 @@ const getRawProps = <R extends unknown>({
   },
 })
 
-export const TxtContext = <R extends unknown>(args: TxtContextArgs<R>) => (
+export const TxtContext = <R,>(args: TxtContextArgs<R>) => (
   <Text_ {...getRawProps(args)} />
 )

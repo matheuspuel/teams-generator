@@ -48,7 +48,7 @@ const getRawProps =
     isFocused: boolean
     setIsFocused: React.Dispatch<React.SetStateAction<boolean>>
   }) =>
-  <R extends unknown>({
+  <R,>({
     x: props,
     env,
   }: TextInputArgs<R> & {}): React.ComponentProps<typeof TextInput_> => ({
@@ -109,7 +109,7 @@ const getRawProps =
     },
   })
 
-export const TextInput = <R extends unknown>(args: TextInputArgs<R>) => {
+export const TextInput = <R,>(args: TextInputArgs<R>) => {
   const [isFocused, setIsFocused] = React.useState(false)
   return <TextInput_ {...getRawProps({ isFocused, setIsFocused })(args)} />
 }

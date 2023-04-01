@@ -11,7 +11,7 @@ export type ScreenStackArgs<R> = {
   env: R
 }
 
-const getRawProps = <R extends unknown>({
+const getRawProps = <R,>({
   x: props,
   children,
   env,
@@ -22,6 +22,6 @@ const getRawProps = <R extends unknown>({
   style: StyleSheet.absoluteFill,
 })
 
-export const ScreenStack = <R extends unknown>(args: ScreenStackArgs<R>) => (
+export const ScreenStack = <R,>(args: ScreenStackArgs<R>) => (
   <ScreenStack_ {...getRawProps(args)} />
 )

@@ -25,7 +25,7 @@ export type TextArgs<R> = {
   env: R
 }
 
-const getRawProps = <R extends unknown>({
+const getRawProps = <R,>({
   x: props,
   children,
   env,
@@ -59,6 +59,4 @@ const getRawProps = <R extends unknown>({
   },
 })
 
-export const Txt = <R extends unknown>(args: TextArgs<R>) => (
-  <Text_ {...getRawProps(args)} />
-)
+export const Txt = <R,>(args: TextArgs<R>) => <Text_ {...getRawProps(args)} />

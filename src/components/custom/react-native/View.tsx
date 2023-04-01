@@ -41,7 +41,7 @@ export type ViewArgs<R> = {
   env: R
 }
 
-const getRawProps = <R extends unknown>({
+const getRawProps = <R,>({
   x: props,
   children,
   env,
@@ -115,6 +115,4 @@ const getRawProps = <R extends unknown>({
   },
 })
 
-export const View = <R extends unknown>(args: ViewArgs<R>) => (
-  <View_ {...getRawProps(args)} />
-)
+export const View = <R,>(args: ViewArgs<R>) => <View_ {...getRawProps(args)} />

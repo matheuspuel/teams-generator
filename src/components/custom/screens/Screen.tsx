@@ -10,7 +10,7 @@ export type ScreenArgs<R> = {
   env: R
 }
 
-const getRawProps = <R extends unknown>({
+const getRawProps = <R,>({
   x: props,
   children,
   env,
@@ -18,6 +18,6 @@ const getRawProps = <R extends unknown>({
   key?: string
 } => ({ children: children })
 
-export const Screen = <R extends unknown>(args: ScreenArgs<R>) => (
+export const Screen = <R,>(args: ScreenArgs<R>) => (
   <Screen_ {...getRawProps(args)} />
 )

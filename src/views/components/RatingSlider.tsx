@@ -18,18 +18,18 @@ import { Rating } from 'src/datatypes'
 import { AppThemeEnv, Colors } from 'src/services/Theme'
 import { Color } from 'src/utils/datatypes'
 
-export type RatingSliderProps<R extends unknown> = {
+export type RatingSliderProps<R> = {
   initialPercentage: number
   step: number
   onChange: (percentage: number) => ReaderIO<R, void>
 }
 
-export type RatingSliderArgs<R extends unknown> = {
+export type RatingSliderArgs<R> = {
   x: RatingSliderProps<R>
   env: R
 }
 
-const RatingSlider_ = <R extends unknown>({
+const RatingSlider_ = <R,>({
   x: { initialPercentage, step, onChange: onChange_ },
   env,
 }: RatingSliderArgs<R & AppThemeEnv>) => {
@@ -159,6 +159,6 @@ const RatingSlider_ = <R extends unknown>({
 }
 
 export const RatingSlider =
-  <R extends unknown>(props: RatingSliderProps<R>) =>
+  <R,>(props: RatingSliderProps<R>) =>
   (env: R & AppThemeEnv) =>
     React.createElement(RatingSlider_<R>, { x: props, env })

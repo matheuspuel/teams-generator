@@ -19,7 +19,7 @@ export type ScrollViewArgs<R> = {
   env: R
 }
 
-const getRawProps = <R extends unknown>({
+const getRawProps = <R,>({
   x: props,
   children,
   env,
@@ -43,6 +43,6 @@ const getRawProps = <R extends unknown>({
   },
 })
 
-export const ScrollView = <R extends unknown>(args: ScrollViewArgs<R>) => (
+export const ScrollView = <R,>(args: ScrollViewArgs<R>) => (
   <ScrollView_ {...getRawProps(args)} />
 )

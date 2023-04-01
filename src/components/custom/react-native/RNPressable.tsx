@@ -23,7 +23,7 @@ const merge = Rec.getUnionSemigroup({
   concat: (a, b) => (b === undefined ? a : b),
 }).concat
 
-const getRawProps = <R extends unknown>({
+const getRawProps = <R,>({
   x: props,
   children,
   env,
@@ -106,6 +106,6 @@ const getRawProps = <R extends unknown>({
     ),
 })
 
-export const Pressable = <R extends unknown>(args: PressableArgs<R>) => (
+export const Pressable = <R,>(args: PressableArgs<R>) => (
   <Pressable_ {...getRawProps(args)} />
 )

@@ -20,7 +20,7 @@ export type PressableArgs<R> = {
   env: R
 }
 
-const getRawProps = <R extends unknown>({
+const getRawProps = <R,>({
   x: props,
   children,
   env,
@@ -105,6 +105,6 @@ const getRawProps = <R extends unknown>({
   },
 })
 
-export const Pressable = <R extends unknown>(args: PressableArgs<R>) => (
+export const Pressable = <R,>(args: PressableArgs<R>) => (
   <RectButton {...getRawProps(args)} />
 )

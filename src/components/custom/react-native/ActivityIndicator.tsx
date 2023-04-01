@@ -12,7 +12,7 @@ export type ActivityIndicatorArgs<R> = {
   env: R
 }
 
-const getRawProps = <R extends unknown>({
+const getRawProps = <R,>({
   x: props,
   env,
 }: ActivityIndicatorArgs<R>): React.ComponentProps<
@@ -22,6 +22,6 @@ const getRawProps = <R extends unknown>({
   color: props?.color ? Color.toHex(props.color(env)) : undefined,
 })
 
-export const ActivityIndicator = <R extends unknown>(
-  args: ActivityIndicatorArgs<R>,
-) => <ActivityIndicator_ {...getRawProps(args)} />
+export const ActivityIndicator = <R,>(args: ActivityIndicatorArgs<R>) => (
+  <ActivityIndicator_ {...getRawProps(args)} />
+)

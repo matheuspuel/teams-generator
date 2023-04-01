@@ -22,7 +22,7 @@ export type StatusBarArgs<R> = {
   env: R
 }
 
-const getRawProps = <R extends unknown>({
+const getRawProps = <R,>({
   x: props,
   env,
 }: StatusBarArgs<R> & {}): React.ComponentProps<typeof StatusBar_> => ({
@@ -37,6 +37,6 @@ const getRawProps = <R extends unknown>({
   translucent: props.translucent,
 })
 
-export const StatusBar = <R extends unknown>(args: StatusBarArgs<R>) => (
+export const StatusBar = <R,>(args: StatusBarArgs<R>) => (
   <StatusBar_ {...getRawProps(args)} />
 )

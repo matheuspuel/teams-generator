@@ -26,7 +26,7 @@ const GestureHandlerInModal = gestureHandlerRootHOC(
   ),
 )
 
-const getRawProps = <R extends unknown>({
+const getRawProps = <R,>({
   x: props,
   children,
   env,
@@ -46,6 +46,6 @@ const getRawProps = <R extends unknown>({
   },
 })
 
-export const Modal = <R extends unknown>(args: ModalArgs<R>) => (
+export const Modal = <R,>(args: ModalArgs<R>) => (
   <Modal_ {...getRawProps(args)} />
 )

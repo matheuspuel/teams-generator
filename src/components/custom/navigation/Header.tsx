@@ -16,7 +16,7 @@ export type HeaderArgs<R> = {
   env: R
 }
 
-const getRawProps = <R extends unknown>({
+const getRawProps = <R,>({
   x: props,
   env,
 }: HeaderArgs<R>): React.ComponentProps<typeof Header_> => ({
@@ -39,6 +39,6 @@ const getRawProps = <R extends unknown>({
   headerRight: props.headerRight ? constant(props.headerRight(env)) : undefined,
 })
 
-export const Header = <R extends unknown>(args: HeaderArgs<R>) => (
+export const Header = <R,>(args: HeaderArgs<R>) => (
   <Header_ {...getRawProps(args)} />
 )

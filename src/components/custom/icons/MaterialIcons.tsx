@@ -2,7 +2,7 @@ import Icons_ from '@expo/vector-icons/MaterialIcons'
 import { Reader } from 'fp'
 import { Color } from 'src/utils/datatypes'
 
-export type IconProps<R extends unknown> = {
+export type IconProps<R> = {
   name: React.ComponentProps<typeof Icons_>['name']
   color: Reader<R, Color>
   size: number
@@ -14,7 +14,7 @@ export type IconArgs<R> = {
   env: R
 }
 
-const getRawProps = <R extends unknown>({
+const getRawProps = <R,>({
   x: props,
   env,
 }: IconArgs<R>): React.ComponentProps<typeof Icons_> => ({
@@ -24,6 +24,6 @@ const getRawProps = <R extends unknown>({
   style: { textAlign: props.align },
 })
 
-export const MaterialIcons = <R extends unknown>(args: IconArgs<R>) => (
+export const MaterialIcons = <R,>(args: IconArgs<R>) => (
   <Icons_ {...getRawProps(args)} />
 )
