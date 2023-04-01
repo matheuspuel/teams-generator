@@ -1,4 +1,5 @@
 import { $, $f, A, Eq, IO, apply } from 'fp'
+import { not } from 'fp-ts/Predicate'
 import * as Ref from './Ref'
 
 type SubscribableFunction<A> = (value: A) => IO<void>
@@ -21,7 +22,7 @@ export const create = <A>(): Observable<A> =>
             subscriptionsRef.getState,
             IO.chain(
               $f(
-                A.filter(Eq.equals(Eq.eqStrict)(f)),
+                A.filter(not(Eq.equals(Eq.eqStrict)(f))),
                 subscriptionsRef.setState,
               ),
             ),
