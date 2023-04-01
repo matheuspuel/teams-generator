@@ -1,7 +1,8 @@
+import React from 'react'
 import { MaterialIcons as MaterialIcons_ } from 'src/components/custom'
 import { IconProps } from 'src/components/custom/icons/MaterialIcons'
 
 export const MaterialIcons =
-  <R,>(props: IconProps<R>) =>
+  <R>(props: IconProps<R>) =>
   (env: R) =>
-    MaterialIcons_({ x: props, env })
+    React.createElement(MaterialIcons_<R>, { x: props, env })

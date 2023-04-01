@@ -1,7 +1,7 @@
 import { get } from '@fp-ts/optic'
 import { $, $f, A, Apply, D, O, R, Rec, RIO, S, Str, Tup } from 'fp'
 import { not } from 'fp-ts/Predicate'
-import { memoizedConst } from 'src/components/helpers'
+import { memoizedConst, named2 } from 'src/components/helpers'
 import {
   Fragment,
   Header,
@@ -192,22 +192,20 @@ const SaveButton = ({ isEnabled }: { isEnabled: boolean }) =>
     })('Gravar'),
   ])
 
-export const PlayerView = ({
-  form: { name, position, rating },
-}: {
-  form: PlayerForm
-}) =>
-  Fragment([
-    ScreenHeader,
-    ScrollView({
-      keyboardShouldPersistTaps: 'always',
-      contentContainerStyle: { flexGrow: 1 },
-    })([
-      View({ flex: 1, p: 4 })([
-        NameField(name),
-        PositionField(position),
-        RatingField(rating),
+export const PlayerView = named2('PlayerForm')(
+  ({ form: { name, position, rating } }: { form: PlayerForm }) =>
+    Fragment([
+      ScreenHeader,
+      ScrollView({
+        keyboardShouldPersistTaps: 'always',
+        contentContainerStyle: { flexGrow: 1 },
+      })([
+        View({ flex: 1, p: 4 })([
+          NameField(name),
+          PositionField(position),
+          RatingField(rating),
+        ]),
       ]),
+      SaveButton({ isEnabled: !!name }),
     ]),
-    SaveButton({ isEnabled: !!name }),
-  ])
+)

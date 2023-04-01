@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   StatusBar as StatusBar_,
   StatusBarProps,
@@ -6,4 +7,4 @@ import {
 export const StatusBar =
   <R>(props: StatusBarProps<R>) =>
   (env: R) =>
-    StatusBar_({ x: props, env })
+    React.createElement(StatusBar_<R>, { x: props, env })

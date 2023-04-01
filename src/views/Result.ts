@@ -1,5 +1,6 @@
 import { $, $f, A, constVoid, get, Num, O, Option, Ord, RTE, S, T } from 'fp'
 import { Share } from 'react-native'
+import { named2 } from 'src/components/helpers'
 import {
   ActivityIndicator,
   Header,
@@ -33,57 +34,59 @@ const onShareTeamList = $(
   ),
 )
 
-export const ResultView = ({
-  result,
-}: {
-  result: Option<Array<Array<Player>>>
-}) =>
-  View({ flex: 1 })([
-    View({ bg: Colors.white })([
-      Header({
-        title: 'Resultado',
-        headerStyle: { backgroundColor: Colors.primary.$5 },
-        headerTitleStyle: { color: Colors.text.light },
-        headerLeft: Pressable({
-          onPress: onGoBack,
-          ml: 4,
-          p: 8,
-          borderless: true,
-          foreground: true,
-        })([
-          MaterialIcons({
-            name: 'arrow-back',
-            color: Colors.text.light,
-            size: 24,
-          }),
-        ]),
-        headerRight: Pressable({
-          onPress: onShareTeamList,
-          mr: 4,
-          p: 8,
-          borderless: true,
-          foreground: true,
-        })([
-          MaterialIcons({ name: 'share', color: Colors.text.light, size: 24 }),
-        ]),
-      }),
-    ]),
-    ScrollView({ contentContainerStyle: { flexGrow: 1 } })(
-      $(
-        result,
-        O.matchW(
-          () => [
-            View({ flex: 1, justify: 'center' })([
-              ActivityIndicator({ color: Colors.primary.$5 }),
-            ]),
-          ],
-          A.mapWithIndex((i, t) =>
-            TeamItem({ key: i.toString(), index: i, players: t }),
+export const ResultView = named2('Result')(
+  ({ result }: { result: Option<Array<Array<Player>>> }) =>
+    View({ flex: 1 })([
+      View({ bg: Colors.white })([
+        Header({
+          title: 'Resultado',
+          headerStyle: { backgroundColor: Colors.primary.$5 },
+          headerTitleStyle: { color: Colors.text.light },
+          headerLeft: Pressable({
+            onPress: onGoBack,
+            ml: 4,
+            p: 8,
+            borderless: true,
+            foreground: true,
+          })([
+            MaterialIcons({
+              name: 'arrow-back',
+              color: Colors.text.light,
+              size: 24,
+            }),
+          ]),
+          headerRight: Pressable({
+            onPress: onShareTeamList,
+            mr: 4,
+            p: 8,
+            borderless: true,
+            foreground: true,
+          })([
+            MaterialIcons({
+              name: 'share',
+              color: Colors.text.light,
+              size: 24,
+            }),
+          ]),
+        }),
+      ]),
+      ScrollView({ contentContainerStyle: { flexGrow: 1 } })(
+        $(
+          result,
+          O.matchW(
+            () => [
+              View({ flex: 1, justify: 'center' })([
+                ActivityIndicator({ color: Colors.primary.$5 }),
+              ]),
+            ],
+            A.mapWithIndex((i, t) =>
+              TeamItem({ key: i.toString(), index: i, players: t }),
+            ),
           ),
         ),
       ),
-    ),
-  ])
+    ]),
+)
 
 const TeamItem = (props: {
   key: string

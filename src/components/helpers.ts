@@ -69,6 +69,11 @@ export const nameFunction =
     // eslint-disable-next-line functional/immutable-data
     Object.defineProperty(f, 'name', { value: name, writable: false })
 
+export const named1 =
+  (name: string) =>
+  <A1>(component: UIComponent1<[A1]>): UIComponent1<[A1]> =>
+    transformUnderlyingComponent1(component)(nameFunction(name))
+
 export const named2 =
   (name: string) =>
   <A1, A2>(component: UIComponent2<[A1, A2]>): UIComponent2<[A1, A2]> =>

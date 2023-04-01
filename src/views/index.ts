@@ -1,6 +1,7 @@
 import 'react-native-gesture-handler'
 
 import React from 'react'
+import { named1 } from 'src/components/helpers'
 import { GestureHandlerRootView } from 'src/components/hyperscript/gesture-handler/GestureHandlerRootView'
 import { root } from 'src/model/Optics'
 import { StatusBar } from '../components/hyperscript/expo/StatusBar'
@@ -9,7 +10,7 @@ import { execute, getRootState, subscribe } from '../services/StateRef'
 import { $, RIO, get } from '../utils/fp'
 import { Router } from './Router'
 
-export const UI = ({ env }: { env: UIRootEnv }) => {
+export const UI = named1('UI')(({ env }: { env: UIRootEnv }) => {
   const [model, setModel] = React.useState(execute(getRootState)(env)())
   // eslint-disable-next-line functional/no-expression-statement
   React.useEffect(() => {
@@ -22,7 +23,7 @@ export const UI = ({ env }: { env: UIRootEnv }) => {
     return subscription.unsubscribe
   }, [])
   return Root(model)(env)
-}
+})
 
 type UIRootEnv = Parameters<ReturnType<typeof Root>>[0]
 
