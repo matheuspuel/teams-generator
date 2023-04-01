@@ -20,8 +20,7 @@ import { onGoBack } from 'src/slices/routes'
 import { milliseconds } from 'src/utils/datatypes/Duration'
 import { UI } from 'src/views'
 
-type AppEnv = Parameters<typeof UI>[0]['env'] &
-  Parameters<typeof runStartupTasks>[0]
+type AppEnv = Parameters<typeof UI>[0] & Parameters<typeof runStartupTasks>[0]
 
 const env: AppEnv = {
   stateRef: defaultStateRef,
@@ -47,4 +46,4 @@ const runStartupTasks = $(
 // eslint-disable-next-line functional/no-expression-statement
 void runStartupTasks(env)()
 
-export const AppIndex = (): Element => UI({ env })
+export const AppIndex = (): Element => UI(env)

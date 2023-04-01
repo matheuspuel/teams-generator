@@ -1,27 +1,16 @@
 import 'react-native-gesture-handler'
 
-import React from 'react'
+import { Eq, get, identity } from 'fp'
 import { named1 } from 'src/components/helpers'
+import { StatusBar } from 'src/components/hyperscript/expo/StatusBar'
 import { GestureHandlerRootView } from 'src/components/hyperscript/gesture-handler/GestureHandlerRootView'
+import { RootState } from 'src/model'
 import { root } from 'src/model/Optics'
-import { StatusBar } from '../components/hyperscript/expo/StatusBar'
-import { RootState } from '../model'
-import { execute, getRootState, subscribe } from '../services/StateRef'
-import { $, RIO, get } from '../utils/fp'
+import { useSelector } from 'src/services/StateRef/react'
 import { Router } from './Router'
 
-export const UI = named1('UI')(({ env }: { env: UIRootEnv }) => {
-  const [model, setModel] = React.useState(execute(getRootState)(env)())
-  // eslint-disable-next-line functional/no-expression-statement
-  React.useEffect(() => {
-    const subscription = subscribe(
-      $(
-        execute(getRootState),
-        RIO.chainIOK(s => () => setModel(s)),
-      ),
-    )(env)()
-    return subscription.unsubscribe
-  }, [])
+export const UI = named1('UI')((env: UIRootEnv) => {
+  const model = useSelector({ selector: identity, eq: Eq.eqStrict, env })
   return Root(model)(env)
 })
 
