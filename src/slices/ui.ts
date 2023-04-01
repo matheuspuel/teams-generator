@@ -1,15 +1,8 @@
-import { Optic } from 'fp'
+import { $op } from 'src/model/Optics'
 import { replaceSApp } from 'src/services/StateRef'
-import { RootOptic } from '.'
 
-export const UiLens = RootOptic.at('ui')
+export const setUpsertGroupModal = replaceSApp($op.ui.modalUpsertGroup.$)
 
-export const getUi = Optic.get(UiLens)
+export const setUpsertGroupName = replaceSApp($op.ui.modalUpsertGroup.name.$)
 
-export const setUpsertGroupModal = replaceSApp(UiLens.at('modalUpsertGroup'))
-
-export const setUpsertGroupName = replaceSApp(
-  UiLens.at('modalUpsertGroup').compose(Optic.some()).at('name'),
-)
-
-export const setDeleteGroupModal = replaceSApp(UiLens.at('modalDeleteGroup'))
+export const setDeleteGroupModal = replaceSApp($op.ui.modalDeleteGroup.$)

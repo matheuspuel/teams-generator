@@ -18,6 +18,7 @@ import {
 } from 'src/components/hyperscript'
 import { Group, Parameters, Player, Rating } from 'src/datatypes'
 import { RootState } from 'src/model'
+import { $op } from 'src/model/Optics'
 import { execute, replaceSApp } from 'src/services/StateRef'
 import { Colors } from 'src/services/Theme'
 import {
@@ -31,30 +32,25 @@ import {
   togglePosition,
   toggleRating,
 } from 'src/slices/parameters'
-import {
-  PlayerFormLens,
-  blankPlayerForm,
-  getPlayerFormFromData,
-} from 'src/slices/playerForm'
+import { blankPlayerForm, getPlayerFormFromData } from 'src/slices/playerForm'
 import { eraseResult, generateResult } from 'src/slices/result'
 import { navigate, onGoBack } from 'src/slices/routes'
-import { UiLens } from 'src/slices/ui'
-import { Id } from 'src/utils/Entity'
 import { Duration } from 'src/utils/datatypes'
 import { withOpacity } from 'src/utils/datatypes/Color'
+import { Id } from 'src/utils/Entity'
 
-const closeParametersModal = replaceSApp(UiLens.at('modalParameters'))(false)
+const closeParametersModal = replaceSApp($op.ui.modalParameters.$)(false)
 
 const onOpenParametersModal = execute(
-  replaceSApp(UiLens.at('modalParameters'))(true),
+  replaceSApp($op.ui.modalParameters.$)(true),
 )
 
 const onPressAddPlayer = $(
   navigate('Player'),
   S.chain(() =>
     $(
-      replaceSApp(UiLens.at('selectedPlayerId'))(O.none),
-      S.apFirst(replaceSApp(PlayerFormLens)(blankPlayerForm)),
+      replaceSApp($op.ui.selectedPlayerId.$)(O.none),
+      S.apFirst(replaceSApp($op.playerForm.$)(blankPlayerForm)),
     ),
   ),
   execute,
@@ -71,9 +67,9 @@ const onPressItem = (playerId: Id) =>
             () => S.of<RootState, void>(undefined),
             $f(
               getPlayerFormFromData,
-              replaceSApp(PlayerFormLens),
+              replaceSApp($op.playerForm.$),
               S.apFirst(
-                replaceSApp(UiLens.at('selectedPlayerId'))(O.some(playerId)),
+                replaceSApp($op.ui.selectedPlayerId.$)(O.some(playerId)),
               ),
             ),
           ),

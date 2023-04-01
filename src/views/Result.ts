@@ -12,14 +12,14 @@ import {
   View,
 } from 'src/components/hyperscript'
 import { Player, Rating } from 'src/datatypes'
+import { $op } from 'src/model/Optics'
 import { execute } from 'src/services/StateRef'
 import { Colors } from 'src/services/Theme'
-import { ResultLens } from 'src/slices/result'
 import { onGoBack } from 'src/slices/routes'
 import { div, toFixedLocale } from 'src/utils/Number'
 
 const onShareTeamList = $(
-  execute(S.gets(get(ResultLens))),
+  execute(S.gets(get($op.result.$))),
   RTE.rightReaderIO,
   RTE.chainTaskK(
     O.match(

@@ -34,6 +34,7 @@ import {
 } from 'src/components/hyperscript'
 import { Group } from 'src/datatypes'
 import { RootState } from 'src/model'
+import { $op } from 'src/model/Optics'
 import { execute, getSApp, replaceSApp } from 'src/services/StateRef'
 import { Colors } from 'src/services/Theme'
 import {
@@ -48,7 +49,6 @@ import {
   setDeleteGroupModal,
   setUpsertGroupModal,
   setUpsertGroupName,
-  UiLens,
 } from 'src/slices/ui'
 import { withOpacity } from 'src/utils/datatypes/Color'
 import { Id } from 'src/utils/Entity'
@@ -78,7 +78,7 @@ const onOpenDelete = (id: Id) => execute(setDeleteGroupModal(some({ id })))
 const onSelectGroup = (id: Id) =>
   $(
     navigate('Group'),
-    S.chain(() => replaceSApp(UiLens.at('selectedGroupId'))(O.some(id))),
+    S.chain(() => replaceSApp($op.ui.selectedGroupId.$)(O.some(id))),
     execute,
   )
 
@@ -87,7 +87,7 @@ const onCloseGroupModal = execute(setUpsertGroupModal(none))
 const onChangeGroupName = $f(setUpsertGroupName, execute)
 
 const onSaveGroup = $(
-  execute(getSApp(UiLens.at('modalUpsertGroup'))),
+  execute(getSApp($op.ui.modalUpsertGroup.$)),
   RIO.chain(
     $f(
       O.filter(not(m => Str.isEmpty(m.name))),
@@ -109,7 +109,7 @@ const onSaveGroup = $(
 const onCloseDeleteModal = execute(setDeleteGroupModal(none))
 
 const onDeleteGroup = $(
-  S.gets(Optic.get(UiLens.at('modalDeleteGroup'))),
+  S.gets(Optic.get($op.ui.modalDeleteGroup.$)),
   S.chain(
     O.match(
       () => S.of<RootState, void>(undefined),

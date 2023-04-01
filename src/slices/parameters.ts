@@ -1,14 +1,12 @@
 import { Num, Optic, Ord } from 'fp'
+import { $op } from 'src/model/Optics'
 import { modifySApp } from 'src/services/StateRef'
-import { RootOptic } from '.'
-
-export const ParametersLens = RootOptic.at('parameters')
 
 const teamsCountClamp = Ord.clamp(Num.Ord)(2, 8)
 
-const modify = modifySApp(ParametersLens)
+const modify = modifySApp($op.parameters.$)
 
-export const getParameters = Optic.get(ParametersLens)
+export const getParameters = Optic.get($op.parameters.$)
 
 export const togglePosition = modify(s => ({ ...s, position: !s.position }))
 

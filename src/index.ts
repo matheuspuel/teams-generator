@@ -10,10 +10,10 @@ import { execute, replaceSApp, subscribe } from 'src/services/StateRef'
 import { defaultStateRef } from 'src/services/StateRef/default'
 import { defaultTheme } from 'src/services/Theme/default'
 import { hydrate, saveState } from 'src/slices/core/hydration'
-import { LoadedLens } from 'src/slices/core/loading'
 import { onGoBack } from 'src/slices/routes'
 import { milliseconds } from 'src/utils/datatypes/Duration'
 import { UI } from 'src/views'
+import { $op } from './model/Optics'
 
 const runStartupTasks = $(
   RT.fromIO(SplashScreen.preventAutoHideAsync),
@@ -22,7 +22,7 @@ const runStartupTasks = $(
   RT.chainFirstReaderIOKW(() =>
     subscribe($f(saveState, f => throttle(() => f(), $(1000, milliseconds)))),
   ),
-  RT.chainFirstReaderIOKW(() => execute(replaceSApp(LoadedLens)(true))),
+  RT.chainFirstReaderIOKW(() => execute(replaceSApp($op.core.loaded.$)(true))),
 )
 
 const env: AppEnv = { stateRef: defaultStateRef, theme: defaultTheme }

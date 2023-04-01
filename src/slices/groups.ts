@@ -16,20 +16,17 @@ import {
 } from 'fp'
 import { Group, Player } from 'src/datatypes'
 import { RootState } from 'src/model'
+import { $op } from 'src/model/Optics'
 import { execute, modifySApp } from 'src/services/StateRef'
 import { generateId, Id } from 'src/utils/Entity'
-import { RootOptic } from '.'
-import { UiLens } from './ui'
-
-export const GroupsLens = RootOptic.at('groups')
 
 export type GroupsState = Record<Id, Group>
 
 export const emptyGroups: GroupsState = {}
 
-const modify = modifySApp(GroupsLens)
+const modify = modifySApp($op.groups.$)
 
-export const getGroupsRecord = Optic.get(GroupsLens)
+export const getGroupsRecord = Optic.get($op.groups.$)
 
 export const getGroupById = (id: Id) => $f(getGroupsRecord, Rec.lookup(id))
 
@@ -44,7 +41,7 @@ const getPlayer = (args: { groupId: Id; id: Id }) =>
 
 export const getPlayerFromActiveGroup = (args: { playerId: Id }) =>
   $(
-    S.gets(get(UiLens.at('selectedGroupId'))),
+    S.gets(get($op.ui.selectedGroupId.$)),
     S.chain(
       O.match(
         () => S.of<RootState, Option<Player>>(O.none),
@@ -123,7 +120,7 @@ export const deleteCurrentPlayer = S.modify((s: RootState) =>
       playerId: s.ui.selectedPlayerId,
     }),
     O.map(({ groupId, playerId }) =>
-      Optic.modify(GroupsLens.key(groupId).at('players'))(
+      Optic.modify($op.groups.$.key(groupId).at('players'))(
         RA.filter(p => p.id !== playerId),
       )(s),
     ),
@@ -133,13 +130,13 @@ export const deleteCurrentPlayer = S.modify((s: RootState) =>
 
 export const togglePlayerActive = ({ playerId }: { playerId: Id }) =>
   $(
-    S.gets(get(UiLens.at('selectedGroupId'))),
+    S.gets(get($op.ui.selectedGroupId.$)),
     S.chain(
       O.match(
         () => S.modify<RootState>(identity),
         groupId =>
           modifySApp(
-            GroupsLens.key(groupId)
+            $op.groups.$.key(groupId)
               .at('players')
               .compose(Optic.findFirst(p => p.id === playerId))
               .at('active'),
@@ -164,7 +161,7 @@ export const toggleAllPlayersActive = execute(
                 g.players,
                 RA.map(p => ({ ...p, active: !allActive })),
               ),
-            Optic.replace(GroupsLens.key(g.id).at('players')),
+            Optic.replace($op.groups.$.key(g.id).at('players')),
             apply(s),
           ),
       ),

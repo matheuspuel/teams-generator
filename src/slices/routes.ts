@@ -1,20 +1,18 @@
 import { get, replace } from '@fp-ts/optic'
-import { $, Tup, absurd } from 'fp'
+import { $, absurd, Tup } from 'fp'
 import { RootState } from 'src/model'
+import { $op } from 'src/model/Optics'
 import { execute, replaceSApp } from 'src/services/StateRef'
-import { RootOptic } from '.'
-
-export const RouteLens = RootOptic.at('route')
 
 export type Route = 'Groups' | 'Group' | 'Player' | 'Result'
 
 export const initialRoute: Route = 'Groups'
 
-export const navigate = replaceSApp(RouteLens)
+export const navigate = replaceSApp($op.route.$)
 
 export const goBack = (s: RootState) =>
   $(
-    get(RouteLens)(s),
+    get($op.route.$)(s),
     (r): [{ shouldBubbleUpEvent: boolean }, Route] =>
       r === 'Groups'
         ? [{ shouldBubbleUpEvent: true }, r]
@@ -28,7 +26,7 @@ export const goBack = (s: RootState) =>
               ? 'Group'
               : absurd<never>(r),
           ],
-    Tup.mapSnd(route => replace(RouteLens)(route)(s)),
+    Tup.mapSnd(route => replace($op.route.$)(route)(s)),
   )
 
 export const onGoBack = execute(goBack)

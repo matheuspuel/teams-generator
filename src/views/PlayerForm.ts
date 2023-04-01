@@ -14,6 +14,7 @@ import {
   View,
 } from 'src/components/hyperscript'
 import { Position, Rating } from 'src/datatypes'
+import { $op } from 'src/model/Optics'
 import { execute, replaceSApp } from 'src/services/StateRef'
 import { Colors } from 'src/services/Theme'
 import {
@@ -21,26 +22,25 @@ import {
   deleteCurrentPlayer,
   editPlayer,
 } from 'src/slices/groups'
-import { PlayerForm, PlayerFormLens } from 'src/slices/playerForm'
+import { PlayerForm } from 'src/slices/playerForm'
 import { goBack, onGoBack } from 'src/slices/routes'
-import { UiLens } from 'src/slices/ui'
 import { withOpacity } from 'src/utils/datatypes/Color'
 import { RatingSlider } from './components/RatingSlider'
 
-const onChangeName = $f(replaceSApp(PlayerFormLens.at('name')), execute)
+const onChangeName = $f(replaceSApp($op.playerForm.name.$), execute)
 
-const onChangePosition = $f(replaceSApp(PlayerFormLens.at('position')), execute)
+const onChangePosition = $f(replaceSApp($op.playerForm.position.$), execute)
 
-const onChangeRating = $f(replaceSApp(PlayerFormLens.at('rating')), execute)
+const onChangeRating = $f(replaceSApp($op.playerForm.rating.$), execute)
 
 const onSave = $(
   Apply.sequenceS(S.Apply)({
     form: $(
-      S.gets(get(PlayerFormLens)),
+      S.gets(get($op.playerForm.$)),
       S.map(O.fromPredicate(not(f => Str.isEmpty(f.name)))),
     ),
-    groupId: S.gets(get(UiLens.at('selectedGroupId'))),
-    playerId: $(S.gets(get(UiLens.at('selectedPlayerId'))), S.map(O.some)),
+    groupId: S.gets(get($op.ui.selectedGroupId.$)),
+    playerId: $(S.gets(get($op.ui.selectedPlayerId.$)), S.map(O.some)),
   }),
   S.map(Apply.sequenceS(O.Apply)),
   execute,
