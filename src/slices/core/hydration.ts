@@ -1,46 +1,43 @@
 import { get } from '@fp-ts/optic'
-import { $, $f, constVoid, RT, S, T, TO } from 'fp'
+import { $, $f, constVoid, RT, RTE, S } from 'fp'
 import { Parameters } from 'src/datatypes'
 import { root } from 'src/model/Optics'
 import {
-  AppStateRefEnv,
-  execute,
-  getRootState,
-  replaceSApp,
-} from 'src/services/StateRef'
-import { GroupsStorage, ParametersStorage } from 'src/services/Storage'
+  GroupsRepository,
+  ParametersRepository,
+} from 'src/services/Repositories'
+import { execute, getRootState, replaceSApp } from 'src/services/StateRef'
 import { emptyGroups } from '../groups'
 import {} from '../parameters'
 
 export const saveState = $(
   RT.fromReaderIO(execute(getRootState)),
-  RT.chainFirstIOK($f(get(root.groups.$), GroupsStorage.set)),
-  RT.chainFirstIOK($f(get(root.parameters.$), ParametersStorage.set)),
+  RT.chainFirstReaderIOKW($f(get(root.groups.$), GroupsRepository.set)),
+  RT.chainFirstReaderIOKW($f(get(root.parameters.$), ParametersRepository.set)),
 )
 
-export const hydrate = (env: AppStateRefEnv) =>
-  $(
-    T.Do,
-    T.apS(
-      'groups',
-      $(
-        GroupsStorage.get,
-        TO.getOrElseW(() => T.of(emptyGroups)),
-      ),
+export const hydrate = $(
+  RT.Do,
+  RT.apSW(
+    'groups',
+    $(
+      GroupsRepository.get,
+      RTE.getOrElseW(() => RT.of(emptyGroups)),
     ),
-    T.apS(
-      'parameters',
-      $(
-        ParametersStorage.get,
-        TO.getOrElseW(() => T.of(Parameters.initial)),
-      ),
+  ),
+  RT.apSW(
+    'parameters',
+    $(
+      ParametersRepository.get,
+      RTE.getOrElseW(() => RT.of(Parameters.initial)),
     ),
-    T.chainFirstIOK(p =>
-      $(
-        replaceSApp(root.groups.$)(p.groups),
-        S.apFirst(replaceSApp(root.parameters.$)(p.parameters)),
-        execute,
-      )(env),
+  ),
+  RT.chainFirstReaderIOKW(p =>
+    $(
+      replaceSApp(root.groups.$)(p.groups),
+      S.apFirst(replaceSApp(root.parameters.$)(p.parameters)),
+      execute,
     ),
-    T.map(constVoid),
-  )
+  ),
+  RT.map(constVoid),
+)

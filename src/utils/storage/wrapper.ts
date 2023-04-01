@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { constVoid, identity, TE } from 'fp'
 
-const getItem: (key: string) => TE.TaskEither<void, string | null> = key =>
-  TE.tryCatch(() => AsyncStorage.getItem(key), constVoid)
+const getItem: (key: string) => TE.TaskEither<unknown, string | null> = key =>
+  TE.tryCatch(() => AsyncStorage.getItem(key), identity)
 
 const setItem: (
   key: string,

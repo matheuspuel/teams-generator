@@ -1,3 +1,4 @@
+import { $, apply, RA } from 'fp'
 import { Reader } from 'fp-ts/lib/Reader'
 import React from 'react'
 import {
@@ -5,7 +6,6 @@ import {
   ScreenStackProps,
 } from 'src/components/custom/screens/ScreenStack'
 import { Element } from 'src/components/custom/types'
-import { $, apply, RA } from 'src/utils/fp'
 
 export const ScreenStack =
   <R1>(props: ScreenStackProps<R1> = {}) =>

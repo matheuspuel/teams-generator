@@ -1,4 +1,3 @@
-import * as SplashScreen from 'expo-splash-screen'
 import {
   $,
   $f,
@@ -35,6 +34,7 @@ import {
 import { Group } from 'src/datatypes'
 import { RootState } from 'src/model'
 import { root } from 'src/model/Optics'
+import { SplashScreen } from 'src/services/SplashScreen'
 import { execute, getSApp, replaceSApp } from 'src/services/StateRef'
 import { Colors } from 'src/services/Theme'
 import {
@@ -55,7 +55,7 @@ import { Id } from 'src/utils/Entity'
 
 const doNothing = RIO.of<unknown, void>(undefined)
 
-const onUIMount = RIO.fromIO(SplashScreen.hideAsync)
+const onUIMount = SplashScreen.hide
 
 const onOpenNewGroupModal = execute(
   setUpsertGroupModal(some({ id: O.none, name: '' })),

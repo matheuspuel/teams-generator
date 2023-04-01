@@ -1,11 +1,10 @@
-import { $f, Json, O, TE, TO } from 'fp'
+import { $f, Json, O, TE, TaskEither } from 'fp'
 import { AsyncStorageFP } from './wrapper'
 
-const get: (key: string) => TO.TaskOption<Json.Json> = $f(
+const get: (key: string) => TaskEither<unknown, Json.Json> = $f(
   AsyncStorageFP.getItem,
-  TO.fromTaskEither,
-  TO.chainOptionK(O.fromNullable),
-  TO.chainEitherK(Json.parse),
+  TE.chainOptionK((): unknown => 'Empty')(O.fromNullable),
+  TE.chainEitherK(Json.parse),
 )
 
 const set: (

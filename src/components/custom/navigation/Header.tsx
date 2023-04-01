@@ -1,6 +1,6 @@
 import Header_ from '@react-navigation/elements/src/Header/Header'
+import { $, Reader, constant } from 'fp'
 import { Color } from 'src/utils/datatypes'
-import { $, Reader, constant } from 'src/utils/fp'
 import { Element } from '../types'
 
 export type HeaderProps<R> = {

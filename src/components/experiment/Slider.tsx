@@ -1,3 +1,4 @@
+import { $, IO, R, apply } from 'fp'
 import React from 'react'
 import { View } from 'react-native'
 import {
@@ -12,7 +13,6 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated'
-import { $, IO, R, apply } from 'src/utils/fp'
 
 export const Slider = ({
   step,

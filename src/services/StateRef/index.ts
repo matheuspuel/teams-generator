@@ -6,9 +6,9 @@ export type AppStateRef = StateRef<RootState>
 
 export type AppStateRefEnv = { stateRef: AppStateRef }
 
-export const subscribe: (
-  effect: ReaderIO<AppStateRefEnv, void>,
-) => ReaderIO<AppStateRefEnv, { unsubscribe: IO<void> }> = f => env =>
+export const subscribe: <R>(
+  effect: ReaderIO<R, void>,
+) => ReaderIO<AppStateRefEnv & R, { unsubscribe: IO<void> }> = f => env =>
   env.stateRef.subscribe(f(env))
 
 export const execute =

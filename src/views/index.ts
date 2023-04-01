@@ -5,12 +5,11 @@ import { GestureHandlerRootView } from 'src/components/hyperscript/gesture-handl
 import { root } from 'src/model/Optics'
 import { StatusBar } from '../components/hyperscript/expo/StatusBar'
 import { RootState } from '../model'
-import { AppEnv } from '../services'
 import { execute, getRootState, subscribe } from '../services/StateRef'
 import { $, RIO, get } from '../utils/fp'
 import { Router } from './Router'
 
-export const UI = ({ env }: { env: AppEnv }) => {
+export const UI = ({ env }: { env: UIRootEnv }) => {
   const [model, setModel] = React.useState(execute(getRootState)(env)())
   // eslint-disable-next-line functional/no-expression-statement
   React.useEffect(() => {
@@ -24,6 +23,8 @@ export const UI = ({ env }: { env: AppEnv }) => {
   }, [])
   return Root(model)(env)
 }
+
+type UIRootEnv = Parameters<ReturnType<typeof Root>>[0]
 
 const Root = (model: RootState) =>
   GestureHandlerRootView([

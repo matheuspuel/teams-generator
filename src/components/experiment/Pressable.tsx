@@ -1,3 +1,4 @@
+import { IO } from 'fp'
 import React from 'react'
 import { LayoutRectangle } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
@@ -7,7 +8,6 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated'
-import { IO } from 'src/utils/fp'
 
 const emptyLayout: LayoutRectangle = { height: 0, width: 0, x: 0, y: 0 }
 

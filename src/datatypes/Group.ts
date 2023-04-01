@@ -1,5 +1,5 @@
+import { D } from 'fp'
 import { Id } from 'src/utils/Entity'
-import { D } from 'src/utils/fp'
 import { Player } from './Player'
 
 export type Group = {

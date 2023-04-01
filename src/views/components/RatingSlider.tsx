@@ -1,3 +1,4 @@
+import { $, R, RA, ReaderIO, apply } from 'fp'
 import React from 'react'
 import { View as View_ } from 'react-native'
 import {
@@ -16,7 +17,6 @@ import { Fragment, Txt, View } from 'src/components/hyperscript'
 import { Rating } from 'src/datatypes'
 import { AppThemeEnv, Colors } from 'src/services/Theme'
 import { Color } from 'src/utils/datatypes'
-import { $, apply, R, RA, ReaderIO } from 'src/utils/fp'
 
 export type RatingSliderProps<R extends unknown> = {
   initialPercentage: number
