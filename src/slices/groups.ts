@@ -120,7 +120,7 @@ export const deleteCurrentPlayer = S.modify((s: RootState) =>
       playerId: s.ui.selectedPlayerId,
     }),
     O.map(({ groupId, playerId }) =>
-      Optic.modify($op.groups.$.key(groupId).at('players'))(
+      Optic.modify($op.groups.id(groupId).players.$)(
         RA.filter(p => p.id !== playerId),
       )(s),
     ),
@@ -135,12 +135,9 @@ export const togglePlayerActive = ({ playerId }: { playerId: Id }) =>
       O.match(
         () => S.modify<RootState>(identity),
         groupId =>
-          modifySApp(
-            $op.groups.$.key(groupId)
-              .at('players')
-              .compose(Optic.findFirst(p => p.id === playerId))
-              .at('active'),
-          )(a => !a),
+          modifySApp($op.groups.id(groupId).players.id(playerId).active.$)(
+            a => !a,
+          ),
       ),
     ),
   )
@@ -161,7 +158,7 @@ export const toggleAllPlayersActive = execute(
                 g.players,
                 RA.map(p => ({ ...p, active: !allActive })),
               ),
-            Optic.replace($op.groups.$.key(g.id).at('players')),
+            Optic.replace($op.groups.id(g.id).players.$),
             apply(s),
           ),
       ),
