@@ -1,4 +1,4 @@
-import { $, $f, A, constVoid, get, O, Option, Ord, RTE, S, T } from 'fp'
+import { $, $f, A, constVoid, get, Num, O, Option, Ord, RTE, S, T } from 'fp'
 import { Share } from 'react-native'
 import {
   ActivityIndicator,
@@ -16,7 +16,7 @@ import { root } from 'src/model/Optics'
 import { execute } from 'src/services/StateRef'
 import { Colors } from 'src/services/Theme'
 import { onGoBack } from 'src/slices/routes'
-import { div, toFixedLocale } from 'src/utils/Number'
+import { toFixedLocale } from 'src/utils/Number'
 
 const onShareTeamList = $(
   execute(S.gets(get(root.result.$))),
@@ -93,7 +93,7 @@ const TeamItem = (props: {
   const title = `Time ${props.index + 1}`
   const numPlayers = props.players.length
   const totalRating = Player.getRatingTotal(props.players)
-  const avgRating = toFixedLocale(2)(div(numPlayers)(totalRating))
+  const avgRating = toFixedLocale(2)(Num.div(numPlayers)(totalRating))
   return View({
     key: props.key,
     bg: Colors.white,

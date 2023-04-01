@@ -1,6 +1,5 @@
 import { $, $f, A, D, Num, Ord, Show as Show_, Str } from 'fp'
 import { Id } from 'src/utils/Entity'
-import { avg } from 'src/utils/Number'
 import * as Position from './Position'
 import * as Rating from './Rating'
 
@@ -91,5 +90,5 @@ export const getRatingTotal: (players: Array<Player>) => number = A.foldMap(
 
 export const getRatingAvg: (players: Array<Player>) => number = $f(
   A.map(p => p.rating),
-  avg,
+  Num.avg,
 )

@@ -1,9 +1,4 @@
-import { $, A, Monoid, Num } from 'fp'
-
-export const div = (divisor: number) => (dividend: number) => dividend / divisor
-
-export const avg = (ns: Array<number>) =>
-  $(ns, Monoid.concatAll(Num.MonoidSum), div(A.size(ns)))
+import { $ } from 'fp'
 
 const thousandsSeparator = '.' as '.' | ','
 const decimalSeparator = thousandsSeparator === '.' ? ',' : '.'

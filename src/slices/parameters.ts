@@ -1,23 +1,23 @@
-import { Num, Optic, Ord } from 'fp'
+import { $f, Num, Optic, Ord } from 'fp'
 import { root } from 'src/model/Optics'
 import { modifySApp } from 'src/services/StateRef'
+import { toggle } from 'src/utils/fp/boolean'
+import { decrement, increment } from 'src/utils/fp/number'
 
-const teamsCountClamp = Ord.clamp(Num.Ord)(2, 8)
+const params = root.parameters
 
-const modify = modifySApp(root.parameters.$)
+export const getParameters = Optic.get(params.$)
 
-export const getParameters = Optic.get(root.parameters.$)
+export const togglePosition = modifySApp(params.position.$)(toggle)
 
-export const togglePosition = modify(s => ({ ...s, position: !s.position }))
+export const toggleRating = modifySApp(params.rating.$)(toggle)
 
-export const toggleRating = modify(s => ({ ...s, rating: !s.rating }))
+const teamsCountClamp = Ord.clamp(Num.Ord)(2, 9)
 
-export const incrementTeamsCount = modify(s => ({
-  ...s,
-  teamsCount: teamsCountClamp(s.teamsCount + 1),
-}))
+export const incrementTeamsCount = modifySApp(params.teamsCount.$)(
+  $f(increment, teamsCountClamp),
+)
 
-export const decrementTeamsCount = modify(s => ({
-  ...s,
-  teamsCount: teamsCountClamp(s.teamsCount - 1),
-}))
+export const decrementTeamsCount = modifySApp(params.teamsCount.$)(
+  $f(decrement, teamsCountClamp),
+)

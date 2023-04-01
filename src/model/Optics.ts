@@ -23,7 +23,12 @@ export const root = $(Optic.id<RootState>(), root => ({
         })),
       })),
   })),
-  parameters: { $: root.at('parameters') },
+  parameters: $(root.at('parameters'), parameters => ({
+    $: parameters,
+    position: { $: parameters.at('position') },
+    rating: { $: parameters.at('rating') },
+    teamsCount: { $: parameters.at('teamsCount') },
+  })),
   result: { $: root.at('result') },
   playerForm: $(root.at('playerForm'), playerForm => ({
     $: playerForm,
