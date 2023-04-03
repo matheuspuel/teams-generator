@@ -1,4 +1,5 @@
-import { $, $f, Eq, O, Option, R, RIO, RT, S, Task } from 'fp'
+import { $, Eq, O, Option, R } from 'fp'
+import { on } from 'src/actions'
 import {
   deepEq,
   memoized,
@@ -17,98 +18,9 @@ import {
   View,
 } from 'src/components/hyperscript'
 import { Group, Parameters, Player, Rating } from 'src/datatypes'
-import { RootState } from 'src/model'
-import { root } from 'src/model/Optics'
-import { AppStateRefEnv, execute, replaceSApp } from 'src/services/StateRef'
+import { AppStateRefEnv } from 'src/services/StateRef'
 import { AppThemeEnv, Colors } from 'src/services/Theme'
-import {
-  getPlayerFromActiveGroup,
-  toggleAllPlayersActive,
-  togglePlayerActive,
-} from 'src/slices/groups'
-import {
-  decrementTeamsCount,
-  incrementTeamsCount,
-  togglePosition,
-  toggleRating,
-} from 'src/slices/parameters'
-import { blankPlayerForm, getPlayerFormFromData } from 'src/slices/playerForm'
-import { eraseResult, generateResult } from 'src/slices/result'
-import { navigate, onGoBack } from 'src/slices/routes'
-import { Duration } from 'src/utils/datatypes'
 import { withOpacity } from 'src/utils/datatypes/Color'
-import { Id } from 'src/utils/Entity'
-
-const closeParametersModal = replaceSApp(root.ui.modalParameters.$)(false)
-
-const onOpenParametersModal = execute(
-  replaceSApp(root.ui.modalParameters.$)(true),
-)
-
-const onPressAddPlayer = $(
-  navigate('Player'),
-  S.chain(() =>
-    $(
-      replaceSApp(root.ui.selectedPlayerId.$)(O.none),
-      S.apFirst(replaceSApp(root.playerForm.$)(blankPlayerForm)),
-    ),
-  ),
-  execute,
-)
-
-const onPressItem = (playerId: Id) =>
-  $(
-    navigate('Player'),
-    S.chain(() =>
-      $(
-        getPlayerFromActiveGroup({ playerId }),
-        S.chain(
-          O.match(
-            () => S.of<RootState, void>(undefined),
-            $f(
-              getPlayerFormFromData,
-              replaceSApp(root.playerForm.$),
-              S.apFirst(
-                replaceSApp(root.ui.selectedPlayerId.$)(O.some(playerId)),
-              ),
-            ),
-          ),
-        ),
-      ),
-    ),
-    execute,
-  )
-
-const onTogglePlayerActive = (id: Id) =>
-  execute(togglePlayerActive({ playerId: id }))
-
-const onCloseParametersModal = execute(closeParametersModal)
-
-const doNothing = RIO.of(undefined)
-
-const onDecrementTeamsCount = execute(decrementTeamsCount)
-
-const onIncrementTeamsCount = execute(incrementTeamsCount)
-
-const onTogglePosition = execute(togglePosition)
-
-const onToggleRating = execute(toggleRating)
-
-const wait =
-  (time: Duration): Task<void> =>
-  () =>
-    new Promise(res => setTimeout(() => res(), time))
-
-const onShuffle = $(
-  S.of<RootState, void>(undefined),
-  S.chain(() => eraseResult),
-  S.chain(() => navigate('Result')),
-  S.chain(() => closeParametersModal),
-  execute,
-  RT.fromReaderIO,
-  RT.chainFirstTaskK(() => wait(0)),
-  RT.chainReaderIOK(() => generateResult),
-)
 
 export const GroupView = memoized('GroupScreen')(
   Eq.struct({
@@ -144,7 +56,7 @@ export const GroupView = memoized('GroupScreen')(
         initialNumToRender: 16,
       }),
       Pressable<AppStateRefEnv & AppThemeEnv>({
-        onPress: onOpenParametersModal,
+        onPress: on.openParametersModal,
         p: 16,
         bg: Colors.primary.$5,
         rippleColor: Colors.black,
@@ -161,7 +73,7 @@ const GroupHeader = memoizedConst('GroupHeader')(
       headerStyle: { backgroundColor: Colors.primary.$5 },
       headerTitleStyle: { color: Colors.text.light },
       headerLeft: Pressable({
-        onPress: onGoBack,
+        onPress: on.goBack,
         ml: 4,
         p: 8,
         borderless: true,
@@ -175,7 +87,7 @@ const GroupHeader = memoizedConst('GroupHeader')(
       ]),
       headerRight: Row()([
         Pressable({
-          onPress: toggleAllPlayersActive,
+          onPress: on.toggleAllPlayersActive,
           mr: 4,
           p: 8,
           borderless: true,
@@ -188,7 +100,7 @@ const GroupHeader = memoizedConst('GroupHeader')(
           }),
         ]),
         Pressable({
-          onPress: onPressAddPlayer,
+          onPress: on.pressNewPlayer,
           mr: 4,
           p: 8,
           borderless: true,
@@ -205,7 +117,7 @@ const Item = memoized('GroupItem')(
   deepEq,
   ({ id, name, position, rating, active }: Player) =>
     Pressable<AppStateRefEnv & AppThemeEnv>({
-      onPress: onPressItem(id),
+      onPress: on.selectPlayer(id),
       direction: 'row',
       align: 'center',
       gap: 8,
@@ -214,7 +126,7 @@ const Item = memoized('GroupItem')(
       bg: Colors.white,
     })([
       Pressable<AppStateRefEnv & AppThemeEnv>({
-        onPress: onTogglePlayerActive(id),
+        onPress: on.togglePlayerActive(id),
         borderless: true,
         p: 8,
         mr: -8,
@@ -274,16 +186,16 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
     flex: 1,
     animationType: 'fade',
     statusBarTranslucent: true,
-    onRequestClose: onCloseParametersModal,
+    onRequestClose: on.closeParametersModal,
   })([
     Pressable<AppStateRefEnv & AppThemeEnv>({
-      onPress: onCloseParametersModal,
+      onPress: on.closeParametersModal,
       flex: 1,
       justify: 'center',
       bg: $(Colors.black, R.map(withOpacity(63))),
     })([
       Pressable({
-        onPress: doNothing,
+        onPress: on.doNothing,
         bg: Colors.white,
         m: 48,
         round: 8,
@@ -302,7 +214,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
           Pressable({
             p: 8,
             round: 4,
-            onPress: onCloseParametersModal,
+            onPress: on.closeParametersModal,
           })([
             MaterialIcons({ name: 'close', size: 24, color: Colors.gray.$4 }),
           ]),
@@ -311,7 +223,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
         View({ p: 16 })([
           Row({ align: 'center' })([
             Pressable<AppStateRefEnv & AppThemeEnv>({
-              onPress: onDecrementTeamsCount,
+              onPress: on.decrementTeamsCount,
               p: 12,
               borderless: true,
               rippleColor: Colors.primary.$5,
@@ -327,7 +239,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
               parameters.teamsCount.toString(),
             ),
             Pressable<AppStateRefEnv & AppThemeEnv>({
-              onPress: onIncrementTeamsCount,
+              onPress: on.incrementTeamsCount,
               p: 12,
               borderless: true,
               rippleColor: Colors.primary.$5,
@@ -342,7 +254,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
             Txt({ flex: 1, pl: 8, color: Colors.text.dark })('Número de times'),
           ]),
           Pressable({
-            onPress: onTogglePosition,
+            onPress: on.togglePosition,
             direction: 'row',
             align: 'center',
             p: 8,
@@ -373,7 +285,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
             Txt({ ml: 8, size: 14 })('Considerar posições'),
           ]),
           Pressable({
-            onPress: onToggleRating,
+            onPress: on.toggleRating,
             direction: 'row',
             align: 'center',
             p: 8,
@@ -408,7 +320,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
         Row({ p: 16, justify: 'end' })([
           Row()([
             Pressable<AppStateRefEnv & AppThemeEnv>({
-              onPress: onCloseParametersModal,
+              onPress: on.closeParametersModal,
               mr: 8,
               p: 12,
               round: 4,
@@ -416,7 +328,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
               rippleOpacity: 0.15,
             })([Txt({ color: Colors.primary.$5 })('Cancelar')]),
             Pressable<AppStateRefEnv & AppThemeEnv>({
-              onPress: onShuffle,
+              onPress: on.shuffle,
               p: 12,
               round: 4,
               bg: Colors.primary.$5,

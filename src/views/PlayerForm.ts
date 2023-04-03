@@ -1,6 +1,5 @@
-import { get } from '@fp-ts/optic'
-import { $, $f, A, Apply, D, O, R, Rec, RIO, S, Str, Tup } from 'fp'
-import { not } from 'fp-ts/Predicate'
+import { $, A, R, Rec, Tup } from 'fp'
+import { on } from 'src/actions'
 import { memoizedConst, named2 } from 'src/components/helpers'
 import {
   Fragment,
@@ -14,53 +13,11 @@ import {
   View,
 } from 'src/components/hyperscript'
 import { Position, Rating } from 'src/datatypes'
-import { root } from 'src/model/Optics'
-import { AppStateRefEnv, execute, replaceSApp } from 'src/services/StateRef'
+import { AppStateRefEnv } from 'src/services/StateRef'
 import { AppThemeEnv, Colors } from 'src/services/Theme'
-import {
-  createPlayer,
-  deleteCurrentPlayer,
-  editPlayer,
-} from 'src/slices/groups'
 import { PlayerForm } from 'src/slices/playerForm'
-import { goBack, onGoBack } from 'src/slices/routes'
 import { withOpacity } from 'src/utils/datatypes/Color'
 import { RatingSlider } from './components/RatingSlider'
-
-const onChangeName = $f(replaceSApp(root.playerForm.name.$), execute)
-
-const onChangePosition = $f(replaceSApp(root.playerForm.position.$), execute)
-
-const onChangeRating = $f(replaceSApp(root.playerForm.rating.$), execute)
-
-const onSave = $(
-  Apply.sequenceS(S.Apply)({
-    form: $(
-      S.gets(get(root.playerForm.$)),
-      S.map(O.fromPredicate(not(f => Str.isEmpty(f.name)))),
-    ),
-    groupId: S.gets(get(root.ui.selectedGroupId.$)),
-    playerId: $(S.gets(get(root.ui.selectedPlayerId.$)), S.map(O.some)),
-  }),
-  S.map(Apply.sequenceS(O.Apply)),
-  execute,
-  RIO.chain(
-    O.matchW(
-      () => RIO.of(undefined),
-      ({ form, groupId, playerId }) =>
-        $(
-          playerId,
-          O.matchW(
-            () => createPlayer({ groupId, player: form }),
-            id => execute(editPlayer({ groupId, player: { ...form, id } })),
-          ),
-          RIO.apFirst(onGoBack),
-        ),
-    ),
-  ),
-)
-
-const onDelete = $(deleteCurrentPlayer, S.apFirst(goBack), execute)
 
 const ScreenHeader = memoizedConst('Header')(
   View({ bg: Colors.white })([
@@ -69,7 +26,7 @@ const ScreenHeader = memoizedConst('Header')(
       headerStyle: { backgroundColor: Colors.primary.$5 },
       headerTitleStyle: { color: Colors.text.light },
       headerLeft: Pressable({
-        onPress: onGoBack,
+        onPress: on.goBack,
         ml: 4,
         p: 8,
         borderless: true,
@@ -82,7 +39,7 @@ const ScreenHeader = memoizedConst('Header')(
         }),
       ]),
       headerRight: Pressable({
-        onPress: onDelete,
+        onPress: on.deletePlayer,
         mr: 4,
         p: 8,
         borderless: true,
@@ -102,7 +59,7 @@ const NameField = (name: string) =>
       placeholder: 'Ex: Pedro',
       placeholderTextColor: Colors.gray.$3,
       value: name,
-      onChange: onChangeName,
+      onChange: on.changePlayerName,
       cursorColor: Colors.text.dark,
       fontSize: 12,
       p: 8,
@@ -129,7 +86,7 @@ const PositionField = (position: Position) =>
         A.map(p =>
           Pressable<AppStateRefEnv & AppThemeEnv>({
             key: p,
-            onPress: onChangePosition(p),
+            onPress: on.changePlayerPosition(p),
             p: 12,
             align: 'center',
             borderless: true,
@@ -166,12 +123,7 @@ export const RatingField = (rating: Rating) =>
     RatingSlider({
       initialPercentage: rating / 10,
       step: 0.05,
-      onChange: $f(
-        v => Math.round(v * 20) / 2,
-        D.decodeOption(Rating.Schema),
-        O.map(onChangeRating),
-        O.getOrElseW(() => RIO.of(undefined)),
-      ),
+      onChange: on.changePlayerRating,
     }),
   ])
 
@@ -181,7 +133,7 @@ const SaveButton = ({ isEnabled }: { isEnabled: boolean }) =>
     bg: isEnabled
       ? Colors.primary.$5
       : $(Colors.primary.$5, R.map(withOpacity(95))),
-    onPress: onSave,
+    onPress: on.savePlayer,
     isEnabled: isEnabled,
     rippleColor: Colors.black,
     rippleOpacity: 0.5,

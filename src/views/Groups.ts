@@ -1,22 +1,5 @@
-import {
-  $,
-  $f,
-  A,
-  Eq,
-  identity,
-  none,
-  O,
-  Optic,
-  Option,
-  R,
-  Rec,
-  RIO,
-  S,
-  some,
-  Str,
-  Tup,
-} from 'fp'
-import { not } from 'fp-ts/Predicate'
+import { $, A, Eq, O, Option, R, Rec, Tup } from 'fp'
+import { on } from 'src/actions'
 import { memoized, memoizedConst } from 'src/components/helpers'
 import {
   FlatList,
@@ -33,97 +16,11 @@ import {
 } from 'src/components/hyperscript'
 import { Group } from 'src/datatypes'
 import { RootState } from 'src/model'
-import { root } from 'src/model/Optics'
-import { SplashScreen } from 'src/services/SplashScreen'
-import {
-  AppStateRefEnv,
-  execute,
-  getSApp,
-  replaceSApp,
-} from 'src/services/StateRef'
+import { AppStateRefEnv } from 'src/services/StateRef'
 import { AppThemeEnv, Colors } from 'src/services/Theme'
-import {
-  createGroup,
-  deleteGroup,
-  editGroup,
-  getGroupById,
-  GroupsState,
-} from 'src/slices/groups'
-import { navigate } from 'src/slices/routes'
-import {
-  setDeleteGroupModal,
-  setUpsertGroupModal,
-  setUpsertGroupName,
-} from 'src/slices/ui'
+import { GroupsState } from 'src/slices/groups'
 import { withOpacity } from 'src/utils/datatypes/Color'
 import { Id } from 'src/utils/Entity'
-
-const doNothing = RIO.of<unknown, void>(undefined)
-
-const onUIMount = SplashScreen.hide
-
-const onOpenNewGroupModal = execute(
-  setUpsertGroupModal(some({ id: O.none, name: '' })),
-)
-
-const onOpenEdit = (id: Id) =>
-  $(
-    S.gets(getGroupById(id)),
-    S.chain(
-      O.match(
-        () => S.modify<RootState>(identity),
-        g => setUpsertGroupModal(some({ id: O.some(id), name: g.name })),
-      ),
-    ),
-    execute,
-  )
-
-const onOpenDelete = (id: Id) => execute(setDeleteGroupModal(some({ id })))
-
-const onSelectGroup = (id: Id) =>
-  $(
-    navigate('Group'),
-    S.chain(() => replaceSApp(root.ui.selectedGroupId.$)(O.some(id))),
-    execute,
-  )
-
-const onCloseGroupModal = execute(setUpsertGroupModal(none))
-
-const onChangeGroupName = $f(setUpsertGroupName, execute)
-
-const onSaveGroup = $(
-  execute(getSApp(root.ui.modalUpsertGroup.$)),
-  RIO.chain(
-    $f(
-      O.filter(not(m => Str.isEmpty(m.name))),
-      O.map(m =>
-        $(
-          m.id,
-          O.matchW(
-            () => createGroup({ name: m.name }),
-            id => execute(editGroup({ id, name: m.name })),
-          ),
-          RIO.apFirst(execute(setUpsertGroupModal(O.none))),
-        ),
-      ),
-      O.getOrElseW(() => doNothing),
-    ),
-  ),
-)
-
-const onCloseDeleteModal = execute(setDeleteGroupModal(none))
-
-const onDeleteGroup = $(
-  S.gets(Optic.get(root.ui.modalDeleteGroup.$)),
-  S.chain(
-    O.match(
-      () => S.of<RootState, void>(undefined),
-      ({ id }) => deleteGroup({ id }),
-    ),
-  ),
-  S.apFirst(setDeleteGroupModal(none)),
-  execute,
-)
 
 export const Groups = memoized('Groups')(
   Eq.struct({
@@ -139,7 +36,7 @@ export const Groups = memoized('Groups')(
     ui: RootState['ui']
     groups: GroupsState
   }) =>
-    View({ flex: 1, onLayout: onUIMount })([
+    View({ flex: 1, onLayout: on.uiMount })([
       ScreenHeader,
       FlatList({
         data: $(groups, Rec.toEntries, A.map(Tup.snd)),
@@ -171,7 +68,7 @@ const ScreenHeader = memoizedConst('Header')(
       headerStyle: { backgroundColor: Colors.primary.$5 },
       headerTitleStyle: { color: Colors.text.light },
       headerRight: Pressable({
-        onPress: onOpenNewGroupModal,
+        onPress: on.openNewGroupModal,
         mr: 4,
         p: 8,
         borderless: true,
@@ -185,7 +82,7 @@ const Item = memoized('GroupItem')(
   Eq.struct({ name: Eq.eqStrict, id: Eq.eqStrict }),
   ({ name, id }: Group) =>
     Pressable<AppStateRefEnv & AppThemeEnv>({
-      onPress: onSelectGroup(id),
+      onPress: on.selectGroup(id),
       direction: 'row',
       align: 'center',
       p: 4,
@@ -200,11 +97,14 @@ const Item = memoized('GroupItem')(
         weight: 600,
         color: Colors.text.dark,
       })(name),
-      Pressable({ onPress: onOpenEdit(id), borderless: true, py: 8, px: 4 })([
-        MaterialIcons({ name: 'edit', size: 24, color: Colors.gray.$4 }),
-      ]),
       Pressable({
-        onPress: onOpenDelete(id),
+        onPress: on.openEditGroupModal(id),
+        borderless: true,
+        py: 8,
+        px: 4,
+      })([MaterialIcons({ name: 'edit', size: 24, color: Colors.gray.$4 })]),
+      Pressable({
+        onPress: on.openDeleteGroupModal(id),
         borderless: true,
         py: 8,
         px: 4,
@@ -225,16 +125,16 @@ const GroupModal = ({
         flex: 1,
         animationType: 'fade',
         statusBarTranslucent: true,
-        onRequestClose: onCloseGroupModal,
+        onRequestClose: on.closeGroupModal,
       })([
         Pressable<AppStateRefEnv & AppThemeEnv>({
-          onPress: onCloseGroupModal,
+          onPress: on.closeGroupModal,
           flex: 1,
           justify: 'center',
           bg: $(Colors.black, R.map(withOpacity(63))),
         })([
           Pressable({
-            onPress: doNothing,
+            onPress: on.doNothing,
             bg: Colors.white,
             m: 48,
             round: 8,
@@ -259,7 +159,7 @@ const GroupModal = ({
                   ),
                 ),
               ),
-              Pressable({ onPress: onCloseGroupModal, p: 8, round: 4 })([
+              Pressable({ onPress: on.closeGroupModal, p: 8, round: 4 })([
                 MaterialIcons({
                   name: 'close',
                   size: 24,
@@ -275,7 +175,7 @@ const GroupModal = ({
               TextInput<AppStateRefEnv & AppThemeEnv>({
                 placeholder: 'Ex: Futebol de quinta',
                 value: form.name,
-                onChange: onChangeGroupName,
+                onChange: on.changeGroupName,
                 placeholderTextColor: Colors.gray.$3,
                 cursorColor: Colors.text.dark,
                 fontSize: 12,
@@ -293,7 +193,7 @@ const GroupModal = ({
             View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
             Row({ justify: 'end', p: 16 })([
               Pressable<AppStateRefEnv & AppThemeEnv>({
-                onPress: onCloseGroupModal,
+                onPress: on.closeGroupModal,
                 mr: 8,
                 p: 12,
                 round: 4,
@@ -306,7 +206,7 @@ const GroupModal = ({
                 bg: !form.name
                   ? $(Colors.primary.$5, R.map(withOpacity(95)))
                   : Colors.primary.$5,
-                onPress: onSaveGroup,
+                onPress: on.saveGroup,
                 isEnabled: !!form.name,
                 rippleColor: Colors.black,
                 rippleOpacity: 0.5,
@@ -338,16 +238,16 @@ const DeleteGroupModal = ({
     flex: 1,
     animationType: 'fade',
     statusBarTranslucent: true,
-    onRequestClose: onCloseDeleteModal,
+    onRequestClose: on.closeDeleteGroupModal,
   })([
     Pressable<AppStateRefEnv & AppThemeEnv>({
-      onPress: onCloseDeleteModal,
+      onPress: on.closeDeleteGroupModal,
       flex: 1,
       bg: $(Colors.black, R.map(withOpacity(63))),
       justify: 'center',
     })([
       Pressable({
-        onPress: doNothing,
+        onPress: on.doNothing,
         bg: Colors.white,
         m: 48,
         round: 8,
@@ -363,7 +263,7 @@ const DeleteGroupModal = ({
             weight: 600,
             color: Colors.text.dark,
           })('Excluir grupo'),
-          Pressable({ onPress: onCloseDeleteModal, p: 8, round: 4 })([
+          Pressable({ onPress: on.closeDeleteGroupModal, p: 8, round: 4 })([
             MaterialIcons({ name: 'close', size: 24, color: Colors.gray.$4 }),
           ]),
         ]),
@@ -389,7 +289,7 @@ const DeleteGroupModal = ({
             round: 4,
             rippleColor: Colors.danger.$5,
             rippleOpacity: 0.15,
-            onPress: onCloseDeleteModal,
+            onPress: on.closeDeleteGroupModal,
           })([Txt({ color: Colors.danger.$5 })('Cancelar')]),
           Pressable<AppStateRefEnv & AppThemeEnv>({
             p: 12,
@@ -397,7 +297,7 @@ const DeleteGroupModal = ({
             bg: Colors.danger.$5,
             rippleColor: Colors.black,
             rippleOpacity: 0.5,
-            onPress: onDeleteGroup,
+            onPress: on.deleteGroup,
           })([Txt({ color: Colors.white })('Excluir')]),
         ]),
       ]),

@@ -1,5 +1,5 @@
-import { $, $f, A, constVoid, get, Num, O, Option, Ord, RTE, S, T } from 'fp'
-import { Share } from 'react-native'
+import { $, A, Num, O, Option, Ord } from 'fp'
+import { on } from 'src/actions'
 import { named2 } from 'src/components/helpers'
 import {
   ActivityIndicator,
@@ -13,26 +13,8 @@ import {
   View,
 } from 'src/components/hyperscript'
 import { Player, Rating } from 'src/datatypes'
-import { root } from 'src/model/Optics'
-import { execute } from 'src/services/StateRef'
 import { Colors } from 'src/services/Theme'
-import { onGoBack } from 'src/slices/routes'
 import { toFixedLocale } from 'src/utils/Number'
-
-const onShareTeamList = $(
-  execute(S.gets(get(root.result.$))),
-  RTE.rightReaderIO,
-  RTE.chainTaskK(
-    O.match(
-      () => T.of(undefined),
-      $f(
-        Player.TeamListShowSensitive.show,
-        t => () => Share.share({ message: t, title: 'Times' }),
-        T.map(constVoid),
-      ),
-    ),
-  ),
-)
 
 export const ResultView = named2('Result')(
   ({ result }: { result: Option<Array<Array<Player>>> }) =>
@@ -43,7 +25,7 @@ export const ResultView = named2('Result')(
           headerStyle: { backgroundColor: Colors.primary.$5 },
           headerTitleStyle: { color: Colors.text.light },
           headerLeft: Pressable({
-            onPress: onGoBack,
+            onPress: on.goBack,
             ml: 4,
             p: 8,
             borderless: true,
@@ -56,7 +38,7 @@ export const ResultView = named2('Result')(
             }),
           ]),
           headerRight: Pressable({
-            onPress: onShareTeamList,
+            onPress: on.shareTeamList,
             mr: 4,
             p: 8,
             borderless: true,

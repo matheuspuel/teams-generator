@@ -142,26 +142,24 @@ export const togglePlayerActive = ({ playerId }: { playerId: Id }) =>
     ),
   )
 
-export const toggleAllPlayersActive = execute(
-  S.modify(s =>
-    $(
-      s.ui.selectedGroupId,
-      O.chain(id => $(s.groups, Rec.lookup(id))),
-      O.matchW(
-        () => s,
-        g =>
-          $(
-            g.players,
-            RA.every(p => p.active),
-            allActive =>
-              $(
-                g.players,
-                RA.map(p => ({ ...p, active: !allActive })),
-              ),
-            Optic.replace(root.groups.id(g.id).players.$),
-            apply(s),
-          ),
-      ),
+export const toggleAllPlayersActive = S.modify((s: RootState) =>
+  $(
+    s.ui.selectedGroupId,
+    O.chain(id => $(s.groups, Rec.lookup(id))),
+    O.matchW(
+      () => s,
+      g =>
+        $(
+          g.players,
+          RA.every(p => p.active),
+          allActive =>
+            $(
+              g.players,
+              RA.map(p => ({ ...p, active: !allActive })),
+            ),
+          Optic.replace(root.groups.id(g.id).players.$),
+          apply(s),
+        ),
     ),
   ),
 )

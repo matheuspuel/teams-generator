@@ -2,7 +2,7 @@ import { get, replace } from '@fp-ts/optic'
 import { $, Tup, absurd } from 'fp'
 import { RootState } from 'src/model'
 import { root } from 'src/model/Optics'
-import { execute, replaceSApp } from 'src/services/StateRef'
+import { replaceSApp } from 'src/services/StateRef'
 
 export type Route = 'Groups' | 'Group' | 'Player' | 'Result'
 
@@ -28,5 +28,3 @@ export const goBack = (s: RootState) =>
           ],
     Tup.mapSnd(route => replace(root.route.$)(route)(s)),
   )
-
-export const onGoBack = execute(goBack)
