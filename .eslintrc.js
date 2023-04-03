@@ -37,7 +37,6 @@ module.exports = {
     'react/jsx-key': 'off',
     '@typescript-eslint/no-empty-interface': 'off',
     '@typescript-eslint/no-namespace': 'off',
-    'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/no-invalid-void-type': ['off'],
     '@typescript-eslint/no-unnecessary-condition': ['off'],
