@@ -3,7 +3,8 @@ import { StyleSheet } from 'react-native'
 import { ScreenStack as ScreenStack_ } from 'react-native-screens'
 import { JSXElementsChildren } from '../types'
 
-export type ScreenStackProps<R> = {}
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type ScreenStackProps<R> = object
 
 export type ScreenStackArgs<R> = {
   x: ScreenStackProps<R>
@@ -12,9 +13,9 @@ export type ScreenStackArgs<R> = {
 }
 
 const getRawProps = <R,>({
-  x: props,
+  x: _props,
   children,
-  env,
+  env: _env,
 }: ScreenStackArgs<R>): React.ComponentProps<typeof ScreenStack_> & {
   key?: string
 } => ({

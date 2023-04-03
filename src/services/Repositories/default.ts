@@ -8,6 +8,7 @@ import { GroupsRepository, ParametersRepository } from '.'
 export const defaultGroupsRepository: GroupsRepository =
   createStorage<GroupsState>({
     key: 'core/groups',
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
     schema: D.record(Id as any, Group.Schema) as any,
   })
 

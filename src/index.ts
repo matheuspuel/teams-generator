@@ -9,6 +9,7 @@ import { defaultStateRef } from 'src/services/StateRef/default'
 import { defaultTheme } from 'src/services/Theme/default'
 import { defaultUI } from 'src/services/UI/default'
 
+// eslint-disable-next-line functional/no-expression-statements
 void startApp({
   stateRef: defaultStateRef,
   theme: defaultTheme,

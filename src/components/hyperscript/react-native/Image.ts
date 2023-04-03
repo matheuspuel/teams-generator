@@ -4,5 +4,6 @@ import { ImageProps } from 'src/components/custom/react-native/Image'
 
 export const Image =
   <R>(props: ImageProps<R>) =>
+  // eslint-disable-next-line react/display-name
   (env: R) =>
     React.createElement(Image_, { x: props, env })

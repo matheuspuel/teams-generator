@@ -1,5 +1,5 @@
 export * as Apply from 'fp-ts/Apply'
-export * as A from 'fp-ts/Array'
+export * as A from './Array'
 export * as Bool from './boolean'
 export * as Console from 'fp-ts/Console'
 export * as E from 'fp-ts/Either'

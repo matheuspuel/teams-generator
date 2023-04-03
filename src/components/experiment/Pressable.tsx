@@ -1,3 +1,5 @@
+/* eslint-disable functional/immutable-data */
+/* eslint-disable functional/no-expression-statements */
 import { IO } from 'fp'
 import React from 'react'
 import { LayoutRectangle } from 'react-native'

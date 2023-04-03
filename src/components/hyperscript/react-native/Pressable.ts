@@ -6,11 +6,12 @@ import { PressableProps } from 'src/components/custom/animated/Pressable'
 import { Element } from 'src/components/custom/types'
 
 export const Pressable =
-  <P extends PressableProps<any>>(props: P) =>
+  <R1>(props: PressableProps<R1>) =>
   <R2>(children: ReadonlyArray<Reader<R2, Element>>) =>
-  (env: (P extends PressableProps<infer R1> ? R1 : never) & R2) =>
+  // eslint-disable-next-line react/display-name
+  (env: R1 & R2) =>
     React.createElement(
-      Pressable_<(P extends PressableProps<infer R1> ? R1 : never) & R2>,
+      Pressable_<R1 & R2>,
       { x: props, env },
       ...$(children, RA.map(apply(env))),
     )

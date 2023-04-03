@@ -9,7 +9,7 @@ import { onGoBack } from 'src/slices/routes'
 import { milliseconds } from 'src/utils/datatypes/Duration'
 import { SplashScreen } from './services/SplashScreen'
 
-export type AppEnv<R> = R.EnvType<ReturnType<typeof startApp_<R>>>
+export type AppEnv<R1> = R.EnvType<ReturnType<typeof startApp_<R1>>>
 
 const startApp_ = <R>() =>
   $(

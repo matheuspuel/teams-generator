@@ -1,3 +1,5 @@
+/* eslint-disable functional/immutable-data */
+/* eslint-disable functional/no-expression-statements */
 import { $, R, RA, ReaderIO, apply } from 'fp'
 import React from 'react'
 import { View as View_ } from 'react-native'
@@ -160,5 +162,6 @@ const RatingSlider_ = <R,>({
 
 export const RatingSlider =
   <R,>(props: RatingSliderProps<R>) =>
+  // eslint-disable-next-line react/display-name
   (env: R & AppThemeEnv) =>
     React.createElement(RatingSlider_<R>, { x: props, env })

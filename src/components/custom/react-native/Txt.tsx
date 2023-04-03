@@ -17,11 +17,11 @@ export type TextStyleProps<R> = PaddingProps &
     h?: number
   }
 
-export type TextProps<R> = TextStyleProps<R> & {}
+export type TextProps<R> = TextStyleProps<R>
 
 export type TextArgs<R> = {
   x?: TextProps<R>
-  children: string
+  children?: string
   env: R
 }
 

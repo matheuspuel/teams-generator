@@ -6,6 +6,7 @@ import { Element } from 'src/components/custom/types'
 
 export const GestureHandlerRootView =
   <R>(children: ReadonlyArray<Reader<R, Element>>) =>
+  // eslint-disable-next-line react/display-name
   (env: R) =>
     React.createElement(
       GestureHandlerRootView_,

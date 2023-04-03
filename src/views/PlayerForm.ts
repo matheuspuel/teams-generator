@@ -15,8 +15,8 @@ import {
 } from 'src/components/hyperscript'
 import { Position, Rating } from 'src/datatypes'
 import { root } from 'src/model/Optics'
-import { execute, replaceSApp } from 'src/services/StateRef'
-import { Colors } from 'src/services/Theme'
+import { AppStateRefEnv, execute, replaceSApp } from 'src/services/StateRef'
+import { AppThemeEnv, Colors } from 'src/services/Theme'
 import {
   createPlayer,
   deleteCurrentPlayer,
@@ -97,7 +97,7 @@ const ScreenHeader = memoizedConst('Header')(
 const NameField = (name: string) =>
   View({ p: 4 })([
     Txt({ weight: 500, color: Colors.gray.$4, my: 4 })('Nome'),
-    TextInput({
+    TextInput<AppStateRefEnv & AppThemeEnv>({
       autoFocus: true,
       placeholder: 'Ex: Pedro',
       placeholderTextColor: Colors.gray.$3,
@@ -127,7 +127,7 @@ const PositionField = (position: Position) =>
         A.map(Tup.fst),
         A.sort(Position.Ord),
         A.map(p =>
-          Pressable({
+          Pressable<AppStateRefEnv & AppThemeEnv>({
             key: p,
             onPress: onChangePosition(p),
             p: 12,
@@ -176,7 +176,7 @@ export const RatingField = (rating: Rating) =>
   ])
 
 const SaveButton = ({ isEnabled }: { isEnabled: boolean }) =>
-  Pressable({
+  Pressable<AppStateRefEnv & AppThemeEnv>({
     p: 16,
     bg: isEnabled
       ? Colors.primary.$5

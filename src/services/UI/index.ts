@@ -7,5 +7,6 @@ export type UI<R> = {
 export type UIEnv<R> = { ui: UI<R> } & R
 
 export const UI = {
+  // eslint-disable-next-line functional/prefer-tacit
   start: <R>(env: UIEnv<R>) => env.ui.start(env),
 }

@@ -1,5 +1,6 @@
 import { Image as Image_ } from 'react-native'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type ImageStyleProps<R> = {
   w?: number
   h?: number
@@ -16,7 +17,7 @@ export type ImageArgs<R> = {
 
 const getRawProps = <R,>({
   x: props,
-  env,
+  env: _env,
 }: ImageArgs<R>): React.ComponentProps<typeof Image_> => ({
   source: { uri: 'data:image/png;base64,' + props.src.base64 },
   style: { width: props.w, height: props.h },

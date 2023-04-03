@@ -51,7 +51,7 @@ const getRawProps =
   <R,>({
     x: props,
     env,
-  }: TextInputArgs<R> & {}): React.ComponentProps<typeof TextInput_> => ({
+  }: TextInputArgs<R>): React.ComponentProps<typeof TextInput_> => ({
     value: props.value,
     onChangeText: t => props.onChange(t)(env)(),
     onFocus: () => (state.setIsFocused(true), props.onFocus?.(env)()),

@@ -8,6 +8,7 @@ import { Element } from 'src/components/custom/types'
 export const View =
   <R1>(props: ViewProps<R1> = {}) =>
   <R2>(children: ReadonlyArray<Reader<R2, Element>>) =>
+  // eslint-disable-next-line react/display-name
   (env: R1 & R2) =>
     React.createElement(
       View_<R1 & R2>,

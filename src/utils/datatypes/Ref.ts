@@ -6,10 +6,12 @@ export type Ref<A> = {
 }
 
 export const create = <A>(initialState: A): Ref<A> => {
+  // eslint-disable-next-line functional/no-let
   let state: A = initialState
   return {
     getState: () => state,
     setState: (nextState: A) => () => {
+      // eslint-disable-next-line functional/no-expression-statements
       state = nextState
     },
   }

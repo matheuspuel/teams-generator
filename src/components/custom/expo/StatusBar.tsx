@@ -25,7 +25,7 @@ export type StatusBarArgs<R> = {
 const getRawProps = <R,>({
   x: props,
   env,
-}: StatusBarArgs<R> & {}): React.ComponentProps<typeof StatusBar_> => ({
+}: StatusBarArgs<R>): React.ComponentProps<typeof StatusBar_> => ({
   animated: props.animated,
   backgroundColor: props.backgroundColor
     ? Color.toHex(props.backgroundColor(env))

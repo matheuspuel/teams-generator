@@ -2,8 +2,10 @@ import React from 'react'
 import { ScrollView as ScrollView_ } from 'react-native'
 import { GapProps, JSXElementsChildren, PaddingProps } from '../types'
 
-export type ScrollViewStyleProps<R> = {}
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type ScrollViewStyleProps<R> = object
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type ScrollViewContainerStyleProps<R> = PaddingProps &
   GapProps & { flex?: number; flexGrow?: number }
 
@@ -22,7 +24,7 @@ export type ScrollViewArgs<R> = {
 const getRawProps = <R,>({
   x: props,
   children,
-  env,
+  env: _env,
 }: ScrollViewArgs<R>): React.ComponentProps<typeof ScrollView_> => ({
   children: children,
   removeClippedSubviews: props.removeClippedSubviews,

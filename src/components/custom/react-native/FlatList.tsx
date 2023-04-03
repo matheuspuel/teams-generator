@@ -3,8 +3,10 @@ import React from 'react'
 import { FlatList as FlatList_ } from 'react-native'
 import { Element, GapProps, PaddingProps } from '../types'
 
-export type FlatListStyleProps<R> = {}
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type FlatListStyleProps<R> = object
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type FlatListContainerStyleProps<R> = PaddingProps &
   GapProps & { flex?: number; flexGrow?: number }
 
@@ -14,7 +16,7 @@ export type FlatListProps<R, A> = FlatListStyleProps<R> & {
   ListEmptyComponent: Reader<R, Element>
   keyExtractor?: (item: A, index: number) => string
   getItemLayout?: (
-    data: A[],
+    data: Array<A>,
     index: number,
   ) => {
     length: number
@@ -34,7 +36,7 @@ export type FlatListArgs<R, A> = {
   env: R
 }
 
-const getRawProps = <R extends unknown, A>({
+const getRawProps = <R, A>({
   x: props,
   env,
 }: FlatListArgs<R, A>): React.ComponentProps<typeof FlatList_<A>> => ({

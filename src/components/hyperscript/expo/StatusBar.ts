@@ -6,5 +6,6 @@ import {
 
 export const StatusBar =
   <R>(props: StatusBarProps<R>) =>
+  // eslint-disable-next-line react/display-name
   (env: R) =>
     React.createElement(StatusBar_<R>, { x: props, env })

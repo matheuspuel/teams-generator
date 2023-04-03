@@ -8,6 +8,7 @@ import { Element } from 'src/components/custom/types'
 export const Modal =
   <R1>(props: ModalProps<R1> = {}) =>
   <R2>(children: ReadonlyArray<Reader<R2, Element>>) =>
+  // eslint-disable-next-line react/display-name
   (env: R1 & R2) =>
     React.createElement(
       Modal_<R1 & R2>,
