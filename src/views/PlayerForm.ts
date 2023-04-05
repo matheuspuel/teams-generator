@@ -13,8 +13,7 @@ import {
   View,
 } from 'src/components/hyperscript'
 import { Position, Rating } from 'src/datatypes'
-import { AppStateRefEnv } from 'src/services/StateRef'
-import { AppThemeEnv, Colors } from 'src/services/Theme'
+import { Colors } from 'src/services/Theme'
 import { PlayerForm } from 'src/slices/playerForm'
 import { withOpacity } from 'src/utils/datatypes/Color'
 import { RatingSlider } from './components/RatingSlider'
@@ -54,7 +53,7 @@ const ScreenHeader = memoizedConst('Header')(
 const NameField = (name: string) =>
   View({ p: 4 })([
     Txt({ weight: 500, color: Colors.gray.$4, my: 4 })('Nome'),
-    TextInput<AppStateRefEnv & AppThemeEnv>({
+    TextInput({
       autoFocus: true,
       placeholder: 'Ex: Pedro',
       placeholderTextColor: Colors.gray.$3,
@@ -84,7 +83,7 @@ const PositionField = (position: Position) =>
         A.map(Tup.fst),
         A.sort(Position.Ord),
         A.map(p =>
-          Pressable<AppStateRefEnv & AppThemeEnv>({
+          Pressable({
             key: p,
             onPress: on.changePlayerPosition(p),
             p: 12,
@@ -128,7 +127,7 @@ export const RatingField = (rating: Rating) =>
   ])
 
 const SaveButton = ({ isEnabled }: { isEnabled: boolean }) =>
-  Pressable<AppStateRefEnv & AppThemeEnv>({
+  Pressable({
     p: 16,
     bg: isEnabled
       ? Colors.primary.$5

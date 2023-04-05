@@ -1,12 +1,39 @@
-import { $, Reader, ReaderIO } from 'fp'
+import { $, Reader } from 'fp'
 import React from 'react'
 import { RectButton } from 'react-native-gesture-handler'
-import { ViewProps } from 'src/components/custom/react-native/View'
+import { Event, EventHandlerEnv } from 'src/actions'
 import { Color } from 'src/utils/datatypes'
-import { JSXElementsChildren } from '../types'
+import {
+  AbsolutePositionProps,
+  FlexChildProps,
+  FlexContainerProps,
+  GapProps,
+  JSXElementsChildren,
+  MarginProps,
+  PaddingProps,
+} from '../types'
 
-export type PressableProps<R> = Omit<ViewProps<R>, 'onLayout'> & {
-  onPress: ReaderIO<R, void>
+export type PressableStyleProps<R> = PaddingProps &
+  MarginProps &
+  GapProps &
+  FlexContainerProps &
+  FlexChildProps &
+  AbsolutePositionProps & {
+    key?: string
+    round?: number
+    w?: number
+    h?: number
+    aspectRatio?: number
+    shadow?: number
+    bg?: Reader<R, Color>
+    borderColor?: Reader<R, Color>
+  }
+
+export type PressableProps<
+  R,
+  E1 extends Event<string, unknown>,
+> = PressableStyleProps<R> & {
+  onPress: E1
   isEnabled?: boolean
   rippleColor?: Reader<R, Color>
   rippleOpacity?: number
@@ -14,19 +41,20 @@ export type PressableProps<R> = Omit<ViewProps<R>, 'onLayout'> & {
   foreground?: boolean
 }
 
-export type PressableArgs<R> = {
-  x: PressableProps<R>
+export type PressableArgs<R, E1 extends Event<string, unknown>> = {
+  x: PressableProps<R, E1>
   children?: JSXElementsChildren
-  env: R
+  env: R & EventHandlerEnv<E1>
 }
 
-const getRawProps = <R,>({
+const getRawProps = <R, E1 extends Event<string, unknown>>({
   x: props,
   children,
   env,
-}: PressableArgs<R>): React.ComponentProps<typeof RectButton> => ({
+}: PressableArgs<R, E1>): React.ComponentProps<typeof RectButton> => ({
   children: children,
-  onPress: () => props.isEnabled !== false && props.onPress(env)(),
+  onPress:
+    props.isEnabled !== false ? env.eventHandler(props.onPress) : undefined,
   rippleColor:
     props.isEnabled !== false
       ? props.rippleColor
@@ -54,16 +82,7 @@ const getRawProps = <R,>({
     marginRight: props?.mr,
     marginTop: props?.mt,
     marginBottom: props?.mb,
-    borderWidth: props?.borderWidth,
-    borderLeftWidth: props?.borderWidthL ?? props?.borderWidthX,
-    borderRightWidth: props?.borderWidthR ?? props?.borderWidthX,
-    borderTopWidth: props?.borderWidthT ?? props?.borderWidthY,
-    borderBottomWidth: props?.borderWidthB ?? props?.borderWidthY,
     borderRadius: props?.round,
-    borderTopLeftRadius: props?.roundTL ?? props?.roundT ?? props?.roundL,
-    borderTopRightRadius: props?.roundTR ?? props?.roundT ?? props?.roundR,
-    borderBottomLeftRadius: props?.roundBL ?? props?.roundB ?? props?.roundL,
-    borderBottomRightRadius: props?.roundBR ?? props?.roundB ?? props?.roundR,
     gap: props?.gap,
     rowGap: props?.gapX,
     columnGap: props?.gapY,
@@ -105,6 +124,6 @@ const getRawProps = <R,>({
   },
 })
 
-export const Pressable = <R,>(args: PressableArgs<R>) => (
-  <RectButton {...getRawProps(args)} />
-)
+export const Pressable = <R, E1 extends Event<string, unknown>>(
+  args: PressableArgs<R, E1>,
+) => <RectButton {...getRawProps(args)} />

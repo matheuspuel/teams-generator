@@ -6,6 +6,7 @@ import {
   constVoid,
   D,
   identity,
+  IO,
   none,
   O,
   Optic,
@@ -60,7 +61,7 @@ import { Id } from 'src/utils/Entity'
 type EventTypeFromHandlers<
   H extends Record<string, (payload: never) => ReaderIO<never, void>>,
 > = {
-  [k in keyof H]: Event<k, Parameters<H[k]>[0]>
+  [k in keyof H]: Event<k & string, Parameters<H[k]>[0]>
 }[keyof H]
 
 type HandlerEnvFromHandlers<
@@ -250,7 +251,10 @@ export const eventHandlers = {
     ),
 } satisfies Record<string, (payload: never) => ReaderIO<never, void>>
 
-export type Event<T, P> = { _tag: 'Event'; event: { _tag: T; payload: P } }
+export type Event<T extends string, P> = {
+  _tag: 'Event'
+  event: { _tag: T; payload: P }
+}
 
 const makeEvent =
   <T extends string>(tag: T) =>
@@ -278,7 +282,7 @@ const e: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } = $(eventHandlers, Rec.mapWithIndex(event)) as any
 
-const e2 = {
+export const on = {
   doNothing: e.doNothing(),
   uiMount: e.uiMount(),
   goBack: e.goBack(),
@@ -314,46 +318,22 @@ const e2 = {
   shareTeamList: e.shareTeamList(),
 }
 
+export type EventHandler<E extends Event<string, unknown>> = (
+  event: E,
+) => IO<void>
+
+export type EventHandlerEnv<E extends Event<string, unknown>> = {
+  eventHandler: EventHandler<E>
+}
+
+export const eventHandler =
+  (env: HandlerEnv) =>
+  (event: AppEvent): IO<void> =>
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
+    (eventHandlers[event.event._tag] as any)(event.event.payload)(env)
+
 export const handleEvent = <E extends AppEvent>(
   event: E,
 ): ReturnType<(typeof eventHandlers)[E['event']['_tag']]> =>
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
   (eventHandlers[event.event._tag] as any)(event.event.payload)
-
-const h = handleEvent
-
-export const on = {
-  doNothing: $(e2.doNothing, h),
-  uiMount: $(e2.uiMount, h),
-  goBack: $(e2.goBack, h),
-
-  openNewGroupModal: $(e2.openNewGroupModal, h),
-  openEditGroupModal: $f(e2.openEditGroupModal, h),
-  closeGroupModal: $(e2.closeGroupModal, h),
-  openDeleteGroupModal: $f(e2.openDeleteGroupModal, h),
-  closeDeleteGroupModal: $(e2.closeDeleteGroupModal, h),
-  changeGroupName: $f(e2.changeGroupName, h),
-  saveGroup: $(e2.saveGroup, h),
-  deleteGroup: $(e2.deleteGroup, h),
-  selectGroup: $f(e2.selectGroup, h),
-
-  openParametersModal: $(e2.openParametersModal, h),
-  closeParametersModal: $(e2.closeParametersModal, h),
-  pressNewPlayer: $(e2.pressNewPlayer, h),
-  selectPlayer: $f(e2.selectPlayer, h),
-  togglePlayerActive: $f(e2.togglePlayerActive, h),
-  toggleAllPlayersActive: $(e2.toggleAllPlayersActive, h),
-  decrementTeamsCount: $(e2.decrementTeamsCount, h),
-  incrementTeamsCount: $(e2.incrementTeamsCount, h),
-  togglePosition: $(e2.togglePosition, h),
-  toggleRating: $(e2.toggleRating, h),
-  shuffle: $(e2.shuffle, h),
-
-  changePlayerName: $f(e2.changePlayerName, h),
-  changePlayerPosition: $f(e2.changePlayerPosition, h),
-  changePlayerRating: $f(e2.changePlayerRating, h),
-  savePlayer: $(e2.savePlayer, h),
-  deletePlayer: $(e2.deletePlayer, h),
-
-  shareTeamList: $(e2.shareTeamList, h),
-}

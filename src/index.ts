@@ -8,6 +8,7 @@ import { defaultSplashScreen } from 'src/services/SplashScreen/default'
 import { defaultStateRef } from 'src/services/StateRef/default'
 import { defaultTheme } from 'src/services/Theme/default'
 import { defaultUI } from 'src/services/UI/default'
+import { eventHandler } from './actions'
 
 // eslint-disable-next-line functional/no-expression-statements
 void startApp({
@@ -20,4 +21,8 @@ void startApp({
     Parameters: defaultParametersRepository,
   },
   ui: defaultUI,
+  eventHandler: eventHandler({
+    stateRef: defaultStateRef,
+    splashScreen: defaultSplashScreen,
+  }),
 })()

@@ -1,6 +1,7 @@
-import { $, Reader, ReaderIO } from 'fp'
+import { $, Reader } from 'fp'
 import React from 'react'
 import { View as View_ } from 'react-native'
+import { Event, EventHandlerEnv } from 'src/actions'
 import { Color } from 'src/utils/datatypes'
 import {
   AbsolutePositionProps,
@@ -31,23 +32,32 @@ export type ViewStyleProps<R> = PaddingProps &
     borderColor?: Reader<R, Color>
   }
 
-export type ViewProps<R> = ViewStyleProps<R> & {
-  onLayout?: ReaderIO<R, void>
+export type ViewProps<
+  R,
+  E1 extends Event<string, unknown> = Event<never, never>,
+> = ViewStyleProps<R> & {
+  onLayout?: E1
 }
 
-export type ViewArgs<R> = {
-  x: ViewProps<R>
+export type ViewArgs<
+  R,
+  E1 extends Event<string, unknown> = Event<never, never>,
+> = {
+  x: ViewProps<R, E1>
   children?: JSXElementsChildren
-  env: R
+  env: R & EventHandlerEnv<E1>
 }
 
-const getRawProps = <R,>({
+const getRawProps = <
+  R,
+  E1 extends Event<string, unknown> = Event<never, never>,
+>({
   x: props,
   children,
   env,
-}: ViewArgs<R>): React.ComponentProps<typeof View_> & { key?: string } => ({
+}: ViewArgs<R, E1>): React.ComponentProps<typeof View_> & { key?: string } => ({
   key: props.key,
-  onLayout: props?.onLayout?.(env),
+  onLayout: props.onLayout && env.eventHandler(props.onLayout),
   children: children,
   style: {
     padding: props?.p,
@@ -115,4 +125,9 @@ const getRawProps = <R,>({
   },
 })
 
-export const View = <R,>(args: ViewArgs<R>) => <View_ {...getRawProps(args)} />
+export const View = <
+  R,
+  E1 extends Event<string, unknown> = Event<never, never>,
+>(
+  args: ViewArgs<R, E1>,
+) => <View_ {...getRawProps(args)} />

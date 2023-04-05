@@ -3,23 +3,23 @@ import { $, Reader, constant } from 'fp'
 import { Color } from 'src/utils/datatypes'
 import { Element } from '../types'
 
-export type HeaderProps<R> = {
+export type HeaderProps<R1, R2, R3> = {
   title: string
-  headerStyle?: { backgroundColor?: Reader<R, Color> }
-  headerTitleStyle?: { color?: Reader<R, Color> }
-  headerLeft?: Reader<R, Element>
-  headerRight?: Reader<R, Element>
+  headerStyle?: { backgroundColor?: Reader<R1, Color> }
+  headerTitleStyle?: { color?: Reader<R1, Color> }
+  headerLeft?: Reader<R2, Element>
+  headerRight?: Reader<R3, Element>
 }
 
-export type HeaderArgs<R> = {
-  x: HeaderProps<R>
-  env: R
+export type HeaderArgs<R1, R2, R3> = {
+  x: HeaderProps<R1, R2, R3>
+  env: R1 & R2 & R3
 }
 
-const getRawProps = <R,>({
+const getRawProps = <R1, R2, R3>({
   x: props,
   env,
-}: HeaderArgs<R>): React.ComponentProps<typeof Header_> => ({
+}: HeaderArgs<R1, R2, R3>): React.ComponentProps<typeof Header_> => ({
   title: props.title,
   headerStyle: props.headerStyle
     ? {
@@ -39,6 +39,6 @@ const getRawProps = <R,>({
   headerRight: props.headerRight ? constant(props.headerRight(env)) : undefined,
 })
 
-export const Header = <R,>(args: HeaderArgs<R>) => (
+export const Header = <R1, R2, R3>(args: HeaderArgs<R1, R2, R3>) => (
   <Header_ {...getRawProps(args)} />
 )

@@ -16,8 +16,7 @@ import {
 } from 'src/components/hyperscript'
 import { Group } from 'src/datatypes'
 import { RootState } from 'src/model'
-import { AppStateRefEnv } from 'src/services/StateRef'
-import { AppThemeEnv, Colors } from 'src/services/Theme'
+import { Colors } from 'src/services/Theme'
 import { GroupsState } from 'src/slices/groups'
 import { withOpacity } from 'src/utils/datatypes/Color'
 import { Id } from 'src/utils/Entity'
@@ -81,7 +80,7 @@ const ScreenHeader = memoizedConst('Header')(
 const Item = memoized('GroupItem')(
   Eq.struct({ name: Eq.eqStrict, id: Eq.eqStrict }),
   ({ name, id }: Group) =>
-    Pressable<AppStateRefEnv & AppThemeEnv>({
+    Pressable({
       onPress: on.selectGroup(id),
       direction: 'row',
       align: 'center',
@@ -127,7 +126,7 @@ const GroupModal = ({
         statusBarTranslucent: true,
         onRequestClose: on.closeGroupModal,
       })([
-        Pressable<AppStateRefEnv & AppThemeEnv>({
+        Pressable({
           onPress: on.closeGroupModal,
           flex: 1,
           justify: 'center',
@@ -172,7 +171,7 @@ const GroupModal = ({
               Txt({ weight: 500, color: Colors.gray.$4, my: 4 })(
                 'Nome do grupo',
               ),
-              TextInput<AppStateRefEnv & AppThemeEnv>({
+              TextInput({
                 placeholder: 'Ex: Futebol de quinta',
                 value: form.name,
                 onChange: on.changeGroupName,
@@ -192,7 +191,7 @@ const GroupModal = ({
             ]),
             View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
             Row({ justify: 'end', p: 16 })([
-              Pressable<AppStateRefEnv & AppThemeEnv>({
+              Pressable({
                 onPress: on.closeGroupModal,
                 mr: 8,
                 p: 12,
@@ -200,7 +199,7 @@ const GroupModal = ({
                 rippleColor: Colors.primary.$5,
                 rippleOpacity: 0.15,
               })([Txt({ color: Colors.primary.$5 })('Cancelar')]),
-              Pressable<AppStateRefEnv & AppThemeEnv>({
+              Pressable({
                 p: 12,
                 round: 4,
                 bg: !form.name
@@ -240,7 +239,7 @@ const DeleteGroupModal = ({
     statusBarTranslucent: true,
     onRequestClose: on.closeDeleteGroupModal,
   })([
-    Pressable<AppStateRefEnv & AppThemeEnv>({
+    Pressable({
       onPress: on.closeDeleteGroupModal,
       flex: 1,
       bg: $(Colors.black, R.map(withOpacity(63))),
@@ -283,7 +282,7 @@ const DeleteGroupModal = ({
         ),
         View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
         Row({ p: 16, justify: 'end' })([
-          Pressable<AppStateRefEnv & AppThemeEnv>({
+          Pressable({
             mr: 8,
             p: 12,
             round: 4,
@@ -291,7 +290,7 @@ const DeleteGroupModal = ({
             rippleOpacity: 0.15,
             onPress: on.closeDeleteGroupModal,
           })([Txt({ color: Colors.danger.$5 })('Cancelar')]),
-          Pressable<AppStateRefEnv & AppThemeEnv>({
+          Pressable({
             p: 12,
             round: 4,
             bg: Colors.danger.$5,

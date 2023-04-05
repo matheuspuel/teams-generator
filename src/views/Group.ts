@@ -18,8 +18,7 @@ import {
   View,
 } from 'src/components/hyperscript'
 import { Group, Parameters, Player, Rating } from 'src/datatypes'
-import { AppStateRefEnv } from 'src/services/StateRef'
-import { AppThemeEnv, Colors } from 'src/services/Theme'
+import { Colors } from 'src/services/Theme'
 import { withOpacity } from 'src/utils/datatypes/Color'
 
 export const GroupView = memoized('GroupScreen')(
@@ -55,7 +54,7 @@ export const GroupView = memoized('GroupScreen')(
         contentContainerStyle: { flexGrow: 1, p: 8, gap: 8 },
         initialNumToRender: 16,
       }),
-      Pressable<AppStateRefEnv & AppThemeEnv>({
+      Pressable({
         onPress: on.openParametersModal,
         p: 16,
         bg: Colors.primary.$5,
@@ -116,7 +115,7 @@ const GroupHeader = memoizedConst('GroupHeader')(
 const Item = memoized('GroupItem')(
   deepEq,
   ({ id, name, position, rating, active }: Player) =>
-    Pressable<AppStateRefEnv & AppThemeEnv>({
+    Pressable({
       onPress: on.selectPlayer(id),
       direction: 'row',
       align: 'center',
@@ -125,7 +124,7 @@ const Item = memoized('GroupItem')(
       shadow: 1,
       bg: Colors.white,
     })([
-      Pressable<AppStateRefEnv & AppThemeEnv>({
+      Pressable({
         onPress: on.togglePlayerActive(id),
         borderless: true,
         p: 8,
@@ -188,7 +187,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
     statusBarTranslucent: true,
     onRequestClose: on.closeParametersModal,
   })([
-    Pressable<AppStateRefEnv & AppThemeEnv>({
+    Pressable({
       onPress: on.closeParametersModal,
       flex: 1,
       justify: 'center',
@@ -222,7 +221,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
         View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
         View({ p: 16 })([
           Row({ align: 'center' })([
-            Pressable<AppStateRefEnv & AppThemeEnv>({
+            Pressable({
               onPress: on.decrementTeamsCount,
               p: 12,
               borderless: true,
@@ -238,7 +237,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
             Txt({ p: 8, weight: 600, color: Colors.text.dark })(
               parameters.teamsCount.toString(),
             ),
-            Pressable<AppStateRefEnv & AppThemeEnv>({
+            Pressable({
               onPress: on.incrementTeamsCount,
               p: 12,
               borderless: true,
@@ -319,7 +318,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
         View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
         Row({ p: 16, justify: 'end' })([
           Row()([
-            Pressable<AppStateRefEnv & AppThemeEnv>({
+            Pressable({
               onPress: on.closeParametersModal,
               mr: 8,
               p: 12,
@@ -327,7 +326,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
               rippleColor: Colors.primary.$5,
               rippleOpacity: 0.15,
             })([Txt({ color: Colors.primary.$5 })('Cancelar')]),
-            Pressable<AppStateRefEnv & AppThemeEnv>({
+            Pressable({
               onPress: on.shuffle,
               p: 12,
               round: 4,

@@ -1,6 +1,6 @@
 /* eslint-disable functional/immutable-data */
 /* eslint-disable functional/no-expression-statements */
-import { $, R, RA, ReaderIO, apply } from 'fp'
+import { $, RA } from 'fp'
 import React from 'react'
 import { View as View_ } from 'react-native'
 import {
@@ -15,26 +15,28 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated'
+import { Event, EventHandlerEnv } from 'src/actions'
 import { Fragment, Txt, View } from 'src/components/hyperscript'
 import { Rating } from 'src/datatypes'
 import { AppThemeEnv, Colors } from 'src/services/Theme'
 import { Color } from 'src/utils/datatypes'
 
-export type RatingSliderProps<R> = {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export type RatingSliderProps<R, E1 extends Event<string, number>> = {
   initialPercentage: number
   step: number
-  onChange: (percentage: number) => ReaderIO<R, void>
+  onChange: (percentage: number) => E1
 }
 
-export type RatingSliderArgs<R> = {
-  x: RatingSliderProps<R>
-  env: R
+export type RatingSliderArgs<R, E1 extends Event<string, number>> = {
+  x: RatingSliderProps<R, E1>
+  env: R & EventHandlerEnv<E1 | Event<never, never>>
 }
 
-const RatingSlider_ = <R,>({
+const RatingSlider_ = <R, E1 extends Event<string, number>>({
   x: { initialPercentage, step, onChange: onChange_ },
   env,
-}: RatingSliderArgs<R & AppThemeEnv>) => {
+}: RatingSliderArgs<R & AppThemeEnv, E1>) => {
   const paddingHorizontal = 16
   const paddingVertical = 40
   const trackWidth = 10
@@ -64,7 +66,7 @@ const RatingSlider_ = <R,>({
     return Math.round(v / step) * step
   }
 
-  const onChange = $(onChange_, R.map(apply(env)), R.map(apply(null)))
+  const onChange = (n: number) => env.eventHandler(onChange_(n))()
 
   const gesture = Gesture.Pan()
     .onBegin(e => {
@@ -161,7 +163,7 @@ const RatingSlider_ = <R,>({
 }
 
 export const RatingSlider =
-  <R,>(props: RatingSliderProps<R>) =>
+  <R, E1 extends Event<string, number>>(props: RatingSliderProps<R, E1>) =>
   // eslint-disable-next-line react/display-name
-  (env: R & AppThemeEnv) =>
-    React.createElement(RatingSlider_<R>, { x: props, env })
+  (env: R & AppThemeEnv & EventHandlerEnv<E1 | Event<never, never>>) =>
+    React.createElement(RatingSlider_<R, E1>, { x: props, env })

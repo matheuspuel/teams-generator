@@ -1,5 +1,4 @@
-import { $, apply, RA } from 'fp'
-import { Reader } from 'fp-ts/lib/Reader'
+import { $, apply, R, RA } from 'fp'
 import React from 'react'
 import {
   ScreenStack as ScreenStack_,
@@ -9,11 +8,16 @@ import { Element } from 'src/components/custom/types'
 
 export const ScreenStack =
   <R1>(props: ScreenStackProps<R1> = {}) =>
-  <R2>(children: ReadonlyArray<Reader<R2, Element>>) =>
+  <
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    C extends ReadonlyArray<(env: any) => Element>,
+  >(
+    children: C,
+  ) =>
   // eslint-disable-next-line react/display-name
-  (env: R1 & R2) =>
+  (env: R1 & R.EnvType<C[number]>): Element =>
     React.createElement(
-      ScreenStack_<R1 & R2>,
+      ScreenStack_<R1 & R.EnvType<C[number]>>,
       { x: props, env },
       ...$(children, RA.map(apply(env))),
     )

@@ -1,6 +1,7 @@
-import { $, Reader, ReaderIO } from 'fp'
+import { $, Reader } from 'fp'
 import React from 'react'
 import { TextInput as TextInput_ } from 'react-native-gesture-handler'
+import { Event, EventHandlerEnv } from 'src/actions'
 import { Color } from 'src/utils/datatypes'
 import {
   BorderWidthProps,
@@ -23,11 +24,16 @@ export type TextInputStyleProps<R> = PaddingProps &
     fontSize?: number
   }
 
-export type TextInputProps<R> = TextInputStyleProps<R> & {
+export type TextInputProps<
+  R,
+  E1 extends Event<string, unknown>,
+  E2 extends Event<string, unknown> = Event<never, never>,
+  E3 extends Event<string, unknown> = Event<never, never>,
+> = TextInputStyleProps<R> & {
   value: string
-  onChange: (value: string) => ReaderIO<R, void>
-  onFocus?: ReaderIO<R, void>
-  onBlur?: ReaderIO<R, void>
+  onChange: (value: string) => E1
+  onFocus?: E2
+  onBlur?: E3
   autoFocus?: boolean
   placeholder?: string
   placeholderTextColor?: Reader<R, Color>
@@ -38,9 +44,14 @@ export type TextInputProps<R> = TextInputStyleProps<R> & {
   }
 }
 
-export type TextInputArgs<R> = {
-  x: TextInputProps<R>
-  env: R
+export type TextInputArgs<
+  R,
+  E1 extends Event<string, unknown>,
+  E2 extends Event<string, unknown> = Event<never, never>,
+  E3 extends Event<string, unknown> = Event<never, never>,
+> = {
+  x: TextInputProps<R, E1, E2, E3>
+  env: R & EventHandlerEnv<E1 | E2 | E3>
 }
 
 const getRawProps =
@@ -48,14 +59,27 @@ const getRawProps =
     isFocused: boolean
     setIsFocused: React.Dispatch<React.SetStateAction<boolean>>
   }) =>
-  <R,>({
+  <
+    R,
+    E1 extends Event<string, unknown>,
+    E2 extends Event<string, unknown> = Event<never, never>,
+    E3 extends Event<string, unknown> = Event<never, never>,
+  >({
     x: props,
     env,
-  }: TextInputArgs<R>): React.ComponentProps<typeof TextInput_> => ({
+  }: TextInputArgs<R, E1, E2, E3>): React.ComponentProps<
+    typeof TextInput_
+  > => ({
     value: props.value,
-    onChangeText: t => props.onChange(t)(env)(),
-    onFocus: () => (state.setIsFocused(true), props.onFocus?.(env)()),
-    onBlur: () => (state.setIsFocused(false), props.onBlur?.(env)()),
+    onChangeText: t => env.eventHandler(props.onChange(t))(),
+    onFocus: () => (
+      state.setIsFocused(true),
+      props.onFocus ? env.eventHandler(props.onFocus)() : undefined
+    ),
+    onBlur: () => (
+      state.setIsFocused(false),
+      props.onBlur ? env.eventHandler(props.onBlur)() : undefined
+    ),
     autoFocus: props.autoFocus,
     placeholder: props.placeholder,
     placeholderTextColor: props.placeholderTextColor
@@ -109,7 +133,14 @@ const getRawProps =
     },
   })
 
-export const TextInput = <R,>(args: TextInputArgs<R>) => {
+export const TextInput = <
+  R,
+  E1 extends Event<string, unknown>,
+  E2 extends Event<string, unknown> = Event<never, never>,
+  E3 extends Event<string, unknown> = Event<never, never>,
+>(
+  args: TextInputArgs<R, E1, E2, E3>,
+) => {
   const [isFocused, setIsFocused] = React.useState(false)
   return <TextInput_ {...getRawProps({ isFocused, setIsFocused })(args)} />
 }
