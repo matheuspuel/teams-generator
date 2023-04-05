@@ -28,7 +28,6 @@ void startApp({
   stateRef: defaultStateRef,
   theme: defaultTheme,
   backHandler: defaultBackHandler,
-  splashScreen: defaultSplashScreen,
   repositories: {
     Groups: defaultGroupsRepository,
     Parameters: defaultParametersRepository,

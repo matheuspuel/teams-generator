@@ -345,21 +345,20 @@ export type EventHandlerEnv<E extends Event<string, unknown>> = {
   eventHandler: EventHandler<E>
 }
 
-export const eventHandler =
-  (env: HandlerEnv) =>
-  (event: AppEvent): IO<void> =>
+const makeEventHandler =
+  <H extends EventHandlersRecord>(handlers: H) =>
+  (env: HandlerEnvFromHandlers<H>) =>
+  (event: EventTypeFromHandlers<H>): IO<void> =>
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
-    (eventHandlers[event.event._tag] as any)(event.event.payload)(env)
+    (handlers[event.event._tag] as any)(event.event.payload)(env)
+
+export const eventHandler = makeEventHandler(eventHandlers)
 
 export const EventHandler = {
   handle:
-    <E extends AppEvent>(
+    <E extends Event<string, unknown>>(
       event: E,
-    ): ReaderIO<
-      R.EnvType<ReturnType<(typeof eventHandlers)[E['event']['_tag']]>> &
-        EventHandlerEnv<E>,
-      void
-    > =>
+    ): ReaderIO<EventHandlerEnv<E>, void> =>
     env =>
       env.eventHandler(event),
 }
