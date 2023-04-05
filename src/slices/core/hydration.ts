@@ -8,7 +8,6 @@ import {
 } from 'src/services/Repositories'
 import { execute, getRootState, replaceSApp } from 'src/services/StateRef'
 import { emptyGroups } from '../groups'
-import {} from '../parameters'
 
 export const saveState = $(
   RT.fromReaderIO(execute(getRootState)),

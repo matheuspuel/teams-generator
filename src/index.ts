@@ -1,3 +1,4 @@
+import { $, IO, R } from 'fp'
 import { startApp } from 'src/App'
 import { defaultBackHandler } from 'src/services/BackHandler/default'
 import {
@@ -8,18 +9,27 @@ import { defaultSplashScreen } from 'src/services/SplashScreen/default'
 import { defaultStateRef } from 'src/services/StateRef/default'
 import { defaultTheme } from 'src/services/Theme/default'
 import { defaultUI } from 'src/services/UI/default'
-import { AppEvent, eventHandler } from './actions'
-import { $, Console, IO, R } from './utils/fp'
+import { AppEvent, Event, eventHandler } from './actions'
+import { Log, LoggerEnv } from './services/Log'
+import { defaultLogger } from './services/Log/default'
+
+const logEvent = (event: Event<string, unknown>) =>
+  $(Log.debug('Event'), l =>
+    event.event.payload === undefined
+      ? l(event.event._tag)(null)
+      : event.event.payload === null
+      ? l(event.event._tag + ': null')(null)
+      : typeof event.event.payload === 'object'
+      ? l(event.event._tag)(event.event.payload)
+      : l(event.event._tag + (': ' + JSON.stringify(event.event.payload)))(
+          null,
+        ),
+  )
 
 const eventHandlerWithLogging =
-  (env: R.EnvType<typeof eventHandler>) => (event: AppEvent) =>
+  (env: R.EnvType<typeof eventHandler> & LoggerEnv) => (event: AppEvent) =>
     $(
-      Console.log(
-        event.event._tag +
-          (event.event.payload === undefined
-            ? ''
-            : ': ' + JSON.stringify(event.event.payload, undefined, 2)),
-      ),
+      logEvent(event)(env),
       IO.chain(() => eventHandler(env)(event)),
     )
 
@@ -34,6 +44,7 @@ void startApp({
   },
   ui: defaultUI,
   eventHandler: eventHandlerWithLogging({
+    logger: defaultLogger,
     stateRef: defaultStateRef,
     splashScreen: defaultSplashScreen,
     backHandler: defaultBackHandler,

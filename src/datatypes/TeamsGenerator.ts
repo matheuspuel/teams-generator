@@ -65,7 +65,7 @@ const balanceTeams: (
                     otherTeam,
                     findFirstMapWithIndex(l =>
                       $(changePlayers(i)(k)(j)(l)(teams), nextState =>
-                        Ord.lt(fitOrd)(nextState, teams)
+                        Ord.lt(fitOrd)(teams)(nextState)
                           ? some(balanceTeams(fitOrd)(nextState))
                           : none,
                       ),

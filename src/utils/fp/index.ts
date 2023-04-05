@@ -49,7 +49,7 @@ export * as Th from 'fp-ts/These'
 export * as Tup from 'fp-ts/Tuple'
 export * as D from '@effect/schema/Schema'
 import * as IO_ from 'fp-ts/IO'
-import * as Ord_ from 'fp-ts/Ord'
+import * as Ord_ from './Ord'
 export * as Optic from './Optic'
 
 export { Either, Left, Right, left, right, isLeft, isRight } from 'fp-ts/Either'
