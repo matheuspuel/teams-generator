@@ -27,8 +27,10 @@ import { Share } from 'react-native'
 import { Player, Rating } from 'src/datatypes'
 import { RootState } from 'src/model'
 import { root } from 'src/model/Optics'
+import { BackHandler } from 'src/services/BackHandler'
 import { SplashScreen } from 'src/services/SplashScreen'
 import { execute, getSApp, replaceSApp } from 'src/services/StateRef'
+import { saveState } from 'src/slices/core/hydration'
 import {
   createGroup,
   createPlayer,
@@ -81,10 +83,24 @@ const doNothing = RIO.of<unknown, void>(undefined)
 
 const closeParametersModal = replaceSApp(root.ui.modalParameters.$)(false)
 
+type EventHandlersRecord = Record<
+  string,
+  (payload: never) => ReaderIO<never, void>
+>
+
 export const eventHandlers = {
   doNothing: () => doNothing,
+  preventSplashScreenAutoHide: () => SplashScreen.preventAutoHide,
   uiMount: () => SplashScreen.hide,
-  goBack: () => execute(goBack),
+  appLoaded: () => execute(replaceSApp(root.core.loaded.$)(true)),
+  saveState: () => saveState,
+  goBack: () =>
+    $(
+      execute(goBack),
+      RIO.chainFirstW(({ shouldBubbleUpEvent }) =>
+        shouldBubbleUpEvent ? BackHandler.exit : RIO.of(undefined),
+      ),
+    ),
 
   openNewGroupModal: () =>
     execute(setUpsertGroupModal(some({ id: O.none, name: '' }))),
@@ -249,7 +265,7 @@ export const eventHandlers = {
         ),
       ),
     ),
-} satisfies Record<string, (payload: never) => ReaderIO<never, void>>
+} satisfies EventHandlersRecord
 
 export type Event<T extends string, P> = {
   _tag: 'Event'
@@ -284,7 +300,10 @@ const e: {
 
 export const on = {
   doNothing: e.doNothing(),
+  preventSplashScreenAutoHide: e.preventSplashScreenAutoHide(),
   uiMount: e.uiMount(),
+  appLoaded: e.appLoaded(),
+  saveState: e.saveState(),
   goBack: e.goBack(),
 
   openNewGroupModal: e.openNewGroupModal(),
@@ -332,8 +351,15 @@ export const eventHandler =
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
     (eventHandlers[event.event._tag] as any)(event.event.payload)(env)
 
-export const handleEvent = <E extends AppEvent>(
-  event: E,
-): ReturnType<(typeof eventHandlers)[E['event']['_tag']]> =>
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
-  (eventHandlers[event.event._tag] as any)(event.event.payload)
+export const EventHandler = {
+  handle:
+    <E extends AppEvent>(
+      event: E,
+    ): ReaderIO<
+      R.EnvType<ReturnType<(typeof eventHandlers)[E['event']['_tag']]>> &
+        EventHandlerEnv<E>,
+      void
+    > =>
+    env =>
+      env.eventHandler(event),
+}
