@@ -132,17 +132,17 @@ const divideTeams =
           ([as, bs]) => $(divideTeams(numOfTeams - 1)(bs), A.appendW(as)),
         )
 
-const generateRandomBalancedTeamsByDevianceFns =
+const balanceTeamsByDevianceFns =
   (devianceFns: Array<(teams: Array<Array<Player>>) => number>) =>
   (numOfTeams: number) =>
-  (players: Array<Player>): IO<Array<Array<Player>>> =>
+  (players: Array<Player>): Array<Array<Player>> =>
     $(
-      randomizeArray(players),
-      IO.map(divideTeams(numOfTeams)),
-      IO.map(balanceTeams(getFitOrdByDevianceFns(devianceFns))),
+      players,
+      divideTeams(numOfTeams),
+      balanceTeams(getFitOrdByDevianceFns(devianceFns)),
     )
 
-export const generateRandomBalancedTeams = (criteria: {
+export const balanceTeamsByCriteria = (criteria: {
   position: boolean
   rating: boolean
 }) =>
@@ -152,5 +152,14 @@ export const generateRandomBalancedTeams = (criteria: {
       A.fromPredicate(() => criteria.rating)(getResultRatingDeviance),
     ],
     Monoid.concatAll(A.getMonoid()),
-    generateRandomBalancedTeamsByDevianceFns,
+    balanceTeamsByDevianceFns,
   )
+
+export const generateRandomBalancedTeams =
+  (criteria: { position: boolean; rating: boolean }) =>
+  (numOfTeams: number) =>
+  (players: Array<Player>): IO<Array<Array<Player>>> =>
+    $(
+      randomizeArray(players),
+      IO.map(balanceTeamsByCriteria(criteria)(numOfTeams)),
+    )
