@@ -2,49 +2,49 @@ import { $, Optic } from 'fp'
 import { RootState } from 'src/model'
 import { Id } from 'src/utils/Entity'
 
-export const root = $(Optic.id<RootState>(), root => ({
-  $: root,
+export const root = $(Optic.id<RootState>(), o => ({
+  $: o,
   core: {
-    loaded: { $: root.at('core').at('isLoaded') },
+    loaded: { $: o.at('core').at('isLoaded') },
   },
-  route: { $: root.at('route') },
-  groups: $(root.at('groups'), groups => ({
-    $: groups,
+  route: { $: o.at('route') },
+  groups: $(o.at('groups'), o => ({
+    $: o,
     id: (id: Id) =>
-      $(groups.key(id), group => ({
-        $: group,
-        players: $(group.at('players'), players => ({
-          $: players,
+      $(o.key(id), o => ({
+        $: o,
+        players: $(o.at('players'), o => ({
+          $: o,
           id: (id: Id) =>
-            $(players.compose(Optic.findFirst(p => p.id === id)), player => ({
-              $: player,
-              active: { $: player.at('active') },
+            $(o.compose(Optic.findFirst(p => p.id === id)), o => ({
+              $: o,
+              active: { $: o.at('active') },
             })),
         })),
       })),
   })),
-  parameters: $(root.at('parameters'), parameters => ({
-    $: parameters,
-    position: { $: parameters.at('position') },
-    rating: { $: parameters.at('rating') },
-    teamsCount: { $: parameters.at('teamsCount') },
+  parameters: $(o.at('parameters'), o => ({
+    $: o,
+    position: { $: o.at('position') },
+    rating: { $: o.at('rating') },
+    teamsCount: { $: o.at('teamsCount') },
   })),
-  result: { $: root.at('result') },
-  playerForm: $(root.at('playerForm'), playerForm => ({
-    $: playerForm,
-    name: { $: playerForm.at('name') },
-    position: { $: playerForm.at('position') },
-    rating: { $: playerForm.at('rating') },
+  result: { $: o.at('result') },
+  playerForm: $(o.at('playerForm'), o => ({
+    $: o,
+    name: { $: o.at('name') },
+    position: { $: o.at('position') },
+    rating: { $: o.at('rating') },
   })),
-  ui: $(root.at('ui'), ui => ({
-    $: ui,
-    selectedGroupId: { $: ui.at('selectedGroupId') },
-    selectedPlayerId: { $: ui.at('selectedPlayerId') },
-    modalParameters: { $: ui.at('modalParameters') },
-    modalUpsertGroup: $(ui.at('modalUpsertGroup'), modalUpsertGroup => ({
-      $: modalUpsertGroup,
-      name: { $: modalUpsertGroup.compose(Optic.some()).at('name') },
+  ui: $(o.at('ui'), o => ({
+    $: o,
+    selectedGroupId: { $: o.at('selectedGroupId') },
+    selectedPlayerId: { $: o.at('selectedPlayerId') },
+    modalParameters: { $: o.at('modalParameters') },
+    modalUpsertGroup: $(o.at('modalUpsertGroup'), o => ({
+      $: o,
+      name: { $: o.compose(Optic.some()).at('name') },
     })),
-    modalDeleteGroup: { $: ui.at('modalDeleteGroup') },
+    modalDeleteGroup: { $: o.at('modalDeleteGroup') },
   })),
 }))
