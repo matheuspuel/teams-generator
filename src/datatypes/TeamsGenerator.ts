@@ -121,7 +121,7 @@ const changePlayers =
       O.getOrElse(() => teams),
     )
 
-const divideTeams =
+export const divideTeams =
   (numOfTeams: number) =>
   (players: Array<Player>): Array<Array<Player>> =>
     numOfTeams <= 0
@@ -132,31 +132,36 @@ const divideTeams =
           ([as, bs]) => $(divideTeams(numOfTeams - 1)(bs), A.appendW(as)),
         )
 
-const balanceTeamsByDevianceFns =
-  (devianceFns: Array<(teams: Array<Array<Player>>) => number>) =>
+export const balanceTeamsByFitOrd =
+  (fitOrd: Ord<Array<Array<Player>>>) =>
   (numOfTeams: number) =>
   (players: Array<Player>): Array<Array<Player>> =>
-    $(
-      players,
-      divideTeams(numOfTeams),
-      balanceTeams(getFitOrdByDevianceFns(devianceFns)),
-    )
+    $(players, divideTeams(numOfTeams), balanceTeams(fitOrd))
 
-export const balanceTeamsByCriteria = (criteria: {
+export type Criteria = {
   position: boolean
   rating: boolean
-}) =>
+}
+
+export const getFitOrdFromCriteria = (
+  criteria: Criteria,
+): Ord<Array<Array<Player>>> =>
   $(
     [
       A.fromPredicate(() => criteria.position)(getResultPositionDeviance),
       A.fromPredicate(() => criteria.rating)(getResultRatingDeviance),
     ],
     Monoid.concatAll(A.getMonoid()),
-    balanceTeamsByDevianceFns,
+    getFitOrdByDevianceFns,
   )
 
+export const balanceTeamsByCriteria = $f(
+  getFitOrdFromCriteria,
+  balanceTeamsByFitOrd,
+)
+
 export const generateRandomBalancedTeams =
-  (criteria: { position: boolean; rating: boolean }) =>
+  (criteria: Criteria) =>
   (numOfTeams: number) =>
   (players: Array<Player>): IO<Array<Array<Player>>> =>
     $(
