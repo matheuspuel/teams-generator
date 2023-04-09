@@ -1,8 +1,9 @@
 /* eslint-disable functional/no-expression-statements */
 import * as Arb from '@effect/schema/Arbitrary'
 import * as fc from 'fast-check'
-import { $, A, Monoid, Num, Ord, Rec, SG } from 'fp'
+import { $, A, Monoid, NEA, Num, O, Rec, SG, constant } from 'fp'
 import { playersMock } from 'src/mocks/Player'
+import { Id } from 'src/utils/Entity'
 import { Player, Position } from '.'
 import {
   balanceTeamsByCriteria,
@@ -38,8 +39,18 @@ const balanceTeamsByFitOrdTestDouble: typeof balanceTeamsByFitOrd =
     $(
       getAllPermutations(players),
       A.map(divideTeams(numOfTeams)),
-      SG.concatAll({ concat: Ord.min(ord) })([]),
+      NEA.fromArray,
+      O.map(NEA.concatAll(SG.min(ord))),
+      O.getOrElseW(constant([])),
     )
+
+const playersCounterExample1: Array<Player> = [
+  { active: false, id: Id(''), name: '', rating: 6.5, position: 'M' },
+  { active: false, id: Id(''), name: '', rating: 3.5, position: 'M' },
+  { active: false, id: Id(''), name: '', rating: 2.5, position: 'LE' },
+  { active: false, id: Id(''), name: '', rating: 3, position: 'M' },
+  { active: false, id: Id(''), name: '', rating: 5, position: 'Z' },
+]
 
 describe('Balance teams', () => {
   it('should return the optimal solution', () => {
@@ -48,18 +59,16 @@ describe('Balance teams', () => {
         fc.integer({ min: 1, max: 3 }),
         fc.boolean(),
         fc.boolean(),
-        fc.array(Arb.to(Player.Schema)(fc), { minLength: 1, maxLength: 4 }),
-        (n, position, rating, players) => {
-          const result = balanceTeamsByFitOrd(
-            getFitOrdFromCriteria({ position, rating }),
-          )(n)(players)
-          expect(result).toStrictEqual<typeof result>(
-            balanceTeamsByFitOrdTestDouble(
-              getFitOrdFromCriteria({ position, rating }),
-            )(n)(players),
-          )
-        },
+        fc.array(Arb.to(Player.Schema)(fc), { minLength: 1, maxLength: 6 }),
+        (n, position, rating, players) =>
+          $(getFitOrdFromCriteria({ position, rating }), fitOrd =>
+            fitOrd.equals(
+              balanceTeamsByFitOrd(fitOrd)(n)(players),
+              balanceTeamsByFitOrdTestDouble(fitOrd)(n)(players),
+            ),
+          ),
       ),
+      { examples: [[2, true, true, playersCounterExample1]] },
     )
   })
 
