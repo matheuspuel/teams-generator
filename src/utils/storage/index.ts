@@ -12,7 +12,7 @@ export const createStorage: <A>(args: {
   key: string
   schema: D.Schema<A>
 }) => Storage<A> = ({ key, schema }) => ({
-  get: $(key, SimpleStorage.get, TE.chainEitherKW(D.decodeEither(schema))),
+  get: $(key, SimpleStorage.get, TE.chainEitherKW(D.parseEither(schema))),
   set: SimpleStorage.set(key),
   remove: SimpleStorage.remove(key),
   setOrRemove: $f(

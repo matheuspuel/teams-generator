@@ -216,7 +216,7 @@ export const eventHandlers = {
   changePlayerPosition: $f(replaceSApp(root.playerForm.position.$), execute),
   changePlayerRating: $f(
     (v: number) => Math.round(v * 20) / 2,
-    D.decodeOption(Rating.Schema),
+    D.parseOption(Rating.Schema),
     O.map($f(replaceSApp(root.playerForm.rating.$), execute)),
     O.getOrElseW(() => RIO.of(undefined)),
   ),
