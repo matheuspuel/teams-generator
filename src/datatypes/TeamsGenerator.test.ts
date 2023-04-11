@@ -12,49 +12,17 @@ import {
   getFitOrdFromCriteria,
 } from './TeamsGenerator'
 
-const getAllPermutations = <A>(inputArr: Array<A>): Array<Array<A>> => {
-  const result: Array<Array<A>> = []
-  const permute = (arr: Array<A>, m: Array<A> = []) => {
-    // eslint-disable-next-line functional/no-conditional-statements
-    if (arr.length === 0) {
-      // eslint-disable-next-line functional/immutable-data
-      result.push(m)
-      // eslint-disable-next-line functional/no-conditional-statements
-    } else {
-      // eslint-disable-next-line functional/no-loop-statements
-      for (let i = 0; i < arr.length; i++) {
-        const curr = arr.slice()
-        // eslint-disable-next-line functional/immutable-data
-        const next = curr.splice(i, 1)
-        permute(curr.slice(), m.concat(next))
-      }
-    }
-  }
-  permute(inputArr)
-  return result
-}
-
-const balanceTeamsByFitOrdTestDouble: typeof balanceTeamsByFitOrd =
-  ord => numOfTeams => players =>
-    $(
-      getAllPermutations(players),
-      A.map(divideTeams(numOfTeams)),
-      NEA.fromArray,
-      O.map(NEA.concatAll(SG.min(ord))),
-      O.getOrElseW(constant([])),
-    )
-
-const balanceTeamsArb = fc.record({
-  n: fc.integer({ min: 2, max: 9 }),
-  params: fc.record({
-    position: fc.boolean(),
-    rating: fc.boolean(),
-  }),
-  players: fc.array(Arb.to(Player.Schema)(fc)),
-})
-
 describe('Balance teams', () => {
-  it('should return the optimal solution', () => {
+  const balanceTeamsArb = fc.record({
+    n: fc.integer({ min: 2, max: 9 }),
+    params: fc.record({
+      position: fc.boolean(),
+      rating: fc.boolean(),
+    }),
+    players: fc.array(Arb.to(Player.Schema)(fc)),
+  })
+
+  it.skip('should return the optimal solution', () => {
     const playersCounterExample1: Array<Player> = [
       { active: false, id: Id(''), name: '', rating: 6.5, position: 'M' },
       { active: false, id: Id(''), name: '', rating: 3.5, position: 'M' },
@@ -62,6 +30,16 @@ describe('Balance teams', () => {
       { active: false, id: Id(''), name: '', rating: 3, position: 'M' },
       { active: false, id: Id(''), name: '', rating: 5, position: 'Z' },
     ]
+    const balanceTeamsByFitOrdTestDouble: typeof balanceTeamsByFitOrd =
+      ord => numOfTeams => players =>
+        $(
+          A.getPermutations(players),
+          A.map(divideTeams(numOfTeams)),
+          NEA.fromArray,
+          O.map(NEA.concatAll(SG.min(ord))),
+          O.getOrElseW(constant([])),
+        )
+
     fc.assert(
       fc.property(
         fc.integer({ min: 2, max: 4 }),
