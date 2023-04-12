@@ -1,6 +1,7 @@
 /* eslint-disable functional/no-expression-statements */
 import * as fc from 'fast-check'
 import { $, $f } from '.'
+import { factorial } from '../Math'
 import * as A from './Array'
 
 describe('getPermutations', () => {
@@ -20,5 +21,3 @@ describe('getPermutations', () => {
     )
   })
 })
-
-const factorial = (n: number): number => (n <= 1 ? 1 : n * factorial(n - 1))

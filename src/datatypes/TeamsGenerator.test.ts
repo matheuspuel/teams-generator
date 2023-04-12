@@ -3,14 +3,46 @@ import * as Arb from '@effect/schema/Arbitrary'
 import * as fc from 'fast-check'
 import { $, A, Eq, NEA, O, Rec, SG, constant } from 'fp'
 import { playersMock } from 'src/mocks/Player'
+import { getCombinationsIndices } from 'src/utils/Combinations'
 import { Id } from 'src/utils/Entity'
 import { Player, Position } from '.'
 import {
   balanceTeamsByCriteria,
   balanceTeamsByFitOrd,
-  divideTeams,
   getFitOrdFromCriteria,
 } from './TeamsGenerator'
+
+const getAllTeamCombinations =
+  (numOfTeams: number) =>
+  (players: Array<Player>): Array<Array<Array<Player>>> =>
+    numOfTeams <= 1
+      ? [[players]]
+      : $(
+          getCombinationsIndices(Math.floor(players.length / numOfTeams))(
+            A.size(players),
+          ),
+          A.map(is =>
+            $(
+              players,
+              A.partitionWithIndex(i => is.includes(i)),
+              ({ right: as, left: bs }) =>
+                $(
+                  getAllTeamCombinations(numOfTeams - 1)(bs),
+                  A.map(A.prepend(as)),
+                ),
+            ),
+          ),
+          A.flatten,
+        )
+
+const balanceTeamsByFitOrdUsingCombinations: typeof balanceTeamsByFitOrd =
+  ord => numOfTeams => players =>
+    $(
+      getAllTeamCombinations(numOfTeams)(players),
+      NEA.fromArray,
+      O.map(NEA.concatAll(SG.min(ord))),
+      O.getOrElseW(constant([])),
+    )
 
 describe('Balance teams', () => {
   const balanceTeamsArb = fc.record({
@@ -30,26 +62,16 @@ describe('Balance teams', () => {
       { active: false, id: Id(''), name: '', rating: 3, position: 'M' },
       { active: false, id: Id(''), name: '', rating: 5, position: 'Z' },
     ]
-    const balanceTeamsByFitOrdTestDouble: typeof balanceTeamsByFitOrd =
-      ord => numOfTeams => players =>
-        $(
-          A.getPermutations(players),
-          A.map(divideTeams(numOfTeams)),
-          NEA.fromArray,
-          O.map(NEA.concatAll(SG.min(ord))),
-          O.getOrElseW(constant([])),
-        )
-
     fc.assert(
       fc.property(
         fc.integer({ min: 2, max: 4 }),
         fc.record({ position: fc.boolean(), rating: fc.boolean() }),
-        fc.array(Arb.to(Player.Schema)(fc), { minLength: 1, maxLength: 6 }),
+        fc.array(Arb.to(Player.Schema)(fc), { minLength: 1, maxLength: 8 }),
         (n, params, players) =>
           $(getFitOrdFromCriteria(params), fitOrd =>
             fitOrd.equals(
               balanceTeamsByFitOrd(fitOrd)(n)(players),
-              balanceTeamsByFitOrdTestDouble(fitOrd)(n)(players),
+              balanceTeamsByFitOrdUsingCombinations(fitOrd)(n)(players),
             ),
           ),
       ),
