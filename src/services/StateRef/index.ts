@@ -12,8 +12,8 @@ export const subscribe: <R>(
   env.stateRef.subscribe(f(env))
 
 export const execute =
-  <A>(f: S.State<RootState, A>) =>
-  (env: AppStateRefEnv) =>
+  <A>(f: S.State<RootState, A>): ReaderIO<AppStateRefEnv, A> =>
+  env =>
     env.stateRef.execute(f)
 
 export const getRootState = S.get<RootState>()

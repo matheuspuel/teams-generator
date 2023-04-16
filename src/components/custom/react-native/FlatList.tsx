@@ -1,4 +1,4 @@
-import { $, Reader } from 'fp'
+import { $, RA, Reader, constUndefined } from 'fp'
 import React from 'react'
 import { FlatList as FlatList_ } from 'react-native'
 import { Element, GapProps, PaddingProps } from '../types'
@@ -42,7 +42,10 @@ const getRawProps = <R, A>({
 }: FlatListArgs<R, A>): React.ComponentProps<typeof FlatList_<A>> => ({
   data: props.data,
   renderItem: ({ item, index }) => props.renderItem(item, index)(env),
-  ListEmptyComponent: props.ListEmptyComponent(env),
+  ListEmptyComponent: $(
+    props.data,
+    RA.matchW(() => props.ListEmptyComponent(env), constUndefined),
+  ),
   keyExtractor: props.keyExtractor,
   getItemLayout: $(props.getItemLayout, f =>
     f ? (data, index) => f(data ?? [], index) : undefined,

@@ -3,7 +3,6 @@ import {
   $,
   $f,
   Apply,
-  constVoid,
   D,
   identity,
   IO,
@@ -15,19 +14,17 @@ import {
   Rec,
   RIO,
   RT,
-  RTE,
   S,
   some,
   Str,
-  T,
   Task,
 } from 'fp'
 import { not } from 'fp-ts/Predicate'
-import { Share } from 'react-native'
 import { Player, Rating } from 'src/datatypes'
 import { RootState } from 'src/model'
 import { root } from 'src/model/Optics'
 import { BackHandler } from 'src/services/BackHandler'
+import { ShareService } from 'src/services/Share'
 import { SplashScreen } from 'src/services/SplashScreen'
 import { execute, getSApp, replaceSApp } from 'src/services/StateRef'
 import { saveState } from 'src/slices/core/hydration'
@@ -128,11 +125,11 @@ export const eventHandlers = {
           O.map(m =>
             $(
               m.id,
-              O.matchW(
+              O.match(
                 () => createGroup({ name: m.name }),
                 id => execute(editGroup({ id, name: m.name })),
               ),
-              RIO.apFirst(execute(setUpsertGroupModal(O.none))),
+              RIO.chainFirstW(() => execute(setUpsertGroupModal(O.none))),
             ),
           ),
           O.getOrElseW(() => doNothing),
@@ -238,11 +235,11 @@ export const eventHandlers = {
           ({ form, groupId, playerId }) =>
             $(
               playerId,
-              O.matchW(
+              O.match(
                 () => createPlayer({ groupId, player: form }),
                 id => execute(editPlayer({ groupId, player: { ...form, id } })),
               ),
-              RIO.apFirst(execute(goBack)),
+              RIO.chainW(() => execute(goBack)),
             ),
         ),
       ),
@@ -253,14 +250,12 @@ export const eventHandlers = {
   shareTeamList: () =>
     $(
       execute(S.gets(get(root.result.$))),
-      RTE.rightReaderIO,
-      RTE.chainTaskK(
+      RT.fromReaderIO,
+      RT.chainW(
         O.match(
-          () => T.of(undefined),
-          $f(
-            Player.TeamListShowSensitive.show,
-            t => () => Share.share({ message: t, title: 'Times' }),
-            T.map(constVoid),
+          () => RT.of(undefined),
+          $f(Player.TeamListShowSensitive.show, t =>
+            ShareService.share({ message: t, title: 'Times' }),
           ),
         ),
       ),
@@ -345,14 +340,16 @@ export type EventHandlerEnv<E extends Event<string, unknown>> = {
   eventHandler: EventHandler<E>
 }
 
-const makeEventHandler =
+const makeEventHandlerWithHandlers =
   <H extends EventHandlersRecord>(handlers: H) =>
   (env: HandlerEnvFromHandlers<H>) =>
-  (event: EventTypeFromHandlers<H>): IO<void> =>
+  <E extends EventTypeFromHandlers<H>>(
+    event: E,
+  ): ReturnType<ReturnType<H[E['event']['_tag']]>> =>
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
     (handlers[event.event._tag] as any)(event.event.payload)(env)
 
-export const eventHandler = makeEventHandler(eventHandlers)
+export const makeEventHandler = makeEventHandlerWithHandlers(eventHandlers)
 
 export const EventHandler = {
   handle:

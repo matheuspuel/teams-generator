@@ -17,8 +17,9 @@ import {
 import { Group, Player } from 'src/datatypes'
 import { RootState } from 'src/model'
 import { root } from 'src/model/Optics'
+import { IdGenerator } from 'src/services/IdGenerator'
 import { execute, modifySApp } from 'src/services/StateRef'
-import { generateId, Id } from 'src/utils/Entity'
+import { Id } from 'src/utils/Entity'
 
 export type GroupsState = Record<Id, Group>
 
@@ -54,8 +55,8 @@ const addGroup = (group: Group) => modify(gs => ({ ...gs, [group.id]: group }))
 
 export const createGroup = ({ name }: { name: string }) =>
   $(
-    RIO.fromIO(generateId),
-    RIO.chain(id => execute(addGroup({ id, name, players: [] }))),
+    IdGenerator.generate,
+    RIO.chainW(id => execute(addGroup({ id, name, players: [] }))),
   )
 
 export const editGroup = (args: { id: Id; name: string }) =>
@@ -89,8 +90,10 @@ export const createPlayer = ({
   player: Omit<Player, 'active' | 'id'>
 }) =>
   $(
-    RIO.fromIO(generateId),
-    RIO.chain(id => execute(addPlayer({ groupId, player: { ...player, id } }))),
+    IdGenerator.generate,
+    RIO.chainW(id =>
+      execute(addPlayer({ groupId, player: { ...player, id } })),
+    ),
   )
 
 export const editPlayer = (p: {

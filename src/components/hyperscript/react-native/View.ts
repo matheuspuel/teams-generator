@@ -1,4 +1,4 @@
-import { $, R, RA, apply } from 'fp'
+import { $, R, RA, Reader, apply } from 'fp'
 import React from 'react'
 import { Event, EventHandlerEnv } from 'src/actions'
 import { View as View_ } from 'src/components/custom'
@@ -11,7 +11,7 @@ export const View =
   ) =>
   <
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    C extends ReadonlyArray<(env: any) => Element>,
+    C extends ReadonlyArray<Reader<any, Element>>,
   >(
     children: C,
   ) =>

@@ -1,6 +1,7 @@
-import { Reader } from 'fp'
+import { O, Reader } from 'fp'
 import React from 'react'
 import { SafeAreaProvider as SafeAreaProvider_ } from 'react-native-safe-area-context'
+import { SafeAreaService, SafeAreaServiceEnv } from 'src/services/SafeArea'
 import { Color } from 'src/utils/datatypes'
 import { JSXElementsChildren } from '../types'
 
@@ -12,7 +13,7 @@ export type SafeAreaProviderProps<R> = {
 export type SafeAreaProviderArgs<R> = {
   x: SafeAreaProviderProps<R>
   children?: JSXElementsChildren
-  env: R
+  env: R & SafeAreaServiceEnv
 }
 
 const getRawProps = <R,>({
@@ -23,6 +24,7 @@ const getRawProps = <R,>({
   key?: string
 } => ({
   children: children,
+  initialMetrics: O.toUndefined(SafeAreaService.initialMetrics(env)),
   style: {
     backgroundColor: props?.bg ? Color.toHex(props.bg(env)) : undefined,
   },
