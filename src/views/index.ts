@@ -10,7 +10,7 @@ import { AppStateRefEnv } from 'src/services/StateRef'
 import { useSelector } from 'src/services/StateRef/react'
 import { Router } from './Router'
 
-export const UIRoot = named1('UI')((env: UIRootEnv & AppStateRefEnv) => {
+export const UIRoot = named1('UIRoot')((env: UIRootEnv & AppStateRefEnv) => {
   const model = useSelector({ selector: identity, eq: Eq.eqStrict, env })
   return Root(model)(env)
 })
