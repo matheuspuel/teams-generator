@@ -2,7 +2,7 @@
 // eslint-disable-next-line functional/immutable-data, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
 ;(global as any).ReanimatedDataMock = { now: () => 0 }
 
-import { act, render } from '@testing-library/react-native'
+import { act, create } from 'react-test-renderer'
 import { makeEventHandler, on } from 'src/actions'
 import { Parameters } from 'src/datatypes'
 import { testingSafeAreaService } from 'src/services/SafeArea/testing'
@@ -52,7 +52,7 @@ it('renders', async () => {
     eventHandler,
   })
 
-  const ui = render(UI)
+  const ui = create(UI)
   expect(ui.toJSON()).toMatchSnapshot()
   await act(() => {
     dispatch(on.openNewGroupModal)()
