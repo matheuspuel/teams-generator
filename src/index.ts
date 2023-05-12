@@ -1,5 +1,5 @@
 import { $, R, T } from 'fp'
-import { startApp } from 'src/App'
+import { startApp } from 'src/App2'
 import { defaultBackHandler } from 'src/services/BackHandler/default'
 import {
   defaultGroupsRepository,
