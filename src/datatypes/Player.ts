@@ -1,5 +1,6 @@
 import { $, $f, A, Bool, D, Num, Ord, Show as Show_, Str } from 'fp'
 import { Id } from 'src/utils/Entity'
+import { normalize } from 'src/utils/String'
 import * as Position from './Position'
 import * as Rating from './Rating'
 
@@ -33,7 +34,7 @@ export const PositionOrd: Ord<Player> = $(
 
 export const NameOrd: Ord<Player> = $(
   Str.Ord,
-  Ord.contramap(p => p.name),
+  Ord.contramap($f(p => p.name, normalize)),
 )
 
 export const RatingOrd: Ord<Player> = $(
