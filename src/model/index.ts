@@ -1,5 +1,5 @@
 import { O, Option } from 'fp'
-import { Parameters } from 'src/datatypes'
+import { GroupOrder, Parameters } from 'src/datatypes'
 import { GroupsState, emptyGroups } from 'src/slices/groups'
 import { PlayerForm, blankPlayerForm } from 'src/slices/playerForm'
 import { GeneratedResult } from 'src/slices/result'
@@ -12,28 +12,32 @@ export type RootState = {
   groups: GroupsState
   playerForm: PlayerForm
   result: Option<GeneratedResult>
+  groupOrder: GroupOrder
   ui: {
     selectedGroupId: Option<Id>
     selectedPlayerId: Option<Id>
     modalUpsertGroup: Option<{ id: Option<Id>; name: string }>
     modalDeleteGroup: Option<{ id: Id }>
     modalParameters: boolean
+    modalSortGroup: Option<null>
   }
   route: Route
 }
 
-export const initialAppState = {
+export const initialAppState: RootState = {
   core: { isLoaded: false },
   groups: emptyGroups,
   parameters: Parameters.initial,
   playerForm: blankPlayerForm,
   result: O.none,
+  groupOrder: GroupOrder.initial,
   ui: {
     selectedGroupId: O.none,
     selectedPlayerId: O.none,
     modalUpsertGroup: O.none,
     modalDeleteGroup: O.none,
     modalParameters: false,
+    modalSortGroup: O.none,
   },
   route: initialRoute,
 }

@@ -1,5 +1,5 @@
-import { $, Eq, O, Option, R } from 'fp'
-import { on } from 'src/actions'
+import { $, Eq, O, Option, R, RA } from 'fp'
+import { AppEvent, on } from 'src/actions'
 import {
   deepEq,
   memoized,
@@ -12,12 +12,14 @@ import {
   MaterialCommunityIcons,
   MaterialIcons,
   Modal,
+  Nothing,
   Pressable,
   Row,
   Txt,
   View,
 } from 'src/components/hyperscript'
-import { Group, Parameters, Player, Rating } from 'src/datatypes'
+import { Group, GroupOrder, Parameters, Player, Rating } from 'src/datatypes'
+import { GroupOrderType } from 'src/datatypes/GroupOrder'
 import { Colors } from 'src/services/Theme'
 import { withOpacity } from 'src/utils/datatypes/Color'
 
@@ -26,15 +28,21 @@ export const GroupView = memoized('GroupScreen')(
     parameters: deepEq,
     group: O.getEq(shallowEq),
     modalParameters: Eq.eqStrict,
+    modalSortGroup: Eq.eqStrict,
+    groupOrder: deepEq,
   }),
   ({
     parameters,
     group,
     modalParameters,
+    modalSortGroup,
+    groupOrder,
   }: {
     parameters: Parameters
     group: Option<Group>
     modalParameters: boolean
+    modalSortGroup: Option<null>
+    groupOrder: GroupOrder
   }) =>
     View({ flex: 1 })([
       GroupHeader,
@@ -43,6 +51,7 @@ export const GroupView = memoized('GroupScreen')(
           group,
           O.map(g => g.players),
           O.getOrElseW(() => []),
+          RA.sort(GroupOrder.toOrd(groupOrder)),
         ),
         keyExtractor: ({ id }) => id,
         renderItem: Item,
@@ -62,6 +71,13 @@ export const GroupView = memoized('GroupScreen')(
         rippleOpacity: 0.5,
       })([Txt({ align: 'center', color: Colors.white })('Sortear')]),
       ...(modalParameters ? [ParametersModal({ parameters })] : []),
+      $(
+        modalSortGroup,
+        O.matchW(
+          () => Nothing,
+          () => SortModal({ mainSort: groupOrder[0] }),
+        ),
+      ),
     ]),
 )
 
@@ -84,10 +100,17 @@ const GroupHeader = memoizedConst('GroupHeader')(
           size: 24,
         }),
       ]),
-      headerRight: Row()([
+      headerRight: Row({ px: 4, gap: 4 })([
+        Pressable({
+          onPress: on.openSortGroupModal,
+          p: 8,
+          borderless: true,
+          foreground: true,
+        })([
+          MaterialIcons({ name: 'sort', color: Colors.text.light, size: 24 }),
+        ]),
         Pressable({
           onPress: on.toggleAllPlayersActive,
-          mr: 4,
           p: 8,
           borderless: true,
           foreground: true,
@@ -100,7 +123,6 @@ const GroupHeader = memoizedConst('GroupHeader')(
         ]),
         Pressable({
           onPress: on.pressNewPlayer,
-          mr: 4,
           p: 8,
           borderless: true,
           foreground: true,
@@ -178,6 +200,129 @@ const Item = memoized('GroupItem')(
       Txt({ my: 8, color: Colors.text.dark, numberOfLines: 1 })(name),
     ]),
 )
+
+const SortModal = ({
+  mainSort,
+}: {
+  mainSort: { _tag: GroupOrderType; reverse: boolean }
+}) =>
+  Modal({
+    transparent: true,
+    flex: 1,
+    animationType: 'fade',
+    statusBarTranslucent: true,
+    onRequestClose: on.closeSortGroupModal,
+  })([
+    Pressable({
+      onPress: on.closeSortGroupModal,
+      flex: 1,
+      justify: 'center',
+      bg: $(Colors.black, R.map(withOpacity(63))),
+    })([
+      Pressable({
+        onPress: on.doNothing,
+        bg: Colors.white,
+        m: 48,
+        round: 8,
+        shadow: 2,
+        rippleColor: Colors.black,
+        rippleOpacity: 0,
+      })([
+        Row({ align: 'center', p: 8 })([
+          Txt({
+            m: 8,
+            flex: 1,
+            size: 16,
+            weight: 600,
+            color: Colors.text.dark,
+          })('Ordenação'),
+          Pressable({
+            p: 8,
+            round: 4,
+            onPress: on.closeSortGroupModal,
+          })([
+            MaterialIcons({ name: 'close', size: 24, color: Colors.gray.$4 }),
+          ]),
+        ]),
+        View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
+        View({ roundB: 8, overflow: 'hidden' })([
+          FilterButton({
+            name: 'Nome',
+            onPress: on.groupSortByName,
+            state: $(
+              mainSort._tag === 'name'
+                ? O.some({ reverse: mainSort.reverse })
+                : O.none,
+            ),
+          }),
+          FilterButton({
+            name: 'Posição',
+            onPress: on.groupSortByPosition,
+            state: $(
+              mainSort._tag === 'position'
+                ? O.some({ reverse: mainSort.reverse })
+                : O.none,
+            ),
+          }),
+          FilterButton({
+            name: 'Habilidade',
+            onPress: on.groupSortByRating,
+            state: $(
+              mainSort._tag === 'rating'
+                ? O.some({ reverse: mainSort.reverse })
+                : O.none,
+            ),
+          }),
+          FilterButton({
+            name: 'Ativo',
+            onPress: on.groupSortByActive,
+            state: $(
+              mainSort._tag === 'active'
+                ? O.some({ reverse: mainSort.reverse })
+                : O.none,
+            ),
+          }),
+          FilterButton({
+            name: 'Data',
+            onPress: on.groupSortByDate,
+            state: $(
+              mainSort._tag === 'date'
+                ? O.some({ reverse: mainSort.reverse })
+                : O.none,
+            ),
+          }),
+        ]),
+      ]),
+    ]),
+  ])
+
+const FilterButton = (props: {
+  state: Option<{ reverse: boolean }>
+  onPress: AppEvent
+  name: string
+}) =>
+  Pressable({
+    direction: 'row',
+    align: 'center',
+    p: 16,
+    onPress: props.onPress,
+  })([
+    View({ w: 36 })([
+      $(
+        props.state,
+        O.matchW(
+          () => Nothing,
+          ({ reverse }) =>
+            MaterialCommunityIcons({
+              name: reverse ? 'sort-descending' : 'sort-ascending',
+              size: 24,
+              color: Colors.primary.$5,
+            }),
+        ),
+      ),
+    ]),
+    Txt({ flex: 1 })(props.name),
+  ])
 
 const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
   Modal({

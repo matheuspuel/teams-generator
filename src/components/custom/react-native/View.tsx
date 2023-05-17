@@ -27,7 +27,9 @@ export type ViewStyleProps<R> = PaddingProps &
     w?: number
     h?: number
     aspectRatio?: number
+    overflow?: 'visible' | 'hidden'
     shadow?: number
+    zIndex?: number
     bg?: Reader<R, Color>
     borderColor?: Reader<R, Color>
   }
@@ -122,6 +124,8 @@ const getRawProps = <
         ? { position: 'relative' }
         : undefined,
     ),
+    zIndex: props?.zIndex,
+    overflow: props?.overflow,
   },
 })
 

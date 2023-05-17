@@ -1,5 +1,5 @@
 import { TE, TaskEither } from 'fp'
-import { Parameters } from 'src/datatypes'
+import { GroupOrder, Parameters } from 'src/datatypes'
 import { GroupsState } from 'src/slices/groups'
 
 export type GroupsRepositoryEnv = {
@@ -29,4 +29,18 @@ export const ParametersRepository = {
   get: (env: ParametersRepositoryEnv) => env.repositories.Parameters.get,
   set: (value: Parameters) => (env: ParametersRepositoryEnv) =>
     env.repositories.Parameters.set(value),
+}
+
+export type GroupOrderRepositoryEnv = {
+  repositories: { GroupOrder: GroupOrderRepository }
+}
+export type GroupOrderRepository = {
+  get: TaskEither<unknown, GroupOrder>
+  set: (value: GroupOrder) => TE.TaskEither<unknown, void>
+}
+
+export const GroupOrderRepository = {
+  get: (env: GroupOrderRepositoryEnv) => env.repositories.GroupOrder.get,
+  set: (value: GroupOrder) => (env: GroupOrderRepositoryEnv) =>
+    env.repositories.GroupOrder.set(value),
 }

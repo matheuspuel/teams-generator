@@ -1,5 +1,5 @@
 import { get } from '@fp-ts/optic'
-import { $, absurd, O } from 'fp'
+import { $, absurd, Apply, O, R } from 'fp'
 import { named2 } from 'src/components/helpers'
 import { StatusBar } from 'src/components/hyperscript/expo/StatusBar'
 import { SafeAreaProvider } from 'src/components/hyperscript/safe-area/SafeAreaProvider'
@@ -24,17 +24,18 @@ export const Router = named2('Router')(({ model }: { model: RootState }) =>
           ? []
           : [
               Screen()([
-                GroupView({
-                  group: $(
-                    get(root.ui.selectedGroupId.$)(model),
-                    O.match(
-                      () => O.none,
-                      id => getGroupById(id)(model),
+                GroupView(
+                  Apply.sequenceS(R.Apply)({
+                    group: $(
+                      get(root.ui.selectedGroupId.$),
+                      R.chain(O.match(() => R.of(O.none), getGroupById)),
                     ),
-                  ),
-                  modalParameters: get(root.ui.modalParameters.$)(model),
-                  parameters: get(root.parameters.$)(model),
-                }),
+                    modalSortGroup: get(root.ui.modalSortGroup.$),
+                    modalParameters: get(root.ui.modalParameters.$),
+                    parameters: get(root.parameters.$),
+                    groupOrder: get(root.groupOrder.$),
+                  })(model),
+                ),
               ]),
               ...(route === 'Group'
                 ? []

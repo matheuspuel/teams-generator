@@ -28,6 +28,7 @@ import { ShareService } from 'src/services/Share'
 import { SplashScreen } from 'src/services/SplashScreen'
 import { execute, getSApp, replaceSApp } from 'src/services/StateRef'
 import { saveState } from 'src/slices/core/hydration'
+import { onSelectGroupOrder } from 'src/slices/groupOrder'
 import {
   createGroup,
   createPlayer,
@@ -155,6 +156,15 @@ export const eventHandlers = {
       execute,
     ),
 
+  openSortGroupModal: () =>
+    execute(replaceSApp(root.ui.modalSortGroup.$)(O.some(null))),
+  closeSortGroupModal: () =>
+    execute(replaceSApp(root.ui.modalSortGroup.$)(O.none)),
+  groupSortByName: () => $(onSelectGroupOrder('name'), execute),
+  groupSortByPosition: () => $(onSelectGroupOrder('position'), execute),
+  groupSortByRating: () => $(onSelectGroupOrder('rating'), execute),
+  groupSortByActive: () => $(onSelectGroupOrder('active'), execute),
+  groupSortByDate: () => $(onSelectGroupOrder('date'), execute),
   openParametersModal: () =>
     execute(replaceSApp(root.ui.modalParameters.$)(true)),
   closeParametersModal: () => execute(closeParametersModal),
@@ -311,6 +321,13 @@ export const on = {
   deleteGroup: e.deleteGroup(),
   selectGroup: e.selectGroup,
 
+  openSortGroupModal: e.openSortGroupModal(),
+  closeSortGroupModal: e.closeSortGroupModal(),
+  groupSortByName: e.groupSortByName(),
+  groupSortByPosition: e.groupSortByPosition(),
+  groupSortByRating: e.groupSortByRating(),
+  groupSortByActive: e.groupSortByActive(),
+  groupSortByDate: e.groupSortByDate(),
   openParametersModal: e.openParametersModal(),
   closeParametersModal: e.closeParametersModal(),
   pressNewPlayer: e.pressNewPlayer(),

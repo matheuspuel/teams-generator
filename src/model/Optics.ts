@@ -23,6 +23,7 @@ export const root = $(Optic.id<RootState>(), o => ({
         })),
       })),
   })),
+  groupOrder: $(o.at('groupOrder'), o => ({ $: o })),
   parameters: $(o.at('parameters'), o => ({
     $: o,
     position: { $: o.at('position') },
@@ -46,5 +47,6 @@ export const root = $(Optic.id<RootState>(), o => ({
       name: { $: o.compose(Optic.some()).at('name') },
     })),
     modalDeleteGroup: { $: o.at('modalDeleteGroup') },
+    modalSortGroup: { $: o.at('modalSortGroup') },
   })),
 }))

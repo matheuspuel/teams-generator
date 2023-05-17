@@ -2,6 +2,7 @@ import { $, R, T } from 'fp'
 import { startApp } from 'src/app'
 import { defaultBackHandler } from 'src/services/BackHandler/default'
 import {
+  defaultGroupOrderRepository,
   defaultGroupsRepository,
   defaultParametersRepository,
 } from 'src/services/Repositories/default'
@@ -46,6 +47,7 @@ void startApp({
   repositories: {
     Groups: defaultGroupsRepository,
     Parameters: defaultParametersRepository,
+    GroupOrder: defaultGroupOrderRepository,
   },
   ui: defaultUI,
   eventHandler: eventHandlerWithLogging({
@@ -58,6 +60,7 @@ void startApp({
     repositories: {
       Groups: defaultGroupsRepository,
       Parameters: defaultParametersRepository,
+      GroupOrder: defaultGroupOrderRepository,
     },
   }),
 })()

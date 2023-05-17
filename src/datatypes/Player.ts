@@ -1,4 +1,4 @@
-import { $, $f, A, D, Num, Ord, Show as Show_, Str } from 'fp'
+import { $, $f, A, Bool, D, Num, Ord, Show as Show_, Str } from 'fp'
 import { Id } from 'src/utils/Entity'
 import * as Position from './Position'
 import * as Rating from './Rating'
@@ -39,6 +39,16 @@ export const NameOrd: Ord<Player> = $(
 export const RatingOrd: Ord<Player> = $(
   Num.Ord,
   Ord.contramap(p => p.rating),
+)
+
+export const ActiveOrd: Ord<Player> = $(
+  Bool.Ord,
+  Ord.contramap(p => p.active),
+)
+
+export const IdOrd: Ord<Player> = $(
+  Str.Ord,
+  Ord.contramap(p => p.id),
 )
 
 export const Show: Show_.Show<Player> = {

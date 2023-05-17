@@ -4,7 +4,7 @@
 
 import { act, create } from 'react-test-renderer'
 import { makeEventHandler, on } from 'src/actions'
-import { Parameters } from 'src/datatypes'
+import { GroupOrder, Parameters } from 'src/datatypes'
 import { testingSafeAreaService } from 'src/services/SafeArea/testing'
 import { defaultStateRef } from 'src/services/StateRef/default'
 import { defaultTheme } from 'src/services/Theme/default'
@@ -37,6 +37,10 @@ const eventHandler = makeEventHandler({
     Groups: { get: TE.right({}), set: () => TE.of(undefined) },
     Parameters: {
       get: TE.right(Parameters.initial),
+      set: () => TE.of(undefined),
+    },
+    GroupOrder: {
+      get: TE.right(GroupOrder.initial),
       set: () => TE.of(undefined),
     },
   },
