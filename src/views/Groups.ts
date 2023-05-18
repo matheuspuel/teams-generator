@@ -38,7 +38,7 @@ export const Groups = memoized('Groups')(
     View({ flex: 1, onLayout: on.uiMount })([
       ScreenHeader,
       FlatList({
-        data: $(groups, Rec.toEntries, A.map(Tup.snd)),
+        data: $(groups, Rec.toEntries, A.map(Tup.snd), A.sort(Group.NameOrd)),
         renderItem: Item,
         ListEmptyComponent: View({ flex: 1, justify: 'center' })([
           Txt({ align: 'center', size: 16, color: Colors.gray.$3 })(

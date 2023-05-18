@@ -1,5 +1,6 @@
-import { D } from 'fp'
+import { $, $f, D, Ord, Str } from 'fp'
 import { Id } from 'src/utils/Entity'
+import { normalize } from 'src/utils/String'
 import { Player } from './Player'
 
 export type Group = {
@@ -15,3 +16,8 @@ export const Schema = D.struct({
 })
 
 export const Group = Schema
+
+export const NameOrd: Ord<Group> = $(
+  Str.Ord,
+  Ord.contramap($f(p => p.name, normalize)),
+)

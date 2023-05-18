@@ -119,11 +119,13 @@ export const eventHandlers = {
   changeGroupName: $f(setUpsertGroupName, execute),
   saveGroup: () =>
     $(
-      execute(getSApp(root.ui.modalUpsertGroup.$)),
+      getSApp(root.ui.modalUpsertGroup.$),
+      S.map(O.filter(not(m => Str.isEmpty(m.name)))),
+      execute,
       RIO.chain(
-        $f(
-          O.filter(not(m => Str.isEmpty(m.name))),
-          O.map(m =>
+        O.matchW(
+          () => doNothing,
+          m =>
             $(
               m.id,
               O.match(
@@ -132,8 +134,6 @@ export const eventHandlers = {
               ),
               RIO.chainFirstW(() => execute(setUpsertGroupModal(O.none))),
             ),
-          ),
-          O.getOrElseW(() => doNothing),
         ),
       ),
     ),
