@@ -22,7 +22,7 @@ export const create = <A>(): Observable<A> =>
             subscriptionsRef.getState,
             IO.chain(
               $f(
-                A.filter(not(Eq.equals(Eq.eqStrict)(f))),
+                A.filter(not(Eq.equals(Eq.strict())(f))),
                 subscriptionsRef.setState,
               ),
             ),

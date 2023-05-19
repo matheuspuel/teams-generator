@@ -1,4 +1,4 @@
-import { $, $f, A, Bool, D, Num, Ord, Show as Show_, Str } from 'fp'
+import { $, $f, A, Bool, D, Num, Ord, Order, Show as Show_, Str } from 'fp'
 import { Id } from 'src/utils/Entity'
 import { normalize } from 'src/utils/String'
 import * as Position from './Position'
@@ -27,27 +27,27 @@ export const Player = Schema
 
 export const isActive = (p: Player) => p.active
 
-export const PositionOrd: Ord<Player> = $(
+export const PositionOrd: Order<Player> = $(
   Position.Ord,
   Ord.contramap(p => p.position),
 )
 
-export const NameOrd: Ord<Player> = $(
+export const NameOrd: Order<Player> = $(
   Str.Ord,
   Ord.contramap($f(p => p.name, normalize)),
 )
 
-export const RatingOrd: Ord<Player> = $(
-  Num.Ord,
+export const RatingOrd: Order<Player> = $(
+  Num.Order,
   Ord.contramap(p => p.rating),
 )
 
-export const ActiveOrd: Ord<Player> = $(
+export const ActiveOrd: Order<Player> = $(
   Bool.Ord,
   Ord.contramap(p => p.active),
 )
 
-export const IdOrd: Ord<Player> = $(
+export const IdOrd: Order<Player> = $(
   Str.Ord,
   Ord.contramap(p => p.id),
 )
@@ -61,17 +61,17 @@ export const Show: Show_.Show<Player> = {
 
 export const ListShow: Show_.Show<Array<Player>> = {
   show: $f(
-    A.sortBy([PositionOrd, Ord.reverse(RatingOrd), NameOrd]),
+    A.sortBy(PositionOrd, Ord.reverse(RatingOrd), NameOrd),
     A.map(Show.show),
-    A.intercalate(Str.Monoid)('\n'),
+    A.join('\n'),
   ),
 }
 
 export const TeamListShow: Show_.Show<Array<Array<Player>>> = {
   show: $f(
     A.map(ListShow.show),
-    A.mapWithIndex((i, t) => `Time ${i + 1}\n\n${t}`),
-    A.intercalate(Str.Monoid)('\n\n'),
+    A.map((t, i) => `Time ${i + 1}\n\n${t}`),
+    A.join('\n\n'),
   ),
 }
 
@@ -81,21 +81,21 @@ export const ShowSensitive: Show_.Show<Player> = {
 
 export const ListShowSensitive: Show_.Show<Array<Player>> = {
   show: $f(
-    A.sortBy([PositionOrd, NameOrd]),
+    A.sortBy(PositionOrd, NameOrd),
     A.map(ShowSensitive.show),
-    A.intercalate(Str.Monoid)('\n'),
+    A.join('\n'),
   ),
 }
 
 export const TeamListShowSensitive: Show_.Show<Array<Array<Player>>> = {
   show: $f(
     A.map(ListShowSensitive.show),
-    A.mapWithIndex((i, t) => `Time ${i + 1}\n\n${t}`),
-    A.intercalate(Str.Monoid)('\n\n'),
+    A.map((t, i) => `Time ${i + 1}\n\n${t}`),
+    A.join('\n\n'),
   ),
 }
 
-export const getRatingTotal: (players: Array<Player>) => number = A.foldMap(
+export const getRatingTotal: (players: Array<Player>) => number = A.combineMap(
   Num.MonoidSum,
 )(p => p.rating)
 

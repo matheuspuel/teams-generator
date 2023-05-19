@@ -6,16 +6,16 @@ import { execute, replaceSApp } from 'src/services/StateRef'
 
 export type GeneratedResult = Array<Array<Player>>
 
-export const eraseResult = replaceSApp(root.result.$)(O.none)
+export const eraseResult = replaceSApp(root.result.$)(O.none())
 
 export const generateResult = $(
   execute(
     S.gets(s =>
       $(
         get(root.ui.selectedGroupId.$)(s),
-        O.chain(id => $(get(root.groups.$)(s), Rec.lookup(id))),
+        O.flatMap(id => $(get(root.groups.$)(s), Rec.get(id))),
         O.map(g => g.players),
-        O.getOrElseW(() => []),
+        O.getOrElse(() => []),
         RA.filter(Player.isActive),
         RA.toArray,
         players => ({ players, parameters: get(root.parameters.$)(s) }),

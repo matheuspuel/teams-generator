@@ -1,4 +1,4 @@
-import { $, D, IO, Num, Ord as Ord_, Predicate } from 'fp'
+import { $, D, IO, Num, Ord as Ord_, Order, Predicate } from 'fp'
 import { now } from 'fp-ts/Date'
 import { Duration } from './Duration'
 
@@ -6,7 +6,7 @@ export const Schema = $(D.number, D.brand('Timestamp'))
 
 export type Timestamp = D.To<typeof Schema>
 
-export const Ord: Ord_<Timestamp> = Num.Ord
+export const Ord: Order<Timestamp> = Num.Order
 
 export const getNow: IO<Timestamp> = now as IO<Timestamp>
 

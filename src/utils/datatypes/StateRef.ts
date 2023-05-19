@@ -19,12 +19,12 @@ export const create = <S>(initialState: S): StateRef<S> => {
       IO.chain(prev =>
         $(f(prev), result =>
           $(Tup.snd(result), next =>
-            Eq.equals(Eq.eqStrict)(prev)(next)
+            Eq.equals(Eq.strict())(prev)(next)
               ? IO.of(Tup.fst(result))
               : $(
                   ref.getState,
                   IO.chain(current =>
-                    Eq.equals(Eq.eqStrict)(prev)(current)
+                    Eq.equals(Eq.strict())(prev)(current)
                       ? $(
                           ref.setState(next),
                           IO.chain(() => observable.dispatch(undefined)),

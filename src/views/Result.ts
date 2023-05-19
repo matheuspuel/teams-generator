@@ -55,13 +55,13 @@ export const ResultView = named2('Result')(
       ScrollView({ contentContainerStyle: { flexGrow: 1 } })(
         $(
           result,
-          O.matchW(
+          O.match(
             () => [
               View({ flex: 1, justify: 'center' })([
                 ActivityIndicator({ color: Colors.primary.$5 }),
               ]),
             ],
-            A.mapWithIndex((i, t) =>
+            A.map((t, i) =>
               TeamItem({ key: i.toString(), index: i, players: t }),
             ),
           ),
@@ -107,11 +107,11 @@ const TeamItem = (props: {
     ]),
     ...$(
       props.players,
-      A.sortBy([
+      A.sortBy(
         Player.PositionOrd,
         Ord.reverse(Player.RatingOrd),
         Player.NameOrd,
-      ]),
+      ),
       A.map(p => PlayerItem({ key: p.id, data: p })),
     ),
   ])

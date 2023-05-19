@@ -1,5 +1,4 @@
-import { $, $f, A, IO, none, Num, O, Ord, Rec, some, Tup } from 'fp'
-import * as Monoid from 'fp-ts/Monoid'
+import { $, $f, A, IO, Num, O, Ord, Order, Rec, Tup, none, some } from 'fp'
 import * as Player from 'src/datatypes/Player'
 import * as Position from 'src/datatypes/Position'
 import { findFirstMapWithIndex } from 'src/utils/Array'
@@ -10,11 +9,11 @@ type Position = Position.Position
 
 const getFitOrdByDevianceFns = (
   fns: Array<(teams: Array<Array<Player>>) => number>,
-): Ord<Array<Array<Player>>> =>
+): Order<Array<Array<Player>>> =>
   $(
     fns,
-    A.map(f => Ord.contramap(f)(Num.Ord)),
-    Monoid.concatAll(Ord.getMonoid<Array<Array<Player>>>()),
+    A.map(f => Ord.contramap(f)(Num.Order)),
+    Ord.getMonoid<Array<Array<Player>>>().combineAll,
   )
 
 const getResultPositionDeviance = (teams: Array<Array<Player>>): number =>
@@ -23,7 +22,7 @@ const getResultPositionDeviance = (teams: Array<Array<Player>>): number =>
       Position.Dict,
       Rec.toEntries,
       A.map(Tup.fst),
-      A.foldMap(Num.MonoidSum)(pos =>
+      A.combineMap(Num.MonoidSum)(pos =>
         $(
           allPlayers,
           positionCount(pos),
@@ -31,7 +30,7 @@ const getResultPositionDeviance = (teams: Array<Array<Player>>): number =>
           positionAvg =>
             $(
               teams,
-              A.foldMap(Num.MonoidSum)(
+              A.combineMap(Num.MonoidSum)(
                 $f(positionCount(pos), deviance(positionAvg)),
               ),
             ),
@@ -48,13 +47,15 @@ const getResultRatingDeviance = (teams: Array<Array<Player>>): number =>
   $(teams, A.flatten, Player.getRatingAvg, overallAvg =>
     $(
       teams,
-      A.foldMap(Num.MonoidSum)($f(Player.getRatingAvg, deviance(overallAvg))),
+      A.combineMap(Num.MonoidSum)(
+        $f(Player.getRatingAvg, deviance(overallAvg)),
+      ),
       fixFloat,
     ),
   )
 
 const balanceTeams: (
-  fitOrd: Ord<Array<Array<Player>>>,
+  fitOrd: Order<Array<Array<Player>>>,
 ) => (teams: Array<Array<Player>>) => Array<Array<Player>> = fitOrd => teams =>
   $(
     teams,
@@ -72,13 +73,13 @@ const balanceTeams: (
                       $(changePlayers(i)(k)(j)(l)(teams), nextState =>
                         Ord.lt(fitOrd)(teams)(nextState)
                           ? some(balanceTeams(fitOrd)(nextState))
-                          : none,
+                          : none(),
                       ),
                     ),
                   ),
                 ),
               )
-            : none,
+            : none(),
         ),
       ),
     ),
@@ -93,7 +94,7 @@ const positionCount =
     $(
       players,
       A.filter(p => p.position === position),
-      A.size,
+      A.length,
     )
 
 const changePlayers =
@@ -103,24 +104,26 @@ const changePlayers =
   (otherPlayerIndex: number) =>
   (teams: Array<Array<Player>>): Array<Array<Player>> =>
     $(
-      O.Do,
-      O.apS('team', $(teams, A.lookup(teamIndex))),
-      O.apS('otherTeam', $(teams, A.lookup(otherTeamIndex))),
-      O.bind('player', ({ team }) => $(team, A.lookup(playerIndex))),
+      O.Do(),
+      O.bind('team', () => $(teams, A.get(teamIndex))),
+      O.bind('otherTeam', () => $(teams, A.get(otherTeamIndex))),
+      O.bind('player', ({ team }) => $(team, A.get(playerIndex))),
       O.bind('otherPlayer', ({ otherTeam }) =>
-        $(otherTeam, A.lookup(otherPlayerIndex)),
+        $(otherTeam, A.get(otherPlayerIndex)),
       ),
-      O.bind('nextTeam', ({ team, otherPlayer }) =>
-        $(team, A.deleteAt(playerIndex), O.map(A.append(otherPlayer))),
+      O.let('nextTeam', ({ team, otherPlayer }) =>
+        $(team, A.remove(playerIndex), A.append(otherPlayer)),
       ),
-      O.bind('nextOtherTeam', ({ otherTeam, player }) =>
-        $(otherTeam, A.deleteAt(otherPlayerIndex), O.map(A.append(player))),
+      O.let('nextOtherTeam', ({ otherTeam, player }) =>
+        $(otherTeam, A.remove(otherPlayerIndex), A.append(player)),
       ),
-      O.chain(({ nextTeam, nextOtherTeam }) =>
+      O.flatMap(({ nextTeam, nextOtherTeam }) =>
         $(
           teams,
-          A.updateAt<Array<Player>>(teamIndex, nextTeam),
-          O.chain(A.updateAt<Array<Player>>(otherTeamIndex, nextOtherTeam)),
+          A.replaceOption<Array<Player>>(teamIndex, nextTeam),
+          O.flatMap(
+            A.replaceOption<Array<Player>>(otherTeamIndex, nextOtherTeam),
+          ),
         ),
       ),
       O.getOrElse(() => teams),
@@ -134,11 +137,11 @@ export const divideTeams =
       : $(
           players,
           A.splitAt(Math.floor(players.length / numOfTeams)),
-          ([as, bs]) => $(divideTeams(numOfTeams - 1)(bs), A.appendW(as)),
+          ([as, bs]) => $(divideTeams(numOfTeams - 1)(bs), A.append(as)),
         )
 
 export const balanceTeamsByFitOrd =
-  (fitOrd: Ord<Array<Array<Player>>>) =>
+  (fitOrd: Order<Array<Array<Player>>>) =>
   (numOfTeams: number) =>
   (players: Array<Player>): Array<Array<Player>> =>
     $(players, divideTeams(numOfTeams), balanceTeams(fitOrd))
@@ -150,13 +153,13 @@ export type Criteria = {
 
 export const getFitOrdFromCriteria = (
   criteria: Criteria,
-): Ord<Array<Array<Player>>> =>
+): Order<Array<Array<Player>>> =>
   $(
     [
-      A.fromPredicate(() => criteria.position)(getResultPositionDeviance),
-      A.fromPredicate(() => criteria.rating)(getResultRatingDeviance),
+      criteria.position ? O.some(getResultPositionDeviance) : O.none(),
+      criteria.rating ? O.some(getResultRatingDeviance) : O.none(),
     ],
-    Monoid.concatAll(A.getMonoid()),
+    A.compact,
     getFitOrdByDevianceFns,
   )
 

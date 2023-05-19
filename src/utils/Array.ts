@@ -10,5 +10,5 @@ export const findFirstMapWithIndex =
         return out
       }
     }
-    return O.none
+    return O.none()
   }

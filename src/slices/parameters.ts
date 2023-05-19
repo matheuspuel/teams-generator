@@ -12,7 +12,7 @@ export const togglePosition = modifySApp(params.position.$)(toggle)
 
 export const toggleRating = modifySApp(params.rating.$)(toggle)
 
-const teamsCountClamp = Ord.clamp(Num.Ord)(2, 9)
+const teamsCountClamp = Ord.clamp(Num.Order)(2, 9)
 
 export const incrementTeamsCount = modifySApp(params.teamsCount.$)(
   $f(increment, teamsCountClamp),

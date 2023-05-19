@@ -1,4 +1,4 @@
-import { $, Eq, O, Option, R, RA } from 'fp'
+import { $, A, Eq, O, Option, R } from 'fp'
 import { AppEvent, on } from 'src/actions'
 import {
   deepEq,
@@ -26,9 +26,9 @@ import { withOpacity } from 'src/utils/datatypes/Color'
 export const GroupView = memoized('GroupScreen')(
   Eq.struct({
     parameters: deepEq,
-    group: O.getEq(shallowEq),
-    modalParameters: Eq.eqStrict,
-    modalSortGroup: Eq.eqStrict,
+    group: O.getEquivalence(shallowEq),
+    modalParameters: Eq.strict(),
+    modalSortGroup: Eq.strict(),
     groupOrder: deepEq,
   }),
   ({
@@ -50,8 +50,8 @@ export const GroupView = memoized('GroupScreen')(
         data: $(
           group,
           O.map(g => g.players),
-          O.getOrElseW(() => []),
-          RA.sort(GroupOrder.toOrd(groupOrder)),
+          O.getOrElse(() => []),
+          A.sort(GroupOrder.toOrder(groupOrder)),
         ),
         keyExtractor: ({ id }) => id,
         renderItem: Item,
@@ -73,7 +73,7 @@ export const GroupView = memoized('GroupScreen')(
       ...(modalParameters ? [ParametersModal({ parameters })] : []),
       $(
         modalSortGroup,
-        O.matchW(
+        O.match(
           () => Nothing,
           () => SortModal({ mainSort: groupOrder[0] }),
         ),
@@ -252,7 +252,7 @@ const SortModal = ({
             state: $(
               mainSort._tag === 'name'
                 ? O.some({ reverse: mainSort.reverse })
-                : O.none,
+                : O.none(),
             ),
           }),
           FilterButton({
@@ -261,7 +261,7 @@ const SortModal = ({
             state: $(
               mainSort._tag === 'position'
                 ? O.some({ reverse: mainSort.reverse })
-                : O.none,
+                : O.none(),
             ),
           }),
           FilterButton({
@@ -270,7 +270,7 @@ const SortModal = ({
             state: $(
               mainSort._tag === 'rating'
                 ? O.some({ reverse: mainSort.reverse })
-                : O.none,
+                : O.none(),
             ),
           }),
           FilterButton({
@@ -279,7 +279,7 @@ const SortModal = ({
             state: $(
               mainSort._tag === 'active'
                 ? O.some({ reverse: mainSort.reverse })
-                : O.none,
+                : O.none(),
             ),
           }),
           FilterButton({
@@ -288,7 +288,7 @@ const SortModal = ({
             state: $(
               mainSort._tag === 'date'
                 ? O.some({ reverse: mainSort.reverse })
-                : O.none,
+                : O.none(),
             ),
           }),
         ]),
@@ -310,7 +310,7 @@ const FilterButton = (props: {
     View({ w: 36 })([
       $(
         props.state,
-        O.matchW(
+        O.match(
           () => Nothing,
           ({ reverse }) =>
             MaterialCommunityIcons({

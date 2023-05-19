@@ -11,7 +11,7 @@ describe('getCombinationsIndices', () => {
         fc.integer({ min: 0, max: 6 }),
         fc.integer({ min: 0, max: 6 }),
         (n, k) =>
-          $(getCombinationsIndices(k)(n), A.every($f(A.size, s => s === k))),
+          $(getCombinationsIndices(k)(n), A.every($f(A.length, s => s === k))),
       ),
     )
   })
@@ -24,7 +24,7 @@ describe('getCombinationsIndices', () => {
         (n, k) =>
           $(
             getCombinationsIndices(k)(n),
-            A.size,
+            A.length,
             s =>
               s ===
               (n < k ? 0 : factorial(n) / factorial(k) / factorial(n - k)),

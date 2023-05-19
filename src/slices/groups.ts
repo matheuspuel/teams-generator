@@ -1,7 +1,7 @@
 import {
   $,
   $f,
-  Apply,
+  A,
   apply,
   constant,
   get,
@@ -29,14 +29,14 @@ const modify = modifySApp(root.groups.$)
 
 export const getGroupsRecord = Optic.get(root.groups.$)
 
-export const getGroupById = (id: Id) => $f(getGroupsRecord, Rec.lookup(id))
+export const getGroupById = (id: Id) => $f(getGroupsRecord, Rec.get(id))
 
 const getPlayer = (args: { groupId: Id; id: Id }) =>
   S.gets(
     $f(
       getGroupById(args.groupId),
-      O.match(constant([]), g => g.players),
-      RA.findFirst(p => p.id === args.id),
+      O.match_(constant([]), g => g.players),
+      A.findFirst(p => p.id === args.id),
     ),
   )
 
@@ -45,7 +45,7 @@ export const getPlayerFromActiveGroup = (args: { playerId: Id }) =>
     S.gets(get(root.ui.selectedGroupId.$)),
     S.chain(
       O.match(
-        () => S.of<RootState, Option<Player>>(O.none),
+        () => S.of<RootState, Option<Player>>(O.none()),
         groupId => getPlayer({ groupId, id: args.playerId }),
       ),
     ),
@@ -63,22 +63,22 @@ export const editGroup = (args: { id: Id; name: string }) =>
   modify(s =>
     $(
       s,
-      Rec.modifyAt(args.id, g => ({ ...g, name: args.name })),
-      O.getOrElseW(() => s),
+      Rec.modifyOption(args.id, g => ({ ...g, name: args.name })),
+      O.getOrElse(() => s),
     ),
   )
 
-export const deleteGroup = (args: { id: Id }) => modify(Rec.deleteAt(args.id))
+export const deleteGroup = (args: { id: Id }) => modify(Rec.remove(args.id))
 
 const addPlayer = (args: { groupId: Id; player: Omit<Player, 'active'> }) =>
   modify(s =>
     $(
       s,
-      Rec.modifyAt(args.groupId, g => ({
+      Rec.modifyOption(args.groupId, g => ({
         ...g,
         players: RA.append({ ...args.player, active: true })(g.players),
       })),
-      O.getOrElseW(() => s),
+      O.getOrElse(() => s),
     ),
   )
 
@@ -103,7 +103,7 @@ export const editPlayer = (p: {
   modify(s =>
     $(
       s,
-      Rec.modifyAt(p.groupId, g => ({
+      Rec.modifyOption(p.groupId, g => ({
         ...g,
         players: $(
           g.players,
@@ -112,13 +112,13 @@ export const editPlayer = (p: {
           ),
         ),
       })),
-      O.getOrElseW(() => s),
+      O.getOrElse(() => s),
     ),
   )
 
 export const deleteCurrentPlayer = S.modify((s: RootState) =>
   $(
-    Apply.sequenceS(O.Apply)({
+    O.struct({
       groupId: s.ui.selectedGroupId,
       playerId: s.ui.selectedPlayerId,
     }),
@@ -148,8 +148,8 @@ export const togglePlayerActive = ({ playerId }: { playerId: Id }) =>
 export const toggleAllPlayersActive = S.modify((s: RootState) =>
   $(
     s.ui.selectedGroupId,
-    O.chain(id => $(s.groups, Rec.lookup(id))),
-    O.matchW(
+    O.flatMap(id => $(s.groups, Rec.get(id))),
+    O.match(
       () => s,
       g =>
         $(

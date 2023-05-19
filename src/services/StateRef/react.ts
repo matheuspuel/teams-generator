@@ -12,10 +12,10 @@ export const useSelector = <A>({
   env,
 }: {
   selector: (state: RootState) => A
-  eq: Eq.Eq<A>
+  eq: Eq.Equivalence<A>
   env: AppStateRefEnv
 }): A => {
-  const ref = React.useRef<Option<{ state: A; lastSentState: A }>>(O.none)
+  const ref = React.useRef<Option<{ state: A; lastSentState: A }>>(O.none())
   const refresher = React.useState(0)
   const refresh = () => refresher[1](n => (n === 9999 ? 0 : n + 1))
   // eslint-disable-next-line functional/no-let

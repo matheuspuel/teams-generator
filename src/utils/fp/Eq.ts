@@ -1,8 +1,8 @@
-export * from 'fp-ts/Eq'
-import { Eq } from 'fp-ts/Eq'
+export * from '@effect/data/typeclass/Equivalence'
+import { Equivalence } from '@effect/data/typeclass/Equivalence'
 
 export const equals =
-  <A>(eq: Eq<A>) =>
+  <A>(eq: Equivalence<A>) =>
   (b: A) =>
   (a: A) =>
-    eq.equals(a, b)
+    eq(a, b)

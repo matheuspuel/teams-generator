@@ -46,6 +46,10 @@ module.exports = {
       'warn',
       { default: 'generic', readonly: 'generic' },
     ],
+    '@typescript-eslint/no-unsafe-call': 'warn',
+    '@typescript-eslint/no-unsafe-argument': 'warn',
+    '@typescript-eslint/no-unsafe-member-access': 'warn',
+    '@typescript-eslint/no-unsafe-assignment': 'warn',
     'functional/no-promise-reject': 'error',
     'functional/prefer-immutable-types': 'off',
     'functional/functional-parameters': [

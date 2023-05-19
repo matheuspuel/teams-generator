@@ -20,11 +20,11 @@ const extractElem =
   (index: number) =>
   <A>(as: Array<A>): Option<[A, Array<A>]> =>
     $(
-      O.Do,
+      O.Do(),
       O.bind('elem', () => O.fromNullable(as[index])),
-      O.bind('rest', () => A.deleteAt(index)(as)),
-      O.matchW(
-        () => none,
+      O.let('rest', () => A.remove(index)(as)),
+      O.match(
+        () => none(),
         ({ elem, rest }) => some([elem, rest]),
       ),
     )

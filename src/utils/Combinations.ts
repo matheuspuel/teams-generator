@@ -5,12 +5,12 @@ export const getCombinations: (
 ) => <A>(as: Array<A>) => Array<Array<A>> = n => as =>
   n === 0
     ? [[]]
-    : A.size(as) < n
+    : A.length(as) < n
     ? []
     : $(
         as,
-        A.mapWithIndex((i, a) =>
-          $(A.dropLeft(i + 1)(as), getCombinations(n - 1), A.map(A.append(a))),
+        A.map((a, i) =>
+          $(A.drop(i + 1)(as), getCombinations(n - 1), A.map(A.append(a))),
         ),
         A.flatten,
       )

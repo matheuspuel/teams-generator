@@ -1,7 +1,7 @@
 /* eslint-disable functional/no-expression-statements */
 import * as Arb from '@effect/schema/Arbitrary'
 import * as fc from 'fast-check'
-import { $, A, Eq, NEA, O, Rec, SG, constant } from 'fp'
+import { $, A, Eq, Ord, Rec, SG, Tup, constant } from 'fp'
 import { playersMock } from 'src/mocks/Player'
 import { getCombinationsIndices } from 'src/utils/Combinations'
 import { Id } from 'src/utils/Entity'
@@ -19,13 +19,13 @@ const getAllTeamCombinations =
       ? [[players]]
       : $(
           getCombinationsIndices(Math.floor(players.length / numOfTeams))(
-            A.size(players),
+            A.length(players),
           ),
           A.map(is =>
             $(
               players,
-              A.partitionWithIndex(i => is.includes(i)),
-              ({ right: as, left: bs }) =>
+              A.partition((_, i) => is.includes(i)),
+              ([bs, as]) =>
                 $(
                   getAllTeamCombinations(numOfTeams - 1)(bs),
                   A.map(A.prepend(as)),
@@ -39,9 +39,7 @@ const balanceTeamsByFitOrdUsingCombinations: typeof balanceTeamsByFitOrd =
   ord => numOfTeams => players =>
     $(
       getAllTeamCombinations(numOfTeams)(players),
-      NEA.fromArray,
-      O.map(NEA.concatAll(SG.min(ord))),
-      O.getOrElseW(constant([])),
+      A.match(constant([]), SG.combineAllNonEmpty(SG.min(ord))),
     )
 
 describe('Balance teams', () => {
@@ -69,8 +67,7 @@ describe('Balance teams', () => {
         fc.array(Arb.to(Player.Schema)(fc), { minLength: 1, maxLength: 8 }),
         (n, params, players) =>
           $(getFitOrdFromCriteria(params), fitOrd =>
-            fitOrd.equals(
-              balanceTeamsByFitOrd(fitOrd)(n)(players),
+            Ord.equals(fitOrd)(balanceTeamsByFitOrd(fitOrd)(n)(players))(
               balanceTeamsByFitOrdUsingCombinations(fitOrd)(n)(players),
             ),
           ),
@@ -89,7 +86,7 @@ describe('Balance teams', () => {
         $(
           balanceTeamsByCriteria(params)(n)(players),
           A.flatten,
-          Eq.equals(A.getUnorderedEq(Eq.eqStrict))(players),
+          Eq.equals(A.getUnorderedEquivalence(Eq.strict()))(players),
         ),
       ),
     )
@@ -125,12 +122,17 @@ describe('Balance teams', () => {
           teams =>
             teams.every(a =>
               teams.every(b =>
-                Rec.keys(Position.Dict).every(
-                  pos =>
-                    Math.abs(
-                      a.filter(p => p.position === pos).length -
-                        b.filter(p => p.position === pos).length,
-                    ) <= 1,
+                $(
+                  Position.Dict,
+                  Rec.toEntries,
+                  A.map(Tup.fst),
+                  A.every(
+                    pos =>
+                      Math.abs(
+                        a.filter(p => p.position === pos).length -
+                          b.filter(p => p.position === pos).length,
+                      ) <= 1,
+                  ),
                 ),
               ),
             ),

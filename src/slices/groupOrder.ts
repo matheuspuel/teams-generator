@@ -22,5 +22,5 @@ const selectGroupOrder =
 export const onSelectGroupOrder = $f(
   selectGroupOrder,
   modifySApp(root.groupOrder.$),
-  S.apFirst(replaceSApp(root.ui.modalSortGroup.$)(O.none)),
+  S.apFirst(replaceSApp(root.ui.modalSortGroup.$)(O.none())),
 )

@@ -51,7 +51,14 @@ export const Log: Record<
   ReturnType<typeof toApiCurrentTimeLogger>
 > & {
   withTime: Record<LogLevel, ReturnType<typeof toApiLogger>>
-} = $(LogLevelDict, Rec.mapWithIndex(toApiCurrentTimeLogger), o => ({
-  ...o,
-  withTime: $(LogLevelDict, Rec.mapWithIndex(toApiLogger)),
-}))
+} = $(
+  LogLevelDict,
+  Rec.map((_, k) => toApiCurrentTimeLogger(k)),
+  o => ({
+    ...o,
+    withTime: $(
+      LogLevelDict,
+      Rec.map((_, k) => toApiLogger(k)),
+    ),
+  }),
+)

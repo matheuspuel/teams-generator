@@ -24,8 +24,8 @@ import { Id } from 'src/utils/Entity'
 export const Groups = memoized('Groups')(
   Eq.struct({
     ui: Eq.struct({
-      modalDeleteGroup: Eq.eqStrict,
-      modalUpsertGroup: Eq.eqStrict,
+      modalDeleteGroup: Eq.strict(),
+      modalUpsertGroup: Eq.strict(),
     }),
   }),
   ({
@@ -54,7 +54,7 @@ export const Groups = memoized('Groups')(
         group: $(
           modalDeleteGroup,
           O.map(({ id }) => id),
-          O.chain(id => $(groups, Rec.lookup(id))),
+          O.flatMap(id => $(groups, Rec.get(id))),
         ),
       }),
     ]),
@@ -78,7 +78,7 @@ const ScreenHeader = memoizedConst('Header')(
 )
 
 const Item = memoized('GroupItem')(
-  Eq.struct({ name: Eq.eqStrict, id: Eq.eqStrict }),
+  Eq.struct({ name: Eq.strict(), id: Eq.strict() }),
   ({ name, id }: Group) =>
     Pressable({
       onPress: on.selectGroup(id),
@@ -151,7 +151,7 @@ const GroupModal = ({
               })(
                 $(
                   state,
-                  O.chain(s => s.id),
+                  O.flatMap(s => s.id),
                   O.match(
                     () => 'Novo grupo',
                     () => 'Editar grupo',
@@ -221,7 +221,7 @@ const GroupModal = ({
         ]),
       ]),
     ),
-    O.getOrElseW(() => Fragment([])),
+    O.getOrElse(() => Fragment([])),
   )
 
 const DeleteGroupModal = ({

@@ -2,7 +2,7 @@
 import * as Arb from '@effect/schema/Arbitrary'
 import * as Benchmark from 'benchmark'
 import * as fc from 'fast-check'
-import { $, A, NEA, O, SG, constant } from 'fp'
+import { $, A, SG, constant, identity } from 'fp'
 import { Player } from 'src/datatypes'
 import {
   balanceTeamsByFitOrd,
@@ -25,13 +25,13 @@ const getAllTeamCombinations =
       ? [[players]]
       : $(
           getCombinationsIndices(Math.floor(players.length / numOfTeams))(
-            A.size(players),
+            A.length(players),
           ),
           A.map(is =>
             $(
               players,
-              A.partitionWithIndex(i => is.includes(i)),
-              ({ right: as, left: bs }) =>
+              A.partition((_, i) => is.includes(i)),
+              ([bs, as]) =>
                 $(
                   getAllTeamCombinations(numOfTeams - 1)(bs),
                   A.map(A.prepend(as)),
@@ -45,9 +45,7 @@ const balanceTeamsByFitOrdUsingCombinations: typeof balanceTeamsByFitOrd =
   ord => numOfTeams => players =>
     $(
       getAllTeamCombinations(numOfTeams)(players),
-      NEA.fromArray,
-      O.map(NEA.concatAll(SG.min(ord))),
-      O.getOrElseW(constant([])),
+      A.match(constant([]), A.combineMapNonEmpty(SG.min(ord))(identity)),
     )
 
 const fitOrd = getFitOrdFromCriteria({ position: true, rating: true })

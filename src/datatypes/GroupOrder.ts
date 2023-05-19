@@ -1,4 +1,4 @@
-import { $, D, Ord, Rec, absurd, identity } from 'fp'
+import { $, A, D, Monoid, Ord, Order, Rec, Tup, absurd, identity } from 'fp'
 import { Player } from 'src/datatypes'
 import {
   ActiveOrd,
@@ -20,7 +20,7 @@ export const GroupOrderTypeDict = {
 export type GroupOrderType = keyof typeof GroupOrderTypeDict
 
 export const GroupOrderTypeSchema: D.Schema<GroupOrderType> = D.literal(
-  ...Rec.keys(GroupOrderTypeDict),
+  ...$(GroupOrderTypeDict, Rec.toEntries, A.map(Tup.fst)),
 )
 
 export type GroupOrder = RNEA.ReadonlyNonEmptyArray<
@@ -41,7 +41,7 @@ export const GroupOrder = Schema
 
 export const initial: GroupOrder = [{ _tag: 'date', reverse: false }]
 
-const typeToOrd = (type: GroupOrderType): Ord<Player> =>
+const typeToOrder = (type: GroupOrderType): Order<Player> =>
   type === 'name'
     ? NameOrd
     : type === 'position'
@@ -54,9 +54,9 @@ const typeToOrd = (type: GroupOrderType): Ord<Player> =>
     ? IdOrd
     : absurd<never>(type)
 
-export const toOrd = (order: GroupOrder): Ord<Player> =>
+export const toOrder = (order: GroupOrder): Order<Player> =>
   $(
     order,
-    RNEA.map(v => $(typeToOrd(v._tag), v.reverse ? Ord.reverse : identity)),
-    RNEA.concatAll(Ord.getMonoid()),
+    RNEA.map(v => $(typeToOrder(v._tag), v.reverse ? Ord.reverse : identity)),
+    Monoid.combineAll(Ord.getMonoid()),
   )

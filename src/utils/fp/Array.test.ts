@@ -8,7 +8,10 @@ describe('getPermutations', () => {
   it('should have the original size on each permutation', () => {
     fc.assert(
       fc.property(fc.array(fc.anything(), { maxLength: 6 }), as =>
-        $(A.getPermutations(as), A.every($f(A.size, s => s === A.size(as)))),
+        $(
+          A.getPermutations(as),
+          A.every($f(A.length, s => s === A.length(as))),
+        ),
       ),
     )
   })
@@ -16,7 +19,7 @@ describe('getPermutations', () => {
   it('should have the correct count of permutations', () => {
     fc.assert(
       fc.property(fc.array(fc.anything(), { maxLength: 6 }), as =>
-        $(A.getPermutations(as), A.size, s => s === factorial(A.size(as))),
+        $(A.getPermutations(as), A.length, s => s === factorial(A.length(as))),
       ),
     )
   })

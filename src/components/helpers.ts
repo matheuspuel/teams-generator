@@ -82,29 +82,26 @@ export const named2 =
 export const memoized1 =
   (name: string) =>
   <A1>(
-    propsAreEqual: Eq.Eq<Readonly<UIBundledProps<[A1]>>>,
+    propsAreEqual: Eq.Equivalence<Readonly<UIBundledProps<[A1]>>>,
     component: UIComponent1<[A1]>,
   ): UIComponent1<[A1]> =>
     transformUnderlyingComponent1(component)(
       $f(
         nameFunction(name),
-        c => React.memo(c, propsAreEqual.equals) as UIUnderlyingComponent<[A1]>,
+        c => React.memo(c, propsAreEqual) as UIUnderlyingComponent<[A1]>,
       ),
     )
 
 export const memoized2 =
   (name: string) =>
   <A1, A2>(
-    propsAreEqual: Eq.Eq<Readonly<UIBundledProps<[A1, A2]>>>,
+    propsAreEqual: Eq.Equivalence<Readonly<UIBundledProps<[A1, A2]>>>,
     component: UIComponent2<[A1, A2]>,
   ): UIComponent2<[A1, A2]> =>
     transformUnderlyingComponent2(component)(
       $f(
         nameFunction(name),
-        c =>
-          React.memo(c, propsAreEqual.equals) as UIUnderlyingComponent<
-            [A1, A2]
-          >,
+        c => React.memo(c, propsAreEqual) as UIUnderlyingComponent<[A1, A2]>,
       ),
     )
 
@@ -115,16 +112,14 @@ export const memoizedConst =
       $f(
         nameFunction(name),
         c =>
-          React.memo(c, Eq.tuple(Eq.eqStrict).equals) as UIUnderlyingComponent<
-            [A1]
-          >,
+          React.memo(c, Eq.tuple(Eq.strict())) as UIUnderlyingComponent<[A1]>,
       ),
     )
 
 export const memoized =
   (name: string) =>
   <A1, A2>(
-    propsEq: Eq.Eq<Readonly<A1>>,
+    propsEq: Eq.Equivalence<Readonly<A1>>,
     component: UIComponent2<[A1, A2]>,
   ): UIComponent2<[A1, A2]> =>
     transformUnderlyingComponent2(component)(
@@ -133,23 +128,23 @@ export const memoized =
         c =>
           React.memo(
             c,
-            Eq.tuple(propsEq, Eq.eqStrict).equals,
+            Eq.tuple(propsEq, Eq.strict()),
           ) as UIUnderlyingComponent<[A1, A2]>,
       ),
     )
 
-export const shallowEq = Rec.getEq(Eq.eqStrict)
+export const shallowEq = Rec.getEquivalence(Eq.strict())
 
-export const deepEq: Eq.Eq<unknown> = Eq.fromEquals((a, b) =>
+export const deepEq: Eq.Equivalence<unknown> = Eq.make((a, b) =>
   a === b
     ? true
     : Array.isArray(a)
-    ? Array.isArray(b) && A.getEq(deepEq).equals(a, b)
+    ? Array.isArray(b) && A.getEquivalence(deepEq)(a, b)
     : typeof a === 'object' &&
       typeof b === 'object' &&
       a !== null &&
       b !== null &&
-      Rec.getEq(deepEq).equals(
+      Rec.getEquivalence(deepEq)(
         a as Record<string, unknown>,
         b as Record<string, unknown>,
       ),

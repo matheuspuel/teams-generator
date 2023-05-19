@@ -101,7 +101,7 @@ export const eventHandlers = {
     ),
 
   openNewGroupModal: () =>
-    execute(setUpsertGroupModal(some({ id: O.none, name: '' }))),
+    execute(setUpsertGroupModal(some({ id: O.none(), name: '' }))),
   openEditGroupModal: (id: Id) =>
     $(
       S.gets(getGroupById(id)),
@@ -113,17 +113,17 @@ export const eventHandlers = {
       ),
       execute,
     ),
-  closeGroupModal: () => execute(setUpsertGroupModal(none)),
+  closeGroupModal: () => execute(setUpsertGroupModal(none())),
   openDeleteGroupModal: (id: Id) => execute(setDeleteGroupModal(some({ id }))),
-  closeDeleteGroupModal: () => execute(setDeleteGroupModal(none)),
+  closeDeleteGroupModal: () => execute(setDeleteGroupModal(none())),
   changeGroupName: $f(setUpsertGroupName, execute),
   saveGroup: () =>
     $(
       getSApp(root.ui.modalUpsertGroup.$),
-      S.map(O.filter(not(m => Str.isEmpty(m.name)))),
+      S.map(O.filter(m => $(m.name, not(Str.isEmpty)))),
       execute,
       RIO.chain(
-        O.matchW(
+        O.match(
           () => doNothing,
           m =>
             $(
@@ -132,7 +132,7 @@ export const eventHandlers = {
                 () => createGroup({ name: m.name }),
                 id => execute(editGroup({ id, name: m.name })),
               ),
-              RIO.chainFirstW(() => execute(setUpsertGroupModal(O.none))),
+              RIO.chainFirstW(() => execute(setUpsertGroupModal(O.none()))),
             ),
         ),
       ),
@@ -146,7 +146,7 @@ export const eventHandlers = {
           ({ id }) => deleteGroup({ id }),
         ),
       ),
-      S.apFirst(setDeleteGroupModal(none)),
+      S.apFirst(setDeleteGroupModal(none())),
       execute,
     ),
   selectGroup: (id: Id) =>
@@ -159,7 +159,7 @@ export const eventHandlers = {
   openSortGroupModal: () =>
     execute(replaceSApp(root.ui.modalSortGroup.$)(O.some(null))),
   closeSortGroupModal: () =>
-    execute(replaceSApp(root.ui.modalSortGroup.$)(O.none)),
+    execute(replaceSApp(root.ui.modalSortGroup.$)(O.none())),
   groupSortByName: () => $(onSelectGroupOrder('name'), execute),
   groupSortByPosition: () => $(onSelectGroupOrder('position'), execute),
   groupSortByRating: () => $(onSelectGroupOrder('rating'), execute),
@@ -173,7 +173,7 @@ export const eventHandlers = {
       navigate('Player'),
       S.chain(() =>
         $(
-          replaceSApp(root.ui.selectedPlayerId.$)(O.none),
+          replaceSApp(root.ui.selectedPlayerId.$)(O.none()),
           S.apFirst(replaceSApp(root.playerForm.$)(blankPlayerForm)),
         ),
       ),
@@ -224,23 +224,24 @@ export const eventHandlers = {
   changePlayerRating: $f(
     (v: number) => Math.round(v * 20) / 2,
     D.parseOption(Rating.Schema),
+    v => v,
     O.map($f(replaceSApp(root.playerForm.rating.$), execute)),
-    O.getOrElseW(() => RIO.of(undefined)),
+    O.getOrElse(() => RIO.of(undefined)),
   ),
   savePlayer: () =>
     $(
       Apply.sequenceS(S.Apply)({
         form: $(
           S.gets(get(root.playerForm.$)),
-          S.map(O.fromPredicate(not(f => Str.isEmpty(f.name)))),
+          S.map(f => $(f, O.liftPredicate(not(() => Str.isEmpty(f.name))))),
         ),
         groupId: S.gets(get(root.ui.selectedGroupId.$)),
         playerId: $(S.gets(get(root.ui.selectedPlayerId.$)), S.map(O.some)),
       }),
-      S.map(Apply.sequenceS(O.Apply)),
+      S.map(O.struct),
       execute,
       RIO.chain(
-        O.matchW(
+        O.match(
           () => RIO.of(undefined),
           ({ form, groupId, playerId }) =>
             $(
@@ -300,8 +301,13 @@ const e: {
   [k in keyof typeof eventHandlers]: (
     payload: VoidIfUndefined<Parameters<(typeof eventHandlers)[k]>[0]>,
   ) => Event<k, Parameters<(typeof eventHandlers)[k]>[0]>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-} = $(eventHandlers, Rec.mapWithIndex(event)) as any
+} = $(
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+  eventHandlers as any,
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+  Rec.map((v, t) => event(t as any)(v as any)),
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
+) as any
 
 export const on = {
   doNothing: e.doNothing(),

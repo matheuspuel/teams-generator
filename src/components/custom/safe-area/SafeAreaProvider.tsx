@@ -24,7 +24,7 @@ const getRawProps = <R,>({
   key?: string
 } => ({
   children: children,
-  initialMetrics: O.toUndefined(SafeAreaService.initialMetrics(env)),
+  initialMetrics: O.getOrUndefined(SafeAreaService.initialMetrics(env)),
   style: {
     backgroundColor: props?.bg ? Color.toHex(props.bg(env)) : undefined,
   },
