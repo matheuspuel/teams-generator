@@ -1,5 +1,4 @@
-import { $, $f, A, Eq, IO, apply } from 'fp'
-import { not } from 'fp-ts/Predicate'
+import { $, $f, A, Eq, IO, apply, not } from 'fp'
 import * as Ref from './Ref'
 
 type SubscribableFunction<A> = (value: A) => IO<void>

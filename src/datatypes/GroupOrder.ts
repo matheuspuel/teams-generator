@@ -1,3 +1,4 @@
+import { NonEmptyReadonlyArray } from '@effect/data/ReadonlyArray'
 import { $, A, D, Monoid, Ord, Order, Rec, Tup, absurd, identity } from 'fp'
 import { Player } from 'src/datatypes'
 import {
@@ -7,7 +8,6 @@ import {
   PositionOrd,
   RatingOrd,
 } from 'src/datatypes/Player'
-import { RNEA } from 'src/utils/fp'
 
 export const GroupOrderTypeDict = {
   name: null,
@@ -20,10 +20,10 @@ export const GroupOrderTypeDict = {
 export type GroupOrderType = keyof typeof GroupOrderTypeDict
 
 export const GroupOrderTypeSchema: D.Schema<GroupOrderType> = D.literal(
-  ...$(GroupOrderTypeDict, Rec.toEntries, A.map(Tup.fst)),
+  ...$(GroupOrderTypeDict, Rec.toEntries, A.map(Tup.getFirst)),
 )
 
-export type GroupOrder = RNEA.ReadonlyNonEmptyArray<
+export type GroupOrder = NonEmptyReadonlyArray<
   Readonly<{
     _tag: GroupOrderType
     reverse: boolean
@@ -57,6 +57,6 @@ const typeToOrder = (type: GroupOrderType): Order<Player> =>
 export const toOrder = (order: GroupOrder): Order<Player> =>
   $(
     order,
-    RNEA.map(v => $(typeToOrder(v._tag), v.reverse ? Ord.reverse : identity)),
+    A.map(v => $(typeToOrder(v._tag), v.reverse ? Ord.reverse : identity)),
     Monoid.combineAll(Ord.getMonoid()),
   )

@@ -18,9 +18,9 @@ export const create = <S>(initialState: S): StateRef<S> => {
       ref.getState,
       IO.chain(prev =>
         $(f(prev), result =>
-          $(Tup.snd(result), next =>
+          $(Tup.getSecond(result), next =>
             Eq.equals(Eq.strict())(prev)(next)
-              ? IO.of(Tup.fst(result))
+              ? IO.of(Tup.getFirst(result))
               : $(
                   ref.getState,
                   IO.chain(current =>
@@ -28,7 +28,7 @@ export const create = <S>(initialState: S): StateRef<S> => {
                       ? $(
                           ref.setState(next),
                           IO.chain(() => observable.dispatch(undefined)),
-                          IO.map(() => Tup.fst(result)),
+                          IO.map(() => Tup.getFirst(result)),
                         )
                       : execute(f),
                   ),

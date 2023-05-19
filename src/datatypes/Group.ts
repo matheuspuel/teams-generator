@@ -18,6 +18,6 @@ export const Schema = D.struct({
 export const Group = Schema
 
 export const NameOrd: Order<Group> = $(
-  Str.Ord,
+  Str.Order,
   Ord.contramap($f(p => p.name, normalize)),
 )

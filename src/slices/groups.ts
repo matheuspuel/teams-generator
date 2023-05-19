@@ -2,17 +2,16 @@ import {
   $,
   $f,
   A,
+  O,
+  Optic,
+  Option,
+  RIO,
+  Rec,
+  S,
   apply,
   constant,
   get,
   identity,
-  O,
-  Optic,
-  Option,
-  RA,
-  Rec,
-  RIO,
-  S,
 } from 'fp'
 import { Group, Player } from 'src/datatypes'
 import { RootState } from 'src/model'
@@ -76,7 +75,7 @@ const addPlayer = (args: { groupId: Id; player: Omit<Player, 'active'> }) =>
       s,
       Rec.modifyOption(args.groupId, g => ({
         ...g,
-        players: RA.append({ ...args.player, active: true })(g.players),
+        players: A.append({ ...args.player, active: true })(g.players),
       })),
       O.getOrElse(() => s),
     ),
@@ -107,7 +106,7 @@ export const editPlayer = (p: {
         ...g,
         players: $(
           g.players,
-          RA.map(a =>
+          A.map(a =>
             a.id === p.player.id ? { ...p.player, active: a.active } : a,
           ),
         ),
@@ -124,7 +123,7 @@ export const deleteCurrentPlayer = S.modify((s: RootState) =>
     }),
     O.map(({ groupId, playerId }) =>
       Optic.modify(root.groups.id(groupId).players.$)(
-        RA.filter(p => p.id !== playerId),
+        A.filter(p => p.id !== playerId),
       )(s),
     ),
     O.getOrElse(() => s),
@@ -154,11 +153,11 @@ export const toggleAllPlayersActive = S.modify((s: RootState) =>
       g =>
         $(
           g.players,
-          RA.every(p => p.active),
+          A.every(p => p.active),
           allActive =>
             $(
               g.players,
-              RA.map(p => ({ ...p, active: !allActive })),
+              A.map(p => ({ ...p, active: !allActive })),
             ),
           Optic.replace(root.groups.id(g.id).players.$),
           apply(s),

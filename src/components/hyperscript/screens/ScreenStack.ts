@@ -1,8 +1,8 @@
-import { $, apply, R, RA } from 'fp'
+import { $, A, R, apply } from 'fp'
 import React from 'react'
 import {
-  ScreenStack as ScreenStack_,
   ScreenStackProps,
+  ScreenStack as ScreenStack_,
 } from 'src/components/custom/screens/ScreenStack'
 import { Element } from 'src/components/custom/types'
 
@@ -19,5 +19,5 @@ export const ScreenStack =
     React.createElement(
       ScreenStack_<R1 & R.EnvType<C[number]>>,
       { x: props, env },
-      ...$(children, RA.map(apply(env))),
+      ...$(children, A.map(apply(env))),
     )

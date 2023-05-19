@@ -5,6 +5,8 @@ import * as Eq from './Eq'
 
 export * from '@effect/data/ReadonlyArray'
 
+export type ReadonlyNonEmptyArray<A> = readonly [A, ...Array<A>]
+
 export const isArray = <A>(a: A): a is Extract<A, ReadonlyArray<unknown>> =>
   Array.isArray(a)
 

@@ -1,4 +1,4 @@
-import { $, R, RA, Reader, apply } from 'fp'
+import { $, A, R, Reader, apply } from 'fp'
 import React from 'react'
 import { Event, EventHandlerEnv } from 'src/actions'
 import { View as View_ } from 'src/components/custom'
@@ -20,5 +20,5 @@ export const View =
     React.createElement(
       View_<R1 & R.EnvType<C[number]>, E1>,
       { x: props, env },
-      ...$(children, RA.map(apply(env))),
+      ...$(children, A.map(apply(env))),
     )

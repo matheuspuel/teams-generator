@@ -125,7 +125,7 @@ describe('Balance teams', () => {
                 $(
                   Position.Dict,
                   Rec.toEntries,
-                  A.map(Tup.fst),
+                  A.map(Tup.getFirst),
                   A.every(
                     pos =>
                       Math.abs(

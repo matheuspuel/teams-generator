@@ -26,5 +26,5 @@ export const goBack = (s: RootState) =>
               ? 'Group'
               : absurd<never>(r),
           ],
-    Tup.mapSnd(route => replace(root.route.$)(route)(s)),
+    Tup.mapSecond(route => replace(root.route.$)(route)(s)),
   )

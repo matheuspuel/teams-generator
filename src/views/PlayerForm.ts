@@ -80,7 +80,7 @@ const PositionField = (position: Position) =>
       $(
         Position.Dict,
         Rec.toEntries,
-        A.map(Tup.fst),
+        A.map(Tup.getFirst),
         A.sort(Position.Ord),
         A.map(p =>
           Pressable({

@@ -1,4 +1,4 @@
-import { $, RA, apply } from 'fp'
+import { $, A, apply } from 'fp'
 import { Reader } from 'fp-ts/lib/Reader'
 import React from 'react'
 import { Event, EventHandlerEnv } from 'src/actions'
@@ -14,5 +14,5 @@ export const Modal =
     React.createElement(
       Modal_<R1 & R2, E1>,
       { x: props, env },
-      ...$(children, RA.map(apply(env))),
+      ...$(children, A.map(apply(env))),
     )

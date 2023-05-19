@@ -7,6 +7,7 @@ import {
   identity,
   IO,
   none,
+  not,
   O,
   Optic,
   R,
@@ -19,7 +20,6 @@ import {
   Str,
   Task,
 } from 'fp'
-import { not } from 'fp-ts/Predicate'
 import { Player, Rating } from 'src/datatypes'
 import { RootState } from 'src/model'
 import { root } from 'src/model/Optics'

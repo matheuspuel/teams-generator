@@ -1,5 +1,5 @@
 import { get } from '@fp-ts/optic'
-import { $, $f, O, RA, Rec, RIO, S } from 'fp'
+import { $, $f, A, O, RIO, Rec, S, constant } from 'fp'
 import { Player, TeamsGenerator } from 'src/datatypes'
 import { root } from 'src/model/Optics'
 import { execute, replaceSApp } from 'src/services/StateRef'
@@ -14,10 +14,8 @@ export const generateResult = $(
       $(
         get(root.ui.selectedGroupId.$)(s),
         O.flatMap(id => $(get(root.groups.$)(s), Rec.get(id))),
-        O.map(g => g.players),
-        O.getOrElse(() => []),
-        RA.filter(Player.isActive),
-        RA.toArray,
+        O.match_(constant([]), g => g.players),
+        A.filter(Player.isActive),
         players => ({ players, parameters: get(root.parameters.$)(s) }),
       ),
     ),

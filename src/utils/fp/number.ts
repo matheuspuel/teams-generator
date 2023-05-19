@@ -1,6 +1,6 @@
 export * from '@effect/data/Number'
 import { MonoidSum } from '@effect/data/Number'
-import * as A from 'fp-ts/Array'
+import * as A from '@effect/data/ReadonlyArray'
 import { Predicate } from 'fp-ts/Predicate'
 import { pipe as $ } from 'fp-ts/function'
 
@@ -14,7 +14,7 @@ export const subtract = (subtrahend: number) => (minuend: number) =>
 export const div = (divisor: number) => (dividend: number) => dividend / divisor
 
 export const avg = (ns: Array<number>) =>
-  $(ns, MonoidSum.combineAll, div(A.size(ns)))
+  $(ns, MonoidSum.combineAll, div(A.length(ns)))
 
 export const increment = add(1)
 

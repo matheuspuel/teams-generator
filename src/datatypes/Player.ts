@@ -33,7 +33,7 @@ export const PositionOrd: Order<Player> = $(
 )
 
 export const NameOrd: Order<Player> = $(
-  Str.Ord,
+  Str.Order,
   Ord.contramap($f(p => p.name, normalize)),
 )
 
@@ -48,7 +48,7 @@ export const ActiveOrd: Order<Player> = $(
 )
 
 export const IdOrd: Order<Player> = $(
-  Str.Ord,
+  Str.Order,
   Ord.contramap(p => p.id),
 )
 

@@ -12,7 +12,7 @@ export const Dict = {
 export type Position = keyof typeof Dict
 
 export const Schema: D.Schema<Position> = D.literal(
-  ...$(Dict, Rec.toEntries, A.map(Tup.fst)),
+  ...$(Dict, Rec.toEntries, A.map(Tup.getFirst)),
 )
 
 export const Position = Schema

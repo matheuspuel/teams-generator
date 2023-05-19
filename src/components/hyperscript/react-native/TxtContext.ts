@@ -1,4 +1,4 @@
-import { $, RA, apply } from 'fp'
+import { $, A, apply } from 'fp'
 import { Reader } from 'fp-ts/lib/Reader'
 import React from 'react'
 import { TxtContext as TxtContext_ } from 'src/components/custom'
@@ -13,5 +13,5 @@ export const TxtContext =
     React.createElement(
       TxtContext_<R1 & R2>,
       { x: props, env },
-      ...$(children, RA.map(apply(env))),
+      ...$(children, A.map(apply(env))),
     )

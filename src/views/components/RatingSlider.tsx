@@ -1,6 +1,6 @@
 /* eslint-disable functional/immutable-data */
 /* eslint-disable functional/no-expression-statements */
-import { $, RA } from 'fp'
+import { $, A } from 'fp'
 import React from 'react'
 import { View as View_ } from 'react-native'
 import {
@@ -107,7 +107,7 @@ const RatingSlider_ = <R, E1 extends Event<string, number>>({
         >
           {$(
             Rating.List,
-            RA.map(r =>
+            A.map(r =>
               View({
                 key: r.toString(),
                 absolute: {

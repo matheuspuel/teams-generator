@@ -1,9 +1,9 @@
-import { $, apply, RA } from 'fp'
+import { $, A, apply } from 'fp'
 import { Reader } from 'fp-ts/lib/Reader'
 import React from 'react'
 import {
-  Screen as Screen_,
   ScreenProps,
+  Screen as Screen_,
 } from 'src/components/custom/screens/Screen'
 import { Element } from 'src/components/custom/types'
 
@@ -15,5 +15,5 @@ export const Screen =
     React.createElement(
       Screen_<R1 & R2>,
       { x: props, env },
-      ...$(children, RA.map(apply(env))),
+      ...$(children, A.map(apply(env))),
     )

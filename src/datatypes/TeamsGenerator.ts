@@ -21,7 +21,7 @@ const getResultPositionDeviance = (teams: Array<Array<Player>>): number =>
     $(
       Position.Dict,
       Rec.toEntries,
-      A.map(Tup.fst),
+      A.map(Tup.getFirst),
       A.combineMap(Num.MonoidSum)(pos =>
         $(
           allPlayers,

@@ -1,10 +1,10 @@
-import { $, apply, RA } from 'fp'
+import { $, A, apply } from 'fp'
 import { Reader } from 'fp-ts/lib/Reader'
 import React from 'react'
 import {
-  SafeAreaProvider as SafeAreaProvider_,
   SafeAreaProviderArgs,
   SafeAreaProviderProps,
+  SafeAreaProvider as SafeAreaProvider_,
 } from 'src/components/custom/safe-area/SafeAreaProvider'
 import { Element } from 'src/components/custom/types'
 
@@ -16,5 +16,5 @@ export const SafeAreaProvider =
     React.createElement(
       SafeAreaProvider_<R1 & R2>,
       { x: props, env },
-      ...$(children, RA.map(apply(env))),
+      ...$(children, A.map(apply(env))),
     )
