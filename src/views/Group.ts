@@ -1,4 +1,4 @@
-import { $, Eq, O, Option, R, RA } from 'fp'
+import { $, Eq, O, Option, R, RA, constant } from 'fp'
 import { AppEvent, on } from 'src/actions'
 import {
   deepEq,
@@ -69,7 +69,23 @@ export const GroupView = memoized('GroupScreen')(
         bg: Colors.primary.$5,
         rippleColor: Colors.black,
         rippleOpacity: 0.5,
-      })([Txt({ align: 'center', color: Colors.white })('Sortear')]),
+      })([
+        Txt({ align: 'center', color: Colors.white })('Sortear'),
+        Txt({ align: 'center', color: Colors.white, size: 12 })(
+          $(
+            group,
+            O.match(constant([]), g => g.players),
+            RA.filter(p => p.active),
+            RA.size,
+            n =>
+              n === 0
+                ? '(Nenhum jogador selecionado)'
+                : n === 1
+                ? '(1 jogador selecionado)'
+                : '(' + n.toString() + ' jogadores selecionados)',
+          ),
+        ),
+      ]),
       ...(modalParameters ? [ParametersModal({ parameters })] : []),
       $(
         modalSortGroup,
