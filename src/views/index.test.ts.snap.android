@@ -4702,6 +4702,37 @@ exports[`renders 3`] = `
             >
               Sortear
             </Text>
+            <Text
+              style={
+                {
+                  "color": "#ffffffff",
+                  "flex": undefined,
+                  "fontSize": 12,
+                  "fontWeight": undefined,
+                  "height": undefined,
+                  "includeFontPadding": undefined,
+                  "lineHeight": undefined,
+                  "margin": undefined,
+                  "marginBottom": undefined,
+                  "marginHorizontal": undefined,
+                  "marginLeft": undefined,
+                  "marginRight": undefined,
+                  "marginTop": undefined,
+                  "marginVertical": undefined,
+                  "padding": undefined,
+                  "paddingBottom": undefined,
+                  "paddingHorizontal": undefined,
+                  "paddingLeft": undefined,
+                  "paddingRight": undefined,
+                  "paddingTop": undefined,
+                  "paddingVertical": undefined,
+                  "textAlign": "center",
+                  "width": undefined,
+                }
+              }
+            >
+              (Nenhum jogador selecionado)
+            </Text>
           </RNGestureHandlerButton>
         </View>
       </RNSScreen>
@@ -7253,6 +7284,37 @@ exports[`renders 4`] = `
               }
             >
               Sortear
+            </Text>
+            <Text
+              style={
+                {
+                  "color": "#ffffffff",
+                  "flex": undefined,
+                  "fontSize": 12,
+                  "fontWeight": undefined,
+                  "height": undefined,
+                  "includeFontPadding": undefined,
+                  "lineHeight": undefined,
+                  "margin": undefined,
+                  "marginBottom": undefined,
+                  "marginHorizontal": undefined,
+                  "marginLeft": undefined,
+                  "marginRight": undefined,
+                  "marginTop": undefined,
+                  "marginVertical": undefined,
+                  "padding": undefined,
+                  "paddingBottom": undefined,
+                  "paddingHorizontal": undefined,
+                  "paddingLeft": undefined,
+                  "paddingRight": undefined,
+                  "paddingTop": undefined,
+                  "paddingVertical": undefined,
+                  "textAlign": "center",
+                  "width": undefined,
+                }
+              }
+            >
+              (Nenhum jogador selecionado)
             </Text>
           </RNGestureHandlerButton>
         </View>
@@ -15251,6 +15313,37 @@ exports[`renders 5`] = `
               }
             >
               Sortear
+            </Text>
+            <Text
+              style={
+                {
+                  "color": "#ffffffff",
+                  "flex": undefined,
+                  "fontSize": 12,
+                  "fontWeight": undefined,
+                  "height": undefined,
+                  "includeFontPadding": undefined,
+                  "lineHeight": undefined,
+                  "margin": undefined,
+                  "marginBottom": undefined,
+                  "marginHorizontal": undefined,
+                  "marginLeft": undefined,
+                  "marginRight": undefined,
+                  "marginTop": undefined,
+                  "marginVertical": undefined,
+                  "padding": undefined,
+                  "paddingBottom": undefined,
+                  "paddingHorizontal": undefined,
+                  "paddingLeft": undefined,
+                  "paddingRight": undefined,
+                  "paddingTop": undefined,
+                  "paddingVertical": undefined,
+                  "textAlign": "center",
+                  "width": undefined,
+                }
+              }
+            >
+              (1 jogador selecionado)
             </Text>
           </RNGestureHandlerButton>
         </View>
