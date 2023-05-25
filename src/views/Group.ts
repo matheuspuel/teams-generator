@@ -358,7 +358,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
       Pressable({
         onPress: on.doNothing,
         bg: Colors.white,
-        m: 48,
+        m: 24,
         round: 8,
         shadow: 2,
         rippleColor: Colors.black,
@@ -418,8 +418,17 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
                 color: Colors.primary.$5,
               }),
             ]),
-            Pressable({ onPress: on.toggleTeamsCountType })([
-              Txt({ flex: 1, pl: 8, color: Colors.text.dark })(
+            Pressable({
+              onPress: on.toggleTeamsCountType,
+              flex: 1,
+              direction: 'row',
+              align: 'center',
+              round: 8,
+              p: 4,
+              pl: 8,
+              gap: 4,
+            })([
+              Txt({ flex: 1, color: Colors.text.dark })(
                 $(
                   parameters.teamsCountMethod,
                   matchTag({
@@ -431,8 +440,8 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
               ),
               MaterialIcons({
                 name: 'swap-horiz',
+                size: 20,
                 color: Colors.primary.$5,
-                size: 24,
               }),
             ]),
           ]),
@@ -523,3 +532,5 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
       ]),
     ]),
   ])
+
+// spell-checker:words horiz

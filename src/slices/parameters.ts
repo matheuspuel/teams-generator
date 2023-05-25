@@ -1,5 +1,5 @@
 import { $, $f, Num, Optic, Ord, apply, modify } from 'fp'
-import { Parameters } from 'src/datatypes/Parameters'
+import { MINIMUM_NUMBER_OF_TEAMS, Parameters } from 'src/datatypes/Parameters'
 import { root } from 'src/model/Optics'
 import { modifySApp } from 'src/services/StateRef'
 import { matchTag } from 'src/utils/Tagged'
@@ -14,7 +14,7 @@ export const togglePosition = modifySApp(params.position.$)(toggle)
 
 export const toggleRating = modifySApp(params.rating.$)(toggle)
 
-const teamsCountClamp = Ord.clamp(Num.Ord)(2, 9)
+const teamsCountClamp = Ord.clamp(Num.Ord)(MINIMUM_NUMBER_OF_TEAMS, 9)
 
 const playersRequiredClamp = Ord.clamp(Num.Ord)(2, 99)
 

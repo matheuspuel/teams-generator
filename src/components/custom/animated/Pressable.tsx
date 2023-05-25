@@ -23,6 +23,8 @@ export type PressableStyleProps<R> = PaddingProps &
     round?: number
     w?: number
     h?: number
+    minW?: number
+    minH?: number
     aspectRatio?: number
     shadow?: number
     bg?: Reader<R, Color>
@@ -88,6 +90,8 @@ const getRawProps = <R, E1 extends Event<string, unknown>>({
     columnGap: props?.gapY,
     width: props?.w,
     height: props?.h,
+    minWidth: props?.minW,
+    minHeight: props?.minH,
     aspectRatio: props?.aspectRatio,
     flex: props?.flex,
     flexDirection: props?.direction,

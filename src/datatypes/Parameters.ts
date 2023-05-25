@@ -36,13 +36,18 @@ export const initial: Parameters = {
   rating: true,
 }
 
+export const MINIMUM_NUMBER_OF_TEAMS = 2
+
 export const numOfTeams = (numOfPlayersAvailable: number) => (p: Parameters) =>
   $(
     p.teamsCountMethod,
     matchTag({
       count: () => p.teamsCount,
       playersRequired: () =>
-        Math.floor(numOfPlayersAvailable / p.playersRequired),
+        Math.max(
+          MINIMUM_NUMBER_OF_TEAMS,
+          Math.floor(numOfPlayersAvailable / p.playersRequired),
+        ),
     }),
   )
 
