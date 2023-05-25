@@ -20,13 +20,18 @@ import {
   Task,
 } from 'fp'
 import { not } from 'fp-ts/Predicate'
-import { Player, Rating } from 'src/datatypes'
+import { Parameters as Parameters_, Player, Rating } from 'src/datatypes'
 import { RootState } from 'src/model'
 import { root } from 'src/model/Optics'
 import { BackHandler } from 'src/services/BackHandler'
 import { ShareService } from 'src/services/Share'
 import { SplashScreen } from 'src/services/SplashScreen'
-import { execute, getSApp, replaceSApp } from 'src/services/StateRef'
+import {
+  execute,
+  getSApp,
+  modifySApp,
+  replaceSApp,
+} from 'src/services/StateRef'
 import { saveState } from 'src/slices/core/hydration'
 import { onSelectGroupOrder } from 'src/slices/groupOrder'
 import {
@@ -205,6 +210,8 @@ export const eventHandlers = {
   toggleAllPlayersActive: () => execute(toggleAllPlayersActive),
   decrementTeamsCount: () => execute(decrementTeamsCount),
   incrementTeamsCount: () => execute(incrementTeamsCount),
+  toggleTeamsCountType: () =>
+    $(modifySApp(root.parameters.$)(Parameters_.toggleType), execute),
   togglePosition: () => execute(togglePosition),
   toggleRating: () => execute(toggleRating),
   shuffle: () =>
@@ -336,6 +343,7 @@ export const on = {
   toggleAllPlayersActive: e.toggleAllPlayersActive(),
   decrementTeamsCount: e.decrementTeamsCount(),
   incrementTeamsCount: e.incrementTeamsCount(),
+  toggleTeamsCountType: e.toggleTeamsCountType(),
   togglePosition: e.togglePosition(),
   toggleRating: e.toggleRating(),
   shuffle: e.shuffle(),

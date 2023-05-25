@@ -21,6 +21,7 @@ import {
 import { Group, GroupOrder, Parameters, Player, Rating } from 'src/datatypes'
 import { GroupOrderType } from 'src/datatypes/GroupOrder'
 import { Colors } from 'src/services/Theme'
+import { matchTag } from 'src/utils/Tagged'
 import { withOpacity } from 'src/utils/datatypes/Color'
 
 export const GroupView = memoized('GroupScreen')(
@@ -396,7 +397,13 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
               }),
             ]),
             Txt({ p: 8, weight: 600, color: Colors.text.dark })(
-              parameters.teamsCount.toString(),
+              $(
+                parameters.teamsCountMethod,
+                matchTag({
+                  count: () => parameters.teamsCount.toString(),
+                  playersRequired: () => parameters.playersRequired.toString(),
+                }),
+              ),
             ),
             Pressable({
               onPress: on.incrementTeamsCount,
@@ -411,7 +418,23 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
                 color: Colors.primary.$5,
               }),
             ]),
-            Txt({ flex: 1, pl: 8, color: Colors.text.dark })('Número de times'),
+            Pressable({ onPress: on.toggleTeamsCountType })([
+              Txt({ flex: 1, pl: 8, color: Colors.text.dark })(
+                $(
+                  parameters.teamsCountMethod,
+                  matchTag({
+                    count: () => 'Número de times',
+                    playersRequired: () =>
+                      'Número necessário de jogadores por time',
+                  }),
+                ),
+              ),
+              MaterialIcons({
+                name: 'swap-horiz',
+                color: Colors.primary.$5,
+                size: 24,
+              }),
+            ]),
           ]),
           Pressable({
             onPress: on.togglePosition,

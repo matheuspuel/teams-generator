@@ -1,6 +1,7 @@
 import { get } from '@fp-ts/optic'
 import { $, $f, O, RA, Rec, RIO, S } from 'fp'
 import { Player, TeamsGenerator } from 'src/datatypes'
+import { numOfTeams } from 'src/datatypes/Parameters'
 import { root } from 'src/model/Optics'
 import { execute, replaceSApp } from 'src/services/StateRef'
 
@@ -26,7 +27,7 @@ export const generateResult = $(
     TeamsGenerator.generateRandomBalancedTeams({
       position: parameters.position,
       rating: parameters.rating,
-    })(parameters.teamsCount)(players),
+    })(numOfTeams(players.length)(parameters))(players),
   ),
   RIO.chain($f(O.some, replaceSApp(root.result.$), execute)),
 )
