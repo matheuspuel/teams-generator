@@ -5,12 +5,12 @@ import * as fc from 'fast-check'
 import { $, A, NEA, O, SG, constant } from 'fp'
 import { Player } from 'src/datatypes'
 import {
-  balanceTeamsByFitOrd,
+  Criteria,
+  distributeTeams,
   getFitOrdFromCriteria,
 } from 'src/datatypes/TeamsGenerator'
 import { getCombinationsIndices } from 'src/utils/Combinations'
-
-const suite = new Benchmark.Suite()
+import { matchTag } from 'src/utils/Tagged'
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const sample1 = fc.sample(
@@ -18,55 +18,130 @@ const sample1 = fc.sample(
   1,
 )[0]!
 
-const getAllTeamCombinations =
-  (numOfTeams: number) =>
-  (players: Array<Player>): Array<Array<Array<Player>>> =>
-    numOfTeams <= 1
-      ? [[players]]
+const getAllCombinationsOfSubListsWithEqualLength =
+  (numOfLists: number) =>
+  <A>(as: Array<A>): Array<Array<Array<A>>> =>
+    numOfLists <= 1
+      ? [[as]]
       : $(
-          getCombinationsIndices(Math.floor(players.length / numOfTeams))(
-            A.size(players),
+          getCombinationsIndices(Math.floor(as.length / numOfLists))(
+            A.size(as),
           ),
           A.map(is =>
             $(
-              players,
+              as,
               A.partitionWithIndex(i => is.includes(i)),
-              ({ right: as, left: bs }) =>
+              ({ right: bs, left: cs }) =>
                 $(
-                  getAllTeamCombinations(numOfTeams - 1)(bs),
-                  A.map(A.prepend(as)),
+                  getAllCombinationsOfSubListsWithEqualLength(numOfLists - 1)(
+                    cs,
+                  ),
+                  A.map(A.prepend(bs)),
                 ),
             ),
           ),
           A.flatten,
         )
 
-const balanceTeamsByFitOrdUsingCombinations: typeof balanceTeamsByFitOrd =
-  ord => numOfTeams => players =>
+const getAllCombinationsOfSubListsWithFixedLength =
+  (listLength: number) =>
+  <A>(as: Array<A>): Array<Array<Array<A>>> =>
+    as.length <= listLength
+      ? [[as]]
+      : $(
+          getCombinationsIndices(listLength)(as.length),
+          A.chain(is =>
+            $(
+              as,
+              A.partitionWithIndex(i => is.includes(i)),
+              ({ right: as, left: bs }) =>
+                $(
+                  getAllCombinationsOfSubListsWithFixedLength(listLength)(bs),
+                  A.map(A.prepend(as)),
+                ),
+            ),
+          ),
+        )
+
+const distributeTeamsUsingCombinations: typeof distributeTeams =
+  params => players =>
     $(
-      getAllTeamCombinations(numOfTeams)(players),
+      params.distribution,
+      matchTag({
+        numOfTeams: ({ numOfTeams }) =>
+          getAllCombinationsOfSubListsWithEqualLength(numOfTeams)(players),
+        fixedNumberOfPlayers: ({ fixedNumberOfPlayers }) =>
+          getAllCombinationsOfSubListsWithFixedLength(fixedNumberOfPlayers)(
+            players,
+          ),
+      }),
       NEA.fromArray,
-      O.map(NEA.concatAll(SG.min(ord))),
+      O.map(NEA.concatAll(SG.min(getFitOrdFromCriteria(params)))),
       O.getOrElseW(constant([])),
     )
 
-const fitOrd = getFitOrdFromCriteria({ position: true, rating: true })
+const criteria1: Criteria = {
+  position: true,
+  rating: true,
+  distribution: { _tag: 'numOfTeams', numOfTeams: 2 },
+}
+const criteria2: Criteria = {
+  position: true,
+  rating: true,
+  distribution: { _tag: 'fixedNumberOfPlayers', fixedNumberOfPlayers: 4 },
+}
 
-suite
-  .add('balanceTeamsByFitOrdBySwappingPlayers', function (this: unknown) {
-    balanceTeamsByFitOrd(fitOrd)(3)(sample1)
+void (async () => {
+  await new Promise(resolve => {
+    new Benchmark.Suite()
+      .add('balanceTeamsBySwappingPlayers1', function (this: unknown) {
+        distributeTeams(criteria1)(sample1)
+      })
+      .add('balanceTeamsUsingCombinations1', function (this: unknown) {
+        distributeTeamsUsingCombinations(criteria1)(sample1)
+      })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .on('cycle', function (event: any) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        console.log(String(event.target))
+      })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .on('complete', function (this: any) {
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        console.log('Fastest is ' + this.filter('fastest').map('name'))
+        resolve(undefined)
+      })
+      .run({ async: true })
   })
-  .add('balanceTeamsByFitOrdUsingCombinations', function (this: unknown) {
-    balanceTeamsByFitOrdUsingCombinations(fitOrd)(3)(sample1)
+
+  await new Promise(resolve => {
+    new Benchmark.Suite()
+      .add('balanceTeamsBySwappingPlayers2', function (this: unknown) {
+        distributeTeams(criteria2)(sample1)
+      })
+      .add('balanceTeamsUsingCombinations2', function (this: unknown) {
+        distributeTeamsUsingCombinations(criteria2)(sample1)
+      })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .on('cycle', function (event: any) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        console.log(String(event.target))
+      })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .on('complete', function (this: any) {
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+        console.log('Fastest is ' + this.filter('fastest').map('name'))
+        resolve(undefined)
+      })
+      .run({ async: true })
   })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  .on('cycle', function (event: any) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    console.log(String(event.target))
-  })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  .on('complete', function (this: any) {
-    // eslint-disable-next-line @typescript-eslint/restrict-plus-operands, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-    console.log('Fastest is ' + this.filter('fastest').map('name'))
-  })
-  .run({ async: true })
+})()
+
+/**
+balanceTeamsBySwappingPlayers1 x 2,231 ops/sec ±3.12% (70 runs sampled)
+balanceTeamsUsingCombinations1 x 742 ops/sec ±4.45% (77 runs sampled)
+Fastest is balanceTeamsBySwappingPlayers1
+balanceTeamsBySwappingPlayers2 x 2,096 ops/sec ±4.04% (81 runs sampled)
+balanceTeamsUsingCombinations2 x 689 ops/sec ±3.40% (77 runs sampled)
+Fastest is balanceTeamsBySwappingPlayers2
+*/

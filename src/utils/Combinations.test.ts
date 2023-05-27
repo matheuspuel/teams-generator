@@ -16,7 +16,7 @@ describe('getCombinationsIndices', () => {
     )
   })
 
-  it('should have the correct count of permutations', () => {
+  it('should have the correct count of combinations', () => {
     fc.assert(
       fc.property(
         fc.integer({ min: 0, max: 6 }),

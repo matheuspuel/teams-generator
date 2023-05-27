@@ -433,8 +433,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
                   parameters.teamsCountMethod,
                   matchTag({
                     count: () => 'Número de times',
-                    playersRequired: () =>
-                      'Número necessário de jogadores por time',
+                    playersRequired: () => 'Número fixo de jogadores por time',
                   }),
                 ),
               ),

@@ -29,7 +29,7 @@ export const getPermutations: <A>(as: Array<A>) => Array<Array<A>> = A.matchW(
   as =>
     $(
       as,
-      A.mapWithIndex((i, a) =>
+      A.chainWithIndex((i, a) =>
         $(
           A.deleteAt(i)(as),
           O.getOrElse(constant(A.zero())),
@@ -37,6 +37,5 @@ export const getPermutations: <A>(as: Array<A>) => Array<Array<A>> = A.matchW(
           A.map(A.append(a)),
         ),
       ),
-      A.flatten,
     ),
 )
