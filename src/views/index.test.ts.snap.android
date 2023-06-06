@@ -284,6 +284,8 @@ exports[`renders 1`] = `
                         "marginRight": 4,
                         "marginTop": undefined,
                         "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
                         "padding": 8,
                         "paddingBottom": undefined,
                         "paddingHorizontal": undefined,
@@ -1352,6 +1354,8 @@ exports[`renders 2`] = `
                         "marginRight": 4,
                         "marginTop": undefined,
                         "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
                         "padding": 8,
                         "paddingBottom": undefined,
                         "paddingHorizontal": undefined,
@@ -2442,6 +2446,8 @@ exports[`renders 3`] = `
                         "marginRight": 4,
                         "marginTop": undefined,
                         "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
                         "padding": 8,
                         "paddingBottom": undefined,
                         "paddingHorizontal": undefined,
@@ -3453,6 +3459,8 @@ exports[`renders 3`] = `
                         "marginRight": undefined,
                         "marginTop": undefined,
                         "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
                         "padding": 8,
                         "paddingBottom": undefined,
                         "paddingHorizontal": undefined,
@@ -3633,6 +3641,8 @@ exports[`renders 3`] = `
                           "marginRight": undefined,
                           "marginTop": undefined,
                           "marginVertical": undefined,
+                          "minHeight": undefined,
+                          "minWidth": undefined,
                           "padding": 8,
                           "paddingBottom": undefined,
                           "paddingHorizontal": undefined,
@@ -3725,6 +3735,8 @@ exports[`renders 3`] = `
                           "marginRight": undefined,
                           "marginTop": undefined,
                           "marginVertical": undefined,
+                          "minHeight": undefined,
+                          "minWidth": undefined,
                           "padding": 8,
                           "paddingBottom": undefined,
                           "paddingHorizontal": undefined,
@@ -3817,6 +3829,8 @@ exports[`renders 3`] = `
                           "marginRight": undefined,
                           "marginTop": undefined,
                           "marginVertical": undefined,
+                          "minHeight": undefined,
+                          "minWidth": undefined,
                           "padding": 8,
                           "paddingBottom": undefined,
                           "paddingHorizontal": undefined,
@@ -4639,6 +4653,8 @@ exports[`renders 3`] = `
                 "marginRight": undefined,
                 "marginTop": undefined,
                 "marginVertical": undefined,
+                "minHeight": undefined,
+                "minWidth": undefined,
                 "padding": 16,
                 "paddingBottom": undefined,
                 "paddingHorizontal": undefined,
@@ -4701,6 +4717,37 @@ exports[`renders 3`] = `
               }
             >
               Sortear
+            </Text>
+            <Text
+              style={
+                {
+                  "color": "#ffffffff",
+                  "flex": undefined,
+                  "fontSize": 12,
+                  "fontWeight": undefined,
+                  "height": undefined,
+                  "includeFontPadding": undefined,
+                  "lineHeight": undefined,
+                  "margin": undefined,
+                  "marginBottom": undefined,
+                  "marginHorizontal": undefined,
+                  "marginLeft": undefined,
+                  "marginRight": undefined,
+                  "marginTop": undefined,
+                  "marginVertical": undefined,
+                  "padding": undefined,
+                  "paddingBottom": undefined,
+                  "paddingHorizontal": undefined,
+                  "paddingLeft": undefined,
+                  "paddingRight": undefined,
+                  "paddingTop": undefined,
+                  "paddingVertical": undefined,
+                  "textAlign": "center",
+                  "width": undefined,
+                }
+              }
+            >
+              (Nenhum jogador selecionado)
             </Text>
           </RNGestureHandlerButton>
         </View>
@@ -4994,6 +5041,8 @@ exports[`renders 4`] = `
                         "marginRight": 4,
                         "marginTop": undefined,
                         "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
                         "padding": 8,
                         "paddingBottom": undefined,
                         "paddingHorizontal": undefined,
@@ -6005,6 +6054,8 @@ exports[`renders 4`] = `
                         "marginRight": undefined,
                         "marginTop": undefined,
                         "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
                         "padding": 8,
                         "paddingBottom": undefined,
                         "paddingHorizontal": undefined,
@@ -6185,6 +6236,8 @@ exports[`renders 4`] = `
                           "marginRight": undefined,
                           "marginTop": undefined,
                           "marginVertical": undefined,
+                          "minHeight": undefined,
+                          "minWidth": undefined,
                           "padding": 8,
                           "paddingBottom": undefined,
                           "paddingHorizontal": undefined,
@@ -6277,6 +6330,8 @@ exports[`renders 4`] = `
                           "marginRight": undefined,
                           "marginTop": undefined,
                           "marginVertical": undefined,
+                          "minHeight": undefined,
+                          "minWidth": undefined,
                           "padding": 8,
                           "paddingBottom": undefined,
                           "paddingHorizontal": undefined,
@@ -6369,6 +6424,8 @@ exports[`renders 4`] = `
                           "marginRight": undefined,
                           "marginTop": undefined,
                           "marginVertical": undefined,
+                          "minHeight": undefined,
+                          "minWidth": undefined,
                           "padding": 8,
                           "paddingBottom": undefined,
                           "paddingHorizontal": undefined,
@@ -7191,6 +7248,8 @@ exports[`renders 4`] = `
                 "marginRight": undefined,
                 "marginTop": undefined,
                 "marginVertical": undefined,
+                "minHeight": undefined,
+                "minWidth": undefined,
                 "padding": 16,
                 "paddingBottom": undefined,
                 "paddingHorizontal": undefined,
@@ -7253,6 +7312,37 @@ exports[`renders 4`] = `
               }
             >
               Sortear
+            </Text>
+            <Text
+              style={
+                {
+                  "color": "#ffffffff",
+                  "flex": undefined,
+                  "fontSize": 12,
+                  "fontWeight": undefined,
+                  "height": undefined,
+                  "includeFontPadding": undefined,
+                  "lineHeight": undefined,
+                  "margin": undefined,
+                  "marginBottom": undefined,
+                  "marginHorizontal": undefined,
+                  "marginLeft": undefined,
+                  "marginRight": undefined,
+                  "marginTop": undefined,
+                  "marginVertical": undefined,
+                  "padding": undefined,
+                  "paddingBottom": undefined,
+                  "paddingHorizontal": undefined,
+                  "paddingLeft": undefined,
+                  "paddingRight": undefined,
+                  "paddingTop": undefined,
+                  "paddingVertical": undefined,
+                  "textAlign": "center",
+                  "width": undefined,
+                }
+              }
+            >
+              (Nenhum jogador selecionado)
             </Text>
           </RNGestureHandlerButton>
         </View>
@@ -7421,6 +7511,8 @@ exports[`renders 4`] = `
                       "marginRight": undefined,
                       "marginTop": undefined,
                       "marginVertical": undefined,
+                      "minHeight": undefined,
+                      "minWidth": undefined,
                       "padding": 8,
                       "paddingBottom": undefined,
                       "paddingHorizontal": undefined,
@@ -7555,6 +7647,8 @@ exports[`renders 4`] = `
                       "marginRight": 4,
                       "marginTop": undefined,
                       "marginVertical": undefined,
+                      "minHeight": undefined,
+                      "minWidth": undefined,
                       "padding": 8,
                       "paddingBottom": undefined,
                       "paddingHorizontal": undefined,
@@ -7967,6 +8061,8 @@ exports[`renders 4`] = `
                         "marginRight": undefined,
                         "marginTop": undefined,
                         "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
                         "padding": 12,
                         "paddingBottom": undefined,
                         "paddingHorizontal": undefined,
@@ -8114,6 +8210,8 @@ exports[`renders 4`] = `
                         "marginRight": undefined,
                         "marginTop": undefined,
                         "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
                         "padding": 12,
                         "paddingBottom": undefined,
                         "paddingHorizontal": undefined,
@@ -8261,6 +8359,8 @@ exports[`renders 4`] = `
                         "marginRight": undefined,
                         "marginTop": undefined,
                         "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
                         "padding": 12,
                         "paddingBottom": undefined,
                         "paddingHorizontal": undefined,
@@ -8408,6 +8508,8 @@ exports[`renders 4`] = `
                         "marginRight": undefined,
                         "marginTop": undefined,
                         "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
                         "padding": 12,
                         "paddingBottom": undefined,
                         "paddingHorizontal": undefined,
@@ -8555,6 +8657,8 @@ exports[`renders 4`] = `
                         "marginRight": undefined,
                         "marginTop": undefined,
                         "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
                         "padding": 12,
                         "paddingBottom": undefined,
                         "paddingHorizontal": undefined,
@@ -8702,6 +8806,8 @@ exports[`renders 4`] = `
                         "marginRight": undefined,
                         "marginTop": undefined,
                         "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
                         "padding": 12,
                         "paddingBottom": undefined,
                         "paddingHorizontal": undefined,
@@ -12963,6 +13069,8 @@ exports[`renders 4`] = `
               "marginRight": undefined,
               "marginTop": undefined,
               "marginVertical": undefined,
+              "minHeight": undefined,
+              "minWidth": undefined,
               "padding": 16,
               "paddingBottom": undefined,
               "paddingHorizontal": undefined,
@@ -13317,6 +13425,8 @@ exports[`renders 5`] = `
                         "marginRight": 4,
                         "marginTop": undefined,
                         "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
                         "padding": 8,
                         "paddingBottom": undefined,
                         "paddingHorizontal": undefined,
@@ -14328,6 +14438,8 @@ exports[`renders 5`] = `
                         "marginRight": undefined,
                         "marginTop": undefined,
                         "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
                         "padding": 8,
                         "paddingBottom": undefined,
                         "paddingHorizontal": undefined,
@@ -14508,6 +14620,8 @@ exports[`renders 5`] = `
                           "marginRight": undefined,
                           "marginTop": undefined,
                           "marginVertical": undefined,
+                          "minHeight": undefined,
+                          "minWidth": undefined,
                           "padding": 8,
                           "paddingBottom": undefined,
                           "paddingHorizontal": undefined,
@@ -14600,6 +14714,8 @@ exports[`renders 5`] = `
                           "marginRight": undefined,
                           "marginTop": undefined,
                           "marginVertical": undefined,
+                          "minHeight": undefined,
+                          "minWidth": undefined,
                           "padding": 8,
                           "paddingBottom": undefined,
                           "paddingHorizontal": undefined,
@@ -14692,6 +14808,8 @@ exports[`renders 5`] = `
                           "marginRight": undefined,
                           "marginTop": undefined,
                           "marginVertical": undefined,
+                          "minHeight": undefined,
+                          "minWidth": undefined,
                           "padding": 8,
                           "paddingBottom": undefined,
                           "paddingHorizontal": undefined,
@@ -14838,6 +14956,8 @@ exports[`renders 5`] = `
                       "marginRight": undefined,
                       "marginTop": undefined,
                       "marginVertical": undefined,
+                      "minHeight": undefined,
+                      "minWidth": undefined,
                       "padding": undefined,
                       "paddingBottom": undefined,
                       "paddingHorizontal": undefined,
@@ -14906,6 +15026,8 @@ exports[`renders 5`] = `
                         "marginRight": -8,
                         "marginTop": undefined,
                         "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
                         "padding": 8,
                         "paddingBottom": undefined,
                         "paddingHorizontal": undefined,
@@ -15189,6 +15311,8 @@ exports[`renders 5`] = `
                 "marginRight": undefined,
                 "marginTop": undefined,
                 "marginVertical": undefined,
+                "minHeight": undefined,
+                "minWidth": undefined,
                 "padding": 16,
                 "paddingBottom": undefined,
                 "paddingHorizontal": undefined,
@@ -15251,6 +15375,37 @@ exports[`renders 5`] = `
               }
             >
               Sortear
+            </Text>
+            <Text
+              style={
+                {
+                  "color": "#ffffffff",
+                  "flex": undefined,
+                  "fontSize": 12,
+                  "fontWeight": undefined,
+                  "height": undefined,
+                  "includeFontPadding": undefined,
+                  "lineHeight": undefined,
+                  "margin": undefined,
+                  "marginBottom": undefined,
+                  "marginHorizontal": undefined,
+                  "marginLeft": undefined,
+                  "marginRight": undefined,
+                  "marginTop": undefined,
+                  "marginVertical": undefined,
+                  "padding": undefined,
+                  "paddingBottom": undefined,
+                  "paddingHorizontal": undefined,
+                  "paddingLeft": undefined,
+                  "paddingRight": undefined,
+                  "paddingTop": undefined,
+                  "paddingVertical": undefined,
+                  "textAlign": "center",
+                  "width": undefined,
+                }
+              }
+            >
+              (1 jogador selecionado)
             </Text>
           </RNGestureHandlerButton>
         </View>
@@ -15435,7 +15590,7 @@ exports[`renders 5`] = `
                     collapsable={false}
                     delayLongPress={600}
                     foreground={true}
-                    handlerTag={29}
+                    handlerTag={30}
                     handlerType="NativeViewGestureHandler"
                     onActiveStateChange={[Function]}
                     onGestureEvent={[Function]}
@@ -15465,6 +15620,8 @@ exports[`renders 5`] = `
                         "marginRight": undefined,
                         "marginTop": undefined,
                         "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
                         "padding": 8,
                         "paddingBottom": undefined,
                         "paddingHorizontal": undefined,
@@ -15569,7 +15726,7 @@ exports[`renders 5`] = `
                     collapsable={false}
                     delayLongPress={600}
                     foreground={true}
-                    handlerTag={30}
+                    handlerTag={31}
                     handlerType="NativeViewGestureHandler"
                     onActiveStateChange={[Function]}
                     onGestureEvent={[Function]}
@@ -15599,6 +15756,8 @@ exports[`renders 5`] = `
                         "marginRight": 4,
                         "marginTop": undefined,
                         "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
                         "padding": 8,
                         "paddingBottom": undefined,
                         "paddingHorizontal": undefined,

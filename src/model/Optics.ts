@@ -28,7 +28,9 @@ export const root = $(Optic.id<RootState>(), o => ({
     $: o,
     position: { $: o.at('position') },
     rating: { $: o.at('rating') },
-    teamsCount: { $: o.at('teamsCount') },
+    teamsCountMethod: $(o.at('teamsCountMethod'), o => ({ $: o })),
+    teamsCount: $(o.at('teamsCount'), o => ({ $: o })),
+    playersRequired: $(o.at('playersRequired'), o => ({ $: o })),
   })),
   result: { $: o.at('result') },
   playerForm: $(o.at('playerForm'), o => ({

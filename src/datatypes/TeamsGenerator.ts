@@ -3,6 +3,7 @@ import * as Player from 'src/datatypes/Player'
 import * as Position from 'src/datatypes/Position'
 import { findFirstMapWithIndex } from 'src/utils/Array'
 import { randomizeArray } from 'src/utils/Random'
+import { matchTag } from 'src/utils/Tagged'
 
 type Player = Player.Player
 type Position = Position.Position
@@ -129,7 +130,7 @@ const changePlayers =
       O.getOrElse(() => teams),
     )
 
-export const divideTeams =
+export const divideTeamsWithEqualNumberOfPlayers =
   (numOfTeams: number) =>
   (players: Array<Player>): Array<Array<Player>> =>
     numOfTeams <= 0
@@ -137,18 +138,42 @@ export const divideTeams =
       : $(
           players,
           A.splitAt(Math.floor(players.length / numOfTeams)),
-          ([as, bs]) => $(divideTeams(numOfTeams - 1)(bs), A.append(as)),
+          ([as, bs]) =>
+            $(
+              divideTeamsWithEqualNumberOfPlayers(numOfTeams - 1)(bs),
+              A.append(as),
+            ),
         )
 
-export const balanceTeamsByFitOrd =
-  (fitOrd: Order<Array<Array<Player>>>) =>
-  (numOfTeams: number) =>
+export const divideTeamsWithFixedNumberOfPlayers =
+  (numOfPlayers: number) =>
   (players: Array<Player>): Array<Array<Player>> =>
-    $(players, divideTeams(numOfTeams), balanceTeams(fitOrd))
+    players.length === 0
+      ? []
+      : $(players, A.splitAt(numOfPlayers), ([as, bs]) =>
+          $(
+            divideTeamsWithFixedNumberOfPlayers(numOfPlayers)(bs),
+            A.prepend(as),
+          ),
+        )
+
+const divideTeams = (criteria: Criteria) =>
+  $(
+    criteria.distribution,
+    matchTag({
+      numOfTeams: ({ numOfTeams }) =>
+        divideTeamsWithEqualNumberOfPlayers(numOfTeams),
+      fixedNumberOfPlayers: ({ fixedNumberOfPlayers }) =>
+        divideTeamsWithFixedNumberOfPlayers(fixedNumberOfPlayers),
+    }),
+  )
 
 export type Criteria = {
   position: boolean
   rating: boolean
+  distribution:
+    | { _tag: 'numOfTeams'; numOfTeams: number }
+    | { _tag: 'fixedNumberOfPlayers'; fixedNumberOfPlayers: number }
 }
 
 export const getFitOrdFromCriteria = (
@@ -163,16 +188,12 @@ export const getFitOrdFromCriteria = (
     getFitOrdByDevianceFns,
   )
 
-export const balanceTeamsByCriteria = $f(
-  getFitOrdFromCriteria,
-  balanceTeamsByFitOrd,
-)
+export const balanceTeamsByCriteria = $f(getFitOrdFromCriteria, balanceTeams)
+
+export const distributeTeams = (criteria: Criteria) =>
+  $f(divideTeams(criteria), balanceTeamsByCriteria(criteria))
 
 export const generateRandomBalancedTeams =
   (criteria: Criteria) =>
-  (numOfTeams: number) =>
   (players: Array<Player>): IO<Array<Array<Player>>> =>
-    $(
-      randomizeArray(players),
-      IO.map(balanceTeamsByCriteria(criteria)(numOfTeams)),
-    )
+    $(randomizeArray(players), IO.map(distributeTeams(criteria)))

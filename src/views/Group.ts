@@ -1,4 +1,4 @@
-import { $, A, Eq, O, Option, R } from 'fp'
+import { $, A, Eq, O, Option, R, constant } from 'fp'
 import { AppEvent, on } from 'src/actions'
 import {
   deepEq,
@@ -21,6 +21,7 @@ import {
 import { Group, GroupOrder, Parameters, Player, Rating } from 'src/datatypes'
 import { GroupOrderType } from 'src/datatypes/GroupOrder'
 import { Colors } from 'src/services/Theme'
+import { matchTag } from 'src/utils/Tagged'
 import { withOpacity } from 'src/utils/datatypes/Color'
 
 export const GroupView = memoized('GroupScreen')(
@@ -69,7 +70,23 @@ export const GroupView = memoized('GroupScreen')(
         bg: Colors.primary.$5,
         rippleColor: Colors.black,
         rippleOpacity: 0.5,
-      })([Txt({ align: 'center', color: Colors.white })('Sortear')]),
+      })([
+        Txt({ align: 'center', color: Colors.white })('Sortear'),
+        Txt({ align: 'center', color: Colors.white, size: 12 })(
+          $(
+            group,
+            O.match(constant<Array<Player>>([]), g => g.players),
+            A.filter(p => p.active),
+            A.length,
+            n =>
+              n === 0
+                ? '(Nenhum jogador selecionado)'
+                : n === 1
+                ? '(1 jogador selecionado)'
+                : '(' + n.toString() + ' jogadores selecionados)',
+          ),
+        ),
+      ]),
       ...(modalParameters ? [ParametersModal({ parameters })] : []),
       $(
         modalSortGroup,
@@ -341,7 +358,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
       Pressable({
         onPress: on.doNothing,
         bg: Colors.white,
-        m: 48,
+        m: 24,
         round: 8,
         shadow: 2,
         rippleColor: Colors.black,
@@ -380,7 +397,13 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
               }),
             ]),
             Txt({ p: 8, weight: 600, color: Colors.text.dark })(
-              parameters.teamsCount.toString(),
+              $(
+                parameters.teamsCountMethod,
+                matchTag({
+                  count: () => parameters.teamsCount.toString(),
+                  playersRequired: () => parameters.playersRequired.toString(),
+                }),
+              ),
             ),
             Pressable({
               onPress: on.incrementTeamsCount,
@@ -395,7 +418,31 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
                 color: Colors.primary.$5,
               }),
             ]),
-            Txt({ flex: 1, pl: 8, color: Colors.text.dark })('Número de times'),
+            Pressable({
+              onPress: on.toggleTeamsCountType,
+              flex: 1,
+              direction: 'row',
+              align: 'center',
+              round: 8,
+              p: 4,
+              pl: 8,
+              gap: 4,
+            })([
+              Txt({ flex: 1, color: Colors.text.dark })(
+                $(
+                  parameters.teamsCountMethod,
+                  matchTag({
+                    count: () => 'Número de times',
+                    playersRequired: () => 'Número fixo de jogadores por time',
+                  }),
+                ),
+              ),
+              MaterialIcons({
+                name: 'swap-horiz',
+                size: 20,
+                color: Colors.primary.$5,
+              }),
+            ]),
           ]),
           Pressable({
             onPress: on.togglePosition,
@@ -484,3 +531,5 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
       ]),
     ]),
   ])
+
+// spell-checker:words horiz
