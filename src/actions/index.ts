@@ -312,7 +312,7 @@ const e: {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
   eventHandlers as any,
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
-  Rec.map((v, t) => event(t as any)(v as any)),
+  Rec.map((_, t) => event(t as any)),
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
 ) as any
 
