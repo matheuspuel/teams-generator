@@ -1,24 +1,21 @@
+import * as Context from '@effect/data/Context'
 import { get } from '@fp-ts/optic'
 import {
   $,
   $f,
   Apply,
   D,
+  Eff,
+  Effect,
   identity,
-  IO,
   none,
   not,
   O,
   Optic,
-  R,
-  ReaderIO,
   Rec,
-  RIO,
-  RT,
   S,
   some,
   Str,
-  Task,
 } from 'fp'
 import { Parameters as Parameters_, Player, Rating } from 'src/datatypes'
 import { RootState } from 'src/model'
@@ -64,31 +61,32 @@ import { Duration } from 'src/utils/datatypes'
 import { Id } from 'src/utils/Entity'
 
 type EventTypeFromHandlers<
-  H extends Record<string, (payload: never) => ReaderIO<never, void>>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  H extends Record<string, (payload: never) => Effect<any, never, void>>,
 > = {
   [k in keyof H]: Event<k & string, Parameters<H[k]>[0]>
 }[keyof H]
 
 type HandlerEnvFromHandlers<
-  H extends Record<string, (payload: never) => ReaderIO<never, void>>,
-> = R.EnvType<ReturnType<H[keyof H]>>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  H extends Record<string, (payload: never) => Effect<any, never, void>>,
+> = Effect.Context<ReturnType<H[keyof H]>>
 
 export type AppEvent = EventTypeFromHandlers<typeof eventHandlers>
 
 export type HandlerEnv = HandlerEnvFromHandlers<typeof eventHandlers>
 
-const wait =
-  (time: Duration): Task<void> =>
-  () =>
-    new Promise(res => setTimeout(() => res(), time))
+const wait = (time: Duration): Effect<never, never, void> =>
+  Eff.promise(() => new Promise(res => setTimeout(() => res(), time)))
 
-const doNothing = RIO.of<unknown, void>(undefined)
+const doNothing = Eff.unit()
 
 const closeParametersModal = replaceSApp(root.ui.modalParameters.$)(false)
 
 type EventHandlersRecord = Record<
   string,
-  (payload: never) => ReaderIO<never, void>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (payload: never) => Effect<any, never, void>
 >
 
 export const eventHandlers = {
@@ -100,8 +98,8 @@ export const eventHandlers = {
   goBack: () =>
     $(
       execute(goBack),
-      RIO.chainFirstW(({ shouldBubbleUpEvent }) =>
-        shouldBubbleUpEvent ? BackHandler.exit : RIO.of(undefined),
+      Eff.tap(({ shouldBubbleUpEvent }) =>
+        shouldBubbleUpEvent ? BackHandler.exit : Eff.unit(),
       ),
     ),
 
@@ -110,7 +108,7 @@ export const eventHandlers = {
   openEditGroupModal: (id: Id) =>
     $(
       S.gets(getGroupById(id)),
-      S.chain(
+      S.flatMap(
         O.match(
           () => S.modify<RootState>(identity),
           g => setUpsertGroupModal(some({ id: O.some(id), name: g.name })),
@@ -127,7 +125,7 @@ export const eventHandlers = {
       getSApp(root.ui.modalUpsertGroup.$),
       S.map(O.filter(m => $(m.name, not(Str.isEmpty)))),
       execute,
-      RIO.chain(
+      Eff.flatMap(
         O.match(
           () => doNothing,
           m =>
@@ -137,7 +135,7 @@ export const eventHandlers = {
                 () => createGroup({ name: m.name }),
                 id => execute(editGroup({ id, name: m.name })),
               ),
-              RIO.chainFirstW(() => execute(setUpsertGroupModal(O.none()))),
+              Eff.tap(() => execute(setUpsertGroupModal(O.none()))),
             ),
         ),
       ),
@@ -145,7 +143,7 @@ export const eventHandlers = {
   deleteGroup: () =>
     $(
       S.gets(Optic.get(root.ui.modalDeleteGroup.$)),
-      S.chain(
+      S.flatMap(
         O.match(
           () => S.of<RootState, void>(undefined),
           ({ id }) => deleteGroup({ id }),
@@ -157,7 +155,7 @@ export const eventHandlers = {
   selectGroup: (id: Id) =>
     $(
       navigate('Group'),
-      S.chain(() => replaceSApp(root.ui.selectedGroupId.$)(O.some(id))),
+      S.flatMap(() => replaceSApp(root.ui.selectedGroupId.$)(O.some(id))),
       execute,
     ),
 
@@ -176,7 +174,7 @@ export const eventHandlers = {
   pressNewPlayer: () =>
     $(
       navigate('Player'),
-      S.chain(() =>
+      S.flatMap(() =>
         $(
           replaceSApp(root.ui.selectedPlayerId.$)(O.none()),
           S.apFirst(replaceSApp(root.playerForm.$)(blankPlayerForm)),
@@ -187,10 +185,10 @@ export const eventHandlers = {
   selectPlayer: (playerId: Id) =>
     $(
       navigate('Player'),
-      S.chain(() =>
+      S.flatMap(() =>
         $(
           getPlayerFromActiveGroup({ playerId }),
-          S.chain(
+          S.flatMap(
             O.match(
               () => S.of<RootState, void>(undefined),
               $f(
@@ -217,13 +215,12 @@ export const eventHandlers = {
   shuffle: () =>
     $(
       S.of<RootState, void>(undefined),
-      S.chain(() => eraseResult),
-      S.chain(() => navigate('Result')),
-      S.chain(() => closeParametersModal),
+      S.flatMap(() => eraseResult),
+      S.flatMap(() => navigate('Result')),
+      S.flatMap(() => closeParametersModal),
       execute,
-      RT.fromReaderIO,
-      RT.chainFirstTaskK(() => wait(0)),
-      RT.chainReaderIOK(() => generateResult),
+      Eff.tap(() => wait(0)),
+      Eff.flatMap(() => generateResult),
     ),
 
   changePlayerName: $f(replaceSApp(root.playerForm.name.$), execute),
@@ -233,7 +230,7 @@ export const eventHandlers = {
     D.parseOption(Rating.Schema),
     v => v,
     O.map($f(replaceSApp(root.playerForm.rating.$), execute)),
-    O.getOrElse(() => RIO.of(undefined)),
+    O.getOrElse(() => Eff.unit()),
   ),
   savePlayer: () =>
     $(
@@ -247,9 +244,9 @@ export const eventHandlers = {
       }),
       S.map(O.struct),
       execute,
-      RIO.chain(
+      Eff.flatMap(
         O.match(
-          () => RIO.of(undefined),
+          () => Eff.unit(),
           ({ form, groupId, playerId }) =>
             $(
               playerId,
@@ -257,7 +254,7 @@ export const eventHandlers = {
                 () => createPlayer({ groupId, player: form }),
                 id => execute(editPlayer({ groupId, player: { ...form, id } })),
               ),
-              RIO.chainW(() => execute(goBack)),
+              Eff.flatMap(() => execute(goBack)),
             ),
         ),
       ),
@@ -268,10 +265,9 @@ export const eventHandlers = {
   shareTeamList: () =>
     $(
       execute(S.gets(get(root.result.$))),
-      RT.fromReaderIO,
-      RT.chainW(
+      Eff.flatMap(
         O.match(
-          () => RT.of(undefined),
+          () => Eff.unit(),
           $f(Player.TeamListShowSensitive.show, t =>
             ShareService.share({ message: t, title: 'Times' }),
           ),
@@ -365,28 +361,27 @@ export const on = {
 
 export type EventHandler<E extends Event<string, unknown>> = (
   event: E,
-) => IO<void>
+) => Effect<never, never, void>
 
 export type EventHandlerEnv<E extends Event<string, unknown>> = {
   eventHandler: EventHandler<E>
 }
 
-const makeEventHandlerWithHandlers =
-  <H extends EventHandlersRecord>(handlers: H) =>
-  (env: HandlerEnvFromHandlers<H>) =>
-  <E extends EventTypeFromHandlers<H>>(
-    event: E,
-  ): ReturnType<ReturnType<H[E['event']['_tag']]>> =>
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
-    (handlers[event.event._tag] as any)(event.event.payload)(env)
+export type AppEventHandlerEnv = EventHandlerEnv<AppEvent>
 
-export const makeEventHandler = makeEventHandlerWithHandlers(eventHandlers)
+export const AppEventHandlerEnv = Context.Tag<AppEventHandlerEnv>()
 
 export const EventHandler = {
-  handle:
-    <E extends Event<string, unknown>>(
-      event: E,
-    ): ReaderIO<EventHandlerEnv<E>, void> =>
-    env =>
-      env.eventHandler(event),
+  handle: (event: AppEvent): Effect<AppEventHandlerEnv, never, void> =>
+    Eff.flatMap(AppEventHandlerEnv, env => env.eventHandler(event)),
 }
+
+const makeEventHandlerWithHandlers =
+  <H extends EventHandlersRecord>(handlers: H) =>
+  <E extends EventTypeFromHandlers<H>>(
+    event: E,
+  ): Effect.Unify<ReturnType<H[E['event']['_tag']]>> =>
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
+    (handlers[event.event._tag] as any)(event.event.payload)
+
+export const appEventHandler = makeEventHandlerWithHandlers(eventHandlers)

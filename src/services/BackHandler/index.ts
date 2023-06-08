@@ -1,16 +1,20 @@
-import { IO, ReaderIO } from 'fp'
+import * as Context from '@effect/data/Context'
+import { Effect } from '@effect/io/Effect'
+import { Eff } from 'src/utils/fp'
 
 export type BackHandler = {
-  exit: IO<void>
-  subscribe: <R>(f: ReaderIO<R, void>) => ReaderIO<R, { unsubscribe: IO<void> }>
+  exit: Effect<never, never, void>
+  subscribe: (
+    f: Effect<never, never, void>,
+  ) => Effect<never, never, { unsubscribe: Effect<never, never, void> }>
 }
 
 export type BackHandlerEnv = { backHandler: BackHandler }
 
+export const BackHandlerEnv = Context.Tag<BackHandlerEnv>()
+
 export const BackHandler = {
-  exit: (env: BackHandlerEnv) => env.backHandler.exit,
-  subscribe:
-    <R>(f: ReaderIO<R, void>) =>
-    (env: BackHandlerEnv & R) =>
-      env.backHandler.subscribe(f)(env),
+  exit: Eff.flatMap(BackHandlerEnv, env => env.backHandler.exit),
+  subscribe: (f: Effect<never, never, void>) =>
+    Eff.flatMap(BackHandlerEnv, env => env.backHandler.subscribe(f)),
 }

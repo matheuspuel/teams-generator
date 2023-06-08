@@ -2,10 +2,10 @@ import {
   $,
   $f,
   A,
+  Eff,
   O,
   Optic,
   Option,
-  RIO,
   Rec,
   S,
   apply,
@@ -55,7 +55,7 @@ const addGroup = (group: Group) => modify(gs => ({ ...gs, [group.id]: group }))
 export const createGroup = ({ name }: { name: string }) =>
   $(
     IdGenerator.generate,
-    RIO.chainW(id => execute(addGroup({ id, name, players: [] }))),
+    Eff.flatMap(id => execute(addGroup({ id, name, players: [] }))),
   )
 
 export const editGroup = (args: { id: Id; name: string }) =>
@@ -90,7 +90,7 @@ export const createPlayer = ({
 }) =>
   $(
     IdGenerator.generate,
-    RIO.chainW(id =>
+    Eff.flatMap(id =>
       execute(addPlayer({ groupId, player: { ...player, id } })),
     ),
   )

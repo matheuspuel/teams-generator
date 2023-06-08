@@ -1,4 +1,5 @@
-import { $, $f, A, IO, Num, O, Ord, Order, Rec, Tup, none, some } from 'fp'
+import { Effect } from '@effect/io/Effect'
+import { $, $f, A, Eff, Num, O, Ord, Order, Rec, Tup, none, some } from 'fp'
 import * as Player from 'src/datatypes/Player'
 import * as Position from 'src/datatypes/Position'
 import { findFirstMapWithIndex } from 'src/utils/Array'
@@ -195,5 +196,5 @@ export const distributeTeams = (criteria: Criteria) =>
 
 export const generateRandomBalancedTeams =
   (criteria: Criteria) =>
-  (players: Array<Player>): IO<Array<Array<Player>>> =>
-    $(randomizeArray(players), IO.map(distributeTeams(criteria)))
+  (players: Array<Player>): Effect<never, never, Array<Array<Player>>> =>
+    $(randomizeArray(players), Eff.map(distributeTeams(criteria)))

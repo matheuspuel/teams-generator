@@ -1,4 +1,5 @@
-import { IO, Optic, ReaderIO, S } from 'fp'
+import * as Context from '@effect/data/Context'
+import { Eff, Effect, Optic, S } from 'fp'
 import { RootState } from 'src/model'
 import { StateRef } from 'src/utils/datatypes'
 
@@ -6,15 +7,20 @@ export type AppStateRef = StateRef<RootState>
 
 export type AppStateRefEnv = { stateRef: AppStateRef }
 
-export const subscribe: <R>(
-  effect: ReaderIO<R, void>,
-) => ReaderIO<AppStateRefEnv & R, { unsubscribe: IO<void> }> = f => env =>
-  env.stateRef.subscribe(f(env))
+export const AppStateRefEnv = Context.Tag<AppStateRefEnv>()
 
-export const execute =
-  <A>(f: S.State<RootState, A>): ReaderIO<AppStateRefEnv, A> =>
-  env =>
-    env.stateRef.execute(f)
+export const subscribe: (
+  effect: Effect<never, never, void>,
+) => Effect<
+  AppStateRefEnv,
+  never,
+  { unsubscribe: Effect<never, never, void> }
+> = f => Eff.flatMap(AppStateRefEnv, env => env.stateRef.subscribe(f))
+
+export const execute = <A>(
+  f: S.State<RootState, A>,
+): Effect<AppStateRefEnv, never, A> =>
+  Eff.flatMap(AppStateRefEnv, env => env.stateRef.execute(f))
 
 export const getRootState = S.get<RootState>()
 

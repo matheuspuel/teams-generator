@@ -2,7 +2,7 @@ import React from 'react'
 import { Modal as Modal_ } from 'react-native'
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler'
 import { Event, EventHandlerEnv } from 'src/actions'
-import { A } from 'src/utils/fp'
+import { A, Eff } from 'src/utils/fp'
 import { JSXElementsChildren } from '../types'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -46,7 +46,10 @@ const getRawProps = <R, E1 extends Event<string, unknown>>({
   animationType: props.animationType,
   statusBarTranslucent: props.statusBarTranslucent,
   onRequestClose:
-    props.onRequestClose && env.eventHandler(props.onRequestClose),
+    props.onRequestClose &&
+    (() =>
+      props.onRequestClose &&
+      Eff.runPromise(env.eventHandler(props.onRequestClose))),
   style: {
     flex: props?.flex,
   },

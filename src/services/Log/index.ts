@@ -1,4 +1,5 @@
-import { $, IO, Rec } from 'fp'
+import * as Context from '@effect/data/Context'
+import { $, Eff, Effect, Rec } from 'fp'
 import { Timestamp } from 'src/utils/datatypes'
 
 export const LogLevelDict = {
@@ -20,29 +21,33 @@ export type LogData = {
   context: object | null
 }
 
-export type Logger = (data: LogData) => IO<void>
+export type Logger = (data: LogData) => Effect<never, never, void>
 
 export type LoggerEnv = { logger: Logger }
+
+export const LoggerEnv = Context.Tag<LoggerEnv>()
 
 const toApiLogger =
   (level: LogLevel) =>
   (timestamp: Timestamp) =>
   (category: string) =>
   (message: string) =>
-  (context: object | null) =>
-  (env: LoggerEnv): IO<void> =>
-    $(env.logger({ level, category, message, context, timestamp }))
+  (context: object | null): Effect<LoggerEnv, never, void> =>
+    Eff.flatMap(LoggerEnv, env =>
+      env.logger({ level, category, message, context, timestamp }),
+    )
 
 const toApiCurrentTimeLogger =
   (level: LogLevel) =>
   (category: string) =>
   (message: string) =>
-  (context: object | null) =>
-  (env: LoggerEnv): IO<void> =>
+  (context: object | null): Effect<LoggerEnv, never, void> =>
     $(
       Timestamp.getNow,
-      IO.chain(timestamp =>
-        env.logger({ level, category, message, context, timestamp }),
+      Eff.flatMap(timestamp =>
+        Eff.flatMap(LoggerEnv, env =>
+          env.logger({ level, category, message, context, timestamp }),
+        ),
       ),
     )
 

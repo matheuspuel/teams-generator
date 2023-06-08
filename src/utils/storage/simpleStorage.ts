@@ -1,18 +1,24 @@
-import { $f, Json, O, TE, TaskEither } from 'fp'
+import { $f, E, Eff, Effect, Json, O } from 'fp'
+import * as E_ from 'fp-ts/Either'
 import { AsyncStorageFP } from './wrapper'
 
-const get: (key: string) => TaskEither<unknown, Json.Json> = $f(
+const get: (key: string) => Effect<never, unknown, Json.Json> = $f(
   AsyncStorageFP.getItem,
-  TE.chainOptionK((): unknown => 'Empty')(O.fromNullable),
-  TE.chainEitherK(Json.parse),
+  Eff.map(O.fromNullable),
+  Eff.someOrFailException,
+  Eff.flatMap($f(Json.parse, E_.matchW(E.left, E.right))),
 )
 
 const set: (
   key: string,
-) => (value: unknown) => TE.TaskEither<unknown, void> = key =>
-  $f(TE.fromEitherK(Json.stringify), TE.chain(AsyncStorageFP.setItem(key)))
+) => (value: unknown) => Effect<never, unknown, void> = key =>
+  $f(
+    Json.stringify,
+    E_.matchW(E.left, E.right),
+    Eff.flatMap(AsyncStorageFP.setItem(key)),
+  )
 
-const remove: (key: string) => TE.TaskEither<void, void> = $f(
+const remove: (key: string) => Effect<never, void, void> = $f(
   AsyncStorageFP.removeItem,
 )
 

@@ -1,4 +1,4 @@
-import { $, Eq, IO, State, Tup } from 'fp'
+import { $, Eff, Effect, Eq, State, Tup } from 'fp'
 import * as Observable from 'src/utils/datatypes/Observable'
 import * as Ref from 'src/utils/datatypes/Ref'
 
@@ -6,8 +6,10 @@ type Observable<S> = Observable.Observable<S>
 type Ref<S> = Ref.Ref<S>
 
 export type StateRef<S> = {
-  execute: <A>(f: State<S, A>) => IO<A>
-  subscribe: (effect: IO<void>) => IO<{ unsubscribe: IO<void> }>
+  execute: <A>(f: State<S, A>) => Effect<never, never, A>
+  subscribe: (
+    effect: Effect<never, never, void>,
+  ) => Effect<never, never, { unsubscribe: Effect<never, never, void> }>
 }
 
 export const create = <S>(initialState: S): StateRef<S> => {
@@ -16,19 +18,19 @@ export const create = <S>(initialState: S): StateRef<S> => {
   const execute: StateRef<S>['execute'] = f =>
     $(
       ref.getState,
-      IO.chain(prev =>
+      Eff.flatMap(prev =>
         $(f(prev), result =>
           $(Tup.getSecond(result), next =>
             Eq.equals(Eq.strict())(prev)(next)
-              ? IO.of(Tup.getFirst(result))
+              ? Eff.succeed(Tup.getFirst(result))
               : $(
                   ref.getState,
-                  IO.chain(current =>
+                  Eff.flatMap(current =>
                     Eq.equals(Eq.strict())(prev)(current)
                       ? $(
                           ref.setState(next),
-                          IO.chain(() => observable.dispatch(undefined)),
-                          IO.map(() => Tup.getFirst(result)),
+                          Eff.flatMap(() => observable.dispatch(undefined)),
+                          Eff.map(() => Tup.getFirst(result)),
                         )
                       : execute(f),
                   ),

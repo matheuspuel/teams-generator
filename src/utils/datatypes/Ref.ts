@@ -1,18 +1,19 @@
-import { IO } from '../fp'
+import { Eff, Effect } from '../fp'
 
 export type Ref<A> = {
-  getState: IO<A>
-  setState: (nextState: A) => IO<void>
+  getState: Effect<never, never, A>
+  setState: (nextState: A) => Effect<never, never, void>
 }
 
 export const create = <A>(initialState: A): Ref<A> => {
   // eslint-disable-next-line functional/no-let
   let state: A = initialState
   return {
-    getState: () => state,
-    setState: (nextState: A) => () => {
-      // eslint-disable-next-line functional/no-expression-statements
-      state = nextState
-    },
+    getState: Eff.sync(() => state),
+    setState: (nextState: A) =>
+      Eff.sync(() => {
+        // eslint-disable-next-line functional/no-expression-statements
+        state = nextState
+      }),
   }
 }

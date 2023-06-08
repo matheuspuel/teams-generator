@@ -1,5 +1,5 @@
 import { get } from '@fp-ts/optic'
-import { $, $f, A, O, RIO, Rec, S, constant } from 'fp'
+import { $, $f, A, Eff, O, Rec, S, constant } from 'fp'
 import { Player, TeamsGenerator } from 'src/datatypes'
 import { root } from 'src/model/Optics'
 import { execute, replaceSApp } from 'src/services/StateRef'
@@ -21,7 +21,7 @@ export const generateResult = $(
       ),
     ),
   ),
-  RIO.chainIOK(({ players, parameters }) =>
+  Eff.flatMap(({ players, parameters }) =>
     TeamsGenerator.generateRandomBalancedTeams({
       position: parameters.position,
       rating: parameters.rating,
@@ -40,5 +40,5 @@ export const generateResult = $(
       ),
     })(players),
   ),
-  RIO.chain($f(O.some, replaceSApp(root.result.$), execute)),
+  Eff.flatMap($f(O.some, replaceSApp(root.result.$), execute)),
 )

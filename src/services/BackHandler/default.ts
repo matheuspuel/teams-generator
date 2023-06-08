@@ -1,13 +1,15 @@
 import { BackHandler as BackHandler_ } from 'react-native'
+import { Eff } from 'src/utils/fp'
 import { BackHandler } from '.'
 
 export const defaultBackHandler: BackHandler = {
-  exit: () => BackHandler_.exitApp(),
-  subscribe: f => env => () => {
-    const subscription = BackHandler_.addEventListener(
-      'hardwareBackPress',
-      () => (f(env)(), true),
-    )
-    return { unsubscribe: () => subscription.remove() }
-  },
+  exit: Eff.sync(() => BackHandler_.exitApp()),
+  subscribe: f =>
+    Eff.sync(() => {
+      const subscription = BackHandler_.addEventListener(
+        'hardwareBackPress',
+        () => (Eff.runPromise(f), true),
+      )
+      return { unsubscribe: Eff.sync(() => subscription.remove()) }
+    }),
 }

@@ -1,7 +1,7 @@
 /* eslint-disable functional/immutable-data */
 /* eslint-disable functional/no-expression-statements */
 /* eslint-disable functional/no-conditional-statements */
-import { $, Eq, O, Option, RIO, S } from 'fp'
+import { $, Eff, Eq, O, Option, S } from 'fp'
 import React from 'react'
 import { RootState } from 'src/model'
 import { AppStateRefEnv, execute, subscribe } from '.'
@@ -21,16 +21,18 @@ export const useSelector = <A>({
   // eslint-disable-next-line functional/no-let
   let returnValue: A
   if (O.isNone(ref.current)) {
-    returnValue = execute(S.gets(selector))(env)()
+    returnValue = Eff.runSync(
+      Eff.provideService(execute(S.gets(selector)), AppStateRefEnv, env),
+    )
     ref.current = O.some({ state: returnValue, lastSentState: returnValue })
   } else {
     returnValue = ref.current.value.lastSentState
   }
   React.useEffect(() => {
-    const subscription = subscribe(
-      $(
-        execute(S.gets(selector)),
-        RIO.chainIOK(s => () => {
+    const subscription = $(
+      execute(S.gets(selector)),
+      Eff.flatMap(s =>
+        Eff.sync(() => {
           if (
             O.isSome(ref.current) &&
             Eq.equals(eq)(s)(ref.current.value.lastSentState)
@@ -45,8 +47,12 @@ export const useSelector = <A>({
           }
         }),
       ),
-    )(env)()
-    return subscription.unsubscribe
+      Eff.provideService(AppStateRefEnv, env),
+      subscribe,
+      Eff.provideService(AppStateRefEnv, env),
+      Eff.runSync,
+    )
+    return () => Eff.runSync(subscription.unsubscribe)
   }, [selector, env, eq])
   return returnValue
 }

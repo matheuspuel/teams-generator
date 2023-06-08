@@ -1,14 +1,14 @@
 import * as SplashScreen_ from 'expo-splash-screen'
-import { $, T, TE, constVoid, identity } from 'fp'
+import { $, Eff, identity } from 'fp'
 import { SplashScreen } from '.'
 
 export const defaultSplashScreen: SplashScreen = {
   preventAutoHide: $(
-    TE.tryCatch(() => SplashScreen_.preventAutoHideAsync(), identity),
-    T.map(constVoid),
+    Eff.tryCatchPromise(() => SplashScreen_.preventAutoHideAsync(), identity),
+    Eff.catchAll(() => Eff.unit()),
   ),
   hide: $(
-    TE.tryCatch(() => SplashScreen_.hideAsync(), identity),
-    T.map(constVoid),
+    Eff.tryCatchPromise(() => SplashScreen_.hideAsync(), identity),
+    Eff.catchAll(() => Eff.unit()),
   ),
 }

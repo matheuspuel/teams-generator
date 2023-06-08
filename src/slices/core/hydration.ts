@@ -1,5 +1,5 @@
 import { get } from '@fp-ts/optic'
-import { $, $f, constVoid, RT, RTE, S } from 'fp'
+import { $, $f, Eff, S } from 'fp'
 import { GroupOrder, Parameters } from 'src/datatypes'
 import { root } from 'src/model/Optics'
 import {
@@ -11,36 +11,37 @@ import { execute, getRootState, replaceSApp } from 'src/services/StateRef'
 import { emptyGroups } from '../groups'
 
 export const saveState = $(
-  RT.fromReaderIO(execute(getRootState)),
-  RT.chainFirstReaderIOKW($f(get(root.groups.$), GroupsRepository.set)),
-  RT.chainFirstReaderIOKW($f(get(root.parameters.$), ParametersRepository.set)),
-  RT.chainFirstReaderIOKW($f(get(root.groupOrder.$), GroupOrderRepository.set)),
+  execute(getRootState),
+  Eff.tap($f(get(root.groups.$), GroupsRepository.set)),
+  Eff.tap($f(get(root.parameters.$), ParametersRepository.set)),
+  Eff.tap($f(get(root.groupOrder.$), GroupOrderRepository.set)),
+  Eff.catchAll(() => Eff.unit()),
 )
 
 export const hydrate = $(
-  RT.Do,
-  RT.apSW(
+  Eff.Do(),
+  Eff.bindDiscard(
     'groups',
     $(
       GroupsRepository.get,
-      RTE.getOrElseW(() => RT.of(emptyGroups)),
+      Eff.catchAll(() => Eff.succeed(emptyGroups)),
     ),
   ),
-  RT.apSW(
+  Eff.bindDiscard(
     'parameters',
     $(
       ParametersRepository.get,
-      RTE.getOrElseW(() => RT.of(Parameters.initial)),
+      Eff.catchAll(() => Eff.succeed(Parameters.initial)),
     ),
   ),
-  RT.apSW(
+  Eff.bindDiscard(
     'groupOrder',
     $(
       GroupOrderRepository.get,
-      RTE.getOrElseW(() => RT.of(GroupOrder.initial)),
+      Eff.catchAll(() => Eff.succeed(GroupOrder.initial)),
     ),
   ),
-  RT.chainFirstReaderIOKW(p =>
+  Eff.tap(p =>
     $(
       replaceSApp(root.groups.$)(p.groups),
       S.apFirst(replaceSApp(root.parameters.$)(p.parameters)),
@@ -48,5 +49,5 @@ export const hydrate = $(
       execute,
     ),
   ),
-  RT.map(constVoid),
+  Eff.asUnit,
 )

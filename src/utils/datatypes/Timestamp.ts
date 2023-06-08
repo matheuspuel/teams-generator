@@ -1,4 +1,4 @@
-import { $, D, IO, Num, Ord as Ord_, Order, Predicate } from 'fp'
+import { $, D, Eff, Effect, Num, Ord as Ord_, Order, Predicate } from 'fp'
 import { now } from 'fp-ts/Date'
 import { Duration } from './Duration'
 
@@ -8,7 +8,9 @@ export type Timestamp = D.To<typeof Schema>
 
 export const Ord: Order<Timestamp> = Num.Order
 
-export const getNow: IO<Timestamp> = now as IO<Timestamp>
+export const getNow: Effect<never, never, Timestamp> = Eff.sync(
+  () => now() as Timestamp,
+)
 
 export const add = (duration: Duration) => (timestamp: Timestamp) =>
   Num.add(duration)(timestamp) as Timestamp

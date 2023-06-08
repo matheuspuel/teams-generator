@@ -1,8 +1,8 @@
 export * from '@effect/data/Number'
+import { pipe as $ } from '@effect/data/Function'
 import { MonoidSum } from '@effect/data/Number'
+import { Predicate } from '@effect/data/Predicate'
 import * as A from '@effect/data/ReadonlyArray'
-import { Predicate } from 'fp-ts/Predicate'
-import { pipe as $ } from 'fp-ts/function'
 
 export const isPositive: Predicate<number> = n => Math.sign(n) === 1
 

@@ -43,7 +43,7 @@ export const RatingOrd: Order<Player> = $(
 )
 
 export const ActiveOrd: Order<Player> = $(
-  Bool.Ord,
+  Bool.Order,
   Ord.contramap(p => p.active),
 )
 

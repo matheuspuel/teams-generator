@@ -1,5 +1,5 @@
 import cuid from 'cuid'
-import { $, D, IO } from 'fp'
+import { $, D, Eff, Effect } from 'fp'
 
 export const Id = $(D.string, D.brand('Id'))
 export type Id = D.To<typeof Id>
@@ -10,4 +10,4 @@ export const getTimestamp: <A extends { timestamp: number }>(
   a: A,
 ) => number = a => a.timestamp
 
-export const generateId: IO<Id> = () => cuid() as Id
+export const generateId: Effect<never, never, Id> = Eff.sync(() => cuid() as Id)

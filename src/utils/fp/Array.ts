@@ -1,6 +1,6 @@
+import { pipe as $, constant } from '@effect/data/Function'
 import * as O from '@effect/data/Option'
 import * as A from '@effect/data/ReadonlyArray'
-import { pipe as $, constant } from 'fp-ts/function'
 import * as Eq from './Eq'
 
 export * from '@effect/data/ReadonlyArray'

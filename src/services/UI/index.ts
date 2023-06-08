@@ -1,12 +1,15 @@
-import { IO } from 'fp'
+import * as Context from '@effect/data/Context'
+import { Effect } from '@effect/io/Effect'
+import { Eff } from 'src/utils/fp'
 
-export type UI<R> = {
-  start: (env: R) => IO<void>
+export type UI = {
+  start: Effect<never, never, void>
 }
 
-export type UIEnv<R> = { ui: UI<R> } & R
+export type UIEnv = { ui: UI }
+
+export const UIEnv = Context.Tag<UIEnv>()
 
 export const UI = {
-  // eslint-disable-next-line functional/prefer-tacit
-  start: <R>(env: UIEnv<R>) => env.ui.start(env),
+  start: Eff.flatMap(UIEnv, env => env.ui.start),
 }

@@ -1,4 +1,4 @@
-import { $, Reader } from 'fp'
+import { $, Eff, Reader } from 'fp'
 import React from 'react'
 import { View as View_ } from 'react-native'
 import { Event, EventHandlerEnv } from 'src/actions'
@@ -59,7 +59,9 @@ const getRawProps = <
   env,
 }: ViewArgs<R, E1>): React.ComponentProps<typeof View_> & { key?: string } => ({
   key: props.key,
-  onLayout: props.onLayout && env.eventHandler(props.onLayout),
+  onLayout:
+    props.onLayout &&
+    (() => props.onLayout && Eff.runPromise(env.eventHandler(props.onLayout))),
   children: children,
   style: {
     padding: props?.p,

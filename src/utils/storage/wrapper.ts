@@ -1,16 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { constVoid, identity, TE } from 'fp'
+import { Eff, Effect, constVoid, identity } from 'fp'
 
-const getItem: (key: string) => TE.TaskEither<unknown, string | null> = key =>
-  TE.tryCatch(() => AsyncStorage.getItem(key), identity)
+const getItem: (key: string) => Effect<never, unknown, string | null> = key =>
+  Eff.tryCatchPromise(() => AsyncStorage.getItem(key), identity)
 
 const setItem: (
   key: string,
-) => (value: string) => TE.TaskEither<unknown, void> = key => value =>
-  TE.tryCatch(() => AsyncStorage.setItem(key, value), identity)
+) => (value: string) => Effect<never, unknown, void> = key => value =>
+  Eff.tryCatchPromise(() => AsyncStorage.setItem(key, value), identity)
 
-const removeItem: (key: string) => TE.TaskEither<void, void> = key =>
-  TE.tryCatch(() => AsyncStorage.removeItem(key), constVoid)
+const removeItem: (key: string) => Effect<never, void, void> = key =>
+  Eff.tryCatchPromise(() => AsyncStorage.removeItem(key), constVoid)
 
 export const AsyncStorageFP = {
   getItem,

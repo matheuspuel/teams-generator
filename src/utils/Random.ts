@@ -1,19 +1,26 @@
-import { $, A, IO, IOO, none, O, Option, some } from 'fp'
-import * as Random from 'fp-ts/Random'
+import { Effect } from '@effect/io/Effect'
+import * as Random from '@effect/io/Random'
+import { $, A, Eff, none, O, Option, some } from 'fp'
 
-export const randomizeArray = <A>(as: Array<A>): IO<Array<A>> =>
+export const randomizeArray = <A>(
+  as: Array<A>,
+): Effect<never, never, Array<A>> =>
   $(
-    randomExtractElem(as), //
-    IOO.matchEW(
-      () => IO.of([]),
-      ([a, rest]) => $(randomizeArray(rest), IO.map(A.append(a))),
+    randomExtractElem(as),
+    Eff.flatMap(
+      O.match(
+        () => Eff.succeed(A.empty<A>()),
+        ([a, rest]) => $(randomizeArray(rest), Eff.map(A.append(a))),
+      ),
     ),
   )
 
-const randomExtractElem = <A>(as: Array<A>): IO<Option<[A, Array<A>]>> =>
+const randomExtractElem = <A>(
+  as: Array<A>,
+): Effect<never, never, Option<[A, Array<A>]>> =>
   $(
-    Random.randomInt(0, as.length - 1),
-    IO.map(i => extractElem(i)(as)),
+    Random.nextIntBetween(0, as.length - 1),
+    Eff.map(i => extractElem(i)(as)),
   )
 
 const extractElem =

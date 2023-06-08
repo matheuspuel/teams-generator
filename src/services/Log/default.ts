@@ -1,4 +1,4 @@
-import { $, IO, absurd, constVoid } from 'fp'
+import { $, Eff, absurd, constVoid } from 'fp'
 import * as Metadata from 'src/utils/Metadata'
 import { Timestamp } from 'src/utils/datatypes'
 import { LogData, LogLevel, Logger } from '.'
@@ -44,23 +44,25 @@ const buildDefaultMessage = ({
   (context === null ? '' : ': ' + JSON.stringify(context, undefined, 2))
 
 const defaultMessageLogger: Logger = args =>
-  enabledLevels[args.level]
-    ? $(buildDefaultMessage(args), t =>
-        args.level === 'debug'
-          ? () => console.debug(t)
-          : args.level === 'error'
-          ? () => console.error(t)
-          : args.level === 'fatal'
-          ? () => console.error('FATAL ' + t)
-          : args.level === 'info'
-          ? () => console.info(t)
-          : args.level === 'trace'
-          ? () => console.debug(t)
-          : args.level === 'warn'
-          ? () => console.warn(t)
-          : absurd<never>(args.level),
-      )
-    : () => constVoid
+  Eff.sync(
+    enabledLevels[args.level]
+      ? $(buildDefaultMessage(args), t =>
+          args.level === 'debug'
+            ? () => console.debug(t)
+            : args.level === 'error'
+            ? () => console.error(t)
+            : args.level === 'fatal'
+            ? () => console.error('FATAL ' + t)
+            : args.level === 'info'
+            ? () => console.info(t)
+            : args.level === 'trace'
+            ? () => console.debug(t)
+            : args.level === 'warn'
+            ? () => console.warn(t)
+            : absurd<never>(args.level),
+        )
+      : () => constVoid,
+  )
 
 export const defaultLogger: Logger = defaultMessageLogger
 
@@ -70,7 +72,7 @@ const getTrace =
   <A>(value: A): A =>
     $(
       Timestamp.getNow,
-      IO.chain(now =>
+      Eff.flatMap(now =>
         typeof value === 'object' && value !== null
           ? logger({
               level: 'trace',
@@ -88,8 +90,9 @@ const getTrace =
               timestamp: now,
             }),
       ),
-      IO.map(() => value),
-    )()
+      Eff.map(() => value),
+      Eff.runSync,
+    )
 
 const getTraceMessage =
   (logger: Logger) =>
@@ -97,7 +100,7 @@ const getTraceMessage =
   <A>(value: A): A =>
     $(
       Timestamp.getNow,
-      IO.chain(now =>
+      Eff.flatMap(now =>
         logger({
           level: 'trace',
           category: 'TRACE',
@@ -106,8 +109,9 @@ const getTraceMessage =
           timestamp: now,
         }),
       ),
-      IO.map(() => value),
-    )()
+      Eff.map(() => value),
+      Eff.runSync,
+    )
 
 export const trace = getTrace(defaultLogger)
 
