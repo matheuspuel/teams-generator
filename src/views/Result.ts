@@ -1,5 +1,4 @@
 import { $, A, Num, O, Option, Ord } from 'fp'
-import { on } from 'src/actions'
 import { named2 } from 'src/components/helpers'
 import {
   ActivityIndicator,
@@ -13,8 +12,11 @@ import {
   View,
 } from 'src/components/hyperscript'
 import { Player, Rating } from 'src/datatypes'
+import { appEvents } from 'src/events/index'
 import { Colors } from 'src/services/Theme'
 import { toFixedLocale } from 'src/utils/Number'
+
+const on = appEvents.result
 
 export const ResultView = named2('Result')(
   ({ result }: { result: Option<Array<Array<Player>>> }) =>
@@ -25,7 +27,7 @@ export const ResultView = named2('Result')(
           headerStyle: { backgroundColor: Colors.primary.$5 },
           headerTitleStyle: { color: Colors.text.light },
           headerLeft: Pressable({
-            onPress: on.goBack,
+            onPress: appEvents.back(),
             ml: 4,
             p: 8,
             borderless: true,
@@ -38,7 +40,7 @@ export const ResultView = named2('Result')(
             }),
           ]),
           headerRight: Pressable({
-            onPress: on.shareTeamList,
+            onPress: on.share(),
             mr: 4,
             p: 8,
             borderless: true,

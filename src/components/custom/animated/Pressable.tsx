@@ -1,7 +1,7 @@
 import { $, Eff, Reader } from 'fp'
 import React from 'react'
 import { RectButton } from 'react-native-gesture-handler'
-import { Event, EventHandlerEnv } from 'src/actions'
+import { Event, EventHandlerEnv } from 'src/events/helpers'
 import { Color } from 'src/utils/datatypes'
 import {
   AbsolutePositionProps,
@@ -31,10 +31,7 @@ export type PressableStyleProps<R> = PaddingProps &
     borderColor?: Reader<R, Color>
   }
 
-export type PressableProps<
-  R,
-  E1 extends Event<string, unknown>,
-> = PressableStyleProps<R> & {
+export type PressableProps<R, E1 extends Event> = PressableStyleProps<R> & {
   onPress: E1
   isEnabled?: boolean
   rippleColor?: Reader<R, Color>
@@ -43,13 +40,13 @@ export type PressableProps<
   foreground?: boolean
 }
 
-export type PressableArgs<R, E1 extends Event<string, unknown>> = {
+export type PressableArgs<R, E1 extends Event> = {
   x: PressableProps<R, E1>
   children?: JSXElementsChildren
   env: R & EventHandlerEnv<E1>
 }
 
-const getRawProps = <R, E1 extends Event<string, unknown>>({
+const getRawProps = <R, E1 extends Event>({
   x: props,
   children,
   env,
@@ -130,6 +127,6 @@ const getRawProps = <R, E1 extends Event<string, unknown>>({
   },
 })
 
-export const Pressable = <R, E1 extends Event<string, unknown>>(
-  args: PressableArgs<R, E1>,
-) => <RectButton {...getRawProps(args)} />
+export const Pressable = <R, E1 extends Event>(args: PressableArgs<R, E1>) => (
+  <RectButton {...getRawProps(args)} />
+)

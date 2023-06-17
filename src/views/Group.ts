@@ -1,5 +1,4 @@
 import { $, A, Eq, Match, O, Option, R, constant } from 'fp'
-import { AppEvent, on } from 'src/actions'
 import {
   deepEq,
   memoized,
@@ -20,8 +19,11 @@ import {
 } from 'src/components/hyperscript'
 import { Group, GroupOrder, Parameters, Player, Rating } from 'src/datatypes'
 import { GroupOrderType } from 'src/datatypes/GroupOrder'
+import { AppEvent, appEvents } from 'src/events/index'
 import { Colors } from 'src/services/Theme'
 import { withOpacity } from 'src/utils/datatypes/Color'
+
+const on = appEvents.group
 
 export const GroupView = memoized('GroupScreen')(
   Eq.struct({
@@ -64,7 +66,7 @@ export const GroupView = memoized('GroupScreen')(
         initialNumToRender: 16,
       }),
       Pressable({
-        onPress: on.openParametersModal,
+        onPress: on.parameters.open(),
         p: 16,
         bg: Colors.primary.$5,
         rippleColor: Colors.black,
@@ -104,7 +106,7 @@ const GroupHeader = memoizedConst('GroupHeader')(
       headerStyle: { backgroundColor: Colors.primary.$5 },
       headerTitleStyle: { color: Colors.text.light },
       headerLeft: Pressable({
-        onPress: on.goBack,
+        onPress: appEvents.back(),
         ml: 4,
         p: 8,
         borderless: true,
@@ -118,7 +120,7 @@ const GroupHeader = memoizedConst('GroupHeader')(
       ]),
       headerRight: Row({ px: 4, gap: 4 })([
         Pressable({
-          onPress: on.openSortGroupModal,
+          onPress: on.sort.open(),
           p: 8,
           borderless: true,
           foreground: true,
@@ -126,7 +128,7 @@ const GroupHeader = memoizedConst('GroupHeader')(
           MaterialIcons({ name: 'sort', color: Colors.text.light, size: 24 }),
         ]),
         Pressable({
-          onPress: on.toggleAllPlayersActive,
+          onPress: on.player.active.toggleAll(),
           p: 8,
           borderless: true,
           foreground: true,
@@ -138,7 +140,7 @@ const GroupHeader = memoizedConst('GroupHeader')(
           }),
         ]),
         Pressable({
-          onPress: on.pressNewPlayer,
+          onPress: on.player.new(),
           p: 8,
           borderless: true,
           foreground: true,
@@ -154,7 +156,7 @@ const Item = memoized('GroupItem')(
   deepEq,
   ({ id, name, position, rating, active }: Player) =>
     Pressable({
-      onPress: on.selectPlayer(id),
+      onPress: on.player.open(id),
       direction: 'row',
       align: 'center',
       gap: 8,
@@ -163,7 +165,7 @@ const Item = memoized('GroupItem')(
       bg: Colors.white,
     })([
       Pressable({
-        onPress: on.togglePlayerActive(id),
+        onPress: on.player.active.toggle(id),
         borderless: true,
         p: 8,
         mr: -8,
@@ -227,16 +229,16 @@ const SortModal = ({
     flex: 1,
     animationType: 'fade',
     statusBarTranslucent: true,
-    onRequestClose: on.closeSortGroupModal,
+    onRequestClose: on.sort.close(),
   })([
     Pressable({
-      onPress: on.closeSortGroupModal,
+      onPress: on.sort.close(),
       flex: 1,
       justify: 'center',
       bg: $(Colors.black, R.map(withOpacity(63))),
     })([
       Pressable({
-        onPress: on.doNothing,
+        onPress: appEvents.doNothing(),
         bg: Colors.white,
         m: 48,
         round: 8,
@@ -255,7 +257,7 @@ const SortModal = ({
           Pressable({
             p: 8,
             round: 4,
-            onPress: on.closeSortGroupModal,
+            onPress: on.sort.close(),
           })([
             MaterialIcons({ name: 'close', size: 24, color: Colors.gray.$4 }),
           ]),
@@ -264,7 +266,7 @@ const SortModal = ({
         View({ roundB: 8, overflow: 'hidden' })([
           FilterButton({
             name: 'Nome',
-            onPress: on.groupSortByName,
+            onPress: on.sort.by.name(),
             state: $(
               mainSort._tag === 'name'
                 ? O.some({ reverse: mainSort.reverse })
@@ -273,7 +275,7 @@ const SortModal = ({
           }),
           FilterButton({
             name: 'Posição',
-            onPress: on.groupSortByPosition,
+            onPress: on.sort.by.position(),
             state: $(
               mainSort._tag === 'position'
                 ? O.some({ reverse: mainSort.reverse })
@@ -282,7 +284,7 @@ const SortModal = ({
           }),
           FilterButton({
             name: 'Habilidade',
-            onPress: on.groupSortByRating,
+            onPress: on.sort.by.rating(),
             state: $(
               mainSort._tag === 'rating'
                 ? O.some({ reverse: mainSort.reverse })
@@ -291,7 +293,7 @@ const SortModal = ({
           }),
           FilterButton({
             name: 'Ativo',
-            onPress: on.groupSortByActive,
+            onPress: on.sort.by.active(),
             state: $(
               mainSort._tag === 'active'
                 ? O.some({ reverse: mainSort.reverse })
@@ -300,7 +302,7 @@ const SortModal = ({
           }),
           FilterButton({
             name: 'Data',
-            onPress: on.groupSortByDate,
+            onPress: on.sort.by.date(),
             state: $(
               mainSort._tag === 'date'
                 ? O.some({ reverse: mainSort.reverse })
@@ -346,16 +348,16 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
     flex: 1,
     animationType: 'fade',
     statusBarTranslucent: true,
-    onRequestClose: on.closeParametersModal,
+    onRequestClose: on.parameters.close(),
   })([
     Pressable({
-      onPress: on.closeParametersModal,
+      onPress: on.parameters.close(),
       flex: 1,
       justify: 'center',
       bg: $(Colors.black, R.map(withOpacity(63))),
     })([
       Pressable({
-        onPress: on.doNothing,
+        onPress: appEvents.doNothing(),
         bg: Colors.white,
         m: 24,
         round: 8,
@@ -374,7 +376,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
           Pressable({
             p: 8,
             round: 4,
-            onPress: on.closeParametersModal,
+            onPress: on.parameters.close(),
           })([
             MaterialIcons({ name: 'close', size: 24, color: Colors.gray.$4 }),
           ]),
@@ -383,7 +385,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
         View({ p: 16 })([
           Row({ align: 'center' })([
             Pressable({
-              onPress: on.decrementTeamsCount,
+              onPress: on.parameters.teamsCount.decrement(),
               p: 12,
               borderless: true,
               rippleColor: Colors.primary.$5,
@@ -405,7 +407,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
               ),
             ),
             Pressable({
-              onPress: on.incrementTeamsCount,
+              onPress: on.parameters.teamsCount.increment(),
               p: 12,
               borderless: true,
               rippleColor: Colors.primary.$5,
@@ -418,7 +420,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
               }),
             ]),
             Pressable({
-              onPress: on.toggleTeamsCountType,
+              onPress: on.parameters.teamsCount.toggleType(),
               flex: 1,
               direction: 'row',
               align: 'center',
@@ -444,7 +446,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
             ]),
           ]),
           Pressable({
-            onPress: on.togglePosition,
+            onPress: on.parameters.position.toggle(),
             direction: 'row',
             align: 'center',
             p: 8,
@@ -475,7 +477,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
             Txt({ ml: 8, size: 14 })('Considerar posições'),
           ]),
           Pressable({
-            onPress: on.toggleRating,
+            onPress: on.parameters.rating.toggle(),
             direction: 'row',
             align: 'center',
             p: 8,
@@ -510,7 +512,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
         Row({ p: 16, justify: 'end' })([
           Row()([
             Pressable({
-              onPress: on.closeParametersModal,
+              onPress: on.parameters.close(),
               mr: 8,
               p: 12,
               round: 4,
@@ -518,7 +520,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
               rippleOpacity: 0.15,
             })([Txt({ color: Colors.primary.$5 })('Cancelar')]),
             Pressable({
-              onPress: on.shuffle,
+              onPress: on.parameters.shuffle(),
               p: 12,
               round: 4,
               bg: Colors.primary.$5,

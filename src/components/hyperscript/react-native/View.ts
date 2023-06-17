@@ -1,14 +1,12 @@
 import { $, A, R, Reader, apply } from 'fp'
 import React from 'react'
-import { Event, EventHandlerEnv } from 'src/actions'
 import { View as View_ } from 'src/components/custom'
 import { ViewProps } from 'src/components/custom/react-native/View'
 import { Element } from 'src/components/custom/types'
+import { Event, EventHandlerEnv } from 'src/events/helpers'
 
 export const View =
-  <R1, E1 extends Event<string, unknown> = Event<never, never>>(
-    props: ViewProps<R1, E1> = {},
-  ) =>
+  <R1, E1 extends Event = Event<never, never>>(props: ViewProps<R1, E1> = {}) =>
   <
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     C extends ReadonlyArray<Reader<any, Element>>,

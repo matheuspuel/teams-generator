@@ -1,12 +1,12 @@
 import { $, A, R, apply } from 'fp'
 import React from 'react'
-import { Event, EventHandlerEnv } from 'src/actions'
 import { Pressable as Pressable_ } from 'src/components/custom'
 import { PressableProps } from 'src/components/custom/animated/Pressable'
 import { Element } from 'src/components/custom/types'
+import { Event, EventHandlerEnv } from 'src/events/helpers'
 
 export const Pressable =
-  <R1, E1 extends Event<string, unknown>>(props: PressableProps<R1, E1>) =>
+  <R1, E1 extends Event>(props: PressableProps<R1, E1>) =>
   <
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     C extends ReadonlyArray<(env: any) => Element>,

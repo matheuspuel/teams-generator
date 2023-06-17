@@ -1,17 +1,14 @@
 import React from 'react'
 import { Modal as Modal_ } from 'react-native'
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler'
-import { Event, EventHandlerEnv } from 'src/actions'
+import { Event, EventHandlerEnv } from 'src/events/helpers'
 import { A, Eff } from 'src/utils/fp'
 import { JSXElementsChildren } from '../types'
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export type ModalStyleProps<R> = { flex?: number }
 
-export type ModalProps<
-  R,
-  E1 extends Event<string, unknown> = Event<never, never>,
-> = ModalStyleProps<R> & {
+export type ModalProps<R, E1 extends Event> = ModalStyleProps<R> & {
   transparent?: boolean
   visible?: boolean
   animationType?: 'fade'
@@ -19,7 +16,7 @@ export type ModalProps<
   onRequestClose?: E1
 }
 
-export type ModalArgs<R, E1 extends Event<string, unknown>> = {
+export type ModalArgs<R, E1 extends Event> = {
   x: ModalProps<R, E1>
   children?: JSXElementsChildren
   env: R & EventHandlerEnv<E1>
@@ -31,7 +28,7 @@ const GestureHandlerInModal = gestureHandlerRootHOC(
   ),
 )
 
-const getRawProps = <R, E1 extends Event<string, unknown>>({
+const getRawProps = <R, E1 extends Event>({
   x: props,
   children,
   env,
@@ -55,6 +52,6 @@ const getRawProps = <R, E1 extends Event<string, unknown>>({
   },
 })
 
-export const Modal = <R, E1 extends Event<string, unknown>>(
-  args: ModalArgs<R, E1>,
-) => <Modal_ {...getRawProps(args)} />
+export const Modal = <R, E1 extends Event>(args: ModalArgs<R, E1>) => (
+  <Modal_ {...getRawProps(args)} />
+)

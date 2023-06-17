@@ -1,7 +1,7 @@
 import { $, Eff, Reader } from 'fp'
 import React from 'react'
 import { View as View_ } from 'react-native'
-import { Event, EventHandlerEnv } from 'src/actions'
+import { Event, EventHandlerEnv } from 'src/events/helpers'
 import { Color } from 'src/utils/datatypes'
 import {
   AbsolutePositionProps,
@@ -36,24 +36,18 @@ export type ViewStyleProps<R> = PaddingProps &
 
 export type ViewProps<
   R,
-  E1 extends Event<string, unknown> = Event<never, never>,
+  E1 extends Event = Event<never, never>,
 > = ViewStyleProps<R> & {
   onLayout?: E1
 }
 
-export type ViewArgs<
-  R,
-  E1 extends Event<string, unknown> = Event<never, never>,
-> = {
+export type ViewArgs<R, E1 extends Event = Event<never, never>> = {
   x: ViewProps<R, E1>
   children?: JSXElementsChildren
   env: R & EventHandlerEnv<E1>
 }
 
-const getRawProps = <
-  R,
-  E1 extends Event<string, unknown> = Event<never, never>,
->({
+const getRawProps = <R, E1 extends Event = Event<never, never>>({
   x: props,
   children,
   env,
@@ -131,9 +125,6 @@ const getRawProps = <
   },
 })
 
-export const View = <
-  R,
-  E1 extends Event<string, unknown> = Event<never, never>,
->(
+export const View = <R, E1 extends Event = Event<never, never>>(
   args: ViewArgs<R, E1>,
 ) => <View_ {...getRawProps(args)} />

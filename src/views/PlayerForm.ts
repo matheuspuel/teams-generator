@@ -1,22 +1,24 @@
 import { $, A, R, Rec, Tup } from 'fp'
-import { on } from 'src/actions'
 import { memoizedConst, named2 } from 'src/components/helpers'
 import {
   Fragment,
   Header,
+  Input,
   MaterialIcons,
   Pressable,
   Row,
   ScrollView,
-  TextInput,
   Txt,
   View,
 } from 'src/components/hyperscript'
 import { Position, Rating } from 'src/datatypes'
+import { appEvents } from 'src/events/index'
 import { Colors } from 'src/services/Theme'
 import { PlayerForm } from 'src/slices/playerForm'
 import { withOpacity } from 'src/utils/datatypes/Color'
 import { RatingSlider } from './components/RatingSlider'
+
+const on = appEvents.player
 
 const ScreenHeader = memoizedConst('Header')(
   View({ bg: Colors.white })([
@@ -25,7 +27,7 @@ const ScreenHeader = memoizedConst('Header')(
       headerStyle: { backgroundColor: Colors.primary.$5 },
       headerTitleStyle: { color: Colors.text.light },
       headerLeft: Pressable({
-        onPress: on.goBack,
+        onPress: appEvents.back(),
         ml: 4,
         p: 8,
         borderless: true,
@@ -38,7 +40,7 @@ const ScreenHeader = memoizedConst('Header')(
         }),
       ]),
       headerRight: Pressable({
-        onPress: on.deletePlayer,
+        onPress: on.delete(),
         mr: 4,
         p: 8,
         borderless: true,
@@ -53,23 +55,11 @@ const ScreenHeader = memoizedConst('Header')(
 const NameField = (name: string) =>
   View({ p: 4 })([
     Txt({ weight: 500, color: Colors.gray.$4, my: 4 })('Nome'),
-    TextInput({
-      autoFocus: true,
+    Input({
       placeholder: 'Ex: Pedro',
-      placeholderTextColor: Colors.gray.$3,
       value: name,
-      onChange: on.changePlayerName,
-      cursorColor: Colors.text.dark,
-      fontSize: 12,
-      p: 8,
-      px: 14,
-      borderWidth: 1,
-      round: 4,
-      borderColor: Colors.gray.$2,
-      focused: {
-        bg: $(Colors.primary.$5, R.map(withOpacity(31))),
-        borderColor: Colors.primary.$5,
-      },
+      onChange: on.name.change,
+      autoFocus: true,
     }),
   ])
 
@@ -85,7 +75,7 @@ const PositionField = (position: Position) =>
         A.map(p =>
           Pressable({
             key: p,
-            onPress: on.changePlayerPosition(p),
+            onPress: on.position.change(p),
             p: 12,
             align: 'center',
             borderless: true,
@@ -122,7 +112,7 @@ export const RatingField = (rating: Rating) =>
     RatingSlider({
       initialPercentage: rating / 10,
       step: 0.05,
-      onChange: on.changePlayerRating,
+      onChange: on.rating.change,
     }),
   ])
 
@@ -132,7 +122,7 @@ const SaveButton = ({ isEnabled }: { isEnabled: boolean }) =>
     bg: isEnabled
       ? Colors.primary.$5
       : $(Colors.primary.$5, R.map(withOpacity(95))),
-    onPress: on.savePlayer,
+    onPress: on.save(),
     isEnabled: isEnabled,
     rippleColor: Colors.black,
     rippleOpacity: 0.5,

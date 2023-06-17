@@ -1,25 +1,27 @@
 import { $, A, Eq, O, Option, R, Rec, Tup } from 'fp'
-import { on } from 'src/actions'
 import { memoized, memoizedConst } from 'src/components/helpers'
 import {
   FlatList,
   Fragment,
   Header,
+  Input,
   MaterialIcons,
   Modal,
   Pressable,
   Row,
-  TextInput,
   Txt,
   TxtContext,
   View,
 } from 'src/components/hyperscript'
 import { Group } from 'src/datatypes'
+import { appEvents } from 'src/events/index'
 import { RootState } from 'src/model'
 import { Colors } from 'src/services/Theme'
 import { GroupsState } from 'src/slices/groups'
-import { withOpacity } from 'src/utils/datatypes/Color'
 import { Id } from 'src/utils/Entity'
+import { withOpacity } from 'src/utils/datatypes/Color'
+
+const on = appEvents.groups
 
 export const Groups = memoized('Groups')(
   Eq.struct({
@@ -35,7 +37,7 @@ export const Groups = memoized('Groups')(
     ui: RootState['ui']
     groups: GroupsState
   }) =>
-    View({ flex: 1, onLayout: on.uiMount })([
+    View({ flex: 1, onLayout: appEvents.core.uiMount() })([
       ScreenHeader,
       FlatList({
         data: $(
@@ -72,7 +74,7 @@ const ScreenHeader = memoizedConst('Header')(
       headerStyle: { backgroundColor: Colors.primary.$5 },
       headerTitleStyle: { color: Colors.text.light },
       headerRight: Pressable({
-        onPress: on.openNewGroupModal,
+        onPress: on.item.upsert.new(),
         mr: 4,
         p: 8,
         borderless: true,
@@ -86,7 +88,7 @@ const Item = memoized('GroupItem')(
   Eq.struct({ name: Eq.strict(), id: Eq.strict() }),
   ({ name, id }: Group) =>
     Pressable({
-      onPress: on.selectGroup(id),
+      onPress: on.item.open(id),
       direction: 'row',
       align: 'center',
       p: 4,
@@ -102,13 +104,13 @@ const Item = memoized('GroupItem')(
         color: Colors.text.dark,
       })(name),
       Pressable({
-        onPress: on.openEditGroupModal(id),
+        onPress: on.item.upsert.edit(id),
         borderless: true,
         py: 8,
         px: 4,
       })([MaterialIcons({ name: 'edit', size: 24, color: Colors.gray.$4 })]),
       Pressable({
-        onPress: on.openDeleteGroupModal(id),
+        onPress: on.item.delete.open(id),
         borderless: true,
         py: 8,
         px: 4,
@@ -129,16 +131,16 @@ const GroupModal = ({
         flex: 1,
         animationType: 'fade',
         statusBarTranslucent: true,
-        onRequestClose: on.closeGroupModal,
+        onRequestClose: on.item.upsert.close(),
       })([
         Pressable({
-          onPress: on.closeGroupModal,
+          onPress: on.item.upsert.close(),
           flex: 1,
           justify: 'center',
           bg: $(Colors.black, R.map(withOpacity(63))),
         })([
           Pressable({
-            onPress: on.doNothing,
+            onPress: appEvents.doNothing(),
             bg: Colors.white,
             m: 48,
             round: 8,
@@ -163,7 +165,7 @@ const GroupModal = ({
                   ),
                 ),
               ),
-              Pressable({ onPress: on.closeGroupModal, p: 8, round: 4 })([
+              Pressable({ onPress: on.item.upsert.close(), p: 8, round: 4 })([
                 MaterialIcons({
                   name: 'close',
                   size: 24,
@@ -176,28 +178,17 @@ const GroupModal = ({
               Txt({ weight: 500, color: Colors.gray.$4, my: 4 })(
                 'Nome do grupo',
               ),
-              TextInput({
+              Input({
                 placeholder: 'Ex: Futebol de quinta',
                 value: form.name,
-                onChange: on.changeGroupName,
-                placeholderTextColor: Colors.gray.$3,
-                cursorColor: Colors.text.dark,
-                fontSize: 12,
-                p: 8,
-                px: 14,
-                borderWidth: 1,
-                round: 4,
-                borderColor: Colors.gray.$2,
-                focused: {
-                  bg: $(Colors.primary.$5, R.map(withOpacity(31))),
-                  borderColor: Colors.primary.$5,
-                },
+                onChange: on.item.upsert.form.name.change,
+                autoFocus: true,
               }),
             ]),
             View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
             Row({ justify: 'end', p: 16 })([
               Pressable({
-                onPress: on.closeGroupModal,
+                onPress: on.item.upsert.close(),
                 mr: 8,
                 p: 12,
                 round: 4,
@@ -210,7 +201,7 @@ const GroupModal = ({
                 bg: !form.name
                   ? $(Colors.primary.$5, R.map(withOpacity(95)))
                   : Colors.primary.$5,
-                onPress: on.saveGroup,
+                onPress: on.item.upsert.submit(),
                 isEnabled: !!form.name,
                 rippleColor: Colors.black,
                 rippleOpacity: 0.5,
@@ -242,16 +233,16 @@ const DeleteGroupModal = ({
     flex: 1,
     animationType: 'fade',
     statusBarTranslucent: true,
-    onRequestClose: on.closeDeleteGroupModal,
+    onRequestClose: on.item.delete.close(),
   })([
     Pressable({
-      onPress: on.closeDeleteGroupModal,
+      onPress: on.item.delete.close(),
       flex: 1,
       bg: $(Colors.black, R.map(withOpacity(63))),
       justify: 'center',
     })([
       Pressable({
-        onPress: on.doNothing,
+        onPress: appEvents.doNothing(),
         bg: Colors.white,
         m: 48,
         round: 8,
@@ -267,7 +258,7 @@ const DeleteGroupModal = ({
             weight: 600,
             color: Colors.text.dark,
           })('Excluir grupo'),
-          Pressable({ onPress: on.closeDeleteGroupModal, p: 8, round: 4 })([
+          Pressable({ onPress: on.item.delete.close(), p: 8, round: 4 })([
             MaterialIcons({ name: 'close', size: 24, color: Colors.gray.$4 }),
           ]),
         ]),
@@ -293,7 +284,7 @@ const DeleteGroupModal = ({
             round: 4,
             rippleColor: Colors.danger.$5,
             rippleOpacity: 0.15,
-            onPress: on.closeDeleteGroupModal,
+            onPress: on.item.delete.close(),
           })([Txt({ color: Colors.danger.$5 })('Cancelar')]),
           Pressable({
             p: 12,
@@ -301,7 +292,7 @@ const DeleteGroupModal = ({
             bg: Colors.danger.$5,
             rippleColor: Colors.black,
             rippleOpacity: 0.5,
-            onPress: on.deleteGroup,
+            onPress: on.item.delete.submit(),
           })([Txt({ color: Colors.white })('Excluir')]),
         ]),
       ]),

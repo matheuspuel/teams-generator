@@ -3,8 +3,9 @@
 ;(global as any).ReanimatedDataMock = { now: () => 0 }
 
 import { act, create } from 'react-test-renderer'
-import { AppEvent, appEventHandler, on } from 'src/actions'
 import { GroupOrder, Parameters } from 'src/datatypes'
+import { AppEvent, appEvents as on } from 'src/events'
+import { appEventHandler } from 'src/events/handler'
 import { BackHandlerEnv } from 'src/services/BackHandler'
 import { IdGeneratorEnv } from 'src/services/IdGenerator'
 import {
@@ -74,7 +75,7 @@ const eventHandler = (e: AppEvent) =>
 const dispatch = (e: AppEvent) => Eff.runPromise(eventHandler(e))
 
 it('renders', async () => {
-  await dispatch(on.appLoaded)
+  await dispatch(on.core.appLoaded())
   const UI = UIRoot({
     theme: defaultTheme,
     safeArea: testingSafeAreaService,
@@ -85,26 +86,26 @@ it('renders', async () => {
   const ui = create(UI)
   expect(ui.toJSON()).toMatchSnapshot()
   await act(async () => {
-    await dispatch(on.openNewGroupModal)
-    await dispatch(on.changeGroupName('group 1'))
-    await dispatch(on.saveGroup)
+    await dispatch(on.groups.item.upsert.new())
+    await dispatch(on.groups.item.upsert.form.name.change('group 1'))
+    await dispatch(on.groups.item.upsert.submit())
   })
   expect(ui.toJSON()).toMatchSnapshot()
   await act(async () => {
-    await dispatch(on.selectGroup(Id('1')))
+    await dispatch(on.groups.item.open(Id('1')))
   })
   expect(ui.toJSON()).toMatchSnapshot()
   await act(async () => {
-    await dispatch(on.pressNewPlayer)
+    await dispatch(on.group.player.new())
   })
   expect(ui.toJSON()).toMatchSnapshot()
   await act(async () => {
-    await dispatch(on.changePlayerName('player 1'))
-    await dispatch(on.changePlayerPosition('G'))
-    await dispatch(on.changePlayerRating(1.5))
-    await dispatch(on.savePlayer)
-    await dispatch(on.openParametersModal)
-    await dispatch(on.shuffle)
+    await dispatch(on.player.name.change('player 1'))
+    await dispatch(on.player.position.change('G'))
+    await dispatch(on.player.rating.change(1.5))
+    await dispatch(on.player.save())
+    await dispatch(on.group.parameters.open())
+    await dispatch(on.group.parameters.shuffle())
   })
   expect(ui.toJSON()).toMatchSnapshot()
 })

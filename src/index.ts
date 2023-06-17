@@ -1,5 +1,7 @@
 import { $, $f, Context, Eff, Effect } from 'fp'
 import { startApp } from 'src/app'
+import { AppEventHandlerEnv, appEventHandler } from 'src/events/handler'
+import { Event } from 'src/events/helpers'
 import { defaultBackHandler } from 'src/services/BackHandler/default'
 import {
   defaultGroupOrderRepository,
@@ -10,7 +12,7 @@ import { defaultSplashScreen } from 'src/services/SplashScreen/default'
 import { defaultStateRef } from 'src/services/StateRef/default'
 import { defaultTheme } from 'src/services/Theme/default'
 import { defaultUI } from 'src/services/UI/default'
-import { AppEvent, AppEventHandlerEnv, Event, appEventHandler } from './actions'
+import { AppEvent } from './events'
 import { BackHandlerEnv } from './services/BackHandler'
 import { IdGeneratorEnv } from './services/IdGenerator'
 import { defaultIdGenerator } from './services/IdGenerator/default'
@@ -28,7 +30,7 @@ import { SplashScreenEnv } from './services/SplashScreen'
 import { AppStateRefEnv } from './services/StateRef'
 import { UIEnv } from './services/UI'
 
-const logEvent = (event: Event<string, unknown>) =>
+const logEvent = (event: Event) =>
   $(Log.debug('Event'), l =>
     event.event.payload === undefined
       ? l(event.event._tag)(null)

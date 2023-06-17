@@ -1,7 +1,7 @@
 import { $, Eff, Reader } from 'fp'
 import React from 'react'
 import { TextInput as TextInput_ } from 'react-native-gesture-handler'
-import { Event, EventHandlerEnv } from 'src/actions'
+import { Event, EventHandlerEnv } from 'src/events/helpers'
 import { Color } from 'src/utils/datatypes'
 import {
   BorderWidthProps,
@@ -26,9 +26,9 @@ export type TextInputStyleProps<R> = PaddingProps &
 
 export type TextInputProps<
   R,
-  E1 extends Event<string, unknown>,
-  E2 extends Event<string, unknown> = Event<never, never>,
-  E3 extends Event<string, unknown> = Event<never, never>,
+  E1 extends Event,
+  E2 extends Event = Event<never, never>,
+  E3 extends Event = Event<never, never>,
 > = TextInputStyleProps<R> & {
   value: string
   onChange: (value: string) => E1
@@ -46,9 +46,9 @@ export type TextInputProps<
 
 export type TextInputArgs<
   R,
-  E1 extends Event<string, unknown>,
-  E2 extends Event<string, unknown> = Event<never, never>,
-  E3 extends Event<string, unknown> = Event<never, never>,
+  E1 extends Event,
+  E2 extends Event = Event<never, never>,
+  E3 extends Event = Event<never, never>,
 > = {
   x: TextInputProps<R, E1, E2, E3>
   env: R & EventHandlerEnv<E1 | E2 | E3>
@@ -61,9 +61,9 @@ const getRawProps =
   }) =>
   <
     R,
-    E1 extends Event<string, unknown>,
-    E2 extends Event<string, unknown> = Event<never, never>,
-    E3 extends Event<string, unknown> = Event<never, never>,
+    E1 extends Event,
+    E2 extends Event = Event<never, never>,
+    E3 extends Event = Event<never, never>,
   >({
     x: props,
     env,
@@ -139,9 +139,9 @@ const getRawProps =
 
 export const TextInput = <
   R,
-  E1 extends Event<string, unknown>,
-  E2 extends Event<string, unknown> = Event<never, never>,
-  E3 extends Event<string, unknown> = Event<never, never>,
+  E1 extends Event,
+  E2 extends Event = Event<never, never>,
+  E3 extends Event = Event<never, never>,
 >(
   args: TextInputArgs<R, E1, E2, E3>,
 ) => {

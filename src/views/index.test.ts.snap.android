@@ -7868,7 +7868,7 @@ exports[`renders 4`] = `
                   style={
                     {
                       "alignSelf": undefined,
-                      "backgroundColor": undefined,
+                      "backgroundColor": "#ffffffff",
                       "borderBottomLeftRadius": undefined,
                       "borderBottomRightRadius": undefined,
                       "borderBottomWidth": undefined,
@@ -7889,13 +7889,13 @@ exports[`renders 4`] = `
                       "marginRight": undefined,
                       "marginTop": undefined,
                       "marginVertical": undefined,
-                      "padding": 8,
+                      "padding": undefined,
                       "paddingBottom": undefined,
                       "paddingHorizontal": 14,
                       "paddingLeft": undefined,
                       "paddingRight": undefined,
                       "paddingTop": undefined,
-                      "paddingVertical": undefined,
+                      "paddingVertical": 10,
                       "width": undefined,
                     }
                   }
