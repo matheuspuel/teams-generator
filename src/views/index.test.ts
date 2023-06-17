@@ -20,7 +20,7 @@ import { defaultStateRef } from 'src/services/StateRef/default'
 import { defaultTheme } from 'src/services/Theme/default'
 import { Id } from 'src/utils/Entity'
 import { Ref } from 'src/utils/datatypes'
-import { $, Eff, Num } from 'src/utils/fp'
+import { $, Context, Eff, Num } from 'src/utils/fp'
 import { UIRoot } from '.'
 
 const stateRef = defaultStateRef
@@ -37,33 +37,32 @@ const idGenerator = {
 }
 
 const eventHandler = (e: AppEvent) =>
-  $(
+  Eff.provideContext(
     appEventHandler(e),
-    Eff.provideService(AppStateRefEnv, { stateRef }),
-    Eff.provideService(BackHandlerEnv, {
+    Context.mergedContext(
+      AppStateRefEnv,
+      BackHandlerEnv,
+      ShareServiceEnv,
+      SplashScreenEnv,
+      IdGeneratorEnv,
+      GroupsRepositoryEnv,
+      ParametersRepositoryEnv,
+      GroupOrderRepositoryEnv,
+    )({
+      stateRef,
       backHandler: {
         exit: Eff.unit(),
         subscribe: () => Eff.succeed({ unsubscribe: Eff.unit() }),
       },
-    }),
-    Eff.provideService(ShareServiceEnv, { share: { share: () => Eff.unit() } }),
-    Eff.provideService(SplashScreenEnv, {
+      share: { share: () => Eff.unit() },
       splashScreen: { hide: Eff.unit(), preventAutoHide: Eff.unit() },
-    }),
-    Eff.provideService(IdGeneratorEnv, { idGenerator }),
-    Eff.provideService(GroupsRepositoryEnv, {
-      repositories: { Groups: { get: Eff.succeed({}), set: () => Eff.unit() } },
-    }),
-    Eff.provideService(ParametersRepositoryEnv, {
+      idGenerator,
       repositories: {
+        Groups: { get: Eff.succeed({}), set: () => Eff.unit() },
         Parameters: {
           get: Eff.succeed(Parameters.initial),
           set: () => Eff.unit(),
         },
-      },
-    }),
-    Eff.provideService(GroupOrderRepositoryEnv, {
-      repositories: {
         GroupOrder: {
           get: Eff.succeed(GroupOrder.initial),
           set: () => Eff.unit(),

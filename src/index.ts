@@ -1,4 +1,4 @@
-import { $, Eff } from 'fp'
+import { $, $f, Context, Eff, Effect } from 'fp'
 import { startApp } from 'src/app'
 import { defaultBackHandler } from 'src/services/BackHandler/default'
 import {
@@ -41,6 +41,12 @@ const logEvent = (event: Event<string, unknown>) =>
         ),
   )
 
+const eventHandler = (e: AppEvent) =>
+  $(
+    logEvent(e),
+    Eff.flatMap(() => appEventHandler(e)),
+  )
+
 const program = $(
   startApp,
   f =>
@@ -58,50 +64,37 @@ const program = $(
     ),
   f =>
     Eff.flatMap(
-      Eff.all(
-        SplashScreenEnv,
-        AppStateRefEnv,
-        GroupsRepositoryEnv,
-        ParametersRepositoryEnv,
-        GroupOrderRepositoryEnv,
-        BackHandlerEnv,
-        IdGeneratorEnv,
-        ShareServiceEnv,
-        LoggerEnv,
-      ),
-      envs =>
+      Eff.context<Effect.Context<ReturnType<typeof eventHandler>>>(),
+      env =>
         Eff.provideService(f, AppEventHandlerEnv, {
-          eventHandler: (e: AppEvent) =>
-            $(
-              logEvent(e),
-              Eff.flatMap(() => appEventHandler(e)),
-              Eff.provideService(SplashScreenEnv, envs[0]),
-              Eff.provideService(AppStateRefEnv, envs[1]),
-              Eff.provideService(GroupsRepositoryEnv, envs[2]),
-              Eff.provideService(ParametersRepositoryEnv, envs[3]),
-              Eff.provideService(GroupOrderRepositoryEnv, envs[4]),
-              Eff.provideService(BackHandlerEnv, envs[5]),
-              Eff.provideService(IdGeneratorEnv, envs[6]),
-              Eff.provideService(ShareServiceEnv, envs[7]),
-              Eff.provideService(LoggerEnv, envs[8]),
-            ),
+          eventHandler: $f(eventHandler, Eff.provideContext(env)),
         }),
     ),
-  Eff.provideService(AppStateRefEnv, { stateRef: defaultStateRef }),
-  Eff.provideService(BackHandlerEnv, { backHandler: defaultBackHandler }),
-  Eff.provideService(SplashScreenEnv, { splashScreen: defaultSplashScreen }),
-  Eff.provideService(IdGeneratorEnv, { idGenerator: defaultIdGenerator }),
-  Eff.provideService(ShareServiceEnv, { share: defaultShareService }),
-  Eff.provideService(LoggerEnv, { logger: defaultLogger }),
-  Eff.provideService(GroupsRepositoryEnv, {
-    repositories: { Groups: defaultGroupsRepository },
-  }),
-  Eff.provideService(GroupOrderRepositoryEnv, {
-    repositories: { GroupOrder: defaultGroupOrderRepository },
-  }),
-  Eff.provideService(ParametersRepositoryEnv, {
-    repositories: { Parameters: defaultParametersRepository },
-  }),
+  Eff.provideContext(
+    Context.mergedContext(
+      AppStateRefEnv,
+      BackHandlerEnv,
+      SplashScreenEnv,
+      IdGeneratorEnv,
+      ShareServiceEnv,
+      LoggerEnv,
+      GroupsRepositoryEnv,
+      GroupOrderRepositoryEnv,
+      ParametersRepositoryEnv,
+    )({
+      stateRef: defaultStateRef,
+      backHandler: defaultBackHandler,
+      splashScreen: defaultSplashScreen,
+      idGenerator: defaultIdGenerator,
+      share: defaultShareService,
+      logger: defaultLogger,
+      repositories: {
+        Groups: defaultGroupsRepository,
+        GroupOrder: defaultGroupOrderRepository,
+        Parameters: defaultParametersRepository,
+      },
+    }),
+  ),
 )
 
 // eslint-disable-next-line functional/no-expression-statements
