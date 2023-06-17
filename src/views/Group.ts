@@ -1,4 +1,4 @@
-import { $, A, Eq, O, Option, R, constant } from 'fp'
+import { $, A, Eq, Match, O, Option, R, constant } from 'fp'
 import { AppEvent, on } from 'src/actions'
 import {
   deepEq,
@@ -21,7 +21,6 @@ import {
 import { Group, GroupOrder, Parameters, Player, Rating } from 'src/datatypes'
 import { GroupOrderType } from 'src/datatypes/GroupOrder'
 import { Colors } from 'src/services/Theme'
-import { matchTag } from 'src/utils/Tagged'
 import { withOpacity } from 'src/utils/datatypes/Color'
 
 export const GroupView = memoized('GroupScreen')(
@@ -399,7 +398,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
             Txt({ p: 8, weight: 600, color: Colors.text.dark })(
               $(
                 parameters.teamsCountMethod,
-                matchTag({
+                Match.valueTags({
                   count: () => parameters.teamsCount.toString(),
                   playersRequired: () => parameters.playersRequired.toString(),
                 }),
@@ -431,7 +430,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
               Txt({ flex: 1, color: Colors.text.dark })(
                 $(
                   parameters.teamsCountMethod,
-                  matchTag({
+                  Match.valueTags({
                     count: () => 'Número de times',
                     playersRequired: () => 'Número fixo de jogadores por time',
                   }),

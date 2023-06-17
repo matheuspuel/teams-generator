@@ -1,8 +1,7 @@
-import { $, $f, Num, Optic, Ord, apply, modify } from 'fp'
+import { $, $f, Match, Num, Optic, Ord, apply, modify } from 'fp'
 import { MINIMUM_NUMBER_OF_TEAMS, Parameters } from 'src/datatypes/Parameters'
 import { root } from 'src/model/Optics'
 import { modifySApp } from 'src/services/StateRef'
-import { matchTag } from 'src/utils/Tagged'
 import { toggle } from 'src/utils/fp/boolean'
 import { decrement, increment } from 'src/utils/fp/number'
 
@@ -21,7 +20,7 @@ const playersRequiredClamp = Ord.clamp(Num.Order)(2, 99)
 export const incrementTeamsCount = modifySApp(params.$)(p =>
   $(
     p.teamsCountMethod,
-    matchTag({
+    Match.valueTags({
       count: () =>
         modify(Optic.id<Parameters>().at('teamsCount'))(
           $f(increment, teamsCountClamp),
@@ -38,7 +37,7 @@ export const incrementTeamsCount = modifySApp(params.$)(p =>
 export const decrementTeamsCount = modifySApp(params.$)(p =>
   $(
     p.teamsCountMethod,
-    matchTag({
+    Match.valueTags({
       count: () =>
         modify(Optic.id<Parameters>().at('teamsCount'))(
           $f(decrement, teamsCountClamp),

@@ -2,7 +2,7 @@
 import * as Arb from '@effect/schema/Arbitrary'
 import * as Benchmark from 'benchmark'
 import * as fc from 'fast-check'
-import { $, A, SG, constant, identity } from 'fp'
+import { $, A, Match, SG, constant, identity } from 'fp'
 import { Player } from 'src/datatypes'
 import {
   Criteria,
@@ -10,7 +10,6 @@ import {
   getFitOrdFromCriteria,
 } from 'src/datatypes/TeamsGenerator'
 import { getCombinationsIndices } from 'src/utils/Combinations'
-import { matchTag } from 'src/utils/Tagged'
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const sample1 = fc.sample(
@@ -67,7 +66,7 @@ const distributeTeamsUsingCombinations: typeof distributeTeams =
   params => players =>
     $(
       params.distribution,
-      matchTag({
+      Match.valueTags({
         numOfTeams: ({ numOfTeams }) =>
           getAllCombinationsOfSubListsWithEqualLength(numOfTeams)(players),
         fixedNumberOfPlayers: ({ fixedNumberOfPlayers }) =>

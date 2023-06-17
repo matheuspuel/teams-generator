@@ -1,10 +1,23 @@
 import { Effect } from '@effect/io/Effect'
-import { $, $f, A, Eff, Num, O, Ord, Order, Rec, Tup, none, some } from 'fp'
+import {
+  $,
+  $f,
+  A,
+  Eff,
+  Match,
+  Num,
+  O,
+  Ord,
+  Order,
+  Rec,
+  Tup,
+  none,
+  some,
+} from 'fp'
 import * as Player from 'src/datatypes/Player'
 import * as Position from 'src/datatypes/Position'
 import { findFirstMapWithIndex } from 'src/utils/Array'
 import { randomizeArray } from 'src/utils/Random'
-import { matchTag } from 'src/utils/Tagged'
 
 type Player = Player.Player
 type Position = Position.Position
@@ -161,7 +174,7 @@ export const divideTeamsWithFixedNumberOfPlayers =
 const divideTeams = (criteria: Criteria) =>
   $(
     criteria.distribution,
-    matchTag({
+    Match.valueTags({
       numOfTeams: ({ numOfTeams }) =>
         divideTeamsWithEqualNumberOfPlayers(numOfTeams),
       fixedNumberOfPlayers: ({ fixedNumberOfPlayers }) =>

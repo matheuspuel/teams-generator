@@ -1,9 +1,8 @@
 import { get } from '@fp-ts/optic'
-import { $, $f, A, Eff, O, Rec, S, constant } from 'fp'
+import { $, $f, A, Eff, Match, O, Rec, S, constant } from 'fp'
 import { Player, TeamsGenerator } from 'src/datatypes'
 import { root } from 'src/model/Optics'
 import { execute, replaceSApp } from 'src/services/StateRef'
-import { matchTag } from 'src/utils/Tagged'
 
 export type GeneratedResult = Array<Array<Player>>
 
@@ -27,7 +26,7 @@ export const generateResult = $(
       rating: parameters.rating,
       distribution: $(
         parameters.teamsCountMethod,
-        matchTag({
+        Match.valueTags({
           count: () => ({
             _tag: 'numOfTeams' as const,
             numOfTeams: parameters.teamsCount,

@@ -1,5 +1,4 @@
-import { $, D, Endomorphism, Optic } from 'fp'
-import { matchTag } from 'src/utils/Tagged'
+import { $, D, Endomorphism, Match, Optic } from 'fp'
 
 export type Parameters = {
   teamsCountMethod: { _tag: 'count' } | { _tag: 'playersRequired' }
@@ -41,7 +40,7 @@ export const MINIMUM_NUMBER_OF_TEAMS = 2
 export const numOfTeams = (numOfPlayersAvailable: number) => (p: Parameters) =>
   $(
     p.teamsCountMethod,
-    matchTag({
+    Match.valueTags({
       count: () => p.teamsCount,
       playersRequired: () =>
         Math.max(
@@ -54,7 +53,7 @@ export const numOfTeams = (numOfPlayersAvailable: number) => (p: Parameters) =>
 export const toggleType: Endomorphism<Parameters> = Optic.modify(
   Optic.id<Parameters>().at('teamsCountMethod'),
 )(
-  matchTag({
+  Match.valueTags({
     count: () => ({ _tag: 'playersRequired' as const }),
     playersRequired: () => ({ _tag: 'count' as const }),
   }),

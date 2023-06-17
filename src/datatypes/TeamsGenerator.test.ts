@@ -1,11 +1,10 @@
 /* eslint-disable functional/no-expression-statements */
 import * as Arb from '@effect/schema/Arbitrary'
 import * as fc from 'fast-check'
-import { $, A, Eq, Ord, Rec, SG, Tup, constant, identity } from 'fp'
+import { $, A, Eq, Match, Ord, Rec, SG, Tup, constant, identity } from 'fp'
 import { playersMock } from 'src/mocks/Player'
 import { getCombinationsIndices } from 'src/utils/Combinations'
 import { Id } from 'src/utils/Entity'
-import { matchTag } from 'src/utils/Tagged'
 import { Player, Position } from '.'
 import { distributeTeams, getFitOrdFromCriteria } from './TeamsGenerator'
 
@@ -58,7 +57,7 @@ const distributeTeamsUsingCombinations: typeof distributeTeams =
   params => players =>
     $(
       params.distribution,
-      matchTag({
+      Match.valueTags({
         numOfTeams: ({ numOfTeams }) =>
           getAllCombinationsOfSubListsWithEqualLength(numOfTeams)(players),
         fixedNumberOfPlayers: ({ fixedNumberOfPlayers }) =>
@@ -172,7 +171,7 @@ describe('Balance teams', () => {
           distributeTeams(params)(players).length ===
           $(
             params.distribution,
-            matchTag({
+            Match.valueTags({
               numOfTeams: ({ numOfTeams }) => numOfTeams,
               fixedNumberOfPlayers: ({ fixedNumberOfPlayers }) =>
                 Math.ceil(players.length / fixedNumberOfPlayers),
@@ -190,7 +189,7 @@ describe('Balance teams', () => {
             t.length ===
             $(
               params.distribution,
-              matchTag({
+              Match.valueTags({
                 numOfTeams: ({ numOfTeams }) =>
                   Math.floor(players.length / numOfTeams) +
                   (players.length % numOfTeams > i ? 1 : 0),
@@ -215,11 +214,11 @@ describe('Balance teams', () => {
               b =>
                 $(
                   params.distribution,
-                  matchTag({
+                  Match.valueTags({
                     fixedNumberOfPlayers: ({ fixedNumberOfPlayers }) =>
                       a.length !== fixedNumberOfPlayers ||
                       b.length !== fixedNumberOfPlayers,
-                    _: () => false,
+                    numOfTeams: () => false,
                   }),
                 ) ||
                 $(

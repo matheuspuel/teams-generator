@@ -42,6 +42,7 @@ export * as Optic from './Optic'
 export * as Eff from '@effect/io/Effect'
 export * as Context from './Context'
 export * as Data from '@effect/data/Data'
+export * as Match from './Match'
 
 export { Order } from './Order'
 export { Either, left, right, isLeft, isRight } from '@effect/data/Either'
