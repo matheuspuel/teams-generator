@@ -51,7 +51,7 @@ const getConfig = (): ExpoConfig => ({
         preview: '.preview',
         development: '.development',
       }),
-    versionCode: 9,
+    versionCode: 10,
     adaptiveIcon: {
       backgroundColor: '#136d15',
       foregroundImage:
