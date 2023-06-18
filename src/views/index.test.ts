@@ -8,11 +8,7 @@ import { AppEvent, appEvents as on } from 'src/events'
 import { appEventHandler } from 'src/events/handler'
 import { BackHandlerEnv } from 'src/services/BackHandler'
 import { IdGeneratorEnv } from 'src/services/IdGenerator'
-import {
-  GroupOrderRepositoryEnv,
-  GroupsRepositoryEnv,
-  ParametersRepositoryEnv,
-} from 'src/services/Repositories'
+import { RepositoryEnvs } from 'src/services/Repositories'
 import { testingSafeAreaService } from 'src/services/SafeArea/testing'
 import { ShareServiceEnv } from 'src/services/Share'
 import { SplashScreenEnv } from 'src/services/SplashScreen'
@@ -46,9 +42,9 @@ const eventHandler = (e: AppEvent) =>
       ShareServiceEnv,
       SplashScreenEnv,
       IdGeneratorEnv,
-      GroupsRepositoryEnv,
-      ParametersRepositoryEnv,
-      GroupOrderRepositoryEnv,
+      RepositoryEnvs.teams.groupOrder,
+      RepositoryEnvs.teams.groups,
+      RepositoryEnvs.teams.parameters,
     )({
       stateRef,
       backHandler: {
@@ -58,15 +54,17 @@ const eventHandler = (e: AppEvent) =>
       share: { share: () => Eff.unit() },
       splashScreen: { hide: Eff.unit(), preventAutoHide: Eff.unit() },
       idGenerator,
-      repositories: {
-        Groups: { get: Eff.succeed({}), set: () => Eff.unit() },
-        Parameters: {
-          get: Eff.succeed(Parameters.initial),
-          set: () => Eff.unit(),
-        },
-        GroupOrder: {
-          get: Eff.succeed(GroupOrder.initial),
-          set: () => Eff.unit(),
+      Repositories: {
+        teams: {
+          groups: { get: Eff.succeed({}), set: () => Eff.unit() },
+          parameters: {
+            get: Eff.succeed(Parameters.initial),
+            set: () => Eff.unit(),
+          },
+          groupOrder: {
+            get: Eff.succeed(GroupOrder.initial),
+            set: () => Eff.unit(),
+          },
         },
       },
     }),

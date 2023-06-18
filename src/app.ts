@@ -7,6 +7,8 @@ import * as StateRef from 'src/services/StateRef'
 import { UI } from 'src/services/UI'
 import { hydrate } from 'src/slices/core/hydration'
 import { milliseconds } from 'src/utils/datatypes/Duration'
+import { Telemetry } from './services/Telemetry'
+import { Timestamp } from './utils/datatypes'
 
 export type AppEnv = Effect.Context<typeof startApp>
 
@@ -40,4 +42,9 @@ export const startApp = $(
     ),
   ),
   Eff.tap(() => EventHandler.handle(on.appLoaded())),
+  Eff.flatMap(() => Eff.all(Telemetry.getInfo, Timestamp.getNow)),
+  Eff.flatMap(([i, t]) =>
+    Telemetry.log([{ timestamp: t, event: 'start', data: i }]),
+  ),
+  Eff.flatMap(() => Telemetry.send),
 )

@@ -1,64 +1,93 @@
+/* eslint-disable functional/functional-parameters */
 import * as Context from '@effect/data/Context'
-import { Effect } from '@effect/io/Effect'
-import { GroupOrder, Parameters } from 'src/datatypes'
-import { GroupsState } from 'src/slices/groups'
 import { Eff } from 'src/utils/fp'
+import * as Repositories from './repositories'
 
-export type GroupsRepositoryEnv = {
-  repositories: { Groups: GroupsRepository }
+export { Repositories }
+
+export const RepositoryEnvs = {
+  teams: {
+    groupOrder: Context.Tag<{
+      Repositories: { teams: { groupOrder: Repositories.teams.groupOrder } }
+    }>(),
+    groups: Context.Tag<{
+      Repositories: { teams: { groups: Repositories.teams.groups } }
+    }>(),
+    parameters: Context.Tag<{
+      Repositories: { teams: { parameters: Repositories.teams.parameters } }
+    }>(),
+  },
+  telemetry: {
+    installation: Context.Tag<{
+      Repositories: {
+        telemetry: { installation: Repositories.telemetry.installation }
+      }
+    }>(),
+    log: Context.Tag<{
+      Repositories: {
+        telemetry: { log: Repositories.telemetry.log }
+      }
+    }>(),
+  },
 }
 
-export const GroupsRepositoryEnv = Context.Tag<GroupsRepositoryEnv>()
-
-export type GroupsRepository = {
-  get: Effect<never, unknown, GroupsState>
-  set: (value: GroupsState) => Effect<never, unknown, void>
-}
-
-export const GroupsRepository = {
-  get: Eff.flatMap(GroupsRepositoryEnv, env => env.repositories.Groups.get),
-  set: (value: GroupsState) =>
-    Eff.flatMap(GroupsRepositoryEnv, env => env.repositories.Groups.set(value)),
-}
-
-export const ParametersRepositoryEnv = Context.Tag<ParametersRepositoryEnv>()
-
-export type ParametersRepositoryEnv = {
-  repositories: { Parameters: ParametersRepository }
-}
-export type ParametersRepository = {
-  get: Effect<never, unknown, Parameters>
-  set: (value: Parameters) => Effect<never, unknown, void>
-}
-
-export const ParametersRepository = {
-  get: Eff.flatMap(
-    ParametersRepositoryEnv,
-    env => env.repositories.Parameters.get,
-  ),
-  set: (value: Parameters) =>
-    Eff.flatMap(ParametersRepositoryEnv, env =>
-      env.repositories.Parameters.set(value),
-    ),
-}
-
-export const GroupOrderRepositoryEnv = Context.Tag<GroupOrderRepositoryEnv>()
-
-export type GroupOrderRepositoryEnv = {
-  repositories: { GroupOrder: GroupOrderRepository }
-}
-export type GroupOrderRepository = {
-  get: Effect<never, unknown, GroupOrder>
-  set: (value: GroupOrder) => Effect<never, unknown, void>
-}
-
-export const GroupOrderRepository = {
-  get: Eff.flatMap(
-    GroupOrderRepositoryEnv,
-    env => env.repositories.GroupOrder.get,
-  ),
-  set: (value: GroupOrder) =>
-    Eff.flatMap(GroupOrderRepositoryEnv, env =>
-      env.repositories.GroupOrder.set(value),
-    ),
+export const Repository = {
+  teams: {
+    groupOrder: {
+      get: Eff.flatMap(
+        RepositoryEnvs.teams.groupOrder,
+        r => r.Repositories.teams.groupOrder.get,
+      ),
+      set: (...args: Parameters<Repositories.teams.groupOrder['set']>) =>
+        Eff.flatMap(RepositoryEnvs.teams.groupOrder, r =>
+          r.Repositories.teams.groupOrder.set(...args),
+        ),
+    },
+    groups: {
+      get: Eff.flatMap(
+        RepositoryEnvs.teams.groups,
+        r => r.Repositories.teams.groups.get,
+      ),
+      set: (...args: Parameters<Repositories.teams.groups['set']>) =>
+        Eff.flatMap(RepositoryEnvs.teams.groups, r =>
+          r.Repositories.teams.groups.set(...args),
+        ),
+    },
+    parameters: {
+      get: Eff.flatMap(
+        RepositoryEnvs.teams.parameters,
+        r => r.Repositories.teams.parameters.get,
+      ),
+      set: (...args: Parameters<Repositories.teams.parameters['set']>) =>
+        Eff.flatMap(RepositoryEnvs.teams.parameters, r =>
+          r.Repositories.teams.parameters.set(...args),
+        ),
+    },
+  },
+  telemetry: {
+    installation: {
+      get: Eff.flatMap(
+        RepositoryEnvs.telemetry.installation,
+        r => r.Repositories.telemetry.installation.get,
+      ),
+      set: (...args: Parameters<Repositories.telemetry.installation['set']>) =>
+        Eff.flatMap(RepositoryEnvs.telemetry.installation, r =>
+          r.Repositories.telemetry.installation.set(...args),
+        ),
+    },
+    log: {
+      get: Eff.flatMap(
+        RepositoryEnvs.telemetry.log,
+        r => r.Repositories.telemetry.log.get,
+      ),
+      concat: (...args: Parameters<Repositories.telemetry.log['concat']>) =>
+        Eff.flatMap(RepositoryEnvs.telemetry.log, r =>
+          r.Repositories.telemetry.log.concat(...args),
+        ),
+      clear: Eff.flatMap(
+        RepositoryEnvs.telemetry.log,
+        r => r.Repositories.telemetry.log.clear,
+      ),
+    },
+  },
 }

@@ -40,7 +40,7 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/no-invalid-void-type': ['off'],
     '@typescript-eslint/no-unnecessary-condition': ['off'],
-    '@typescript-eslint/consistent-type-definitions': ['warn', 'type'],
+    '@typescript-eslint/consistent-type-definitions': ['off'],
     '@typescript-eslint/prefer-readonly-parameter-types': 'off',
     '@typescript-eslint/array-type': [
       'warn',

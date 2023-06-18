@@ -3,11 +3,6 @@ import { startApp } from 'src/app'
 import { AppEventHandlerEnv, appEventHandler } from 'src/events/handler'
 import { Event } from 'src/events/helpers'
 import { defaultBackHandler } from 'src/services/BackHandler/default'
-import {
-  defaultGroupOrderRepository,
-  defaultGroupsRepository,
-  defaultParametersRepository,
-} from 'src/services/Repositories/default'
 import { defaultSplashScreen } from 'src/services/SplashScreen/default'
 import { defaultStateRef } from 'src/services/StateRef/default'
 import { defaultTheme } from 'src/services/Theme/default'
@@ -18,16 +13,17 @@ import { IdGeneratorEnv } from './services/IdGenerator'
 import { defaultIdGenerator } from './services/IdGenerator/default'
 import { Log, LoggerEnv } from './services/Log'
 import { defaultLogger } from './services/Log/default'
-import {
-  GroupOrderRepositoryEnv,
-  GroupsRepositoryEnv,
-  ParametersRepositoryEnv,
-} from './services/Repositories'
+import { RepositoryEnvs } from './services/Repositories'
+import { defaultGroupOrderRepository } from './services/Repositories/teams/groupOrder/default'
+import { defaultGroupsRepository } from './services/Repositories/teams/groups/default'
+import { defaultParametersRepository } from './services/Repositories/teams/parameters/default'
 import { defaultSafeAreaService } from './services/SafeArea/default'
 import { ShareServiceEnv } from './services/Share'
 import { defaultShareService } from './services/Share/default'
 import { SplashScreenEnv } from './services/SplashScreen'
 import { AppStateRefEnv } from './services/StateRef'
+import { TelemetryEnv } from './services/Telemetry'
+import { defaultTelemetry } from './services/Telemetry/default'
 import { UIEnv } from './services/UI'
 
 const logEvent = (event: Event) =>
@@ -80,9 +76,10 @@ const program = $(
       IdGeneratorEnv,
       ShareServiceEnv,
       LoggerEnv,
-      GroupsRepositoryEnv,
-      GroupOrderRepositoryEnv,
-      ParametersRepositoryEnv,
+      TelemetryEnv,
+      RepositoryEnvs.teams.groupOrder,
+      RepositoryEnvs.teams.groups,
+      RepositoryEnvs.teams.parameters,
     )({
       stateRef: defaultStateRef,
       backHandler: defaultBackHandler,
@@ -90,10 +87,13 @@ const program = $(
       idGenerator: defaultIdGenerator,
       share: defaultShareService,
       logger: defaultLogger,
-      repositories: {
-        Groups: defaultGroupsRepository,
-        GroupOrder: defaultGroupOrderRepository,
-        Parameters: defaultParametersRepository,
+      Telemetry: defaultTelemetry,
+      Repositories: {
+        teams: {
+          groups: defaultGroupsRepository,
+          groupOrder: defaultGroupOrderRepository,
+          parameters: defaultParametersRepository,
+        },
       },
     }),
   ),
