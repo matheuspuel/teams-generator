@@ -14,6 +14,7 @@ import { ShareServiceEnv } from 'src/services/Share'
 import { SplashScreenEnv } from 'src/services/SplashScreen'
 import { AppStateRefEnv } from 'src/services/StateRef'
 import { defaultStateRef } from 'src/services/StateRef/default'
+import { TelemetryEnv } from 'src/services/Telemetry'
 import { defaultTheme } from 'src/services/Theme/default'
 import { Id } from 'src/utils/Entity'
 import { Ref } from 'src/utils/datatypes'
@@ -42,6 +43,7 @@ const eventHandler = (e: AppEvent) =>
       ShareServiceEnv,
       SplashScreenEnv,
       IdGeneratorEnv,
+      TelemetryEnv,
       RepositoryEnvs.teams.groupOrder,
       RepositoryEnvs.teams.groups,
       RepositoryEnvs.teams.parameters,
@@ -54,6 +56,7 @@ const eventHandler = (e: AppEvent) =>
       share: { share: () => Eff.unit() },
       splashScreen: { hide: Eff.unit(), preventAutoHide: Eff.unit() },
       idGenerator,
+      Telemetry: { log: () => Eff.unit(), send: Eff.unit() },
       Repositories: {
         teams: {
           groups: { get: Eff.succeed({}), set: () => Eff.unit() },

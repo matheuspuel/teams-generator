@@ -58,7 +58,7 @@ const fixFloatFactor = 1000000000000
 
 const fixFloat = (v: number) => Math.round(v * fixFloatFactor) / fixFloatFactor
 
-const getResultRatingDeviance = (teams: Array<Array<Player>>): number =>
+export const getResultRatingDeviance = (teams: Array<Array<Player>>): number =>
   $(teams, A.flatten, Player.getRatingAvg, overallAvg =>
     $(
       teams,
