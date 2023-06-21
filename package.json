@@ -19,8 +19,8 @@
     "update:production": "SET APP_VARIANT=production&& expo-cli publish --release-channel production"
   },
   "dependencies": {
-    "@effect/io": "0.26.0",
     "@effect/data": "0.12.7",
+    "@effect/io": "0.26.0",
     "@effect/match": "0.24.4",
     "@effect/schema": "0.20.1",
     "@expo/config-types": "48.0.0",
@@ -31,7 +31,9 @@
     "@react-navigation/native": "^6.1.6",
     "cuid": "^2.1.8",
     "expo": "^48.0.19",
+    "expo-application": "~5.1.1",
     "expo-constants": "~14.2.1",
+    "expo-device": "^5.2.1",
     "expo-splash-screen": "~0.18.2",
     "expo-status-bar": "~1.4.4",
     "expo-updates": "~0.16.4",

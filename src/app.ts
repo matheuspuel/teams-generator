@@ -7,6 +7,7 @@ import * as StateRef from 'src/services/StateRef'
 import { UI } from 'src/services/UI'
 import { hydrate } from 'src/slices/core/hydration'
 import { milliseconds } from 'src/utils/datatypes/Duration'
+import { Metadata } from './services/Metadata'
 import { Telemetry } from './services/Telemetry'
 import { Timestamp } from './utils/datatypes'
 
@@ -42,9 +43,9 @@ export const startApp = $(
     ),
   ),
   Eff.tap(() => EventHandler.handle(on.appLoaded())),
-  Eff.flatMap(() => Eff.all(Telemetry.getInfo, Timestamp.getNow)),
-  Eff.flatMap(([i, t]) =>
-    Telemetry.log([{ timestamp: t, event: 'start', data: i }]),
+  Eff.flatMap(() => Eff.all(Metadata.get, Timestamp.getNow)),
+  Eff.flatMap(([m, t]) =>
+    Telemetry.log([{ timestamp: t, event: 'start', data: m }]),
   ),
   Eff.flatMap(() => Telemetry.send),
 )

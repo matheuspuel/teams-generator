@@ -13,14 +13,6 @@ export const TelemetryLogSchema = D.struct({
 export type TelemetryLog = D.To<typeof TelemetryLogSchema>
 
 export type Telemetry = {
-  getInfo: Effect<
-    never,
-    never,
-    {
-      installation: { id: string }
-      launch: { id: string }
-    }
-  >
   log: (logs: Array<TelemetryLog>) => Effect<never, unknown, void>
   send: Effect<never, unknown, void>
 }
@@ -30,7 +22,6 @@ export type TelemetryEnv = { Telemetry: Telemetry }
 export const TelemetryEnv = Context.Tag<TelemetryEnv>()
 
 export const Telemetry = {
-  getInfo: Eff.flatMap(TelemetryEnv, env => env.Telemetry.getInfo),
   log: (...args: Parameters<Telemetry['log']>) =>
     Eff.flatMap(TelemetryEnv, env => env.Telemetry.log(...args)),
   send: Eff.flatMap(TelemetryEnv, env => env.Telemetry.send),

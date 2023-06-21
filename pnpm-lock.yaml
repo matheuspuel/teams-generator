@@ -41,9 +41,15 @@ dependencies:
   expo:
     specifier: ^48.0.19
     version: 48.0.19(@babel/core@7.22.5)
+  expo-application:
+    specifier: ~5.1.1
+    version: 5.1.1(expo@48.0.19)
   expo-constants:
     specifier: ~14.2.1
     version: 14.2.1(expo@48.0.19)
+  expo-device:
+    specifier: ^5.2.1
+    version: 5.2.1(expo@48.0.19)
   expo-splash-screen:
     specifier: ~0.18.2
     version: 0.18.2(expo@48.0.19)
@@ -5109,6 +5115,15 @@ packages:
       uuid: 3.4.0
     transitivePeerDependencies:
       - supports-color
+    dev: false
+
+  /expo-device@5.2.1(expo@48.0.19):
+    resolution: {integrity: sha512-ZWGph+fGQPxo9v2e0YygPb45Hl+ZR3mh4tpLY5AOYK/sNjQy+Lu3T/sLGIdi2TOcYNL2oZwzZ6eGvwVYmdIfLg==}
+    peerDependencies:
+      expo: '*'
+    dependencies:
+      expo: 48.0.19(@babel/core@7.22.5)
+      ua-parser-js: 0.7.34
     dev: false
 
   /expo-eas-client@0.5.1:

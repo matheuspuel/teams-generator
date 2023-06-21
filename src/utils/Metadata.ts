@@ -21,6 +21,7 @@ export const matchEnv = <D, PW, S, P>(cases: {
   staging: S
   production: P
 }) => cases[envName]
+
 export const appVersion = packageJSON.version
 
 export const appVersionName =

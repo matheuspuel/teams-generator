@@ -18,14 +18,16 @@ export const RepositoryEnvs = {
     }>(),
   },
   telemetry: {
-    installation: Context.Tag<{
-      Repositories: {
-        telemetry: { installation: Repositories.telemetry.installation }
-      }
-    }>(),
     log: Context.Tag<{
       Repositories: {
         telemetry: { log: Repositories.telemetry.log }
+      }
+    }>(),
+  },
+  metadata: {
+    installation: Context.Tag<{
+      Repositories: {
+        metadata: { installation: Repositories.metadata.installation }
       }
     }>(),
   },
@@ -65,16 +67,6 @@ export const Repository = {
     },
   },
   telemetry: {
-    installation: {
-      get: Eff.flatMap(
-        RepositoryEnvs.telemetry.installation,
-        r => r.Repositories.telemetry.installation.get,
-      ),
-      set: (...args: Parameters<Repositories.telemetry.installation['set']>) =>
-        Eff.flatMap(RepositoryEnvs.telemetry.installation, r =>
-          r.Repositories.telemetry.installation.set(...args),
-        ),
-    },
     log: {
       get: Eff.flatMap(
         RepositoryEnvs.telemetry.log,
@@ -88,6 +80,18 @@ export const Repository = {
         RepositoryEnvs.telemetry.log,
         r => r.Repositories.telemetry.log.clear,
       ),
+    },
+  },
+  metadata: {
+    installation: {
+      get: Eff.flatMap(
+        RepositoryEnvs.metadata.installation,
+        r => r.Repositories.metadata.installation.get,
+      ),
+      set: (...args: Parameters<Repositories.metadata.installation['set']>) =>
+        Eff.flatMap(RepositoryEnvs.metadata.installation, r =>
+          r.Repositories.metadata.installation.set(...args),
+        ),
     },
   },
 }

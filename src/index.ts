@@ -13,6 +13,8 @@ import { IdGeneratorEnv } from './services/IdGenerator'
 import { defaultIdGenerator } from './services/IdGenerator/default'
 import { Log, LoggerEnv } from './services/Log'
 import { defaultLogger } from './services/Log/default'
+import { MetadataEnv } from './services/Metadata'
+import { defaultMetadataService } from './services/Metadata/default'
 import { RepositoryEnvs } from './services/Repositories'
 import { defaultGroupOrderRepository } from './services/Repositories/teams/groupOrder/default'
 import { defaultGroupsRepository } from './services/Repositories/teams/groups/default'
@@ -77,6 +79,7 @@ const program = $(
       ShareServiceEnv,
       LoggerEnv,
       TelemetryEnv,
+      MetadataEnv,
       RepositoryEnvs.teams.groupOrder,
       RepositoryEnvs.teams.groups,
       RepositoryEnvs.teams.parameters,
@@ -88,6 +91,7 @@ const program = $(
       share: defaultShareService,
       logger: defaultLogger,
       Telemetry: defaultTelemetry,
+      Metadata: defaultMetadataService,
       Repositories: {
         teams: {
           groups: defaultGroupsRepository,

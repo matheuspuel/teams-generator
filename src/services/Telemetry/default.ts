@@ -1,18 +1,10 @@
-import { $, $f, Eff, O, Option, identity } from 'fp'
+import { $, $f, Eff } from 'fp'
 import * as Fetch from 'src/utils/Fetch'
 import * as Metadata from 'src/utils/Metadata'
-import { Ref } from 'src/utils/datatypes'
 import { Telemetry } from '.'
 import { AsyncStorageLive } from '../AsyncStorage/live'
-import { IdGenerator, IdGeneratorEnv } from '../IdGenerator'
-import { defaultIdGenerator } from '../IdGenerator/default'
 import { Repository, RepositoryEnvs } from '../Repositories'
-import { defaultInstallationRepository } from '../Repositories/telemetry/installation/default'
 import { defaultLogRepository } from '../Repositories/telemetry/log/default'
-
-const telemetryRef = Ref.create<
-  Option<{ installation: { id: string }; launch: { id: string } }>
->(O.none())
 
 const logRepository = defaultLogRepository({ AsyncStorage: AsyncStorageLive })
 
@@ -24,39 +16,6 @@ const telemetryServerUrl = Metadata.matchEnv({
 })
 
 export const defaultTelemetry: Telemetry = {
-  getInfo: $(
-    telemetryRef.getState,
-    Eff.flatMap(identity),
-    Eff.orElse(() =>
-      $(
-        Eff.all({
-          installation: $(
-            Repository.telemetry.installation.get,
-            Eff.orElse(() =>
-              $(
-                IdGenerator.generate,
-                Eff.map(id => ({ id })),
-                Eff.tap(
-                  $f(
-                    Repository.telemetry.installation.set,
-                    Eff.catchAll(Eff.unit),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          launch: Eff.map(IdGenerator.generate, id => ({ id })),
-        }),
-        Eff.tap($f(O.some, telemetryRef.setState)),
-      ),
-    ),
-    Eff.provideService(RepositoryEnvs.telemetry.installation, {
-      Repositories: {
-        telemetry: { installation: defaultInstallationRepository },
-      },
-    }),
-    Eff.provideService(IdGeneratorEnv, { idGenerator: defaultIdGenerator }),
-  ),
   log: $f(
     Repository.telemetry.log.concat,
     Eff.provideService(RepositoryEnvs.telemetry.log, {
