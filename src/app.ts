@@ -43,9 +43,14 @@ export const startApp = $(
     ),
   ),
   Eff.tap(() => EventHandler.handle(on.appLoaded())),
-  Eff.flatMap(() => Eff.all(Metadata.get, Timestamp.getNow)),
-  Eff.flatMap(([m, t]) =>
-    Telemetry.log([{ timestamp: t, event: 'start', data: m }]),
+  Eff.tap(() =>
+    $(
+      Eff.all(Metadata.get, Timestamp.getNow),
+      Eff.flatMap(([m, t]) =>
+        Telemetry.log([{ timestamp: t, event: 'start', data: m }]),
+      ),
+      Eff.flatMap(() => Telemetry.send),
+      Eff.catchAll(() => Eff.unit()),
+    ),
   ),
-  Eff.flatMap(() => Telemetry.send),
 )

@@ -104,4 +104,4 @@ const program = $(
 )
 
 // eslint-disable-next-line functional/no-expression-statements
-void Eff.runPromise(program)
+void Eff.runPromiseEither(program)
