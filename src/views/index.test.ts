@@ -8,6 +8,7 @@ import { AppEvent, appEvents as on } from 'src/events'
 import { appEventHandler } from 'src/events/handler'
 import { BackHandlerEnv } from 'src/services/BackHandler'
 import { IdGeneratorEnv } from 'src/services/IdGenerator'
+import { MetadataEnv } from 'src/services/Metadata'
 import { RepositoryEnvs } from 'src/services/Repositories'
 import { testingSafeAreaService } from 'src/services/SafeArea/testing'
 import { ShareServiceEnv } from 'src/services/Share'
@@ -44,6 +45,7 @@ const eventHandler = (e: AppEvent) =>
       SplashScreenEnv,
       IdGeneratorEnv,
       TelemetryEnv,
+      MetadataEnv,
       RepositoryEnvs.teams.groupOrder,
       RepositoryEnvs.teams.groups,
       RepositoryEnvs.teams.parameters,
@@ -57,6 +59,18 @@ const eventHandler = (e: AppEvent) =>
       splashScreen: { hide: Eff.unit(), preventAutoHide: Eff.unit() },
       idGenerator,
       Telemetry: { log: () => Eff.unit(), send: Eff.unit() },
+      Metadata: {
+        get: Eff.succeed({
+          application: {
+            native: { buildVersion: null, version: null },
+            version: 'test',
+          },
+          device: { modelName: null, osVersion: null, platformApiLevel: null },
+          installation: { id: '' },
+          launch: { id: '' },
+          isFirstLaunch: false,
+        }),
+      },
       Repositories: {
         teams: {
           groups: { get: Eff.succeed({}), set: () => Eff.unit() },

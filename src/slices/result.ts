@@ -4,6 +4,7 @@ import { $, A, Eff, Match, O, Rec, S, constant } from 'fp'
 import { Player, TeamsGenerator } from 'src/datatypes'
 import { getResultRatingDeviance } from 'src/datatypes/TeamsGenerator'
 import { root } from 'src/model/Optics'
+import { Metadata } from 'src/services/Metadata'
 import { execute, replaceSApp } from 'src/services/StateRef'
 import { Telemetry } from 'src/services/Telemetry'
 import { Timestamp } from 'src/utils/datatypes'
@@ -44,13 +45,14 @@ export const generateResult = $(
       ),
     })(players),
   ),
+  Eff.bind('end', () => clockWith(c => c.currentTimeMillis())),
   Eff.tap(({ result }) =>
     $(result, O.some, replaceSApp(root.result.$), execute),
   ),
-  Eff.tap(({ parameters, players, start, result }) =>
+  Eff.tap(({ parameters, players, start, end, result }) =>
     $(
-      clockWith(c => c.currentTimeMillis()),
-      Eff.flatMap(end =>
+      Metadata.get,
+      Eff.flatMap(meta =>
         Telemetry.log([
           {
             timestamp: end as Timestamp,
@@ -60,6 +62,10 @@ export const generateResult = $(
               playerCount: players.length,
               deviance: getResultRatingDeviance(result),
               duration: end - start,
+              metadata: {
+                installation: meta.installation,
+                launch: meta.launch,
+              },
             },
           },
         ]),
