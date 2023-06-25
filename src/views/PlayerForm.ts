@@ -1,5 +1,4 @@
 import { $, A, R, Rec, Tup } from 'fp'
-import { memoizedConst, named2 } from 'src/components/helpers'
 import {
   Fragment,
   Header,
@@ -10,7 +9,8 @@ import {
   ScrollView,
   Txt,
   View,
-} from 'src/components/hyperscript'
+} from 'src/components'
+import { memoizedConst, named2 } from 'src/components/helpers'
 import { Position, Rating } from 'src/datatypes'
 import { appEvents } from 'src/events/index'
 import { Colors } from 'src/services/Theme'

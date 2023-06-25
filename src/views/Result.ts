@@ -1,5 +1,4 @@
 import { $, A, Num, O, Option, Ord } from 'fp'
-import { named2 } from 'src/components/helpers'
 import {
   ActivityIndicator,
   Header,
@@ -10,7 +9,8 @@ import {
   Txt,
   TxtContext,
   View,
-} from 'src/components/hyperscript'
+} from 'src/components'
+import { named2 } from 'src/components/helpers'
 import { Player, Rating } from 'src/datatypes'
 import { appEvents } from 'src/events/index'
 import { Colors } from 'src/services/Theme'

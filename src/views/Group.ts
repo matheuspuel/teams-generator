@@ -1,11 +1,5 @@
 import { $, A, Eq, Match, O, Option, R, constant } from 'fp'
 import {
-  deepEq,
-  memoized,
-  memoizedConst,
-  shallowEq,
-} from 'src/components/helpers'
-import {
   FlatList,
   Header,
   MaterialCommunityIcons,
@@ -16,7 +10,13 @@ import {
   Row,
   Txt,
   View,
-} from 'src/components/hyperscript'
+} from 'src/components'
+import {
+  deepEq,
+  memoized,
+  memoizedConst,
+  shallowEq,
+} from 'src/components/helpers'
 import { Group, GroupOrder, Parameters, Player, Rating } from 'src/datatypes'
 import { GroupOrderType } from 'src/datatypes/GroupOrder'
 import { AppEvent, appEvents } from 'src/events/index'

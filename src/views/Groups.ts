@@ -1,5 +1,4 @@
 import { $, A, Eq, O, Option, R, Rec, Tup } from 'fp'
-import { memoized, memoizedConst } from 'src/components/helpers'
 import {
   FlatList,
   Fragment,
@@ -12,7 +11,8 @@ import {
   Txt,
   TxtContext,
   View,
-} from 'src/components/hyperscript'
+} from 'src/components'
+import { memoized, memoizedConst } from 'src/components/helpers'
 import { Group } from 'src/datatypes'
 import { appEvents } from 'src/events/index'
 import { RootState } from 'src/model'

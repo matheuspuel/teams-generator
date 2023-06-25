@@ -327,612 +327,82 @@ exports[`renders 1`] = `
           <RCTScrollView
             ListEmptyComponent={
               <View
-                env={
+                style={
                   {
-                    "eventHandler": [Function],
-                    "safeArea": {
-                      "initialMetrics": {
-                        "_tag": "Some",
-                        "value": {
-                          "frame": {
-                            "height": 640,
-                            "width": 320,
-                            "x": 0,
-                            "y": 0,
-                          },
-                          "insets": {
-                            "bottom": 0,
-                            "left": 0,
-                            "right": 0,
-                            "top": 0,
-                          },
-                        },
-                      },
-                    },
-                    "stateRef": {
-                      "execute": [Function],
-                      "subscribe": [Function],
-                    },
-                    "theme": {
-                      "colors": {
-                        "background": {
-                          "blue": 242,
-                          "green": 242,
-                          "opacity": 255,
-                          "red": 242,
-                        },
-                        "black": {
-                          "blue": 0,
-                          "green": 0,
-                          "opacity": 255,
-                          "red": 0,
-                        },
-                        "danger": {
-                          "$1": {
-                            "blue": 212,
-                            "green": 212,
-                            "opacity": 255,
-                            "red": 248,
-                          },
-                          "$2": {
-                            "blue": 158,
-                            "green": 158,
-                            "opacity": 255,
-                            "red": 239,
-                          },
-                          "$3": {
-                            "blue": 112,
-                            "green": 112,
-                            "opacity": 255,
-                            "red": 232,
-                          },
-                          "$4": {
-                            "blue": 72,
-                            "green": 72,
-                            "opacity": 255,
-                            "red": 226,
-                          },
-                          "$5": {
-                            "blue": 38,
-                            "green": 38,
-                            "opacity": 255,
-                            "red": 220,
-                          },
-                          "$6": {
-                            "blue": 32,
-                            "green": 32,
-                            "opacity": 255,
-                            "red": 185,
-                          },
-                          "$7": {
-                            "blue": 25,
-                            "green": 25,
-                            "opacity": 255,
-                            "red": 145,
-                          },
-                          "$8": {
-                            "blue": 17,
-                            "green": 17,
-                            "opacity": 255,
-                            "red": 98,
-                          },
-                          "$9": {
-                            "blue": 8,
-                            "green": 8,
-                            "opacity": 255,
-                            "red": 44,
-                          },
-                        },
-                        "gray": {
-                          "$1": {
-                            "blue": 222,
-                            "green": 220,
-                            "opacity": 255,
-                            "red": 220,
-                          },
-                          "$2": {
-                            "blue": 182,
-                            "green": 178,
-                            "opacity": 255,
-                            "red": 178,
-                          },
-                          "$3": {
-                            "blue": 147,
-                            "green": 141,
-                            "opacity": 255,
-                            "red": 141,
-                          },
-                          "$4": {
-                            "blue": 117,
-                            "green": 109,
-                            "opacity": 255,
-                            "red": 109,
-                          },
-                          "$5": {
-                            "blue": 91,
-                            "green": 82,
-                            "opacity": 255,
-                            "red": 82,
-                          },
-                          "$6": {
-                            "blue": 77,
-                            "green": 69,
-                            "opacity": 255,
-                            "red": 69,
-                          },
-                          "$7": {
-                            "blue": 60,
-                            "green": 54,
-                            "opacity": 255,
-                            "red": 54,
-                          },
-                          "$8": {
-                            "blue": 41,
-                            "green": 37,
-                            "opacity": 255,
-                            "red": 37,
-                          },
-                          "$9": {
-                            "blue": 18,
-                            "green": 16,
-                            "opacity": 255,
-                            "red": 16,
-                          },
-                        },
-                        "primary": {
-                          "$1": {
-                            "blue": 208,
-                            "green": 226,
-                            "opacity": 255,
-                            "red": 208,
-                          },
-                          "$2": {
-                            "blue": 151,
-                            "green": 190,
-                            "opacity": 255,
-                            "red": 150,
-                          },
-                          "$3": {
-                            "blue": 101,
-                            "green": 159,
-                            "opacity": 255,
-                            "red": 100,
-                          },
-                          "$4": {
-                            "blue": 58,
-                            "green": 132,
-                            "opacity": 255,
-                            "red": 56,
-                          },
-                          "$5": {
-                            "blue": 21,
-                            "green": 109,
-                            "opacity": 255,
-                            "red": 19,
-                          },
-                          "$6": {
-                            "blue": 18,
-                            "green": 92,
-                            "opacity": 255,
-                            "red": 16,
-                          },
-                          "$7": {
-                            "blue": 14,
-                            "green": 72,
-                            "opacity": 255,
-                            "red": 13,
-                          },
-                          "$8": {
-                            "blue": 9,
-                            "green": 49,
-                            "opacity": 255,
-                            "red": 8,
-                          },
-                          "$9": {
-                            "blue": 4,
-                            "green": 22,
-                            "opacity": 255,
-                            "red": 4,
-                          },
-                        },
-                        "text": {
-                          "dark": {
-                            "blue": 30,
-                            "green": 30,
-                            "opacity": 255,
-                            "red": 30,
-                          },
-                          "gray": {
-                            "blue": 96,
-                            "green": 96,
-                            "opacity": 255,
-                            "red": 96,
-                          },
-                          "light": {
-                            "blue": 255,
-                            "green": 255,
-                            "opacity": 255,
-                            "red": 255,
-                          },
-                        },
-                        "white": {
-                          "blue": 255,
-                          "green": 255,
-                          "opacity": 255,
-                          "red": 255,
-                        },
-                        "yellow": {
-                          "$1": {
-                            "blue": 206,
-                            "green": 240,
-                            "opacity": 255,
-                            "red": 251,
-                          },
-                          "$2": {
-                            "blue": 145,
-                            "green": 221,
-                            "opacity": 255,
-                            "red": 246,
-                          },
-                          "$3": {
-                            "blue": 92,
-                            "green": 205,
-                            "opacity": 255,
-                            "red": 241,
-                          },
-                          "$4": {
-                            "blue": 47,
-                            "green": 191,
-                            "opacity": 255,
-                            "red": 237,
-                          },
-                          "$5": {
-                            "blue": 8,
-                            "green": 179,
-                            "opacity": 255,
-                            "red": 234,
-                          },
-                          "$6": {
-                            "blue": 7,
-                            "green": 151,
-                            "opacity": 255,
-                            "red": 197,
-                          },
-                          "$7": {
-                            "blue": 5,
-                            "green": 118,
-                            "opacity": 255,
-                            "red": 154,
-                          },
-                          "$8": {
-                            "blue": 4,
-                            "green": 80,
-                            "opacity": 255,
-                            "red": 104,
-                          },
-                          "$9": {
-                            "blue": 2,
-                            "green": 36,
-                            "opacity": 255,
-                            "red": 47,
-                          },
-                        },
-                      },
-                    },
-                  }
-                }
-                x={
-                  {
+                    "alignItems": undefined,
+                    "alignSelf": undefined,
+                    "aspectRatio": undefined,
+                    "backgroundColor": undefined,
+                    "borderBottomLeftRadius": undefined,
+                    "borderBottomRightRadius": undefined,
+                    "borderBottomWidth": undefined,
+                    "borderColor": undefined,
+                    "borderLeftWidth": undefined,
+                    "borderRadius": undefined,
+                    "borderRightWidth": undefined,
+                    "borderTopLeftRadius": undefined,
+                    "borderTopRightRadius": undefined,
+                    "borderTopWidth": undefined,
+                    "borderWidth": undefined,
+                    "columnGap": undefined,
+                    "elevation": undefined,
                     "flex": 1,
-                    "justify": "center",
+                    "flexDirection": undefined,
+                    "gap": undefined,
+                    "height": undefined,
+                    "justifyContent": "center",
+                    "margin": undefined,
+                    "marginBottom": undefined,
+                    "marginHorizontal": undefined,
+                    "marginLeft": undefined,
+                    "marginRight": undefined,
+                    "marginTop": undefined,
+                    "marginVertical": undefined,
+                    "overflow": undefined,
+                    "padding": undefined,
+                    "paddingBottom": undefined,
+                    "paddingHorizontal": undefined,
+                    "paddingLeft": undefined,
+                    "paddingRight": undefined,
+                    "paddingTop": undefined,
+                    "paddingVertical": undefined,
+                    "rowGap": undefined,
+                    "width": undefined,
+                    "zIndex": undefined,
                   }
                 }
               >
-                <Txt
-                  env={
+                <Text
+                  style={
                     {
-                      "eventHandler": [Function],
-                      "safeArea": {
-                        "initialMetrics": {
-                          "_tag": "Some",
-                          "value": {
-                            "frame": {
-                              "height": 640,
-                              "width": 320,
-                              "x": 0,
-                              "y": 0,
-                            },
-                            "insets": {
-                              "bottom": 0,
-                              "left": 0,
-                              "right": 0,
-                              "top": 0,
-                            },
-                          },
-                        },
-                      },
-                      "stateRef": {
-                        "execute": [Function],
-                        "subscribe": [Function],
-                      },
-                      "theme": {
-                        "colors": {
-                          "background": {
-                            "blue": 242,
-                            "green": 242,
-                            "opacity": 255,
-                            "red": 242,
-                          },
-                          "black": {
-                            "blue": 0,
-                            "green": 0,
-                            "opacity": 255,
-                            "red": 0,
-                          },
-                          "danger": {
-                            "$1": {
-                              "blue": 212,
-                              "green": 212,
-                              "opacity": 255,
-                              "red": 248,
-                            },
-                            "$2": {
-                              "blue": 158,
-                              "green": 158,
-                              "opacity": 255,
-                              "red": 239,
-                            },
-                            "$3": {
-                              "blue": 112,
-                              "green": 112,
-                              "opacity": 255,
-                              "red": 232,
-                            },
-                            "$4": {
-                              "blue": 72,
-                              "green": 72,
-                              "opacity": 255,
-                              "red": 226,
-                            },
-                            "$5": {
-                              "blue": 38,
-                              "green": 38,
-                              "opacity": 255,
-                              "red": 220,
-                            },
-                            "$6": {
-                              "blue": 32,
-                              "green": 32,
-                              "opacity": 255,
-                              "red": 185,
-                            },
-                            "$7": {
-                              "blue": 25,
-                              "green": 25,
-                              "opacity": 255,
-                              "red": 145,
-                            },
-                            "$8": {
-                              "blue": 17,
-                              "green": 17,
-                              "opacity": 255,
-                              "red": 98,
-                            },
-                            "$9": {
-                              "blue": 8,
-                              "green": 8,
-                              "opacity": 255,
-                              "red": 44,
-                            },
-                          },
-                          "gray": {
-                            "$1": {
-                              "blue": 222,
-                              "green": 220,
-                              "opacity": 255,
-                              "red": 220,
-                            },
-                            "$2": {
-                              "blue": 182,
-                              "green": 178,
-                              "opacity": 255,
-                              "red": 178,
-                            },
-                            "$3": {
-                              "blue": 147,
-                              "green": 141,
-                              "opacity": 255,
-                              "red": 141,
-                            },
-                            "$4": {
-                              "blue": 117,
-                              "green": 109,
-                              "opacity": 255,
-                              "red": 109,
-                            },
-                            "$5": {
-                              "blue": 91,
-                              "green": 82,
-                              "opacity": 255,
-                              "red": 82,
-                            },
-                            "$6": {
-                              "blue": 77,
-                              "green": 69,
-                              "opacity": 255,
-                              "red": 69,
-                            },
-                            "$7": {
-                              "blue": 60,
-                              "green": 54,
-                              "opacity": 255,
-                              "red": 54,
-                            },
-                            "$8": {
-                              "blue": 41,
-                              "green": 37,
-                              "opacity": 255,
-                              "red": 37,
-                            },
-                            "$9": {
-                              "blue": 18,
-                              "green": 16,
-                              "opacity": 255,
-                              "red": 16,
-                            },
-                          },
-                          "primary": {
-                            "$1": {
-                              "blue": 208,
-                              "green": 226,
-                              "opacity": 255,
-                              "red": 208,
-                            },
-                            "$2": {
-                              "blue": 151,
-                              "green": 190,
-                              "opacity": 255,
-                              "red": 150,
-                            },
-                            "$3": {
-                              "blue": 101,
-                              "green": 159,
-                              "opacity": 255,
-                              "red": 100,
-                            },
-                            "$4": {
-                              "blue": 58,
-                              "green": 132,
-                              "opacity": 255,
-                              "red": 56,
-                            },
-                            "$5": {
-                              "blue": 21,
-                              "green": 109,
-                              "opacity": 255,
-                              "red": 19,
-                            },
-                            "$6": {
-                              "blue": 18,
-                              "green": 92,
-                              "opacity": 255,
-                              "red": 16,
-                            },
-                            "$7": {
-                              "blue": 14,
-                              "green": 72,
-                              "opacity": 255,
-                              "red": 13,
-                            },
-                            "$8": {
-                              "blue": 9,
-                              "green": 49,
-                              "opacity": 255,
-                              "red": 8,
-                            },
-                            "$9": {
-                              "blue": 4,
-                              "green": 22,
-                              "opacity": 255,
-                              "red": 4,
-                            },
-                          },
-                          "text": {
-                            "dark": {
-                              "blue": 30,
-                              "green": 30,
-                              "opacity": 255,
-                              "red": 30,
-                            },
-                            "gray": {
-                              "blue": 96,
-                              "green": 96,
-                              "opacity": 255,
-                              "red": 96,
-                            },
-                            "light": {
-                              "blue": 255,
-                              "green": 255,
-                              "opacity": 255,
-                              "red": 255,
-                            },
-                          },
-                          "white": {
-                            "blue": 255,
-                            "green": 255,
-                            "opacity": 255,
-                            "red": 255,
-                          },
-                          "yellow": {
-                            "$1": {
-                              "blue": 206,
-                              "green": 240,
-                              "opacity": 255,
-                              "red": 251,
-                            },
-                            "$2": {
-                              "blue": 145,
-                              "green": 221,
-                              "opacity": 255,
-                              "red": 246,
-                            },
-                            "$3": {
-                              "blue": 92,
-                              "green": 205,
-                              "opacity": 255,
-                              "red": 241,
-                            },
-                            "$4": {
-                              "blue": 47,
-                              "green": 191,
-                              "opacity": 255,
-                              "red": 237,
-                            },
-                            "$5": {
-                              "blue": 8,
-                              "green": 179,
-                              "opacity": 255,
-                              "red": 234,
-                            },
-                            "$6": {
-                              "blue": 7,
-                              "green": 151,
-                              "opacity": 255,
-                              "red": 197,
-                            },
-                            "$7": {
-                              "blue": 5,
-                              "green": 118,
-                              "opacity": 255,
-                              "red": 154,
-                            },
-                            "$8": {
-                              "blue": 4,
-                              "green": 80,
-                              "opacity": 255,
-                              "red": 104,
-                            },
-                            "$9": {
-                              "blue": 2,
-                              "green": 36,
-                              "opacity": 255,
-                              "red": 47,
-                            },
-                          },
-                        },
-                      },
-                    }
-                  }
-                  x={
-                    {
-                      "align": "center",
-                      "color": [Function],
-                      "size": 16,
+                      "color": "#8d8d93ff",
+                      "flex": undefined,
+                      "fontSize": 16,
+                      "fontWeight": undefined,
+                      "height": undefined,
+                      "includeFontPadding": undefined,
+                      "lineHeight": undefined,
+                      "margin": undefined,
+                      "marginBottom": undefined,
+                      "marginHorizontal": undefined,
+                      "marginLeft": undefined,
+                      "marginRight": undefined,
+                      "marginTop": undefined,
+                      "marginVertical": undefined,
+                      "padding": undefined,
+                      "paddingBottom": undefined,
+                      "paddingHorizontal": undefined,
+                      "paddingLeft": undefined,
+                      "paddingRight": undefined,
+                      "paddingTop": undefined,
+                      "paddingVertical": undefined,
+                      "textAlign": "center",
+                      "width": undefined,
                     }
                   }
                 >
                   Nenhum grupo cadastrado
-                </Txt>
+                </Text>
               </View>
             }
             contentContainerStyle={
@@ -971,6 +441,7 @@ exports[`renders 1`] = `
           >
             <View>
               <View
+                onLayout={[Function]}
                 style={
                   {
                     "alignItems": undefined,
@@ -1419,612 +890,82 @@ exports[`renders 2`] = `
           <RCTScrollView
             ListEmptyComponent={
               <View
-                env={
+                style={
                   {
-                    "eventHandler": [Function],
-                    "safeArea": {
-                      "initialMetrics": {
-                        "_tag": "Some",
-                        "value": {
-                          "frame": {
-                            "height": 640,
-                            "width": 320,
-                            "x": 0,
-                            "y": 0,
-                          },
-                          "insets": {
-                            "bottom": 0,
-                            "left": 0,
-                            "right": 0,
-                            "top": 0,
-                          },
-                        },
-                      },
-                    },
-                    "stateRef": {
-                      "execute": [Function],
-                      "subscribe": [Function],
-                    },
-                    "theme": {
-                      "colors": {
-                        "background": {
-                          "blue": 242,
-                          "green": 242,
-                          "opacity": 255,
-                          "red": 242,
-                        },
-                        "black": {
-                          "blue": 0,
-                          "green": 0,
-                          "opacity": 255,
-                          "red": 0,
-                        },
-                        "danger": {
-                          "$1": {
-                            "blue": 212,
-                            "green": 212,
-                            "opacity": 255,
-                            "red": 248,
-                          },
-                          "$2": {
-                            "blue": 158,
-                            "green": 158,
-                            "opacity": 255,
-                            "red": 239,
-                          },
-                          "$3": {
-                            "blue": 112,
-                            "green": 112,
-                            "opacity": 255,
-                            "red": 232,
-                          },
-                          "$4": {
-                            "blue": 72,
-                            "green": 72,
-                            "opacity": 255,
-                            "red": 226,
-                          },
-                          "$5": {
-                            "blue": 38,
-                            "green": 38,
-                            "opacity": 255,
-                            "red": 220,
-                          },
-                          "$6": {
-                            "blue": 32,
-                            "green": 32,
-                            "opacity": 255,
-                            "red": 185,
-                          },
-                          "$7": {
-                            "blue": 25,
-                            "green": 25,
-                            "opacity": 255,
-                            "red": 145,
-                          },
-                          "$8": {
-                            "blue": 17,
-                            "green": 17,
-                            "opacity": 255,
-                            "red": 98,
-                          },
-                          "$9": {
-                            "blue": 8,
-                            "green": 8,
-                            "opacity": 255,
-                            "red": 44,
-                          },
-                        },
-                        "gray": {
-                          "$1": {
-                            "blue": 222,
-                            "green": 220,
-                            "opacity": 255,
-                            "red": 220,
-                          },
-                          "$2": {
-                            "blue": 182,
-                            "green": 178,
-                            "opacity": 255,
-                            "red": 178,
-                          },
-                          "$3": {
-                            "blue": 147,
-                            "green": 141,
-                            "opacity": 255,
-                            "red": 141,
-                          },
-                          "$4": {
-                            "blue": 117,
-                            "green": 109,
-                            "opacity": 255,
-                            "red": 109,
-                          },
-                          "$5": {
-                            "blue": 91,
-                            "green": 82,
-                            "opacity": 255,
-                            "red": 82,
-                          },
-                          "$6": {
-                            "blue": 77,
-                            "green": 69,
-                            "opacity": 255,
-                            "red": 69,
-                          },
-                          "$7": {
-                            "blue": 60,
-                            "green": 54,
-                            "opacity": 255,
-                            "red": 54,
-                          },
-                          "$8": {
-                            "blue": 41,
-                            "green": 37,
-                            "opacity": 255,
-                            "red": 37,
-                          },
-                          "$9": {
-                            "blue": 18,
-                            "green": 16,
-                            "opacity": 255,
-                            "red": 16,
-                          },
-                        },
-                        "primary": {
-                          "$1": {
-                            "blue": 208,
-                            "green": 226,
-                            "opacity": 255,
-                            "red": 208,
-                          },
-                          "$2": {
-                            "blue": 151,
-                            "green": 190,
-                            "opacity": 255,
-                            "red": 150,
-                          },
-                          "$3": {
-                            "blue": 101,
-                            "green": 159,
-                            "opacity": 255,
-                            "red": 100,
-                          },
-                          "$4": {
-                            "blue": 58,
-                            "green": 132,
-                            "opacity": 255,
-                            "red": 56,
-                          },
-                          "$5": {
-                            "blue": 21,
-                            "green": 109,
-                            "opacity": 255,
-                            "red": 19,
-                          },
-                          "$6": {
-                            "blue": 18,
-                            "green": 92,
-                            "opacity": 255,
-                            "red": 16,
-                          },
-                          "$7": {
-                            "blue": 14,
-                            "green": 72,
-                            "opacity": 255,
-                            "red": 13,
-                          },
-                          "$8": {
-                            "blue": 9,
-                            "green": 49,
-                            "opacity": 255,
-                            "red": 8,
-                          },
-                          "$9": {
-                            "blue": 4,
-                            "green": 22,
-                            "opacity": 255,
-                            "red": 4,
-                          },
-                        },
-                        "text": {
-                          "dark": {
-                            "blue": 30,
-                            "green": 30,
-                            "opacity": 255,
-                            "red": 30,
-                          },
-                          "gray": {
-                            "blue": 96,
-                            "green": 96,
-                            "opacity": 255,
-                            "red": 96,
-                          },
-                          "light": {
-                            "blue": 255,
-                            "green": 255,
-                            "opacity": 255,
-                            "red": 255,
-                          },
-                        },
-                        "white": {
-                          "blue": 255,
-                          "green": 255,
-                          "opacity": 255,
-                          "red": 255,
-                        },
-                        "yellow": {
-                          "$1": {
-                            "blue": 206,
-                            "green": 240,
-                            "opacity": 255,
-                            "red": 251,
-                          },
-                          "$2": {
-                            "blue": 145,
-                            "green": 221,
-                            "opacity": 255,
-                            "red": 246,
-                          },
-                          "$3": {
-                            "blue": 92,
-                            "green": 205,
-                            "opacity": 255,
-                            "red": 241,
-                          },
-                          "$4": {
-                            "blue": 47,
-                            "green": 191,
-                            "opacity": 255,
-                            "red": 237,
-                          },
-                          "$5": {
-                            "blue": 8,
-                            "green": 179,
-                            "opacity": 255,
-                            "red": 234,
-                          },
-                          "$6": {
-                            "blue": 7,
-                            "green": 151,
-                            "opacity": 255,
-                            "red": 197,
-                          },
-                          "$7": {
-                            "blue": 5,
-                            "green": 118,
-                            "opacity": 255,
-                            "red": 154,
-                          },
-                          "$8": {
-                            "blue": 4,
-                            "green": 80,
-                            "opacity": 255,
-                            "red": 104,
-                          },
-                          "$9": {
-                            "blue": 2,
-                            "green": 36,
-                            "opacity": 255,
-                            "red": 47,
-                          },
-                        },
-                      },
-                    },
-                  }
-                }
-                x={
-                  {
+                    "alignItems": undefined,
+                    "alignSelf": undefined,
+                    "aspectRatio": undefined,
+                    "backgroundColor": undefined,
+                    "borderBottomLeftRadius": undefined,
+                    "borderBottomRightRadius": undefined,
+                    "borderBottomWidth": undefined,
+                    "borderColor": undefined,
+                    "borderLeftWidth": undefined,
+                    "borderRadius": undefined,
+                    "borderRightWidth": undefined,
+                    "borderTopLeftRadius": undefined,
+                    "borderTopRightRadius": undefined,
+                    "borderTopWidth": undefined,
+                    "borderWidth": undefined,
+                    "columnGap": undefined,
+                    "elevation": undefined,
                     "flex": 1,
-                    "justify": "center",
+                    "flexDirection": undefined,
+                    "gap": undefined,
+                    "height": undefined,
+                    "justifyContent": "center",
+                    "margin": undefined,
+                    "marginBottom": undefined,
+                    "marginHorizontal": undefined,
+                    "marginLeft": undefined,
+                    "marginRight": undefined,
+                    "marginTop": undefined,
+                    "marginVertical": undefined,
+                    "overflow": undefined,
+                    "padding": undefined,
+                    "paddingBottom": undefined,
+                    "paddingHorizontal": undefined,
+                    "paddingLeft": undefined,
+                    "paddingRight": undefined,
+                    "paddingTop": undefined,
+                    "paddingVertical": undefined,
+                    "rowGap": undefined,
+                    "width": undefined,
+                    "zIndex": undefined,
                   }
                 }
               >
-                <Txt
-                  env={
+                <Text
+                  style={
                     {
-                      "eventHandler": [Function],
-                      "safeArea": {
-                        "initialMetrics": {
-                          "_tag": "Some",
-                          "value": {
-                            "frame": {
-                              "height": 640,
-                              "width": 320,
-                              "x": 0,
-                              "y": 0,
-                            },
-                            "insets": {
-                              "bottom": 0,
-                              "left": 0,
-                              "right": 0,
-                              "top": 0,
-                            },
-                          },
-                        },
-                      },
-                      "stateRef": {
-                        "execute": [Function],
-                        "subscribe": [Function],
-                      },
-                      "theme": {
-                        "colors": {
-                          "background": {
-                            "blue": 242,
-                            "green": 242,
-                            "opacity": 255,
-                            "red": 242,
-                          },
-                          "black": {
-                            "blue": 0,
-                            "green": 0,
-                            "opacity": 255,
-                            "red": 0,
-                          },
-                          "danger": {
-                            "$1": {
-                              "blue": 212,
-                              "green": 212,
-                              "opacity": 255,
-                              "red": 248,
-                            },
-                            "$2": {
-                              "blue": 158,
-                              "green": 158,
-                              "opacity": 255,
-                              "red": 239,
-                            },
-                            "$3": {
-                              "blue": 112,
-                              "green": 112,
-                              "opacity": 255,
-                              "red": 232,
-                            },
-                            "$4": {
-                              "blue": 72,
-                              "green": 72,
-                              "opacity": 255,
-                              "red": 226,
-                            },
-                            "$5": {
-                              "blue": 38,
-                              "green": 38,
-                              "opacity": 255,
-                              "red": 220,
-                            },
-                            "$6": {
-                              "blue": 32,
-                              "green": 32,
-                              "opacity": 255,
-                              "red": 185,
-                            },
-                            "$7": {
-                              "blue": 25,
-                              "green": 25,
-                              "opacity": 255,
-                              "red": 145,
-                            },
-                            "$8": {
-                              "blue": 17,
-                              "green": 17,
-                              "opacity": 255,
-                              "red": 98,
-                            },
-                            "$9": {
-                              "blue": 8,
-                              "green": 8,
-                              "opacity": 255,
-                              "red": 44,
-                            },
-                          },
-                          "gray": {
-                            "$1": {
-                              "blue": 222,
-                              "green": 220,
-                              "opacity": 255,
-                              "red": 220,
-                            },
-                            "$2": {
-                              "blue": 182,
-                              "green": 178,
-                              "opacity": 255,
-                              "red": 178,
-                            },
-                            "$3": {
-                              "blue": 147,
-                              "green": 141,
-                              "opacity": 255,
-                              "red": 141,
-                            },
-                            "$4": {
-                              "blue": 117,
-                              "green": 109,
-                              "opacity": 255,
-                              "red": 109,
-                            },
-                            "$5": {
-                              "blue": 91,
-                              "green": 82,
-                              "opacity": 255,
-                              "red": 82,
-                            },
-                            "$6": {
-                              "blue": 77,
-                              "green": 69,
-                              "opacity": 255,
-                              "red": 69,
-                            },
-                            "$7": {
-                              "blue": 60,
-                              "green": 54,
-                              "opacity": 255,
-                              "red": 54,
-                            },
-                            "$8": {
-                              "blue": 41,
-                              "green": 37,
-                              "opacity": 255,
-                              "red": 37,
-                            },
-                            "$9": {
-                              "blue": 18,
-                              "green": 16,
-                              "opacity": 255,
-                              "red": 16,
-                            },
-                          },
-                          "primary": {
-                            "$1": {
-                              "blue": 208,
-                              "green": 226,
-                              "opacity": 255,
-                              "red": 208,
-                            },
-                            "$2": {
-                              "blue": 151,
-                              "green": 190,
-                              "opacity": 255,
-                              "red": 150,
-                            },
-                            "$3": {
-                              "blue": 101,
-                              "green": 159,
-                              "opacity": 255,
-                              "red": 100,
-                            },
-                            "$4": {
-                              "blue": 58,
-                              "green": 132,
-                              "opacity": 255,
-                              "red": 56,
-                            },
-                            "$5": {
-                              "blue": 21,
-                              "green": 109,
-                              "opacity": 255,
-                              "red": 19,
-                            },
-                            "$6": {
-                              "blue": 18,
-                              "green": 92,
-                              "opacity": 255,
-                              "red": 16,
-                            },
-                            "$7": {
-                              "blue": 14,
-                              "green": 72,
-                              "opacity": 255,
-                              "red": 13,
-                            },
-                            "$8": {
-                              "blue": 9,
-                              "green": 49,
-                              "opacity": 255,
-                              "red": 8,
-                            },
-                            "$9": {
-                              "blue": 4,
-                              "green": 22,
-                              "opacity": 255,
-                              "red": 4,
-                            },
-                          },
-                          "text": {
-                            "dark": {
-                              "blue": 30,
-                              "green": 30,
-                              "opacity": 255,
-                              "red": 30,
-                            },
-                            "gray": {
-                              "blue": 96,
-                              "green": 96,
-                              "opacity": 255,
-                              "red": 96,
-                            },
-                            "light": {
-                              "blue": 255,
-                              "green": 255,
-                              "opacity": 255,
-                              "red": 255,
-                            },
-                          },
-                          "white": {
-                            "blue": 255,
-                            "green": 255,
-                            "opacity": 255,
-                            "red": 255,
-                          },
-                          "yellow": {
-                            "$1": {
-                              "blue": 206,
-                              "green": 240,
-                              "opacity": 255,
-                              "red": 251,
-                            },
-                            "$2": {
-                              "blue": 145,
-                              "green": 221,
-                              "opacity": 255,
-                              "red": 246,
-                            },
-                            "$3": {
-                              "blue": 92,
-                              "green": 205,
-                              "opacity": 255,
-                              "red": 241,
-                            },
-                            "$4": {
-                              "blue": 47,
-                              "green": 191,
-                              "opacity": 255,
-                              "red": 237,
-                            },
-                            "$5": {
-                              "blue": 8,
-                              "green": 179,
-                              "opacity": 255,
-                              "red": 234,
-                            },
-                            "$6": {
-                              "blue": 7,
-                              "green": 151,
-                              "opacity": 255,
-                              "red": 197,
-                            },
-                            "$7": {
-                              "blue": 5,
-                              "green": 118,
-                              "opacity": 255,
-                              "red": 154,
-                            },
-                            "$8": {
-                              "blue": 4,
-                              "green": 80,
-                              "opacity": 255,
-                              "red": 104,
-                            },
-                            "$9": {
-                              "blue": 2,
-                              "green": 36,
-                              "opacity": 255,
-                              "red": 47,
-                            },
-                          },
-                        },
-                      },
-                    }
-                  }
-                  x={
-                    {
-                      "align": "center",
-                      "color": [Function],
-                      "size": 16,
+                      "color": "#8d8d93ff",
+                      "flex": undefined,
+                      "fontSize": 16,
+                      "fontWeight": undefined,
+                      "height": undefined,
+                      "includeFontPadding": undefined,
+                      "lineHeight": undefined,
+                      "margin": undefined,
+                      "marginBottom": undefined,
+                      "marginHorizontal": undefined,
+                      "marginLeft": undefined,
+                      "marginRight": undefined,
+                      "marginTop": undefined,
+                      "marginVertical": undefined,
+                      "padding": undefined,
+                      "paddingBottom": undefined,
+                      "paddingHorizontal": undefined,
+                      "paddingLeft": undefined,
+                      "paddingRight": undefined,
+                      "paddingTop": undefined,
+                      "paddingVertical": undefined,
+                      "textAlign": "center",
+                      "width": undefined,
                     }
                   }
                 >
                   Nenhum grupo cadastrado
-                </Txt>
+                </Text>
               </View>
             }
             contentContainerStyle={
@@ -2063,6 +1004,7 @@ exports[`renders 2`] = `
           >
             <View>
               <View
+                onLayout={[Function]}
                 style={
                   {
                     "alignItems": undefined,
@@ -2511,612 +1453,82 @@ exports[`renders 3`] = `
           <RCTScrollView
             ListEmptyComponent={
               <View
-                env={
+                style={
                   {
-                    "eventHandler": [Function],
-                    "safeArea": {
-                      "initialMetrics": {
-                        "_tag": "Some",
-                        "value": {
-                          "frame": {
-                            "height": 640,
-                            "width": 320,
-                            "x": 0,
-                            "y": 0,
-                          },
-                          "insets": {
-                            "bottom": 0,
-                            "left": 0,
-                            "right": 0,
-                            "top": 0,
-                          },
-                        },
-                      },
-                    },
-                    "stateRef": {
-                      "execute": [Function],
-                      "subscribe": [Function],
-                    },
-                    "theme": {
-                      "colors": {
-                        "background": {
-                          "blue": 242,
-                          "green": 242,
-                          "opacity": 255,
-                          "red": 242,
-                        },
-                        "black": {
-                          "blue": 0,
-                          "green": 0,
-                          "opacity": 255,
-                          "red": 0,
-                        },
-                        "danger": {
-                          "$1": {
-                            "blue": 212,
-                            "green": 212,
-                            "opacity": 255,
-                            "red": 248,
-                          },
-                          "$2": {
-                            "blue": 158,
-                            "green": 158,
-                            "opacity": 255,
-                            "red": 239,
-                          },
-                          "$3": {
-                            "blue": 112,
-                            "green": 112,
-                            "opacity": 255,
-                            "red": 232,
-                          },
-                          "$4": {
-                            "blue": 72,
-                            "green": 72,
-                            "opacity": 255,
-                            "red": 226,
-                          },
-                          "$5": {
-                            "blue": 38,
-                            "green": 38,
-                            "opacity": 255,
-                            "red": 220,
-                          },
-                          "$6": {
-                            "blue": 32,
-                            "green": 32,
-                            "opacity": 255,
-                            "red": 185,
-                          },
-                          "$7": {
-                            "blue": 25,
-                            "green": 25,
-                            "opacity": 255,
-                            "red": 145,
-                          },
-                          "$8": {
-                            "blue": 17,
-                            "green": 17,
-                            "opacity": 255,
-                            "red": 98,
-                          },
-                          "$9": {
-                            "blue": 8,
-                            "green": 8,
-                            "opacity": 255,
-                            "red": 44,
-                          },
-                        },
-                        "gray": {
-                          "$1": {
-                            "blue": 222,
-                            "green": 220,
-                            "opacity": 255,
-                            "red": 220,
-                          },
-                          "$2": {
-                            "blue": 182,
-                            "green": 178,
-                            "opacity": 255,
-                            "red": 178,
-                          },
-                          "$3": {
-                            "blue": 147,
-                            "green": 141,
-                            "opacity": 255,
-                            "red": 141,
-                          },
-                          "$4": {
-                            "blue": 117,
-                            "green": 109,
-                            "opacity": 255,
-                            "red": 109,
-                          },
-                          "$5": {
-                            "blue": 91,
-                            "green": 82,
-                            "opacity": 255,
-                            "red": 82,
-                          },
-                          "$6": {
-                            "blue": 77,
-                            "green": 69,
-                            "opacity": 255,
-                            "red": 69,
-                          },
-                          "$7": {
-                            "blue": 60,
-                            "green": 54,
-                            "opacity": 255,
-                            "red": 54,
-                          },
-                          "$8": {
-                            "blue": 41,
-                            "green": 37,
-                            "opacity": 255,
-                            "red": 37,
-                          },
-                          "$9": {
-                            "blue": 18,
-                            "green": 16,
-                            "opacity": 255,
-                            "red": 16,
-                          },
-                        },
-                        "primary": {
-                          "$1": {
-                            "blue": 208,
-                            "green": 226,
-                            "opacity": 255,
-                            "red": 208,
-                          },
-                          "$2": {
-                            "blue": 151,
-                            "green": 190,
-                            "opacity": 255,
-                            "red": 150,
-                          },
-                          "$3": {
-                            "blue": 101,
-                            "green": 159,
-                            "opacity": 255,
-                            "red": 100,
-                          },
-                          "$4": {
-                            "blue": 58,
-                            "green": 132,
-                            "opacity": 255,
-                            "red": 56,
-                          },
-                          "$5": {
-                            "blue": 21,
-                            "green": 109,
-                            "opacity": 255,
-                            "red": 19,
-                          },
-                          "$6": {
-                            "blue": 18,
-                            "green": 92,
-                            "opacity": 255,
-                            "red": 16,
-                          },
-                          "$7": {
-                            "blue": 14,
-                            "green": 72,
-                            "opacity": 255,
-                            "red": 13,
-                          },
-                          "$8": {
-                            "blue": 9,
-                            "green": 49,
-                            "opacity": 255,
-                            "red": 8,
-                          },
-                          "$9": {
-                            "blue": 4,
-                            "green": 22,
-                            "opacity": 255,
-                            "red": 4,
-                          },
-                        },
-                        "text": {
-                          "dark": {
-                            "blue": 30,
-                            "green": 30,
-                            "opacity": 255,
-                            "red": 30,
-                          },
-                          "gray": {
-                            "blue": 96,
-                            "green": 96,
-                            "opacity": 255,
-                            "red": 96,
-                          },
-                          "light": {
-                            "blue": 255,
-                            "green": 255,
-                            "opacity": 255,
-                            "red": 255,
-                          },
-                        },
-                        "white": {
-                          "blue": 255,
-                          "green": 255,
-                          "opacity": 255,
-                          "red": 255,
-                        },
-                        "yellow": {
-                          "$1": {
-                            "blue": 206,
-                            "green": 240,
-                            "opacity": 255,
-                            "red": 251,
-                          },
-                          "$2": {
-                            "blue": 145,
-                            "green": 221,
-                            "opacity": 255,
-                            "red": 246,
-                          },
-                          "$3": {
-                            "blue": 92,
-                            "green": 205,
-                            "opacity": 255,
-                            "red": 241,
-                          },
-                          "$4": {
-                            "blue": 47,
-                            "green": 191,
-                            "opacity": 255,
-                            "red": 237,
-                          },
-                          "$5": {
-                            "blue": 8,
-                            "green": 179,
-                            "opacity": 255,
-                            "red": 234,
-                          },
-                          "$6": {
-                            "blue": 7,
-                            "green": 151,
-                            "opacity": 255,
-                            "red": 197,
-                          },
-                          "$7": {
-                            "blue": 5,
-                            "green": 118,
-                            "opacity": 255,
-                            "red": 154,
-                          },
-                          "$8": {
-                            "blue": 4,
-                            "green": 80,
-                            "opacity": 255,
-                            "red": 104,
-                          },
-                          "$9": {
-                            "blue": 2,
-                            "green": 36,
-                            "opacity": 255,
-                            "red": 47,
-                          },
-                        },
-                      },
-                    },
-                  }
-                }
-                x={
-                  {
+                    "alignItems": undefined,
+                    "alignSelf": undefined,
+                    "aspectRatio": undefined,
+                    "backgroundColor": undefined,
+                    "borderBottomLeftRadius": undefined,
+                    "borderBottomRightRadius": undefined,
+                    "borderBottomWidth": undefined,
+                    "borderColor": undefined,
+                    "borderLeftWidth": undefined,
+                    "borderRadius": undefined,
+                    "borderRightWidth": undefined,
+                    "borderTopLeftRadius": undefined,
+                    "borderTopRightRadius": undefined,
+                    "borderTopWidth": undefined,
+                    "borderWidth": undefined,
+                    "columnGap": undefined,
+                    "elevation": undefined,
                     "flex": 1,
-                    "justify": "center",
+                    "flexDirection": undefined,
+                    "gap": undefined,
+                    "height": undefined,
+                    "justifyContent": "center",
+                    "margin": undefined,
+                    "marginBottom": undefined,
+                    "marginHorizontal": undefined,
+                    "marginLeft": undefined,
+                    "marginRight": undefined,
+                    "marginTop": undefined,
+                    "marginVertical": undefined,
+                    "overflow": undefined,
+                    "padding": undefined,
+                    "paddingBottom": undefined,
+                    "paddingHorizontal": undefined,
+                    "paddingLeft": undefined,
+                    "paddingRight": undefined,
+                    "paddingTop": undefined,
+                    "paddingVertical": undefined,
+                    "rowGap": undefined,
+                    "width": undefined,
+                    "zIndex": undefined,
                   }
                 }
               >
-                <Txt
-                  env={
+                <Text
+                  style={
                     {
-                      "eventHandler": [Function],
-                      "safeArea": {
-                        "initialMetrics": {
-                          "_tag": "Some",
-                          "value": {
-                            "frame": {
-                              "height": 640,
-                              "width": 320,
-                              "x": 0,
-                              "y": 0,
-                            },
-                            "insets": {
-                              "bottom": 0,
-                              "left": 0,
-                              "right": 0,
-                              "top": 0,
-                            },
-                          },
-                        },
-                      },
-                      "stateRef": {
-                        "execute": [Function],
-                        "subscribe": [Function],
-                      },
-                      "theme": {
-                        "colors": {
-                          "background": {
-                            "blue": 242,
-                            "green": 242,
-                            "opacity": 255,
-                            "red": 242,
-                          },
-                          "black": {
-                            "blue": 0,
-                            "green": 0,
-                            "opacity": 255,
-                            "red": 0,
-                          },
-                          "danger": {
-                            "$1": {
-                              "blue": 212,
-                              "green": 212,
-                              "opacity": 255,
-                              "red": 248,
-                            },
-                            "$2": {
-                              "blue": 158,
-                              "green": 158,
-                              "opacity": 255,
-                              "red": 239,
-                            },
-                            "$3": {
-                              "blue": 112,
-                              "green": 112,
-                              "opacity": 255,
-                              "red": 232,
-                            },
-                            "$4": {
-                              "blue": 72,
-                              "green": 72,
-                              "opacity": 255,
-                              "red": 226,
-                            },
-                            "$5": {
-                              "blue": 38,
-                              "green": 38,
-                              "opacity": 255,
-                              "red": 220,
-                            },
-                            "$6": {
-                              "blue": 32,
-                              "green": 32,
-                              "opacity": 255,
-                              "red": 185,
-                            },
-                            "$7": {
-                              "blue": 25,
-                              "green": 25,
-                              "opacity": 255,
-                              "red": 145,
-                            },
-                            "$8": {
-                              "blue": 17,
-                              "green": 17,
-                              "opacity": 255,
-                              "red": 98,
-                            },
-                            "$9": {
-                              "blue": 8,
-                              "green": 8,
-                              "opacity": 255,
-                              "red": 44,
-                            },
-                          },
-                          "gray": {
-                            "$1": {
-                              "blue": 222,
-                              "green": 220,
-                              "opacity": 255,
-                              "red": 220,
-                            },
-                            "$2": {
-                              "blue": 182,
-                              "green": 178,
-                              "opacity": 255,
-                              "red": 178,
-                            },
-                            "$3": {
-                              "blue": 147,
-                              "green": 141,
-                              "opacity": 255,
-                              "red": 141,
-                            },
-                            "$4": {
-                              "blue": 117,
-                              "green": 109,
-                              "opacity": 255,
-                              "red": 109,
-                            },
-                            "$5": {
-                              "blue": 91,
-                              "green": 82,
-                              "opacity": 255,
-                              "red": 82,
-                            },
-                            "$6": {
-                              "blue": 77,
-                              "green": 69,
-                              "opacity": 255,
-                              "red": 69,
-                            },
-                            "$7": {
-                              "blue": 60,
-                              "green": 54,
-                              "opacity": 255,
-                              "red": 54,
-                            },
-                            "$8": {
-                              "blue": 41,
-                              "green": 37,
-                              "opacity": 255,
-                              "red": 37,
-                            },
-                            "$9": {
-                              "blue": 18,
-                              "green": 16,
-                              "opacity": 255,
-                              "red": 16,
-                            },
-                          },
-                          "primary": {
-                            "$1": {
-                              "blue": 208,
-                              "green": 226,
-                              "opacity": 255,
-                              "red": 208,
-                            },
-                            "$2": {
-                              "blue": 151,
-                              "green": 190,
-                              "opacity": 255,
-                              "red": 150,
-                            },
-                            "$3": {
-                              "blue": 101,
-                              "green": 159,
-                              "opacity": 255,
-                              "red": 100,
-                            },
-                            "$4": {
-                              "blue": 58,
-                              "green": 132,
-                              "opacity": 255,
-                              "red": 56,
-                            },
-                            "$5": {
-                              "blue": 21,
-                              "green": 109,
-                              "opacity": 255,
-                              "red": 19,
-                            },
-                            "$6": {
-                              "blue": 18,
-                              "green": 92,
-                              "opacity": 255,
-                              "red": 16,
-                            },
-                            "$7": {
-                              "blue": 14,
-                              "green": 72,
-                              "opacity": 255,
-                              "red": 13,
-                            },
-                            "$8": {
-                              "blue": 9,
-                              "green": 49,
-                              "opacity": 255,
-                              "red": 8,
-                            },
-                            "$9": {
-                              "blue": 4,
-                              "green": 22,
-                              "opacity": 255,
-                              "red": 4,
-                            },
-                          },
-                          "text": {
-                            "dark": {
-                              "blue": 30,
-                              "green": 30,
-                              "opacity": 255,
-                              "red": 30,
-                            },
-                            "gray": {
-                              "blue": 96,
-                              "green": 96,
-                              "opacity": 255,
-                              "red": 96,
-                            },
-                            "light": {
-                              "blue": 255,
-                              "green": 255,
-                              "opacity": 255,
-                              "red": 255,
-                            },
-                          },
-                          "white": {
-                            "blue": 255,
-                            "green": 255,
-                            "opacity": 255,
-                            "red": 255,
-                          },
-                          "yellow": {
-                            "$1": {
-                              "blue": 206,
-                              "green": 240,
-                              "opacity": 255,
-                              "red": 251,
-                            },
-                            "$2": {
-                              "blue": 145,
-                              "green": 221,
-                              "opacity": 255,
-                              "red": 246,
-                            },
-                            "$3": {
-                              "blue": 92,
-                              "green": 205,
-                              "opacity": 255,
-                              "red": 241,
-                            },
-                            "$4": {
-                              "blue": 47,
-                              "green": 191,
-                              "opacity": 255,
-                              "red": 237,
-                            },
-                            "$5": {
-                              "blue": 8,
-                              "green": 179,
-                              "opacity": 255,
-                              "red": 234,
-                            },
-                            "$6": {
-                              "blue": 7,
-                              "green": 151,
-                              "opacity": 255,
-                              "red": 197,
-                            },
-                            "$7": {
-                              "blue": 5,
-                              "green": 118,
-                              "opacity": 255,
-                              "red": 154,
-                            },
-                            "$8": {
-                              "blue": 4,
-                              "green": 80,
-                              "opacity": 255,
-                              "red": 104,
-                            },
-                            "$9": {
-                              "blue": 2,
-                              "green": 36,
-                              "opacity": 255,
-                              "red": 47,
-                            },
-                          },
-                        },
-                      },
-                    }
-                  }
-                  x={
-                    {
-                      "align": "center",
-                      "color": [Function],
-                      "size": 16,
+                      "color": "#8d8d93ff",
+                      "flex": undefined,
+                      "fontSize": 16,
+                      "fontWeight": undefined,
+                      "height": undefined,
+                      "includeFontPadding": undefined,
+                      "lineHeight": undefined,
+                      "margin": undefined,
+                      "marginBottom": undefined,
+                      "marginHorizontal": undefined,
+                      "marginLeft": undefined,
+                      "marginRight": undefined,
+                      "marginTop": undefined,
+                      "marginVertical": undefined,
+                      "padding": undefined,
+                      "paddingBottom": undefined,
+                      "paddingHorizontal": undefined,
+                      "paddingLeft": undefined,
+                      "paddingRight": undefined,
+                      "paddingTop": undefined,
+                      "paddingVertical": undefined,
+                      "textAlign": "center",
+                      "width": undefined,
                     }
                   }
                 >
                   Nenhum grupo cadastrado
-                </Txt>
+                </Text>
               </View>
             }
             contentContainerStyle={
@@ -3155,6 +1567,7 @@ exports[`renders 3`] = `
           >
             <View>
               <View
+                onLayout={[Function]}
                 style={
                   {
                     "alignItems": undefined,
@@ -3895,612 +2308,82 @@ exports[`renders 3`] = `
           <RCTScrollView
             ListEmptyComponent={
               <View
-                env={
+                style={
                   {
-                    "eventHandler": [Function],
-                    "safeArea": {
-                      "initialMetrics": {
-                        "_tag": "Some",
-                        "value": {
-                          "frame": {
-                            "height": 640,
-                            "width": 320,
-                            "x": 0,
-                            "y": 0,
-                          },
-                          "insets": {
-                            "bottom": 0,
-                            "left": 0,
-                            "right": 0,
-                            "top": 0,
-                          },
-                        },
-                      },
-                    },
-                    "stateRef": {
-                      "execute": [Function],
-                      "subscribe": [Function],
-                    },
-                    "theme": {
-                      "colors": {
-                        "background": {
-                          "blue": 242,
-                          "green": 242,
-                          "opacity": 255,
-                          "red": 242,
-                        },
-                        "black": {
-                          "blue": 0,
-                          "green": 0,
-                          "opacity": 255,
-                          "red": 0,
-                        },
-                        "danger": {
-                          "$1": {
-                            "blue": 212,
-                            "green": 212,
-                            "opacity": 255,
-                            "red": 248,
-                          },
-                          "$2": {
-                            "blue": 158,
-                            "green": 158,
-                            "opacity": 255,
-                            "red": 239,
-                          },
-                          "$3": {
-                            "blue": 112,
-                            "green": 112,
-                            "opacity": 255,
-                            "red": 232,
-                          },
-                          "$4": {
-                            "blue": 72,
-                            "green": 72,
-                            "opacity": 255,
-                            "red": 226,
-                          },
-                          "$5": {
-                            "blue": 38,
-                            "green": 38,
-                            "opacity": 255,
-                            "red": 220,
-                          },
-                          "$6": {
-                            "blue": 32,
-                            "green": 32,
-                            "opacity": 255,
-                            "red": 185,
-                          },
-                          "$7": {
-                            "blue": 25,
-                            "green": 25,
-                            "opacity": 255,
-                            "red": 145,
-                          },
-                          "$8": {
-                            "blue": 17,
-                            "green": 17,
-                            "opacity": 255,
-                            "red": 98,
-                          },
-                          "$9": {
-                            "blue": 8,
-                            "green": 8,
-                            "opacity": 255,
-                            "red": 44,
-                          },
-                        },
-                        "gray": {
-                          "$1": {
-                            "blue": 222,
-                            "green": 220,
-                            "opacity": 255,
-                            "red": 220,
-                          },
-                          "$2": {
-                            "blue": 182,
-                            "green": 178,
-                            "opacity": 255,
-                            "red": 178,
-                          },
-                          "$3": {
-                            "blue": 147,
-                            "green": 141,
-                            "opacity": 255,
-                            "red": 141,
-                          },
-                          "$4": {
-                            "blue": 117,
-                            "green": 109,
-                            "opacity": 255,
-                            "red": 109,
-                          },
-                          "$5": {
-                            "blue": 91,
-                            "green": 82,
-                            "opacity": 255,
-                            "red": 82,
-                          },
-                          "$6": {
-                            "blue": 77,
-                            "green": 69,
-                            "opacity": 255,
-                            "red": 69,
-                          },
-                          "$7": {
-                            "blue": 60,
-                            "green": 54,
-                            "opacity": 255,
-                            "red": 54,
-                          },
-                          "$8": {
-                            "blue": 41,
-                            "green": 37,
-                            "opacity": 255,
-                            "red": 37,
-                          },
-                          "$9": {
-                            "blue": 18,
-                            "green": 16,
-                            "opacity": 255,
-                            "red": 16,
-                          },
-                        },
-                        "primary": {
-                          "$1": {
-                            "blue": 208,
-                            "green": 226,
-                            "opacity": 255,
-                            "red": 208,
-                          },
-                          "$2": {
-                            "blue": 151,
-                            "green": 190,
-                            "opacity": 255,
-                            "red": 150,
-                          },
-                          "$3": {
-                            "blue": 101,
-                            "green": 159,
-                            "opacity": 255,
-                            "red": 100,
-                          },
-                          "$4": {
-                            "blue": 58,
-                            "green": 132,
-                            "opacity": 255,
-                            "red": 56,
-                          },
-                          "$5": {
-                            "blue": 21,
-                            "green": 109,
-                            "opacity": 255,
-                            "red": 19,
-                          },
-                          "$6": {
-                            "blue": 18,
-                            "green": 92,
-                            "opacity": 255,
-                            "red": 16,
-                          },
-                          "$7": {
-                            "blue": 14,
-                            "green": 72,
-                            "opacity": 255,
-                            "red": 13,
-                          },
-                          "$8": {
-                            "blue": 9,
-                            "green": 49,
-                            "opacity": 255,
-                            "red": 8,
-                          },
-                          "$9": {
-                            "blue": 4,
-                            "green": 22,
-                            "opacity": 255,
-                            "red": 4,
-                          },
-                        },
-                        "text": {
-                          "dark": {
-                            "blue": 30,
-                            "green": 30,
-                            "opacity": 255,
-                            "red": 30,
-                          },
-                          "gray": {
-                            "blue": 96,
-                            "green": 96,
-                            "opacity": 255,
-                            "red": 96,
-                          },
-                          "light": {
-                            "blue": 255,
-                            "green": 255,
-                            "opacity": 255,
-                            "red": 255,
-                          },
-                        },
-                        "white": {
-                          "blue": 255,
-                          "green": 255,
-                          "opacity": 255,
-                          "red": 255,
-                        },
-                        "yellow": {
-                          "$1": {
-                            "blue": 206,
-                            "green": 240,
-                            "opacity": 255,
-                            "red": 251,
-                          },
-                          "$2": {
-                            "blue": 145,
-                            "green": 221,
-                            "opacity": 255,
-                            "red": 246,
-                          },
-                          "$3": {
-                            "blue": 92,
-                            "green": 205,
-                            "opacity": 255,
-                            "red": 241,
-                          },
-                          "$4": {
-                            "blue": 47,
-                            "green": 191,
-                            "opacity": 255,
-                            "red": 237,
-                          },
-                          "$5": {
-                            "blue": 8,
-                            "green": 179,
-                            "opacity": 255,
-                            "red": 234,
-                          },
-                          "$6": {
-                            "blue": 7,
-                            "green": 151,
-                            "opacity": 255,
-                            "red": 197,
-                          },
-                          "$7": {
-                            "blue": 5,
-                            "green": 118,
-                            "opacity": 255,
-                            "red": 154,
-                          },
-                          "$8": {
-                            "blue": 4,
-                            "green": 80,
-                            "opacity": 255,
-                            "red": 104,
-                          },
-                          "$9": {
-                            "blue": 2,
-                            "green": 36,
-                            "opacity": 255,
-                            "red": 47,
-                          },
-                        },
-                      },
-                    },
-                  }
-                }
-                x={
-                  {
+                    "alignItems": undefined,
+                    "alignSelf": undefined,
+                    "aspectRatio": undefined,
+                    "backgroundColor": undefined,
+                    "borderBottomLeftRadius": undefined,
+                    "borderBottomRightRadius": undefined,
+                    "borderBottomWidth": undefined,
+                    "borderColor": undefined,
+                    "borderLeftWidth": undefined,
+                    "borderRadius": undefined,
+                    "borderRightWidth": undefined,
+                    "borderTopLeftRadius": undefined,
+                    "borderTopRightRadius": undefined,
+                    "borderTopWidth": undefined,
+                    "borderWidth": undefined,
+                    "columnGap": undefined,
+                    "elevation": undefined,
                     "flex": 1,
-                    "justify": "center",
+                    "flexDirection": undefined,
+                    "gap": undefined,
+                    "height": undefined,
+                    "justifyContent": "center",
+                    "margin": undefined,
+                    "marginBottom": undefined,
+                    "marginHorizontal": undefined,
+                    "marginLeft": undefined,
+                    "marginRight": undefined,
+                    "marginTop": undefined,
+                    "marginVertical": undefined,
+                    "overflow": undefined,
+                    "padding": undefined,
+                    "paddingBottom": undefined,
+                    "paddingHorizontal": undefined,
+                    "paddingLeft": undefined,
+                    "paddingRight": undefined,
+                    "paddingTop": undefined,
+                    "paddingVertical": undefined,
+                    "rowGap": undefined,
+                    "width": undefined,
+                    "zIndex": undefined,
                   }
                 }
               >
-                <Txt
-                  env={
+                <Text
+                  style={
                     {
-                      "eventHandler": [Function],
-                      "safeArea": {
-                        "initialMetrics": {
-                          "_tag": "Some",
-                          "value": {
-                            "frame": {
-                              "height": 640,
-                              "width": 320,
-                              "x": 0,
-                              "y": 0,
-                            },
-                            "insets": {
-                              "bottom": 0,
-                              "left": 0,
-                              "right": 0,
-                              "top": 0,
-                            },
-                          },
-                        },
-                      },
-                      "stateRef": {
-                        "execute": [Function],
-                        "subscribe": [Function],
-                      },
-                      "theme": {
-                        "colors": {
-                          "background": {
-                            "blue": 242,
-                            "green": 242,
-                            "opacity": 255,
-                            "red": 242,
-                          },
-                          "black": {
-                            "blue": 0,
-                            "green": 0,
-                            "opacity": 255,
-                            "red": 0,
-                          },
-                          "danger": {
-                            "$1": {
-                              "blue": 212,
-                              "green": 212,
-                              "opacity": 255,
-                              "red": 248,
-                            },
-                            "$2": {
-                              "blue": 158,
-                              "green": 158,
-                              "opacity": 255,
-                              "red": 239,
-                            },
-                            "$3": {
-                              "blue": 112,
-                              "green": 112,
-                              "opacity": 255,
-                              "red": 232,
-                            },
-                            "$4": {
-                              "blue": 72,
-                              "green": 72,
-                              "opacity": 255,
-                              "red": 226,
-                            },
-                            "$5": {
-                              "blue": 38,
-                              "green": 38,
-                              "opacity": 255,
-                              "red": 220,
-                            },
-                            "$6": {
-                              "blue": 32,
-                              "green": 32,
-                              "opacity": 255,
-                              "red": 185,
-                            },
-                            "$7": {
-                              "blue": 25,
-                              "green": 25,
-                              "opacity": 255,
-                              "red": 145,
-                            },
-                            "$8": {
-                              "blue": 17,
-                              "green": 17,
-                              "opacity": 255,
-                              "red": 98,
-                            },
-                            "$9": {
-                              "blue": 8,
-                              "green": 8,
-                              "opacity": 255,
-                              "red": 44,
-                            },
-                          },
-                          "gray": {
-                            "$1": {
-                              "blue": 222,
-                              "green": 220,
-                              "opacity": 255,
-                              "red": 220,
-                            },
-                            "$2": {
-                              "blue": 182,
-                              "green": 178,
-                              "opacity": 255,
-                              "red": 178,
-                            },
-                            "$3": {
-                              "blue": 147,
-                              "green": 141,
-                              "opacity": 255,
-                              "red": 141,
-                            },
-                            "$4": {
-                              "blue": 117,
-                              "green": 109,
-                              "opacity": 255,
-                              "red": 109,
-                            },
-                            "$5": {
-                              "blue": 91,
-                              "green": 82,
-                              "opacity": 255,
-                              "red": 82,
-                            },
-                            "$6": {
-                              "blue": 77,
-                              "green": 69,
-                              "opacity": 255,
-                              "red": 69,
-                            },
-                            "$7": {
-                              "blue": 60,
-                              "green": 54,
-                              "opacity": 255,
-                              "red": 54,
-                            },
-                            "$8": {
-                              "blue": 41,
-                              "green": 37,
-                              "opacity": 255,
-                              "red": 37,
-                            },
-                            "$9": {
-                              "blue": 18,
-                              "green": 16,
-                              "opacity": 255,
-                              "red": 16,
-                            },
-                          },
-                          "primary": {
-                            "$1": {
-                              "blue": 208,
-                              "green": 226,
-                              "opacity": 255,
-                              "red": 208,
-                            },
-                            "$2": {
-                              "blue": 151,
-                              "green": 190,
-                              "opacity": 255,
-                              "red": 150,
-                            },
-                            "$3": {
-                              "blue": 101,
-                              "green": 159,
-                              "opacity": 255,
-                              "red": 100,
-                            },
-                            "$4": {
-                              "blue": 58,
-                              "green": 132,
-                              "opacity": 255,
-                              "red": 56,
-                            },
-                            "$5": {
-                              "blue": 21,
-                              "green": 109,
-                              "opacity": 255,
-                              "red": 19,
-                            },
-                            "$6": {
-                              "blue": 18,
-                              "green": 92,
-                              "opacity": 255,
-                              "red": 16,
-                            },
-                            "$7": {
-                              "blue": 14,
-                              "green": 72,
-                              "opacity": 255,
-                              "red": 13,
-                            },
-                            "$8": {
-                              "blue": 9,
-                              "green": 49,
-                              "opacity": 255,
-                              "red": 8,
-                            },
-                            "$9": {
-                              "blue": 4,
-                              "green": 22,
-                              "opacity": 255,
-                              "red": 4,
-                            },
-                          },
-                          "text": {
-                            "dark": {
-                              "blue": 30,
-                              "green": 30,
-                              "opacity": 255,
-                              "red": 30,
-                            },
-                            "gray": {
-                              "blue": 96,
-                              "green": 96,
-                              "opacity": 255,
-                              "red": 96,
-                            },
-                            "light": {
-                              "blue": 255,
-                              "green": 255,
-                              "opacity": 255,
-                              "red": 255,
-                            },
-                          },
-                          "white": {
-                            "blue": 255,
-                            "green": 255,
-                            "opacity": 255,
-                            "red": 255,
-                          },
-                          "yellow": {
-                            "$1": {
-                              "blue": 206,
-                              "green": 240,
-                              "opacity": 255,
-                              "red": 251,
-                            },
-                            "$2": {
-                              "blue": 145,
-                              "green": 221,
-                              "opacity": 255,
-                              "red": 246,
-                            },
-                            "$3": {
-                              "blue": 92,
-                              "green": 205,
-                              "opacity": 255,
-                              "red": 241,
-                            },
-                            "$4": {
-                              "blue": 47,
-                              "green": 191,
-                              "opacity": 255,
-                              "red": 237,
-                            },
-                            "$5": {
-                              "blue": 8,
-                              "green": 179,
-                              "opacity": 255,
-                              "red": 234,
-                            },
-                            "$6": {
-                              "blue": 7,
-                              "green": 151,
-                              "opacity": 255,
-                              "red": 197,
-                            },
-                            "$7": {
-                              "blue": 5,
-                              "green": 118,
-                              "opacity": 255,
-                              "red": 154,
-                            },
-                            "$8": {
-                              "blue": 4,
-                              "green": 80,
-                              "opacity": 255,
-                              "red": 104,
-                            },
-                            "$9": {
-                              "blue": 2,
-                              "green": 36,
-                              "opacity": 255,
-                              "red": 47,
-                            },
-                          },
-                        },
-                      },
-                    }
-                  }
-                  x={
-                    {
-                      "align": "center",
-                      "color": [Function],
-                      "size": 16,
+                      "color": "#8d8d93ff",
+                      "flex": undefined,
+                      "fontSize": 16,
+                      "fontWeight": undefined,
+                      "height": undefined,
+                      "includeFontPadding": undefined,
+                      "lineHeight": undefined,
+                      "margin": undefined,
+                      "marginBottom": undefined,
+                      "marginHorizontal": undefined,
+                      "marginLeft": undefined,
+                      "marginRight": undefined,
+                      "marginTop": undefined,
+                      "marginVertical": undefined,
+                      "padding": undefined,
+                      "paddingBottom": undefined,
+                      "paddingHorizontal": undefined,
+                      "paddingLeft": undefined,
+                      "paddingRight": undefined,
+                      "paddingTop": undefined,
+                      "paddingVertical": undefined,
+                      "textAlign": "center",
+                      "width": undefined,
                     }
                   }
                 >
                   Nenhum jogador cadastrado
-                </Txt>
+                </Text>
               </View>
             }
             contentContainerStyle={
@@ -4539,6 +2422,7 @@ exports[`renders 3`] = `
           >
             <View>
               <View
+                onLayout={[Function]}
                 style={
                   {
                     "alignItems": undefined,
@@ -5106,612 +2990,82 @@ exports[`renders 4`] = `
           <RCTScrollView
             ListEmptyComponent={
               <View
-                env={
+                style={
                   {
-                    "eventHandler": [Function],
-                    "safeArea": {
-                      "initialMetrics": {
-                        "_tag": "Some",
-                        "value": {
-                          "frame": {
-                            "height": 640,
-                            "width": 320,
-                            "x": 0,
-                            "y": 0,
-                          },
-                          "insets": {
-                            "bottom": 0,
-                            "left": 0,
-                            "right": 0,
-                            "top": 0,
-                          },
-                        },
-                      },
-                    },
-                    "stateRef": {
-                      "execute": [Function],
-                      "subscribe": [Function],
-                    },
-                    "theme": {
-                      "colors": {
-                        "background": {
-                          "blue": 242,
-                          "green": 242,
-                          "opacity": 255,
-                          "red": 242,
-                        },
-                        "black": {
-                          "blue": 0,
-                          "green": 0,
-                          "opacity": 255,
-                          "red": 0,
-                        },
-                        "danger": {
-                          "$1": {
-                            "blue": 212,
-                            "green": 212,
-                            "opacity": 255,
-                            "red": 248,
-                          },
-                          "$2": {
-                            "blue": 158,
-                            "green": 158,
-                            "opacity": 255,
-                            "red": 239,
-                          },
-                          "$3": {
-                            "blue": 112,
-                            "green": 112,
-                            "opacity": 255,
-                            "red": 232,
-                          },
-                          "$4": {
-                            "blue": 72,
-                            "green": 72,
-                            "opacity": 255,
-                            "red": 226,
-                          },
-                          "$5": {
-                            "blue": 38,
-                            "green": 38,
-                            "opacity": 255,
-                            "red": 220,
-                          },
-                          "$6": {
-                            "blue": 32,
-                            "green": 32,
-                            "opacity": 255,
-                            "red": 185,
-                          },
-                          "$7": {
-                            "blue": 25,
-                            "green": 25,
-                            "opacity": 255,
-                            "red": 145,
-                          },
-                          "$8": {
-                            "blue": 17,
-                            "green": 17,
-                            "opacity": 255,
-                            "red": 98,
-                          },
-                          "$9": {
-                            "blue": 8,
-                            "green": 8,
-                            "opacity": 255,
-                            "red": 44,
-                          },
-                        },
-                        "gray": {
-                          "$1": {
-                            "blue": 222,
-                            "green": 220,
-                            "opacity": 255,
-                            "red": 220,
-                          },
-                          "$2": {
-                            "blue": 182,
-                            "green": 178,
-                            "opacity": 255,
-                            "red": 178,
-                          },
-                          "$3": {
-                            "blue": 147,
-                            "green": 141,
-                            "opacity": 255,
-                            "red": 141,
-                          },
-                          "$4": {
-                            "blue": 117,
-                            "green": 109,
-                            "opacity": 255,
-                            "red": 109,
-                          },
-                          "$5": {
-                            "blue": 91,
-                            "green": 82,
-                            "opacity": 255,
-                            "red": 82,
-                          },
-                          "$6": {
-                            "blue": 77,
-                            "green": 69,
-                            "opacity": 255,
-                            "red": 69,
-                          },
-                          "$7": {
-                            "blue": 60,
-                            "green": 54,
-                            "opacity": 255,
-                            "red": 54,
-                          },
-                          "$8": {
-                            "blue": 41,
-                            "green": 37,
-                            "opacity": 255,
-                            "red": 37,
-                          },
-                          "$9": {
-                            "blue": 18,
-                            "green": 16,
-                            "opacity": 255,
-                            "red": 16,
-                          },
-                        },
-                        "primary": {
-                          "$1": {
-                            "blue": 208,
-                            "green": 226,
-                            "opacity": 255,
-                            "red": 208,
-                          },
-                          "$2": {
-                            "blue": 151,
-                            "green": 190,
-                            "opacity": 255,
-                            "red": 150,
-                          },
-                          "$3": {
-                            "blue": 101,
-                            "green": 159,
-                            "opacity": 255,
-                            "red": 100,
-                          },
-                          "$4": {
-                            "blue": 58,
-                            "green": 132,
-                            "opacity": 255,
-                            "red": 56,
-                          },
-                          "$5": {
-                            "blue": 21,
-                            "green": 109,
-                            "opacity": 255,
-                            "red": 19,
-                          },
-                          "$6": {
-                            "blue": 18,
-                            "green": 92,
-                            "opacity": 255,
-                            "red": 16,
-                          },
-                          "$7": {
-                            "blue": 14,
-                            "green": 72,
-                            "opacity": 255,
-                            "red": 13,
-                          },
-                          "$8": {
-                            "blue": 9,
-                            "green": 49,
-                            "opacity": 255,
-                            "red": 8,
-                          },
-                          "$9": {
-                            "blue": 4,
-                            "green": 22,
-                            "opacity": 255,
-                            "red": 4,
-                          },
-                        },
-                        "text": {
-                          "dark": {
-                            "blue": 30,
-                            "green": 30,
-                            "opacity": 255,
-                            "red": 30,
-                          },
-                          "gray": {
-                            "blue": 96,
-                            "green": 96,
-                            "opacity": 255,
-                            "red": 96,
-                          },
-                          "light": {
-                            "blue": 255,
-                            "green": 255,
-                            "opacity": 255,
-                            "red": 255,
-                          },
-                        },
-                        "white": {
-                          "blue": 255,
-                          "green": 255,
-                          "opacity": 255,
-                          "red": 255,
-                        },
-                        "yellow": {
-                          "$1": {
-                            "blue": 206,
-                            "green": 240,
-                            "opacity": 255,
-                            "red": 251,
-                          },
-                          "$2": {
-                            "blue": 145,
-                            "green": 221,
-                            "opacity": 255,
-                            "red": 246,
-                          },
-                          "$3": {
-                            "blue": 92,
-                            "green": 205,
-                            "opacity": 255,
-                            "red": 241,
-                          },
-                          "$4": {
-                            "blue": 47,
-                            "green": 191,
-                            "opacity": 255,
-                            "red": 237,
-                          },
-                          "$5": {
-                            "blue": 8,
-                            "green": 179,
-                            "opacity": 255,
-                            "red": 234,
-                          },
-                          "$6": {
-                            "blue": 7,
-                            "green": 151,
-                            "opacity": 255,
-                            "red": 197,
-                          },
-                          "$7": {
-                            "blue": 5,
-                            "green": 118,
-                            "opacity": 255,
-                            "red": 154,
-                          },
-                          "$8": {
-                            "blue": 4,
-                            "green": 80,
-                            "opacity": 255,
-                            "red": 104,
-                          },
-                          "$9": {
-                            "blue": 2,
-                            "green": 36,
-                            "opacity": 255,
-                            "red": 47,
-                          },
-                        },
-                      },
-                    },
-                  }
-                }
-                x={
-                  {
+                    "alignItems": undefined,
+                    "alignSelf": undefined,
+                    "aspectRatio": undefined,
+                    "backgroundColor": undefined,
+                    "borderBottomLeftRadius": undefined,
+                    "borderBottomRightRadius": undefined,
+                    "borderBottomWidth": undefined,
+                    "borderColor": undefined,
+                    "borderLeftWidth": undefined,
+                    "borderRadius": undefined,
+                    "borderRightWidth": undefined,
+                    "borderTopLeftRadius": undefined,
+                    "borderTopRightRadius": undefined,
+                    "borderTopWidth": undefined,
+                    "borderWidth": undefined,
+                    "columnGap": undefined,
+                    "elevation": undefined,
                     "flex": 1,
-                    "justify": "center",
+                    "flexDirection": undefined,
+                    "gap": undefined,
+                    "height": undefined,
+                    "justifyContent": "center",
+                    "margin": undefined,
+                    "marginBottom": undefined,
+                    "marginHorizontal": undefined,
+                    "marginLeft": undefined,
+                    "marginRight": undefined,
+                    "marginTop": undefined,
+                    "marginVertical": undefined,
+                    "overflow": undefined,
+                    "padding": undefined,
+                    "paddingBottom": undefined,
+                    "paddingHorizontal": undefined,
+                    "paddingLeft": undefined,
+                    "paddingRight": undefined,
+                    "paddingTop": undefined,
+                    "paddingVertical": undefined,
+                    "rowGap": undefined,
+                    "width": undefined,
+                    "zIndex": undefined,
                   }
                 }
               >
-                <Txt
-                  env={
+                <Text
+                  style={
                     {
-                      "eventHandler": [Function],
-                      "safeArea": {
-                        "initialMetrics": {
-                          "_tag": "Some",
-                          "value": {
-                            "frame": {
-                              "height": 640,
-                              "width": 320,
-                              "x": 0,
-                              "y": 0,
-                            },
-                            "insets": {
-                              "bottom": 0,
-                              "left": 0,
-                              "right": 0,
-                              "top": 0,
-                            },
-                          },
-                        },
-                      },
-                      "stateRef": {
-                        "execute": [Function],
-                        "subscribe": [Function],
-                      },
-                      "theme": {
-                        "colors": {
-                          "background": {
-                            "blue": 242,
-                            "green": 242,
-                            "opacity": 255,
-                            "red": 242,
-                          },
-                          "black": {
-                            "blue": 0,
-                            "green": 0,
-                            "opacity": 255,
-                            "red": 0,
-                          },
-                          "danger": {
-                            "$1": {
-                              "blue": 212,
-                              "green": 212,
-                              "opacity": 255,
-                              "red": 248,
-                            },
-                            "$2": {
-                              "blue": 158,
-                              "green": 158,
-                              "opacity": 255,
-                              "red": 239,
-                            },
-                            "$3": {
-                              "blue": 112,
-                              "green": 112,
-                              "opacity": 255,
-                              "red": 232,
-                            },
-                            "$4": {
-                              "blue": 72,
-                              "green": 72,
-                              "opacity": 255,
-                              "red": 226,
-                            },
-                            "$5": {
-                              "blue": 38,
-                              "green": 38,
-                              "opacity": 255,
-                              "red": 220,
-                            },
-                            "$6": {
-                              "blue": 32,
-                              "green": 32,
-                              "opacity": 255,
-                              "red": 185,
-                            },
-                            "$7": {
-                              "blue": 25,
-                              "green": 25,
-                              "opacity": 255,
-                              "red": 145,
-                            },
-                            "$8": {
-                              "blue": 17,
-                              "green": 17,
-                              "opacity": 255,
-                              "red": 98,
-                            },
-                            "$9": {
-                              "blue": 8,
-                              "green": 8,
-                              "opacity": 255,
-                              "red": 44,
-                            },
-                          },
-                          "gray": {
-                            "$1": {
-                              "blue": 222,
-                              "green": 220,
-                              "opacity": 255,
-                              "red": 220,
-                            },
-                            "$2": {
-                              "blue": 182,
-                              "green": 178,
-                              "opacity": 255,
-                              "red": 178,
-                            },
-                            "$3": {
-                              "blue": 147,
-                              "green": 141,
-                              "opacity": 255,
-                              "red": 141,
-                            },
-                            "$4": {
-                              "blue": 117,
-                              "green": 109,
-                              "opacity": 255,
-                              "red": 109,
-                            },
-                            "$5": {
-                              "blue": 91,
-                              "green": 82,
-                              "opacity": 255,
-                              "red": 82,
-                            },
-                            "$6": {
-                              "blue": 77,
-                              "green": 69,
-                              "opacity": 255,
-                              "red": 69,
-                            },
-                            "$7": {
-                              "blue": 60,
-                              "green": 54,
-                              "opacity": 255,
-                              "red": 54,
-                            },
-                            "$8": {
-                              "blue": 41,
-                              "green": 37,
-                              "opacity": 255,
-                              "red": 37,
-                            },
-                            "$9": {
-                              "blue": 18,
-                              "green": 16,
-                              "opacity": 255,
-                              "red": 16,
-                            },
-                          },
-                          "primary": {
-                            "$1": {
-                              "blue": 208,
-                              "green": 226,
-                              "opacity": 255,
-                              "red": 208,
-                            },
-                            "$2": {
-                              "blue": 151,
-                              "green": 190,
-                              "opacity": 255,
-                              "red": 150,
-                            },
-                            "$3": {
-                              "blue": 101,
-                              "green": 159,
-                              "opacity": 255,
-                              "red": 100,
-                            },
-                            "$4": {
-                              "blue": 58,
-                              "green": 132,
-                              "opacity": 255,
-                              "red": 56,
-                            },
-                            "$5": {
-                              "blue": 21,
-                              "green": 109,
-                              "opacity": 255,
-                              "red": 19,
-                            },
-                            "$6": {
-                              "blue": 18,
-                              "green": 92,
-                              "opacity": 255,
-                              "red": 16,
-                            },
-                            "$7": {
-                              "blue": 14,
-                              "green": 72,
-                              "opacity": 255,
-                              "red": 13,
-                            },
-                            "$8": {
-                              "blue": 9,
-                              "green": 49,
-                              "opacity": 255,
-                              "red": 8,
-                            },
-                            "$9": {
-                              "blue": 4,
-                              "green": 22,
-                              "opacity": 255,
-                              "red": 4,
-                            },
-                          },
-                          "text": {
-                            "dark": {
-                              "blue": 30,
-                              "green": 30,
-                              "opacity": 255,
-                              "red": 30,
-                            },
-                            "gray": {
-                              "blue": 96,
-                              "green": 96,
-                              "opacity": 255,
-                              "red": 96,
-                            },
-                            "light": {
-                              "blue": 255,
-                              "green": 255,
-                              "opacity": 255,
-                              "red": 255,
-                            },
-                          },
-                          "white": {
-                            "blue": 255,
-                            "green": 255,
-                            "opacity": 255,
-                            "red": 255,
-                          },
-                          "yellow": {
-                            "$1": {
-                              "blue": 206,
-                              "green": 240,
-                              "opacity": 255,
-                              "red": 251,
-                            },
-                            "$2": {
-                              "blue": 145,
-                              "green": 221,
-                              "opacity": 255,
-                              "red": 246,
-                            },
-                            "$3": {
-                              "blue": 92,
-                              "green": 205,
-                              "opacity": 255,
-                              "red": 241,
-                            },
-                            "$4": {
-                              "blue": 47,
-                              "green": 191,
-                              "opacity": 255,
-                              "red": 237,
-                            },
-                            "$5": {
-                              "blue": 8,
-                              "green": 179,
-                              "opacity": 255,
-                              "red": 234,
-                            },
-                            "$6": {
-                              "blue": 7,
-                              "green": 151,
-                              "opacity": 255,
-                              "red": 197,
-                            },
-                            "$7": {
-                              "blue": 5,
-                              "green": 118,
-                              "opacity": 255,
-                              "red": 154,
-                            },
-                            "$8": {
-                              "blue": 4,
-                              "green": 80,
-                              "opacity": 255,
-                              "red": 104,
-                            },
-                            "$9": {
-                              "blue": 2,
-                              "green": 36,
-                              "opacity": 255,
-                              "red": 47,
-                            },
-                          },
-                        },
-                      },
-                    }
-                  }
-                  x={
-                    {
-                      "align": "center",
-                      "color": [Function],
-                      "size": 16,
+                      "color": "#8d8d93ff",
+                      "flex": undefined,
+                      "fontSize": 16,
+                      "fontWeight": undefined,
+                      "height": undefined,
+                      "includeFontPadding": undefined,
+                      "lineHeight": undefined,
+                      "margin": undefined,
+                      "marginBottom": undefined,
+                      "marginHorizontal": undefined,
+                      "marginLeft": undefined,
+                      "marginRight": undefined,
+                      "marginTop": undefined,
+                      "marginVertical": undefined,
+                      "padding": undefined,
+                      "paddingBottom": undefined,
+                      "paddingHorizontal": undefined,
+                      "paddingLeft": undefined,
+                      "paddingRight": undefined,
+                      "paddingTop": undefined,
+                      "paddingVertical": undefined,
+                      "textAlign": "center",
+                      "width": undefined,
                     }
                   }
                 >
                   Nenhum grupo cadastrado
-                </Txt>
+                </Text>
               </View>
             }
             contentContainerStyle={
@@ -5750,6 +3104,7 @@ exports[`renders 4`] = `
           >
             <View>
               <View
+                onLayout={[Function]}
                 style={
                   {
                     "alignItems": undefined,
@@ -6490,612 +3845,82 @@ exports[`renders 4`] = `
           <RCTScrollView
             ListEmptyComponent={
               <View
-                env={
+                style={
                   {
-                    "eventHandler": [Function],
-                    "safeArea": {
-                      "initialMetrics": {
-                        "_tag": "Some",
-                        "value": {
-                          "frame": {
-                            "height": 640,
-                            "width": 320,
-                            "x": 0,
-                            "y": 0,
-                          },
-                          "insets": {
-                            "bottom": 0,
-                            "left": 0,
-                            "right": 0,
-                            "top": 0,
-                          },
-                        },
-                      },
-                    },
-                    "stateRef": {
-                      "execute": [Function],
-                      "subscribe": [Function],
-                    },
-                    "theme": {
-                      "colors": {
-                        "background": {
-                          "blue": 242,
-                          "green": 242,
-                          "opacity": 255,
-                          "red": 242,
-                        },
-                        "black": {
-                          "blue": 0,
-                          "green": 0,
-                          "opacity": 255,
-                          "red": 0,
-                        },
-                        "danger": {
-                          "$1": {
-                            "blue": 212,
-                            "green": 212,
-                            "opacity": 255,
-                            "red": 248,
-                          },
-                          "$2": {
-                            "blue": 158,
-                            "green": 158,
-                            "opacity": 255,
-                            "red": 239,
-                          },
-                          "$3": {
-                            "blue": 112,
-                            "green": 112,
-                            "opacity": 255,
-                            "red": 232,
-                          },
-                          "$4": {
-                            "blue": 72,
-                            "green": 72,
-                            "opacity": 255,
-                            "red": 226,
-                          },
-                          "$5": {
-                            "blue": 38,
-                            "green": 38,
-                            "opacity": 255,
-                            "red": 220,
-                          },
-                          "$6": {
-                            "blue": 32,
-                            "green": 32,
-                            "opacity": 255,
-                            "red": 185,
-                          },
-                          "$7": {
-                            "blue": 25,
-                            "green": 25,
-                            "opacity": 255,
-                            "red": 145,
-                          },
-                          "$8": {
-                            "blue": 17,
-                            "green": 17,
-                            "opacity": 255,
-                            "red": 98,
-                          },
-                          "$9": {
-                            "blue": 8,
-                            "green": 8,
-                            "opacity": 255,
-                            "red": 44,
-                          },
-                        },
-                        "gray": {
-                          "$1": {
-                            "blue": 222,
-                            "green": 220,
-                            "opacity": 255,
-                            "red": 220,
-                          },
-                          "$2": {
-                            "blue": 182,
-                            "green": 178,
-                            "opacity": 255,
-                            "red": 178,
-                          },
-                          "$3": {
-                            "blue": 147,
-                            "green": 141,
-                            "opacity": 255,
-                            "red": 141,
-                          },
-                          "$4": {
-                            "blue": 117,
-                            "green": 109,
-                            "opacity": 255,
-                            "red": 109,
-                          },
-                          "$5": {
-                            "blue": 91,
-                            "green": 82,
-                            "opacity": 255,
-                            "red": 82,
-                          },
-                          "$6": {
-                            "blue": 77,
-                            "green": 69,
-                            "opacity": 255,
-                            "red": 69,
-                          },
-                          "$7": {
-                            "blue": 60,
-                            "green": 54,
-                            "opacity": 255,
-                            "red": 54,
-                          },
-                          "$8": {
-                            "blue": 41,
-                            "green": 37,
-                            "opacity": 255,
-                            "red": 37,
-                          },
-                          "$9": {
-                            "blue": 18,
-                            "green": 16,
-                            "opacity": 255,
-                            "red": 16,
-                          },
-                        },
-                        "primary": {
-                          "$1": {
-                            "blue": 208,
-                            "green": 226,
-                            "opacity": 255,
-                            "red": 208,
-                          },
-                          "$2": {
-                            "blue": 151,
-                            "green": 190,
-                            "opacity": 255,
-                            "red": 150,
-                          },
-                          "$3": {
-                            "blue": 101,
-                            "green": 159,
-                            "opacity": 255,
-                            "red": 100,
-                          },
-                          "$4": {
-                            "blue": 58,
-                            "green": 132,
-                            "opacity": 255,
-                            "red": 56,
-                          },
-                          "$5": {
-                            "blue": 21,
-                            "green": 109,
-                            "opacity": 255,
-                            "red": 19,
-                          },
-                          "$6": {
-                            "blue": 18,
-                            "green": 92,
-                            "opacity": 255,
-                            "red": 16,
-                          },
-                          "$7": {
-                            "blue": 14,
-                            "green": 72,
-                            "opacity": 255,
-                            "red": 13,
-                          },
-                          "$8": {
-                            "blue": 9,
-                            "green": 49,
-                            "opacity": 255,
-                            "red": 8,
-                          },
-                          "$9": {
-                            "blue": 4,
-                            "green": 22,
-                            "opacity": 255,
-                            "red": 4,
-                          },
-                        },
-                        "text": {
-                          "dark": {
-                            "blue": 30,
-                            "green": 30,
-                            "opacity": 255,
-                            "red": 30,
-                          },
-                          "gray": {
-                            "blue": 96,
-                            "green": 96,
-                            "opacity": 255,
-                            "red": 96,
-                          },
-                          "light": {
-                            "blue": 255,
-                            "green": 255,
-                            "opacity": 255,
-                            "red": 255,
-                          },
-                        },
-                        "white": {
-                          "blue": 255,
-                          "green": 255,
-                          "opacity": 255,
-                          "red": 255,
-                        },
-                        "yellow": {
-                          "$1": {
-                            "blue": 206,
-                            "green": 240,
-                            "opacity": 255,
-                            "red": 251,
-                          },
-                          "$2": {
-                            "blue": 145,
-                            "green": 221,
-                            "opacity": 255,
-                            "red": 246,
-                          },
-                          "$3": {
-                            "blue": 92,
-                            "green": 205,
-                            "opacity": 255,
-                            "red": 241,
-                          },
-                          "$4": {
-                            "blue": 47,
-                            "green": 191,
-                            "opacity": 255,
-                            "red": 237,
-                          },
-                          "$5": {
-                            "blue": 8,
-                            "green": 179,
-                            "opacity": 255,
-                            "red": 234,
-                          },
-                          "$6": {
-                            "blue": 7,
-                            "green": 151,
-                            "opacity": 255,
-                            "red": 197,
-                          },
-                          "$7": {
-                            "blue": 5,
-                            "green": 118,
-                            "opacity": 255,
-                            "red": 154,
-                          },
-                          "$8": {
-                            "blue": 4,
-                            "green": 80,
-                            "opacity": 255,
-                            "red": 104,
-                          },
-                          "$9": {
-                            "blue": 2,
-                            "green": 36,
-                            "opacity": 255,
-                            "red": 47,
-                          },
-                        },
-                      },
-                    },
-                  }
-                }
-                x={
-                  {
+                    "alignItems": undefined,
+                    "alignSelf": undefined,
+                    "aspectRatio": undefined,
+                    "backgroundColor": undefined,
+                    "borderBottomLeftRadius": undefined,
+                    "borderBottomRightRadius": undefined,
+                    "borderBottomWidth": undefined,
+                    "borderColor": undefined,
+                    "borderLeftWidth": undefined,
+                    "borderRadius": undefined,
+                    "borderRightWidth": undefined,
+                    "borderTopLeftRadius": undefined,
+                    "borderTopRightRadius": undefined,
+                    "borderTopWidth": undefined,
+                    "borderWidth": undefined,
+                    "columnGap": undefined,
+                    "elevation": undefined,
                     "flex": 1,
-                    "justify": "center",
+                    "flexDirection": undefined,
+                    "gap": undefined,
+                    "height": undefined,
+                    "justifyContent": "center",
+                    "margin": undefined,
+                    "marginBottom": undefined,
+                    "marginHorizontal": undefined,
+                    "marginLeft": undefined,
+                    "marginRight": undefined,
+                    "marginTop": undefined,
+                    "marginVertical": undefined,
+                    "overflow": undefined,
+                    "padding": undefined,
+                    "paddingBottom": undefined,
+                    "paddingHorizontal": undefined,
+                    "paddingLeft": undefined,
+                    "paddingRight": undefined,
+                    "paddingTop": undefined,
+                    "paddingVertical": undefined,
+                    "rowGap": undefined,
+                    "width": undefined,
+                    "zIndex": undefined,
                   }
                 }
               >
-                <Txt
-                  env={
+                <Text
+                  style={
                     {
-                      "eventHandler": [Function],
-                      "safeArea": {
-                        "initialMetrics": {
-                          "_tag": "Some",
-                          "value": {
-                            "frame": {
-                              "height": 640,
-                              "width": 320,
-                              "x": 0,
-                              "y": 0,
-                            },
-                            "insets": {
-                              "bottom": 0,
-                              "left": 0,
-                              "right": 0,
-                              "top": 0,
-                            },
-                          },
-                        },
-                      },
-                      "stateRef": {
-                        "execute": [Function],
-                        "subscribe": [Function],
-                      },
-                      "theme": {
-                        "colors": {
-                          "background": {
-                            "blue": 242,
-                            "green": 242,
-                            "opacity": 255,
-                            "red": 242,
-                          },
-                          "black": {
-                            "blue": 0,
-                            "green": 0,
-                            "opacity": 255,
-                            "red": 0,
-                          },
-                          "danger": {
-                            "$1": {
-                              "blue": 212,
-                              "green": 212,
-                              "opacity": 255,
-                              "red": 248,
-                            },
-                            "$2": {
-                              "blue": 158,
-                              "green": 158,
-                              "opacity": 255,
-                              "red": 239,
-                            },
-                            "$3": {
-                              "blue": 112,
-                              "green": 112,
-                              "opacity": 255,
-                              "red": 232,
-                            },
-                            "$4": {
-                              "blue": 72,
-                              "green": 72,
-                              "opacity": 255,
-                              "red": 226,
-                            },
-                            "$5": {
-                              "blue": 38,
-                              "green": 38,
-                              "opacity": 255,
-                              "red": 220,
-                            },
-                            "$6": {
-                              "blue": 32,
-                              "green": 32,
-                              "opacity": 255,
-                              "red": 185,
-                            },
-                            "$7": {
-                              "blue": 25,
-                              "green": 25,
-                              "opacity": 255,
-                              "red": 145,
-                            },
-                            "$8": {
-                              "blue": 17,
-                              "green": 17,
-                              "opacity": 255,
-                              "red": 98,
-                            },
-                            "$9": {
-                              "blue": 8,
-                              "green": 8,
-                              "opacity": 255,
-                              "red": 44,
-                            },
-                          },
-                          "gray": {
-                            "$1": {
-                              "blue": 222,
-                              "green": 220,
-                              "opacity": 255,
-                              "red": 220,
-                            },
-                            "$2": {
-                              "blue": 182,
-                              "green": 178,
-                              "opacity": 255,
-                              "red": 178,
-                            },
-                            "$3": {
-                              "blue": 147,
-                              "green": 141,
-                              "opacity": 255,
-                              "red": 141,
-                            },
-                            "$4": {
-                              "blue": 117,
-                              "green": 109,
-                              "opacity": 255,
-                              "red": 109,
-                            },
-                            "$5": {
-                              "blue": 91,
-                              "green": 82,
-                              "opacity": 255,
-                              "red": 82,
-                            },
-                            "$6": {
-                              "blue": 77,
-                              "green": 69,
-                              "opacity": 255,
-                              "red": 69,
-                            },
-                            "$7": {
-                              "blue": 60,
-                              "green": 54,
-                              "opacity": 255,
-                              "red": 54,
-                            },
-                            "$8": {
-                              "blue": 41,
-                              "green": 37,
-                              "opacity": 255,
-                              "red": 37,
-                            },
-                            "$9": {
-                              "blue": 18,
-                              "green": 16,
-                              "opacity": 255,
-                              "red": 16,
-                            },
-                          },
-                          "primary": {
-                            "$1": {
-                              "blue": 208,
-                              "green": 226,
-                              "opacity": 255,
-                              "red": 208,
-                            },
-                            "$2": {
-                              "blue": 151,
-                              "green": 190,
-                              "opacity": 255,
-                              "red": 150,
-                            },
-                            "$3": {
-                              "blue": 101,
-                              "green": 159,
-                              "opacity": 255,
-                              "red": 100,
-                            },
-                            "$4": {
-                              "blue": 58,
-                              "green": 132,
-                              "opacity": 255,
-                              "red": 56,
-                            },
-                            "$5": {
-                              "blue": 21,
-                              "green": 109,
-                              "opacity": 255,
-                              "red": 19,
-                            },
-                            "$6": {
-                              "blue": 18,
-                              "green": 92,
-                              "opacity": 255,
-                              "red": 16,
-                            },
-                            "$7": {
-                              "blue": 14,
-                              "green": 72,
-                              "opacity": 255,
-                              "red": 13,
-                            },
-                            "$8": {
-                              "blue": 9,
-                              "green": 49,
-                              "opacity": 255,
-                              "red": 8,
-                            },
-                            "$9": {
-                              "blue": 4,
-                              "green": 22,
-                              "opacity": 255,
-                              "red": 4,
-                            },
-                          },
-                          "text": {
-                            "dark": {
-                              "blue": 30,
-                              "green": 30,
-                              "opacity": 255,
-                              "red": 30,
-                            },
-                            "gray": {
-                              "blue": 96,
-                              "green": 96,
-                              "opacity": 255,
-                              "red": 96,
-                            },
-                            "light": {
-                              "blue": 255,
-                              "green": 255,
-                              "opacity": 255,
-                              "red": 255,
-                            },
-                          },
-                          "white": {
-                            "blue": 255,
-                            "green": 255,
-                            "opacity": 255,
-                            "red": 255,
-                          },
-                          "yellow": {
-                            "$1": {
-                              "blue": 206,
-                              "green": 240,
-                              "opacity": 255,
-                              "red": 251,
-                            },
-                            "$2": {
-                              "blue": 145,
-                              "green": 221,
-                              "opacity": 255,
-                              "red": 246,
-                            },
-                            "$3": {
-                              "blue": 92,
-                              "green": 205,
-                              "opacity": 255,
-                              "red": 241,
-                            },
-                            "$4": {
-                              "blue": 47,
-                              "green": 191,
-                              "opacity": 255,
-                              "red": 237,
-                            },
-                            "$5": {
-                              "blue": 8,
-                              "green": 179,
-                              "opacity": 255,
-                              "red": 234,
-                            },
-                            "$6": {
-                              "blue": 7,
-                              "green": 151,
-                              "opacity": 255,
-                              "red": 197,
-                            },
-                            "$7": {
-                              "blue": 5,
-                              "green": 118,
-                              "opacity": 255,
-                              "red": 154,
-                            },
-                            "$8": {
-                              "blue": 4,
-                              "green": 80,
-                              "opacity": 255,
-                              "red": 104,
-                            },
-                            "$9": {
-                              "blue": 2,
-                              "green": 36,
-                              "opacity": 255,
-                              "red": 47,
-                            },
-                          },
-                        },
-                      },
-                    }
-                  }
-                  x={
-                    {
-                      "align": "center",
-                      "color": [Function],
-                      "size": 16,
+                      "color": "#8d8d93ff",
+                      "flex": undefined,
+                      "fontSize": 16,
+                      "fontWeight": undefined,
+                      "height": undefined,
+                      "includeFontPadding": undefined,
+                      "lineHeight": undefined,
+                      "margin": undefined,
+                      "marginBottom": undefined,
+                      "marginHorizontal": undefined,
+                      "marginLeft": undefined,
+                      "marginRight": undefined,
+                      "marginTop": undefined,
+                      "marginVertical": undefined,
+                      "padding": undefined,
+                      "paddingBottom": undefined,
+                      "paddingHorizontal": undefined,
+                      "paddingLeft": undefined,
+                      "paddingRight": undefined,
+                      "paddingTop": undefined,
+                      "paddingVertical": undefined,
+                      "textAlign": "center",
+                      "width": undefined,
                     }
                   }
                 >
                   Nenhum jogador cadastrado
-                </Txt>
+                </Text>
               </View>
             }
             contentContainerStyle={
@@ -7134,6 +3959,7 @@ exports[`renders 4`] = `
           >
             <View>
               <View
+                onLayout={[Function]}
                 style={
                   {
                     "alignItems": undefined,
@@ -13490,612 +10316,82 @@ exports[`renders 5`] = `
           <RCTScrollView
             ListEmptyComponent={
               <View
-                env={
+                style={
                   {
-                    "eventHandler": [Function],
-                    "safeArea": {
-                      "initialMetrics": {
-                        "_tag": "Some",
-                        "value": {
-                          "frame": {
-                            "height": 640,
-                            "width": 320,
-                            "x": 0,
-                            "y": 0,
-                          },
-                          "insets": {
-                            "bottom": 0,
-                            "left": 0,
-                            "right": 0,
-                            "top": 0,
-                          },
-                        },
-                      },
-                    },
-                    "stateRef": {
-                      "execute": [Function],
-                      "subscribe": [Function],
-                    },
-                    "theme": {
-                      "colors": {
-                        "background": {
-                          "blue": 242,
-                          "green": 242,
-                          "opacity": 255,
-                          "red": 242,
-                        },
-                        "black": {
-                          "blue": 0,
-                          "green": 0,
-                          "opacity": 255,
-                          "red": 0,
-                        },
-                        "danger": {
-                          "$1": {
-                            "blue": 212,
-                            "green": 212,
-                            "opacity": 255,
-                            "red": 248,
-                          },
-                          "$2": {
-                            "blue": 158,
-                            "green": 158,
-                            "opacity": 255,
-                            "red": 239,
-                          },
-                          "$3": {
-                            "blue": 112,
-                            "green": 112,
-                            "opacity": 255,
-                            "red": 232,
-                          },
-                          "$4": {
-                            "blue": 72,
-                            "green": 72,
-                            "opacity": 255,
-                            "red": 226,
-                          },
-                          "$5": {
-                            "blue": 38,
-                            "green": 38,
-                            "opacity": 255,
-                            "red": 220,
-                          },
-                          "$6": {
-                            "blue": 32,
-                            "green": 32,
-                            "opacity": 255,
-                            "red": 185,
-                          },
-                          "$7": {
-                            "blue": 25,
-                            "green": 25,
-                            "opacity": 255,
-                            "red": 145,
-                          },
-                          "$8": {
-                            "blue": 17,
-                            "green": 17,
-                            "opacity": 255,
-                            "red": 98,
-                          },
-                          "$9": {
-                            "blue": 8,
-                            "green": 8,
-                            "opacity": 255,
-                            "red": 44,
-                          },
-                        },
-                        "gray": {
-                          "$1": {
-                            "blue": 222,
-                            "green": 220,
-                            "opacity": 255,
-                            "red": 220,
-                          },
-                          "$2": {
-                            "blue": 182,
-                            "green": 178,
-                            "opacity": 255,
-                            "red": 178,
-                          },
-                          "$3": {
-                            "blue": 147,
-                            "green": 141,
-                            "opacity": 255,
-                            "red": 141,
-                          },
-                          "$4": {
-                            "blue": 117,
-                            "green": 109,
-                            "opacity": 255,
-                            "red": 109,
-                          },
-                          "$5": {
-                            "blue": 91,
-                            "green": 82,
-                            "opacity": 255,
-                            "red": 82,
-                          },
-                          "$6": {
-                            "blue": 77,
-                            "green": 69,
-                            "opacity": 255,
-                            "red": 69,
-                          },
-                          "$7": {
-                            "blue": 60,
-                            "green": 54,
-                            "opacity": 255,
-                            "red": 54,
-                          },
-                          "$8": {
-                            "blue": 41,
-                            "green": 37,
-                            "opacity": 255,
-                            "red": 37,
-                          },
-                          "$9": {
-                            "blue": 18,
-                            "green": 16,
-                            "opacity": 255,
-                            "red": 16,
-                          },
-                        },
-                        "primary": {
-                          "$1": {
-                            "blue": 208,
-                            "green": 226,
-                            "opacity": 255,
-                            "red": 208,
-                          },
-                          "$2": {
-                            "blue": 151,
-                            "green": 190,
-                            "opacity": 255,
-                            "red": 150,
-                          },
-                          "$3": {
-                            "blue": 101,
-                            "green": 159,
-                            "opacity": 255,
-                            "red": 100,
-                          },
-                          "$4": {
-                            "blue": 58,
-                            "green": 132,
-                            "opacity": 255,
-                            "red": 56,
-                          },
-                          "$5": {
-                            "blue": 21,
-                            "green": 109,
-                            "opacity": 255,
-                            "red": 19,
-                          },
-                          "$6": {
-                            "blue": 18,
-                            "green": 92,
-                            "opacity": 255,
-                            "red": 16,
-                          },
-                          "$7": {
-                            "blue": 14,
-                            "green": 72,
-                            "opacity": 255,
-                            "red": 13,
-                          },
-                          "$8": {
-                            "blue": 9,
-                            "green": 49,
-                            "opacity": 255,
-                            "red": 8,
-                          },
-                          "$9": {
-                            "blue": 4,
-                            "green": 22,
-                            "opacity": 255,
-                            "red": 4,
-                          },
-                        },
-                        "text": {
-                          "dark": {
-                            "blue": 30,
-                            "green": 30,
-                            "opacity": 255,
-                            "red": 30,
-                          },
-                          "gray": {
-                            "blue": 96,
-                            "green": 96,
-                            "opacity": 255,
-                            "red": 96,
-                          },
-                          "light": {
-                            "blue": 255,
-                            "green": 255,
-                            "opacity": 255,
-                            "red": 255,
-                          },
-                        },
-                        "white": {
-                          "blue": 255,
-                          "green": 255,
-                          "opacity": 255,
-                          "red": 255,
-                        },
-                        "yellow": {
-                          "$1": {
-                            "blue": 206,
-                            "green": 240,
-                            "opacity": 255,
-                            "red": 251,
-                          },
-                          "$2": {
-                            "blue": 145,
-                            "green": 221,
-                            "opacity": 255,
-                            "red": 246,
-                          },
-                          "$3": {
-                            "blue": 92,
-                            "green": 205,
-                            "opacity": 255,
-                            "red": 241,
-                          },
-                          "$4": {
-                            "blue": 47,
-                            "green": 191,
-                            "opacity": 255,
-                            "red": 237,
-                          },
-                          "$5": {
-                            "blue": 8,
-                            "green": 179,
-                            "opacity": 255,
-                            "red": 234,
-                          },
-                          "$6": {
-                            "blue": 7,
-                            "green": 151,
-                            "opacity": 255,
-                            "red": 197,
-                          },
-                          "$7": {
-                            "blue": 5,
-                            "green": 118,
-                            "opacity": 255,
-                            "red": 154,
-                          },
-                          "$8": {
-                            "blue": 4,
-                            "green": 80,
-                            "opacity": 255,
-                            "red": 104,
-                          },
-                          "$9": {
-                            "blue": 2,
-                            "green": 36,
-                            "opacity": 255,
-                            "red": 47,
-                          },
-                        },
-                      },
-                    },
-                  }
-                }
-                x={
-                  {
+                    "alignItems": undefined,
+                    "alignSelf": undefined,
+                    "aspectRatio": undefined,
+                    "backgroundColor": undefined,
+                    "borderBottomLeftRadius": undefined,
+                    "borderBottomRightRadius": undefined,
+                    "borderBottomWidth": undefined,
+                    "borderColor": undefined,
+                    "borderLeftWidth": undefined,
+                    "borderRadius": undefined,
+                    "borderRightWidth": undefined,
+                    "borderTopLeftRadius": undefined,
+                    "borderTopRightRadius": undefined,
+                    "borderTopWidth": undefined,
+                    "borderWidth": undefined,
+                    "columnGap": undefined,
+                    "elevation": undefined,
                     "flex": 1,
-                    "justify": "center",
+                    "flexDirection": undefined,
+                    "gap": undefined,
+                    "height": undefined,
+                    "justifyContent": "center",
+                    "margin": undefined,
+                    "marginBottom": undefined,
+                    "marginHorizontal": undefined,
+                    "marginLeft": undefined,
+                    "marginRight": undefined,
+                    "marginTop": undefined,
+                    "marginVertical": undefined,
+                    "overflow": undefined,
+                    "padding": undefined,
+                    "paddingBottom": undefined,
+                    "paddingHorizontal": undefined,
+                    "paddingLeft": undefined,
+                    "paddingRight": undefined,
+                    "paddingTop": undefined,
+                    "paddingVertical": undefined,
+                    "rowGap": undefined,
+                    "width": undefined,
+                    "zIndex": undefined,
                   }
                 }
               >
-                <Txt
-                  env={
+                <Text
+                  style={
                     {
-                      "eventHandler": [Function],
-                      "safeArea": {
-                        "initialMetrics": {
-                          "_tag": "Some",
-                          "value": {
-                            "frame": {
-                              "height": 640,
-                              "width": 320,
-                              "x": 0,
-                              "y": 0,
-                            },
-                            "insets": {
-                              "bottom": 0,
-                              "left": 0,
-                              "right": 0,
-                              "top": 0,
-                            },
-                          },
-                        },
-                      },
-                      "stateRef": {
-                        "execute": [Function],
-                        "subscribe": [Function],
-                      },
-                      "theme": {
-                        "colors": {
-                          "background": {
-                            "blue": 242,
-                            "green": 242,
-                            "opacity": 255,
-                            "red": 242,
-                          },
-                          "black": {
-                            "blue": 0,
-                            "green": 0,
-                            "opacity": 255,
-                            "red": 0,
-                          },
-                          "danger": {
-                            "$1": {
-                              "blue": 212,
-                              "green": 212,
-                              "opacity": 255,
-                              "red": 248,
-                            },
-                            "$2": {
-                              "blue": 158,
-                              "green": 158,
-                              "opacity": 255,
-                              "red": 239,
-                            },
-                            "$3": {
-                              "blue": 112,
-                              "green": 112,
-                              "opacity": 255,
-                              "red": 232,
-                            },
-                            "$4": {
-                              "blue": 72,
-                              "green": 72,
-                              "opacity": 255,
-                              "red": 226,
-                            },
-                            "$5": {
-                              "blue": 38,
-                              "green": 38,
-                              "opacity": 255,
-                              "red": 220,
-                            },
-                            "$6": {
-                              "blue": 32,
-                              "green": 32,
-                              "opacity": 255,
-                              "red": 185,
-                            },
-                            "$7": {
-                              "blue": 25,
-                              "green": 25,
-                              "opacity": 255,
-                              "red": 145,
-                            },
-                            "$8": {
-                              "blue": 17,
-                              "green": 17,
-                              "opacity": 255,
-                              "red": 98,
-                            },
-                            "$9": {
-                              "blue": 8,
-                              "green": 8,
-                              "opacity": 255,
-                              "red": 44,
-                            },
-                          },
-                          "gray": {
-                            "$1": {
-                              "blue": 222,
-                              "green": 220,
-                              "opacity": 255,
-                              "red": 220,
-                            },
-                            "$2": {
-                              "blue": 182,
-                              "green": 178,
-                              "opacity": 255,
-                              "red": 178,
-                            },
-                            "$3": {
-                              "blue": 147,
-                              "green": 141,
-                              "opacity": 255,
-                              "red": 141,
-                            },
-                            "$4": {
-                              "blue": 117,
-                              "green": 109,
-                              "opacity": 255,
-                              "red": 109,
-                            },
-                            "$5": {
-                              "blue": 91,
-                              "green": 82,
-                              "opacity": 255,
-                              "red": 82,
-                            },
-                            "$6": {
-                              "blue": 77,
-                              "green": 69,
-                              "opacity": 255,
-                              "red": 69,
-                            },
-                            "$7": {
-                              "blue": 60,
-                              "green": 54,
-                              "opacity": 255,
-                              "red": 54,
-                            },
-                            "$8": {
-                              "blue": 41,
-                              "green": 37,
-                              "opacity": 255,
-                              "red": 37,
-                            },
-                            "$9": {
-                              "blue": 18,
-                              "green": 16,
-                              "opacity": 255,
-                              "red": 16,
-                            },
-                          },
-                          "primary": {
-                            "$1": {
-                              "blue": 208,
-                              "green": 226,
-                              "opacity": 255,
-                              "red": 208,
-                            },
-                            "$2": {
-                              "blue": 151,
-                              "green": 190,
-                              "opacity": 255,
-                              "red": 150,
-                            },
-                            "$3": {
-                              "blue": 101,
-                              "green": 159,
-                              "opacity": 255,
-                              "red": 100,
-                            },
-                            "$4": {
-                              "blue": 58,
-                              "green": 132,
-                              "opacity": 255,
-                              "red": 56,
-                            },
-                            "$5": {
-                              "blue": 21,
-                              "green": 109,
-                              "opacity": 255,
-                              "red": 19,
-                            },
-                            "$6": {
-                              "blue": 18,
-                              "green": 92,
-                              "opacity": 255,
-                              "red": 16,
-                            },
-                            "$7": {
-                              "blue": 14,
-                              "green": 72,
-                              "opacity": 255,
-                              "red": 13,
-                            },
-                            "$8": {
-                              "blue": 9,
-                              "green": 49,
-                              "opacity": 255,
-                              "red": 8,
-                            },
-                            "$9": {
-                              "blue": 4,
-                              "green": 22,
-                              "opacity": 255,
-                              "red": 4,
-                            },
-                          },
-                          "text": {
-                            "dark": {
-                              "blue": 30,
-                              "green": 30,
-                              "opacity": 255,
-                              "red": 30,
-                            },
-                            "gray": {
-                              "blue": 96,
-                              "green": 96,
-                              "opacity": 255,
-                              "red": 96,
-                            },
-                            "light": {
-                              "blue": 255,
-                              "green": 255,
-                              "opacity": 255,
-                              "red": 255,
-                            },
-                          },
-                          "white": {
-                            "blue": 255,
-                            "green": 255,
-                            "opacity": 255,
-                            "red": 255,
-                          },
-                          "yellow": {
-                            "$1": {
-                              "blue": 206,
-                              "green": 240,
-                              "opacity": 255,
-                              "red": 251,
-                            },
-                            "$2": {
-                              "blue": 145,
-                              "green": 221,
-                              "opacity": 255,
-                              "red": 246,
-                            },
-                            "$3": {
-                              "blue": 92,
-                              "green": 205,
-                              "opacity": 255,
-                              "red": 241,
-                            },
-                            "$4": {
-                              "blue": 47,
-                              "green": 191,
-                              "opacity": 255,
-                              "red": 237,
-                            },
-                            "$5": {
-                              "blue": 8,
-                              "green": 179,
-                              "opacity": 255,
-                              "red": 234,
-                            },
-                            "$6": {
-                              "blue": 7,
-                              "green": 151,
-                              "opacity": 255,
-                              "red": 197,
-                            },
-                            "$7": {
-                              "blue": 5,
-                              "green": 118,
-                              "opacity": 255,
-                              "red": 154,
-                            },
-                            "$8": {
-                              "blue": 4,
-                              "green": 80,
-                              "opacity": 255,
-                              "red": 104,
-                            },
-                            "$9": {
-                              "blue": 2,
-                              "green": 36,
-                              "opacity": 255,
-                              "red": 47,
-                            },
-                          },
-                        },
-                      },
-                    }
-                  }
-                  x={
-                    {
-                      "align": "center",
-                      "color": [Function],
-                      "size": 16,
+                      "color": "#8d8d93ff",
+                      "flex": undefined,
+                      "fontSize": 16,
+                      "fontWeight": undefined,
+                      "height": undefined,
+                      "includeFontPadding": undefined,
+                      "lineHeight": undefined,
+                      "margin": undefined,
+                      "marginBottom": undefined,
+                      "marginHorizontal": undefined,
+                      "marginLeft": undefined,
+                      "marginRight": undefined,
+                      "marginTop": undefined,
+                      "marginVertical": undefined,
+                      "padding": undefined,
+                      "paddingBottom": undefined,
+                      "paddingHorizontal": undefined,
+                      "paddingLeft": undefined,
+                      "paddingRight": undefined,
+                      "paddingTop": undefined,
+                      "paddingVertical": undefined,
+                      "textAlign": "center",
+                      "width": undefined,
                     }
                   }
                 >
                   Nenhum grupo cadastrado
-                </Txt>
+                </Text>
               </View>
             }
             contentContainerStyle={
@@ -14134,6 +10430,7 @@ exports[`renders 5`] = `
           >
             <View>
               <View
+                onLayout={[Function]}
                 style={
                   {
                     "alignItems": undefined,

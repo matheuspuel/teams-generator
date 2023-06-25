@@ -26,7 +26,7 @@ import { SplashScreenEnv } from './services/SplashScreen'
 import { AppStateRefEnv } from './services/StateRef'
 import { TelemetryEnv } from './services/Telemetry'
 import { defaultTelemetry } from './services/Telemetry/default'
-import { UIEnv } from './services/UI'
+import { UIServiceEnv } from './services/UI'
 
 const logEvent = (event: Event) =>
   $(Log.debug('Event'), l =>
@@ -53,7 +53,7 @@ const program = $(
     Eff.flatMap(
       Eff.all(AppEventHandlerEnv, AppStateRefEnv),
       ([{ eventHandler }, { stateRef }]) =>
-        Eff.provideService(f, UIEnv, {
+        Eff.provideService(f, UIServiceEnv, {
           ui: defaultUI({
             theme: defaultTheme,
             safeArea: defaultSafeAreaService,

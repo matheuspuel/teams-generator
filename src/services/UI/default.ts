@@ -1,6 +1,6 @@
 import { registerRootComponent } from 'expo'
 import { Eff, Effect } from 'fp'
-import { Element } from 'src/components/custom/types'
+import { Element } from 'src/components/types'
 import { UI } from '.'
 import { DefaultUIRequirements, DefaultUIRoot } from './defaultRoot'
 

@@ -15,28 +15,29 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated'
-import { Fragment, Txt, View } from 'src/components/hyperscript'
+import { Fragment, Txt, View } from 'src/components'
+import { UIElement } from 'src/components/types'
 import { Rating } from 'src/datatypes'
-import { Event, EventHandlerEnv } from 'src/events/helpers'
-import { AppThemeEnv, Colors } from 'src/services/Theme'
+import { AppEvent } from 'src/events'
+import { Colors } from 'src/services/Theme'
+import { UIEnv } from 'src/services/UI'
 import { Color } from 'src/utils/datatypes'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export type RatingSliderProps<R, E1 extends Event> = {
+export type RatingSliderProps = {
   initialPercentage: number
   step: number
-  onChange: (percentage: number) => E1
+  onChange: (percentage: number) => AppEvent
 }
 
-export type RatingSliderArgs<R, E1 extends Event> = {
-  x: RatingSliderProps<R, E1>
-  env: R & EventHandlerEnv<E1 | Event<never, never>>
+export type RatingSliderArgs = {
+  x: RatingSliderProps
+  env: UIEnv
 }
 
-const RatingSlider_ = <R, E1 extends Event>({
+const RatingSlider_ = ({
   x: { initialPercentage, step, onChange: onChange_ },
   env,
-}: RatingSliderArgs<R & AppThemeEnv, E1>) => {
+}: RatingSliderArgs) => {
   const paddingHorizontal = 16
   const paddingVertical = 40
   const trackWidth = 10
@@ -163,7 +164,7 @@ const RatingSlider_ = <R, E1 extends Event>({
 }
 
 export const RatingSlider =
-  <R, E1 extends Event>(props: RatingSliderProps<R, E1>) =>
+  (props: RatingSliderProps): UIElement =>
   // eslint-disable-next-line react/display-name
-  (env: R & AppThemeEnv & EventHandlerEnv<E1 | Event<never, never>>) =>
-    React.createElement(RatingSlider_<R, E1>, { x: props, env })
+  env =>
+    React.createElement(RatingSlider_, { x: props, env })
