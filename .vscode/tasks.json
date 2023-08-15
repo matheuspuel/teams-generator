@@ -8,7 +8,6 @@
       "problemMatcher": ["$tsc-watch"],
       "group": "build",
       "label": "tsc: watch - tsconfig.json",
-      "runOptions": { "runOn": "folderOpen" },
       "presentation": {
         "reveal": "never",
         "group": "tsc:watch",

@@ -1,0 +1,11 @@
+{
+  "version": "0.2",
+  "language": "en,pt-BR",
+  "import": [
+    "@cspell/dict-pt-br/cspell-ext.json"
+  ],
+  "flagWords": [],
+  "words": [
+    "Pressable"
+  ]
+}

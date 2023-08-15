@@ -19,7 +19,7 @@ import {
 } from 'src/components/helpers'
 import { Group, GroupOrder, Parameters, Player, Rating } from 'src/datatypes'
 import { GroupOrderType } from 'src/datatypes/GroupOrder'
-import { AppEvent, appEvents } from 'src/events/index'
+import { AppEvent, appEvents } from 'src/events'
 import { Colors } from 'src/services/Theme'
 import { withOpacity } from 'src/utils/datatypes/Color'
 

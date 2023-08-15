@@ -12,7 +12,7 @@ import {
 } from 'src/components'
 import { named2 } from 'src/components/helpers'
 import { Player, Rating } from 'src/datatypes'
-import { appEvents } from 'src/events/index'
+import { appEvents } from 'src/events'
 import { Colors } from 'src/services/Theme'
 import { toFixedLocale } from 'src/utils/Number'
 

@@ -50,6 +50,7 @@
   "devDependencies": {
     "@babel/core": "^7.22.5",
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
+    "@cspell/dict-pt-br": "^2.2.0",
     "@types/benchmark": "^2.1.2",
     "@types/jest": "^29.5.2",
     "@types/lodash.throttle": "^4.1.7",

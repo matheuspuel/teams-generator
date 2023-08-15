@@ -58,18 +58,22 @@ const getRawProps =
   }: TextInputArgs): React.ComponentProps<typeof RNTextInput_> => ({
     value: props.value,
     onChangeText: t => void Eff.runPromise(env.eventHandler(props.onChange(t))),
-    onFocus: () => (
-      state.setIsFocused(true),
+    onFocus: () => {
+      // eslint-disable-next-line functional/no-expression-statements
+      state.setIsFocused(true)
+      // eslint-disable-next-line functional/no-expression-statements
       props.onFocus
         ? void Eff.runPromise(env.eventHandler(props.onFocus))
         : undefined
-    ),
-    onBlur: () => (
-      state.setIsFocused(false),
+    },
+    onBlur: () => {
+      // eslint-disable-next-line functional/no-expression-statements
+      state.setIsFocused(false)
+      // eslint-disable-next-line functional/no-expression-statements
       props.onBlur
         ? void Eff.runPromise(env.eventHandler(props.onBlur))
         : undefined
-    ),
+    },
     autoFocus: props.autoFocus,
     placeholder: props.placeholder,
     placeholderTextColor: props.placeholderTextColor

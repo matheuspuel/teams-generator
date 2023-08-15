@@ -27,7 +27,6 @@ project.xcworkspace
 
 # Android/IntelliJ
 #
-build/
 .idea
 .gradle
 local.properties
@@ -61,15 +60,11 @@ dist/
 
 .react/
 .idea/
-node_modules/
-build/
 tmp/
 temp/
-dist/
 coverage/
 .env.*
 !.env.example
 TODO
 package-lock.json
-yarn-error.log
 tsconfig.tsbuildinfo

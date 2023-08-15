@@ -1,7 +1,7 @@
 import { $, Eff, Effect } from 'fp'
 import throttle from 'lodash.throttle'
 import { AppEventHandlerEnv, EventHandler } from 'src/events/handler'
-import { appEvents } from 'src/events/index'
+import { appEvents } from 'src/events'
 import { BackHandler } from 'src/services/BackHandler'
 import * as StateRef from 'src/services/StateRef'
 import { UI } from 'src/services/UI'

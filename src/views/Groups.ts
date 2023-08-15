@@ -14,7 +14,7 @@ import {
 } from 'src/components'
 import { memoized, memoizedConst } from 'src/components/helpers'
 import { Group } from 'src/datatypes'
-import { appEvents } from 'src/events/index'
+import { appEvents } from 'src/events'
 import { RootState } from 'src/model'
 import { Colors } from 'src/services/Theme'
 import { GroupsState } from 'src/slices/groups'

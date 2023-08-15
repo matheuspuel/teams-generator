@@ -12,7 +12,7 @@ import {
 } from 'src/components'
 import { memoizedConst, named2 } from 'src/components/helpers'
 import { Position, Rating } from 'src/datatypes'
-import { appEvents } from 'src/events/index'
+import { appEvents } from 'src/events'
 import { Colors } from 'src/services/Theme'
 import { PlayerForm } from 'src/slices/playerForm'
 import { withOpacity } from 'src/utils/datatypes/Color'

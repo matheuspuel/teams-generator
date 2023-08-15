@@ -8,7 +8,11 @@ export const defaultBackHandler: BackHandler = {
     Eff.sync(() => {
       const subscription = BackHandler_.addEventListener(
         'hardwareBackPress',
-        () => (Eff.runPromise(f), true),
+        () => {
+          // eslint-disable-next-line functional/no-expression-statements
+          void Eff.runPromise(f)
+          return true
+        },
       )
       return { unsubscribe: Eff.sync(() => subscription.remove()) }
     }),
