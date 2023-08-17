@@ -1,5 +1,5 @@
-import { Monoid } from '@effect/data/typeclass/Monoid'
+import { Monoid } from '@effect/typeclass/Monoid'
 
-export * from '@effect/data/typeclass/Monoid'
+export * from '@effect/typeclass/Monoid'
 
 export const combineAll = <A>(m: Monoid<A>) => m.combineAll

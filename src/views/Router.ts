@@ -28,7 +28,12 @@ export const Router = named2('Router')(({ model }: { model: RootState }) =>
                   Apply.sequenceS(R.Apply)({
                     group: $(
                       get(root.ui.selectedGroupId.$),
-                      R.chain(O.match(() => R.of(O.none()), getGroupById)),
+                      R.chain(
+                        O.match({
+                          onNone: () => R.of(O.none()),
+                          onSome: getGroupById,
+                        }),
+                      ),
                     ),
                     modalSortGroup: get(root.ui.modalSortGroup.$),
                     modalParameters: get(root.ui.modalParameters.$),

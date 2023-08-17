@@ -28,7 +28,7 @@ const order: Record<Position, number> = {
 
 export const Ord: Order<Position> = $(
   Num.Order,
-  Ord_.contramap(a => order[a]),
+  Ord_.mapInput(a => order[a]),
 )
 
 export const AbbreviationShow: Show.Show<Position> = { show: identity }

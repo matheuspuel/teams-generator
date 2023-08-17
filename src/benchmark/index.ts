@@ -2,7 +2,7 @@
 import * as Arb from '@effect/schema/Arbitrary'
 import * as Benchmark from 'benchmark'
 import * as fc from 'fast-check'
-import { $, A, Match, SG, constant, identity } from 'fp'
+import { $, A, Match, SG, constant } from 'fp'
 import { Player } from 'src/datatypes'
 import {
   Criteria,
@@ -74,10 +74,12 @@ const distributeTeamsUsingCombinations: typeof distributeTeams =
             players,
           ),
       }),
-      A.match(
-        constant([]),
-        A.combineMapNonEmpty(SG.min(getFitOrdFromCriteria(params)))(identity),
-      ),
+      A.match({
+        onEmpty: constant([]),
+        onNonEmpty: SG.combineAllNonEmpty(
+          SG.min(getFitOrdFromCriteria(params)),
+        ),
+      }),
     )
 
 const criteria1: Criteria = {

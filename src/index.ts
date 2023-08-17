@@ -51,7 +51,7 @@ const program = $(
   startApp,
   f =>
     Eff.flatMap(
-      Eff.all(AppEventHandlerEnv, AppStateRefEnv),
+      Eff.all([AppEventHandlerEnv, AppStateRefEnv]),
       ([{ eventHandler }, { stateRef }]) =>
         Eff.provideService(f, UIServiceEnv, {
           ui: defaultUI({
@@ -104,4 +104,4 @@ const program = $(
 )
 
 // eslint-disable-next-line functional/no-expression-statements
-void Eff.runPromiseEither(program)
+void Eff.runPromiseExit(program)

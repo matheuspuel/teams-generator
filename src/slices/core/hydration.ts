@@ -11,27 +11,24 @@ export const saveState = $(
   Eff.tap($f(get(root.groups.$), Repository.teams.groups.set)),
   Eff.tap($f(get(root.parameters.$), Repository.teams.parameters.set)),
   Eff.tap($f(get(root.groupOrder.$), Repository.teams.groupOrder.set)),
-  Eff.catchAll(() => Eff.unit()),
+  Eff.catchAll(() => Eff.unit),
 )
 
 export const hydrate = $(
-  Eff.Do(),
-  Eff.bindDiscard(
-    'groups',
+  Eff.Do,
+  Eff.bind('groups', () =>
     $(
       Repository.teams.groups.get,
       Eff.catchAll(() => Eff.succeed(emptyGroups)),
     ),
   ),
-  Eff.bindDiscard(
-    'parameters',
+  Eff.bind('parameters', () =>
     $(
       Repository.teams.parameters.get,
       Eff.catchAll(() => Eff.succeed(Parameters.initial)),
     ),
   ),
-  Eff.bindDiscard(
-    'groupOrder',
+  Eff.bind('groupOrder', () =>
     $(
       Repository.teams.groupOrder.get,
       Eff.catchAll(() => Eff.succeed(GroupOrder.initial)),

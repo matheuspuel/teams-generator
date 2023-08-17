@@ -52,13 +52,13 @@ const eventHandler = (e: AppEvent) =>
     )({
       stateRef,
       backHandler: {
-        exit: Eff.unit(),
-        subscribe: () => Eff.succeed({ unsubscribe: Eff.unit() }),
+        exit: Eff.unit,
+        subscribe: () => Eff.succeed({ unsubscribe: Eff.unit }),
       },
-      share: { share: () => Eff.unit() },
-      splashScreen: { hide: Eff.unit(), preventAutoHide: Eff.unit() },
+      share: { share: () => Eff.unit },
+      splashScreen: { hide: Eff.unit, preventAutoHide: Eff.unit },
       idGenerator,
-      Telemetry: { log: () => Eff.unit(), send: Eff.unit() },
+      Telemetry: { log: () => Eff.unit, send: Eff.unit },
       Metadata: {
         get: Eff.succeed({
           application: {
@@ -73,14 +73,14 @@ const eventHandler = (e: AppEvent) =>
       },
       Repositories: {
         teams: {
-          groups: { get: Eff.succeed({}), set: () => Eff.unit() },
+          groups: { get: Eff.succeed({}), set: () => Eff.unit },
           parameters: {
             get: Eff.succeed(Parameters.initial),
-            set: () => Eff.unit(),
+            set: () => Eff.unit,
           },
           groupOrder: {
             get: Eff.succeed(GroupOrder.initial),
-            set: () => Eff.unit(),
+            set: () => Eff.unit,
           },
         },
       },

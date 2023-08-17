@@ -1,3 +1,4 @@
+import { sumAll } from '@effect/data/Number'
 import { Effect } from '@effect/io/Effect'
 import {
   $,
@@ -27,8 +28,8 @@ const getFitOrdByDevianceFns = (
 ): Order<Array<Array<Player>>> =>
   $(
     fns,
-    A.map(f => Ord.contramap(f)(Num.Order)),
-    Ord.getMonoid<Array<Array<Player>>>().combineAll,
+    A.map(f => Ord.mapInput(f)(Num.Order)),
+    Ord.combineAll<Array<Array<Player>>>,
   )
 
 const getResultPositionDeviance = (teams: Array<Array<Player>>): number =>
@@ -37,7 +38,7 @@ const getResultPositionDeviance = (teams: Array<Array<Player>>): number =>
       Position.Dict,
       Rec.toEntries,
       A.map(Tup.getFirst),
-      A.combineMap(Num.MonoidSum)(pos =>
+      A.map(pos =>
         $(
           allPlayers,
           positionCount(pos),
@@ -45,12 +46,12 @@ const getResultPositionDeviance = (teams: Array<Array<Player>>): number =>
           positionAvg =>
             $(
               teams,
-              A.combineMap(Num.MonoidSum)(
-                $f(positionCount(pos), deviance(positionAvg)),
-              ),
+              A.map($f(positionCount(pos), deviance(positionAvg))),
+              sumAll,
             ),
         ),
       ),
+      sumAll,
     ),
   )
 
@@ -62,9 +63,8 @@ export const getResultRatingDeviance = (teams: Array<Array<Player>>): number =>
   $(teams, A.flatten, Player.getRatingAvg, overallAvg =>
     $(
       teams,
-      A.combineMap(Num.MonoidSum)(
-        $f(Player.getRatingAvg, deviance(overallAvg)),
-      ),
+      A.map($f(Player.getRatingAvg, deviance(overallAvg))),
+      sumAll,
       fixFloat,
     ),
   )
@@ -119,7 +119,7 @@ const changePlayers =
   (otherPlayerIndex: number) =>
   (teams: Array<Array<Player>>): Array<Array<Player>> =>
     $(
-      O.Do(),
+      O.Do,
       O.bind('team', () => $(teams, A.get(teamIndex))),
       O.bind('otherTeam', () => $(teams, A.get(otherTeamIndex))),
       O.bind('player', ({ team }) => $(team, A.get(playerIndex))),

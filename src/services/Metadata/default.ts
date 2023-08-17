@@ -43,7 +43,7 @@ export const defaultMetadataService: MetadataService = {
                 Eff.tap(
                   $f(
                     Repository.metadata.installation.set,
-                    Eff.catchAll(Eff.unit),
+                    Eff.catchAll(() => Eff.unit),
                   ),
                 ),
                 Eff.map(_ => ({ ..._, isFirstLaunch: true })),
@@ -61,7 +61,7 @@ export const defaultMetadataService: MetadataService = {
             launch: v.launch,
           }),
         ),
-        Eff.tap($f(O.some, metadataRef.setState)),
+        Eff.tap(v => $(O.some(v), metadataRef.setState)),
       ),
     ),
     Eff.provideService(RepositoryEnvs.metadata.installation, {

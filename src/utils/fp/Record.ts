@@ -1,5 +1,5 @@
+import * as Eq from '@effect/data/Equivalence'
 import { ReadonlyRecord } from '@effect/data/ReadonlyRecord'
-import * as Eq from '@effect/data/typeclass/Equivalence'
 
 export * from '@effect/data/ReadonlyRecord'
 

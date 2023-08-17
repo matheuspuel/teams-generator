@@ -159,10 +159,10 @@ const GroupModal = ({
                 $(
                   state,
                   O.flatMap(s => s.id),
-                  O.match(
-                    () => 'Novo grupo',
-                    () => 'Editar grupo',
-                  ),
+                  O.match({
+                    onNone: () => 'Novo grupo',
+                    onSome: () => 'Editar grupo',
+                  }),
                 ),
               ),
               Pressable({ onPress: on.item.upsert.close(), p: 8, round: 4 })([

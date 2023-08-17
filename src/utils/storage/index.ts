@@ -18,9 +18,9 @@ export const createStorage: <A, B>(args: {
   set: $f(D.encodeEither(schema), Eff.flatMap(SimpleStorage.set(key))),
   remove: SimpleStorage.remove(key),
   setOrRemove: $f(
-    O.match(
-      () => SimpleStorage.remove(key),
-      $f(D.encodeEither(schema), Eff.flatMap(SimpleStorage.set(key))),
-    ),
+    O.match({
+      onNone: () => SimpleStorage.remove(key),
+      onSome: $f(D.encodeEither(schema), Eff.flatMap(SimpleStorage.set(key))),
+    }),
   ),
 })

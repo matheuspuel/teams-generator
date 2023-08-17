@@ -1,5 +1,5 @@
 import { NonEmptyReadonlyArray } from '@effect/data/ReadonlyArray'
-import { $, A, D, Monoid, Ord, Order, Rec, Tup, absurd, identity } from 'fp'
+import { $, A, D, Ord, Order, Rec, Tup, absurd, identity } from 'fp'
 import { Player } from 'src/datatypes'
 import {
   ActiveOrd,
@@ -58,5 +58,5 @@ export const toOrder = (order: GroupOrder): Order<Player> =>
   $(
     order,
     A.map(v => $(typeToOrder(v._tag), v.reverse ? Ord.reverse : identity)),
-    Monoid.combineAll(Ord.getMonoid()),
+    Ord.combineAll,
   )

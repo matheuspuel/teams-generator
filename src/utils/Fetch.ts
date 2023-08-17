@@ -43,23 +43,23 @@ export const bare = (args: {
   headers: Record<string, string>
 }) =>
   $(
-    Eff.tryCatchPromise(
-      () =>
+    Eff.tryPromise({
+      try: () =>
         fetch(args.url, {
           method: args.method,
           body: args.bodyString,
           headers: args.headers,
         }),
-      e => FetchingError({ error: e }),
-    ),
+      catch: e => FetchingError({ error: e }),
+    }),
     Eff.map(r => ({
       status: r.status,
       headers: r.headers,
       getBodyString: () =>
-        Eff.tryCatchPromise(
-          () => r.text(),
-          e => BodyParsingError({ error: e }),
-        ),
+        Eff.tryPromise({
+          try: () => r.text(),
+          catch: e => BodyParsingError({ error: e }),
+        }),
     })),
   )
 

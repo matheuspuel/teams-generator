@@ -7,7 +7,7 @@ const appEventHandler_ = makeEventHandler(appEventsDefinition)
 export const appEventHandler = (event: AppEvent) =>
   $(
     appEventHandler_(event),
-    Eff.catchAll(() => Eff.unit()),
+    Eff.catchAll(() => Eff.unit),
   )
 
 export type AppEventHandlerEnv = EventHandlerEnv<AppEvent>

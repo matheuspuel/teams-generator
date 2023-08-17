@@ -1,6 +1,6 @@
 export * from '@effect/data/Number'
 import { pipe as $ } from '@effect/data/Function'
-import { MonoidSum } from '@effect/data/Number'
+import { sumAll } from '@effect/data/Number'
 import { Predicate } from '@effect/data/Predicate'
 import * as A from '@effect/data/ReadonlyArray'
 
@@ -13,8 +13,7 @@ export const subtract = (subtrahend: number) => (minuend: number) =>
 
 export const div = (divisor: number) => (dividend: number) => dividend / divisor
 
-export const avg = (ns: Array<number>) =>
-  $(ns, MonoidSum.combineAll, div(A.length(ns)))
+export const avg = (ns: Array<number>) => $(ns, sumAll, div(A.length(ns)))
 
 export const increment = add(1)
 
@@ -22,5 +21,7 @@ export const decrement = add(-1)
 
 export const quotientAndRemainder =
   (divisor: number) =>
-  (dividend: number): [number, number] =>
-    [Math.floor(dividend / divisor), dividend % divisor]
+  (dividend: number): [number, number] => [
+    Math.floor(dividend / divisor),
+    dividend % divisor,
+  ]

@@ -3,8 +3,7 @@ import { AsyncStorageFP } from './wrapper'
 
 const get: (key: string) => Effect<never, unknown, Json.Json> = $f(
   AsyncStorageFP.getItem,
-  Eff.map(O.fromNullable),
-  Eff.someOrFailException,
+  Eff.flatMap(O.fromNullable),
   Eff.flatMap(Json.parse),
 )
 

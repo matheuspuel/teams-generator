@@ -1,5 +1,5 @@
-export * from '@effect/data/typeclass/Equivalence'
-import { Equivalence } from '@effect/data/typeclass/Equivalence'
+export * from '@effect/data/Equivalence'
+import { Equivalence } from '@effect/data/Equivalence'
 
 export const equals =
   <A>(eq: Equivalence<A>) =>

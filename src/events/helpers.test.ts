@@ -9,7 +9,7 @@ const makeEvent =
     event: { _tag: tag, payload },
   })
 
-const ignore = (_: unknown) => Eff.unit()
+const ignore = (_: unknown) => Eff.unit
 
 describe('makeEventConstructors', () => {
   test('makes', () => {

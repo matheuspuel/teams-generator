@@ -43,11 +43,14 @@ const getRawProps = <A>({
   renderItem: ({ item, index }) => props.renderItem(item, index)(env),
   ListEmptyComponent: $(
     props.data,
-    A.match(() => props.ListEmptyComponent(env), constUndefined),
+    A.match({
+      onEmpty: () => props.ListEmptyComponent(env),
+      onNonEmpty: constUndefined,
+    }),
   ),
   keyExtractor: props.keyExtractor,
   getItemLayout: $(props.getItemLayout, f =>
-    f ? (data, index) => f(data ?? [], index) : undefined,
+    f ? (data, index) => f(data ? (data as Array<A>) : [], index) : undefined,
   ),
   removeClippedSubviews: props.removeClippedSubviews,
   initialNumToRender: props.initialNumToRender,

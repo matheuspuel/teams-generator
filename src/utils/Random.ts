@@ -1,6 +1,6 @@
 import { Effect } from '@effect/io/Effect'
 import * as Random from '@effect/io/Random'
-import { $, A, Eff, none, O, Option, some } from 'fp'
+import { $, A, Eff, O, Option } from 'fp'
 
 export const randomizeArray = <A>(
   as: Array<A>,
@@ -8,10 +8,10 @@ export const randomizeArray = <A>(
   $(
     randomExtractElem(as),
     Eff.flatMap(
-      O.match(
-        () => Eff.succeed(A.empty<A>()),
-        ([a, rest]) => $(randomizeArray(rest), Eff.map(A.append(a))),
-      ),
+      O.match({
+        onNone: () => Eff.succeed(A.empty<A>()),
+        onSome: ([a, rest]) => $(randomizeArray(rest), Eff.map(A.append(a))),
+      }),
     ),
   )
 
@@ -26,12 +26,4 @@ const randomExtractElem = <A>(
 const extractElem =
   (index: number) =>
   <A>(as: Array<A>): Option<[A, Array<A>]> =>
-    $(
-      O.Do(),
-      O.bind('elem', () => O.fromNullable(as[index])),
-      O.let('rest', () => A.remove(index)(as)),
-      O.match(
-        () => none(),
-        ({ elem, rest }) => some([elem, rest]),
-      ),
-    )
+    O.all([O.fromNullable(as[index]), O.some(A.remove(index)(as))])

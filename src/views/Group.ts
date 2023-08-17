@@ -76,7 +76,10 @@ export const GroupView = memoized('GroupScreen')(
         Txt({ align: 'center', color: Colors.white, size: 12 })(
           $(
             group,
-            O.match(constant<Array<Player>>([]), g => g.players),
+            O.match({
+              onNone: constant<Array<Player>>([]),
+              onSome: g => g.players,
+            }),
             A.filter(p => p.active),
             A.length,
             n =>
@@ -91,10 +94,10 @@ export const GroupView = memoized('GroupScreen')(
       ...(modalParameters ? [ParametersModal({ parameters })] : []),
       $(
         modalSortGroup,
-        O.match(
-          () => Nothing,
-          () => SortModal({ mainSort: groupOrder[0] }),
-        ),
+        O.match({
+          onNone: () => Nothing,
+          onSome: () => SortModal({ mainSort: groupOrder[0] }),
+        }),
       ),
     ]),
 )
@@ -328,15 +331,15 @@ const FilterButton = (props: {
     View({ w: 36 })([
       $(
         props.state,
-        O.match(
-          () => Nothing,
-          ({ reverse }) =>
+        O.match({
+          onNone: () => Nothing,
+          onSome: ({ reverse }) =>
             MaterialCommunityIcons({
               name: reverse ? 'sort-descending' : 'sort-ascending',
               size: 24,
               color: Colors.primary.$5,
             }),
-        ),
+        }),
       ),
     ]),
     Txt({ flex: 1 })(props.name),

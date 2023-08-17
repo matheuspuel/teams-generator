@@ -13,10 +13,10 @@ export const defaultLogRepository = (
   get: $(
     AsyncStorage.getItem(key),
     Eff.flatMap(
-      O.match(
-        () => E.right(A.empty<TelemetryLog>()),
-        $f(Json.parse, E.flatMap(D.parseEither(D.array(Schema)))),
-      ),
+      O.match({
+        onNone: () => E.right(A.empty<TelemetryLog>()),
+        onSome: $f(Json.parse, E.flatMap(D.parseEither(D.array(Schema)))),
+      }),
     ),
     Eff.provideService(AsyncStorageEnv, env),
   ),
@@ -24,10 +24,10 @@ export const defaultLogRepository = (
     $(
       AsyncStorage.getItem(key),
       Eff.flatMap(
-        O.match(
-          () => E.right(A.empty<Readonly<TelemetryLog>>()),
-          $f(Json.parse, E.flatMap(D.parseEither(D.array(Schema)))),
-        ),
+        O.match({
+          onNone: () => E.right(A.empty<Readonly<TelemetryLog>>()),
+          onSome: $f(Json.parse, E.flatMap(D.parseEither(D.array(Schema)))),
+        }),
       ),
       Eff.map(A.appendAll(vs)),
       Eff.flatMap(D.encodeEither(D.array(Schema))),

@@ -5,8 +5,6 @@ import * as Eq from './Eq'
 
 export * from '@effect/data/ReadonlyArray'
 
-export type ReadonlyNonEmptyArray<A> = readonly [A, ...Array<A>]
-
 export const isArray = <A>(a: A): a is Extract<A, ReadonlyArray<unknown>> =>
   Array.isArray(a)
 
@@ -16,24 +14,27 @@ export const getUnorderedEquivalence = <A>(
   Eq.make((as, bs) =>
     $(
       as,
-      A.matchLeft(
-        () => A.isEmptyArray(bs),
-        (a, as_) =>
+      A.matchLeft({
+        onEmpty: () => A.isEmptyArray(bs),
+        onNonEmpty: (a, as_) =>
           $(
             A.findFirstIndex(Eq.equals(E)(a))(bs),
             O.map(i => A.remove(i)(bs)),
-            O.match(() => false, Eq.equals(getUnorderedEquivalence(E))(as_)),
+            O.match({
+              onNone: () => false,
+              onSome: Eq.equals(getUnorderedEquivalence(E))(as_),
+            }),
           ),
-      ),
+      }),
     ),
   )
 
-export const getPermutations: <A>(as: Array<A>) => Array<Array<A>> = A.match(
-  constant([[]]),
-  as =>
+export const getPermutations: <A>(as: Array<A>) => Array<Array<A>> = A.match({
+  onEmpty: constant([[]]),
+  onNonEmpty: as =>
     $(
       as,
       A.map((a, i) => $(A.remove(i)(as), getPermutations, A.map(A.append(a)))),
       A.flatten,
     ),
-)
+})

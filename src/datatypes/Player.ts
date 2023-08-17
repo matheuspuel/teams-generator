@@ -1,3 +1,4 @@
+import { sumAll } from '@effect/data/Number'
 import { $, $f, A, Bool, D, Num, Ord, Order, Show as Show_, Str } from 'fp'
 import { Id } from 'src/utils/Entity'
 import { normalize } from 'src/utils/String'
@@ -29,27 +30,27 @@ export const isActive = (p: Player) => p.active
 
 export const PositionOrd: Order<Player> = $(
   Position.Ord,
-  Ord.contramap(p => p.position),
+  Ord.mapInput(p => p.position),
 )
 
 export const NameOrd: Order<Player> = $(
   Str.Order,
-  Ord.contramap($f(p => p.name, normalize)),
+  Ord.mapInput($f(p => p.name, normalize)),
 )
 
 export const RatingOrd: Order<Player> = $(
   Num.Order,
-  Ord.contramap(p => p.rating),
+  Ord.mapInput(p => p.rating),
 )
 
 export const ActiveOrd: Order<Player> = $(
   Bool.Order,
-  Ord.contramap(p => p.active),
+  Ord.mapInput(p => p.active),
 )
 
 export const IdOrd: Order<Player> = $(
   Str.Order,
-  Ord.contramap(p => p.id),
+  Ord.mapInput(p => p.id),
 )
 
 export const Show: Show_.Show<Player> = {
@@ -95,9 +96,8 @@ export const TeamListShowSensitive: Show_.Show<Array<Array<Player>>> = {
   ),
 }
 
-export const getRatingTotal: (players: Array<Player>) => number = A.combineMap(
-  Num.MonoidSum,
-)(p => p.rating)
+export const getRatingTotal: (players: Array<Player>) => number = players =>
+  sumAll(A.map(players, p => p.rating))
 
 export const getRatingAvg: (players: Array<Player>) => number = $f(
   A.map(p => p.rating),

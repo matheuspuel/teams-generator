@@ -1,6 +1,6 @@
-import { Semigroup } from '@effect/data/typeclass/Semigroup'
+import { Semigroup } from '@effect/typeclass/Semigroup'
 
-export * from '@effect/data/typeclass/Semigroup'
+export * from '@effect/typeclass/Semigroup'
 
 export const combineAllNonEmpty =
   <A>(s: Semigroup<A>): ((as: readonly [A, ...Array<A>]) => A) =>

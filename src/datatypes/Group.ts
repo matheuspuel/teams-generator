@@ -19,5 +19,5 @@ export const Group = Schema
 
 export const NameOrd: Order<Group> = $(
   Str.Order,
-  Ord.contramap($f(p => p.name, normalize)),
+  Ord.mapInput($f(p => p.name, normalize)),
 )

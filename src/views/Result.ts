@@ -57,16 +57,16 @@ export const ResultView = named2('Result')(
       ScrollView({ contentContainerStyle: { flexGrow: 1 } })(
         $(
           result,
-          O.match(
-            () => [
+          O.match({
+            onNone: () => [
               View({ flex: 1, justify: 'center' })([
                 ActivityIndicator({ color: Colors.primary.$5 }),
               ]),
             ],
-            A.map((t, i) =>
+            onSome: A.map((t, i) =>
               TeamItem({ key: i.toString(), index: i, players: t }),
             ),
-          ),
+          }),
         ),
       ),
     ]),

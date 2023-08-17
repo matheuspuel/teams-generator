@@ -1,12 +1,12 @@
-import * as Ord from '@effect/data/typeclass/Order'
+import * as Ord from '@effect/data/Order'
 
-export * from '@effect/data/typeclass/Order'
+export * from '@effect/data/Order'
 
 export const equals =
   <A>(ord: Ord.Order<A>) =>
   (b: A) =>
   (a: A) =>
-    ord.compare(a, b) === 0
+    ord(a, b) === 0
 
 export const lt = Ord.lessThan
 

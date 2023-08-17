@@ -1,7 +1,7 @@
 import { $, Eff, Effect } from 'fp'
 import throttle from 'lodash.throttle'
-import { AppEventHandlerEnv, EventHandler } from 'src/events/handler'
 import { appEvents } from 'src/events'
+import { AppEventHandlerEnv, EventHandler } from 'src/events/handler'
 import { BackHandler } from 'src/services/BackHandler'
 import * as StateRef from 'src/services/StateRef'
 import { UI } from 'src/services/UI'
@@ -45,12 +45,12 @@ export const startApp = $(
   Eff.tap(() => EventHandler.handle(on.appLoaded())),
   Eff.tap(() =>
     $(
-      Eff.all(Metadata.get, Timestamp.getNow),
+      Eff.all([Metadata.get, Timestamp.getNow]),
       Eff.flatMap(([m, t]) =>
         Telemetry.log([{ timestamp: t, event: 'start', data: m }]),
       ),
       Eff.flatMap(() => Telemetry.send),
-      Eff.catchAll(() => Eff.unit()),
+      Eff.catchAll(() => Eff.unit),
     ),
   ),
 )

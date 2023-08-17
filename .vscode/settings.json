@@ -1,8 +1,7 @@
 {
-  "react-native.packager.port": 19000,
+  "react-native.packager.port": 8081,
   "task.allowAutomaticTasks": "on",
   "files.exclude": { ".expo": true },
   "typescript.tsdk": "node_modules\\typescript\\lib",
   "cSpell.words": ["sorteiotimes"],
-  "typescript.tsserver.experimental.enableProjectDiagnostics": true,
 }

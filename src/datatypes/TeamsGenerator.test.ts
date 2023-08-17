@@ -65,10 +65,12 @@ const distributeTeamsUsingCombinations: typeof distributeTeams =
             players,
           ),
       }),
-      A.match(
-        constant([]),
-        SG.combineAllNonEmpty(SG.min(getFitOrdFromCriteria(params))),
-      ),
+      A.match({
+        onEmpty: constant([]),
+        onNonEmpty: SG.combineAllNonEmpty(
+          SG.min(getFitOrdFromCriteria(params)),
+        ),
+      }),
     )
 
 describe('test utils', () => {

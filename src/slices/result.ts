@@ -19,13 +19,13 @@ export const generateResult = $(
       $(
         get(root.ui.selectedGroupId.$)(s),
         O.flatMap(id => $(get(root.groups.$)(s), Rec.get(id))),
-        O.match_(constant([]), g => g.players),
+        O.match_({ onNone: constant([]), onSome: g => g.players }),
         A.filter(Player.isActive),
         players => ({ players, parameters: get(root.parameters.$)(s) }),
       ),
     ),
   ),
-  Eff.bind('start', () => clockWith(c => c.currentTimeMillis())),
+  Eff.bind('start', () => clockWith(c => c.currentTimeMillis)),
   Eff.bind('result', ({ players, parameters }) =>
     TeamsGenerator.generateRandomBalancedTeams({
       position: parameters.position,
@@ -45,7 +45,7 @@ export const generateResult = $(
       ),
     })(players),
   ),
-  Eff.bind('end', () => clockWith(c => c.currentTimeMillis())),
+  Eff.bind('end', () => clockWith(c => c.currentTimeMillis)),
   Eff.tap(({ result }) =>
     $(result, O.some, replaceSApp(root.result.$), execute),
   ),
@@ -71,7 +71,7 @@ export const generateResult = $(
         ]),
       ),
       Eff.flatMap(() => Telemetry.send),
-      Eff.catchAll(() => Eff.unit()),
+      Eff.catchAll(() => Eff.unit),
     ),
   ),
 )

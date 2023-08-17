@@ -74,7 +74,7 @@ export type AppEventHandlerRequirements = EventHandlerEnvFromTree<
 const defineEvents: <T extends AnyHandleEventTree>(tree: T) => T = identity
 
 const noArg: <A>(a: A) => (_: void) => A = constant
-const ignore = noArg(Eff.unit())
+const ignore = noArg(Eff.unit)
 
 const wait = (time: Duration): Effect<never, never, void> =>
   Eff.promise(() => new Promise(res => setTimeout(() => res(), time)))
@@ -87,7 +87,7 @@ export const appEventsDefinition = defineEvents({
     $(
       execute(goBack),
       Eff.tap(({ shouldBubbleUpEvent }) =>
-        shouldBubbleUpEvent ? BackHandler.exit : Eff.unit(),
+        shouldBubbleUpEvent ? BackHandler.exit : Eff.unit,
       ),
     ),
   core: {
@@ -111,11 +111,11 @@ export const appEventsDefinition = defineEvents({
           $(
             S.gets(getGroupById(id)),
             S.flatMap(
-              O.match(
-                () => S.modify<RootState>(identity),
-                g =>
+              O.match({
+                onNone: () => S.modify<RootState>(identity),
+                onSome: g =>
                   setUpsertGroupModal(some({ id: O.some(id), name: g.name })),
-              ),
+              }),
             ),
             execute,
           ),
@@ -127,18 +127,18 @@ export const appEventsDefinition = defineEvents({
             S.map(O.filter(m => $(m.name, not(Str.isEmpty)))),
             execute,
             Eff.flatMap(
-              O.match(
-                () => ignore(),
-                m =>
+              O.match({
+                onNone: () => ignore(),
+                onSome: m =>
                   $(
                     m.id,
-                    O.match(
-                      () => createGroup({ name: m.name }),
-                      id => execute(editGroup({ id, name: m.name })),
-                    ),
+                    O.match({
+                      onNone: () => createGroup({ name: m.name }),
+                      onSome: id => execute(editGroup({ id, name: m.name })),
+                    }),
                     Eff.tap(() => execute(setUpsertGroupModal(O.none()))),
                   ),
-              ),
+              }),
             ),
           ),
       },
@@ -149,10 +149,10 @@ export const appEventsDefinition = defineEvents({
           $(
             S.gets(Optic.get(root.ui.modalDeleteGroup.$)),
             S.flatMap(
-              O.match(
-                () => S.of<RootState, void>(undefined),
-                ({ id }) => deleteGroup({ id }),
-              ),
+              O.match({
+                onNone: () => S.of<RootState, void>(undefined),
+                onSome: ({ id }) => deleteGroup({ id }),
+              }),
             ),
             S.apFirst(setDeleteGroupModal(none())),
             execute,
@@ -215,16 +215,16 @@ export const appEventsDefinition = defineEvents({
             $(
               getPlayerFromActiveGroup({ playerId }),
               S.flatMap(
-                O.match(
-                  () => S.of<RootState, void>(undefined),
-                  $f(
+                O.match({
+                  onNone: () => S.of<RootState, void>(undefined),
+                  onSome: $f(
                     getPlayerFormFromData,
                     replaceSApp(root.playerForm.$),
                     S.apFirst(
                       replaceSApp(root.ui.selectedPlayerId.$)(O.some(playerId)),
                     ),
                   ),
-                ),
+                }),
               ),
             ),
           ),
@@ -245,7 +245,7 @@ export const appEventsDefinition = defineEvents({
         D.parseOption(Rating.Schema),
         v => v,
         O.map($f(replaceSApp(root.playerForm.rating.$), execute)),
-        O.getOrElse(() => Eff.unit()),
+        O.getOrElse(() => Eff.unit),
       ),
     },
     delete: (_: void) => $(deleteCurrentPlayer, S.apFirst(goBack), execute),
@@ -259,22 +259,22 @@ export const appEventsDefinition = defineEvents({
           groupId: S.gets(get(root.ui.selectedGroupId.$)),
           playerId: $(S.gets(get(root.ui.selectedPlayerId.$)), S.map(O.some)),
         }),
-        S.map(O.struct),
+        S.map(O.all),
         execute,
         Eff.flatMap(
-          O.match(
-            () => Eff.unit(),
-            ({ form, groupId, playerId }) =>
+          O.match({
+            onNone: () => Eff.unit,
+            onSome: ({ form, groupId, playerId }) =>
               $(
                 playerId,
-                O.match(
-                  () => createPlayer({ groupId, player: form }),
-                  id =>
+                O.match({
+                  onNone: () => createPlayer({ groupId, player: form }),
+                  onSome: id =>
                     execute(editPlayer({ groupId, player: { ...form, id } })),
-                ),
+                }),
                 Eff.flatMap(() => execute(goBack)),
               ),
-          ),
+          }),
         ),
         v => v,
       ),
@@ -284,12 +284,12 @@ export const appEventsDefinition = defineEvents({
       $(
         execute(S.gets(get(root.result.$))),
         Eff.flatMap(
-          O.match(
-            () => Eff.unit(),
-            $f(Player.TeamListShowSensitive.show, t =>
+          O.match({
+            onNone: () => Eff.unit,
+            onSome: $f(Player.TeamListShowSensitive.show, t =>
               ShareService.share({ message: t, title: 'Times' }),
             ),
-          ),
+          }),
         ),
       ),
   },

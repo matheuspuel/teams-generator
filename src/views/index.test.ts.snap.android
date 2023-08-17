@@ -34,7 +34,6 @@ exports[`renders 1`] = `
     >
       <RNSScreen
         collapsable={false}
-        forwardedRef={[Function]}
         gestureResponseDistance={
           {
             "bottom": -1,
@@ -43,6 +42,11 @@ exports[`renders 1`] = `
             "top": -1,
           }
         }
+        sheetAllowedDetents="large"
+        sheetCornerRadius={-1}
+        sheetExpandsWhenScrolledToEdge={true}
+        sheetGrabberVisible={false}
+        sheetLargestUndimmedDetent="all"
         style={{}}
       >
         <View
@@ -575,7 +579,6 @@ exports[`renders 2`] = `
     >
       <RNSScreen
         collapsable={false}
-        forwardedRef={[Function]}
         gestureResponseDistance={
           {
             "bottom": -1,
@@ -584,6 +587,11 @@ exports[`renders 2`] = `
             "top": -1,
           }
         }
+        sheetAllowedDetents="large"
+        sheetCornerRadius={-1}
+        sheetExpandsWhenScrolledToEdge={true}
+        sheetGrabberVisible={false}
+        sheetLargestUndimmedDetent="all"
         style={{}}
       >
         <View
@@ -1138,7 +1146,6 @@ exports[`renders 3`] = `
     >
       <RNSScreen
         collapsable={false}
-        forwardedRef={[Function]}
         gestureResponseDistance={
           {
             "bottom": -1,
@@ -1147,6 +1154,11 @@ exports[`renders 3`] = `
             "top": -1,
           }
         }
+        sheetAllowedDetents="large"
+        sheetCornerRadius={-1}
+        sheetExpandsWhenScrolledToEdge={true}
+        sheetGrabberVisible={false}
+        sheetLargestUndimmedDetent="all"
         style={{}}
       >
         <View
@@ -1664,7 +1676,6 @@ exports[`renders 3`] = `
       </RNSScreen>
       <RNSScreen
         collapsable={false}
-        forwardedRef={[Function]}
         gestureResponseDistance={
           {
             "bottom": -1,
@@ -1673,6 +1684,11 @@ exports[`renders 3`] = `
             "top": -1,
           }
         }
+        sheetAllowedDetents="large"
+        sheetCornerRadius={-1}
+        sheetExpandsWhenScrolledToEdge={true}
+        sheetGrabberVisible={false}
+        sheetLargestUndimmedDetent="all"
         style={{}}
       >
         <View
@@ -2675,7 +2691,6 @@ exports[`renders 4`] = `
     >
       <RNSScreen
         collapsable={false}
-        forwardedRef={[Function]}
         gestureResponseDistance={
           {
             "bottom": -1,
@@ -2684,6 +2699,11 @@ exports[`renders 4`] = `
             "top": -1,
           }
         }
+        sheetAllowedDetents="large"
+        sheetCornerRadius={-1}
+        sheetExpandsWhenScrolledToEdge={true}
+        sheetGrabberVisible={false}
+        sheetLargestUndimmedDetent="all"
         style={{}}
       >
         <View
@@ -3201,7 +3221,6 @@ exports[`renders 4`] = `
       </RNSScreen>
       <RNSScreen
         collapsable={false}
-        forwardedRef={[Function]}
         gestureResponseDistance={
           {
             "bottom": -1,
@@ -3210,6 +3229,11 @@ exports[`renders 4`] = `
             "top": -1,
           }
         }
+        sheetAllowedDetents="large"
+        sheetCornerRadius={-1}
+        sheetExpandsWhenScrolledToEdge={true}
+        sheetGrabberVisible={false}
+        sheetLargestUndimmedDetent="all"
         style={{}}
       >
         <View
@@ -4175,7 +4199,6 @@ exports[`renders 4`] = `
       </RNSScreen>
       <RNSScreen
         collapsable={false}
-        forwardedRef={[Function]}
         gestureResponseDistance={
           {
             "bottom": -1,
@@ -4184,6 +4207,11 @@ exports[`renders 4`] = `
             "top": -1,
           }
         }
+        sheetAllowedDetents="large"
+        sheetCornerRadius={-1}
+        sheetExpandsWhenScrolledToEdge={true}
+        sheetGrabberVisible={false}
+        sheetLargestUndimmedDetent="all"
         style={{}}
       >
         <View
@@ -10001,7 +10029,6 @@ exports[`renders 5`] = `
     >
       <RNSScreen
         collapsable={false}
-        forwardedRef={[Function]}
         gestureResponseDistance={
           {
             "bottom": -1,
@@ -10010,6 +10037,11 @@ exports[`renders 5`] = `
             "top": -1,
           }
         }
+        sheetAllowedDetents="large"
+        sheetCornerRadius={-1}
+        sheetExpandsWhenScrolledToEdge={true}
+        sheetGrabberVisible={false}
+        sheetLargestUndimmedDetent="all"
         style={{}}
       >
         <View
@@ -10527,7 +10559,6 @@ exports[`renders 5`] = `
       </RNSScreen>
       <RNSScreen
         collapsable={false}
-        forwardedRef={[Function]}
         gestureResponseDistance={
           {
             "bottom": -1,
@@ -10536,6 +10567,11 @@ exports[`renders 5`] = `
             "top": -1,
           }
         }
+        sheetAllowedDetents="large"
+        sheetCornerRadius={-1}
+        sheetExpandsWhenScrolledToEdge={true}
+        sheetGrabberVisible={false}
+        sheetLargestUndimmedDetent="all"
         style={{}}
       >
         <View
@@ -11709,7 +11745,6 @@ exports[`renders 5`] = `
       </RNSScreen>
       <RNSScreen
         collapsable={false}
-        forwardedRef={[Function]}
         gestureResponseDistance={
           {
             "bottom": -1,
@@ -11718,6 +11753,11 @@ exports[`renders 5`] = `
             "top": -1,
           }
         }
+        sheetAllowedDetents="large"
+        sheetCornerRadius={-1}
+        sheetExpandsWhenScrolledToEdge={true}
+        sheetGrabberVisible={false}
+        sheetLargestUndimmedDetent="all"
         style={{}}
       >
         <View
@@ -12299,7 +12339,7 @@ exports[`renders 5`] = `
                       }
                     }
                   >
-                    1
+                    0
                   </Text>
                 </Text>
                 <Text
@@ -12390,7 +12430,7 @@ exports[`renders 5`] = `
                       }
                     }
                   >
-                    5,00
+                    NaN
                   </Text>
                 </Text>
                 <Text
@@ -12481,150 +12521,9 @@ exports[`renders 5`] = `
                       }
                     }
                   >
-                    5
+                    0
                   </Text>
                 </Text>
-                <View
-                  style={
-                    {
-                      "alignItems": undefined,
-                      "alignSelf": undefined,
-                      "aspectRatio": undefined,
-                      "backgroundColor": undefined,
-                      "borderBottomLeftRadius": undefined,
-                      "borderBottomRightRadius": undefined,
-                      "borderBottomWidth": undefined,
-                      "borderColor": undefined,
-                      "borderLeftWidth": undefined,
-                      "borderRadius": undefined,
-                      "borderRightWidth": undefined,
-                      "borderTopLeftRadius": undefined,
-                      "borderTopRightRadius": undefined,
-                      "borderTopWidth": undefined,
-                      "borderWidth": undefined,
-                      "columnGap": undefined,
-                      "elevation": undefined,
-                      "flex": undefined,
-                      "flexDirection": "row",
-                      "gap": undefined,
-                      "height": undefined,
-                      "justifyContent": undefined,
-                      "margin": undefined,
-                      "marginBottom": undefined,
-                      "marginHorizontal": undefined,
-                      "marginLeft": undefined,
-                      "marginRight": undefined,
-                      "marginTop": undefined,
-                      "marginVertical": undefined,
-                      "overflow": undefined,
-                      "padding": 4,
-                      "paddingBottom": undefined,
-                      "paddingHorizontal": undefined,
-                      "paddingLeft": undefined,
-                      "paddingRight": undefined,
-                      "paddingTop": undefined,
-                      "paddingVertical": undefined,
-                      "rowGap": undefined,
-                      "width": undefined,
-                      "zIndex": undefined,
-                    }
-                  }
-                >
-                  <Text
-                    style={
-                      {
-                        "color": "#1e1e1eff",
-                        "flex": undefined,
-                        "fontSize": undefined,
-                        "fontWeight": "600",
-                        "height": undefined,
-                        "includeFontPadding": undefined,
-                        "lineHeight": undefined,
-                        "margin": undefined,
-                        "marginBottom": undefined,
-                        "marginHorizontal": undefined,
-                        "marginLeft": undefined,
-                        "marginRight": undefined,
-                        "marginTop": undefined,
-                        "marginVertical": undefined,
-                        "padding": undefined,
-                        "paddingBottom": undefined,
-                        "paddingHorizontal": undefined,
-                        "paddingLeft": undefined,
-                        "paddingRight": undefined,
-                        "paddingTop": undefined,
-                        "paddingVertical": undefined,
-                        "textAlign": undefined,
-                        "width": undefined,
-                      }
-                    }
-                  >
-                    5,0
-                  </Text>
-                  <Text
-                    numberOfLines={1}
-                    style={
-                      {
-                        "color": "#1e1e1eff",
-                        "flex": undefined,
-                        "fontSize": undefined,
-                        "fontWeight": undefined,
-                        "height": undefined,
-                        "includeFontPadding": undefined,
-                        "lineHeight": undefined,
-                        "margin": undefined,
-                        "marginBottom": undefined,
-                        "marginHorizontal": undefined,
-                        "marginLeft": undefined,
-                        "marginRight": undefined,
-                        "marginTop": undefined,
-                        "marginVertical": undefined,
-                        "padding": undefined,
-                        "paddingBottom": undefined,
-                        "paddingHorizontal": undefined,
-                        "paddingLeft": undefined,
-                        "paddingRight": undefined,
-                        "paddingTop": undefined,
-                        "paddingVertical": undefined,
-                        "textAlign": undefined,
-                        "width": undefined,
-                      }
-                    }
-                  >
-                     - player 1
-                  </Text>
-                  <Text
-                    style={
-                      {
-                        "color": "#1e1e1eff",
-                        "flex": undefined,
-                        "fontSize": undefined,
-                        "fontWeight": undefined,
-                        "height": undefined,
-                        "includeFontPadding": undefined,
-                        "lineHeight": undefined,
-                        "margin": undefined,
-                        "marginBottom": undefined,
-                        "marginHorizontal": undefined,
-                        "marginLeft": undefined,
-                        "marginRight": undefined,
-                        "marginTop": undefined,
-                        "marginVertical": undefined,
-                        "padding": undefined,
-                        "paddingBottom": undefined,
-                        "paddingHorizontal": undefined,
-                        "paddingLeft": undefined,
-                        "paddingRight": undefined,
-                        "paddingTop": undefined,
-                        "paddingVertical": undefined,
-                        "textAlign": undefined,
-                        "width": undefined,
-                      }
-                    }
-                  >
-                     (G)
-                  </Text>
-                </View>
               </View>
               <View
                 style={
