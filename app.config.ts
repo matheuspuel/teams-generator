@@ -13,6 +13,7 @@ const getConfig = (): ExpoConfig => ({
   slug: 'sorteio-times',
   owner: 'matheuspuel',
   version: packageJSON.version,
+  runtimeVersion: packageJSON.version,
   orientation: 'portrait',
   icon: './assets/icon.png',
   androidStatusBar: {
@@ -25,22 +26,18 @@ const getConfig = (): ExpoConfig => ({
     backgroundColor: '#136d15',
   },
   updates: {
+    enabled: matchEnv({
+      development: true,
+      preview: true,
+      staging: false,
+      production: false,
+    }),
     fallbackToCacheTimeout: 0,
+    url: 'https://u.expo.dev/b5fe0e17-a64d-4005-b833-a57c2f04b664',
   },
   assetBundlePatterns: ['**/*'],
   packagerOpts: {
     config: 'metro.config.js',
-  },
-  ios: {
-    supportsTablet: true,
-    bundleIdentifier:
-      'dev.matheuspuel.sorteiotimes' +
-      matchEnv({
-        production: '',
-        staging: '.staging',
-        preview: '.preview',
-        development: '.development',
-      }),
   },
   android: {
     package:
@@ -51,7 +48,6 @@ const getConfig = (): ExpoConfig => ({
         preview: '.preview',
         development: '.development',
       }),
-    versionCode: 12,
     adaptiveIcon: {
       backgroundColor: '#136d15',
       foregroundImage:
@@ -65,9 +61,7 @@ const getConfig = (): ExpoConfig => ({
         '.png',
     },
   },
-  web: {
-    favicon: './assets/favicon.png',
-  },
+  web: { favicon: './assets/favicon.png' },
   extra: {
     envName,
     eas: { projectId: 'b5fe0e17-a64d-4005-b833-a57c2f04b664' },
