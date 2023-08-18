@@ -14,9 +14,9 @@
     "build:preview": "eas build --platform android --profile preview",
     "build:staging": "eas build --platform android --profile staging",
     "build:production": "eas build --platform android --profile production --auto-submit",
-    "update:preview": "SET APP_VARIANT=preview&& eas update --auto --platform android --channel preview",
-    "update:staging": "SET APP_VARIANT=staging&& eas update --auto --platform android --channel staging",
-    "update:production": "SET APP_VARIANT=production&& eas update --auto --platform android --channel production"
+    "update:preview": "eas update --auto --platform android --channel preview",
+    "update:staging": "eas update --auto --platform android --channel staging",
+    "update:production": "eas update --auto --platform android --channel production"
   },
   "dependencies": {
     "@effect/data": "0.17.1",
