@@ -47,7 +47,12 @@ exports[`renders 1`] = `
         sheetExpandsWhenScrolledToEdge={true}
         sheetGrabberVisible={false}
         sheetLargestUndimmedDetent="all"
-        style={{}}
+        stackAnimation="none"
+        style={
+          {
+            "backgroundColor": "#f2f2f2ff",
+          }
+        }
       >
         <View
           onLayout={[Function]}
@@ -592,7 +597,12 @@ exports[`renders 2`] = `
         sheetExpandsWhenScrolledToEdge={true}
         sheetGrabberVisible={false}
         sheetLargestUndimmedDetent="all"
-        style={{}}
+        stackAnimation="none"
+        style={
+          {
+            "backgroundColor": "#f2f2f2ff",
+          }
+        }
       >
         <View
           onLayout={[Function]}
@@ -1159,7 +1169,12 @@ exports[`renders 3`] = `
         sheetExpandsWhenScrolledToEdge={true}
         sheetGrabberVisible={false}
         sheetLargestUndimmedDetent="all"
-        style={{}}
+        stackAnimation="none"
+        style={
+          {
+            "backgroundColor": "#f2f2f2ff",
+          }
+        }
       >
         <View
           onLayout={[Function]}
@@ -1689,7 +1704,12 @@ exports[`renders 3`] = `
         sheetExpandsWhenScrolledToEdge={true}
         sheetGrabberVisible={false}
         sheetLargestUndimmedDetent="all"
-        style={{}}
+        stackAnimation="none"
+        style={
+          {
+            "backgroundColor": "#f2f2f2ff",
+          }
+        }
       >
         <View
           style={
@@ -2704,7 +2724,12 @@ exports[`renders 4`] = `
         sheetExpandsWhenScrolledToEdge={true}
         sheetGrabberVisible={false}
         sheetLargestUndimmedDetent="all"
-        style={{}}
+        stackAnimation="none"
+        style={
+          {
+            "backgroundColor": "#f2f2f2ff",
+          }
+        }
       >
         <View
           onLayout={[Function]}
@@ -3234,7 +3259,12 @@ exports[`renders 4`] = `
         sheetExpandsWhenScrolledToEdge={true}
         sheetGrabberVisible={false}
         sheetLargestUndimmedDetent="all"
-        style={{}}
+        stackAnimation="none"
+        style={
+          {
+            "backgroundColor": "#f2f2f2ff",
+          }
+        }
       >
         <View
           style={
@@ -4212,7 +4242,12 @@ exports[`renders 4`] = `
         sheetExpandsWhenScrolledToEdge={true}
         sheetGrabberVisible={false}
         sheetLargestUndimmedDetent="all"
-        style={{}}
+        stackAnimation="none"
+        style={
+          {
+            "backgroundColor": "#f2f2f2ff",
+          }
+        }
       >
         <View
           style={
@@ -10042,7 +10077,12 @@ exports[`renders 5`] = `
         sheetExpandsWhenScrolledToEdge={true}
         sheetGrabberVisible={false}
         sheetLargestUndimmedDetent="all"
-        style={{}}
+        stackAnimation="none"
+        style={
+          {
+            "backgroundColor": "#f2f2f2ff",
+          }
+        }
       >
         <View
           onLayout={[Function]}
@@ -10572,7 +10612,12 @@ exports[`renders 5`] = `
         sheetExpandsWhenScrolledToEdge={true}
         sheetGrabberVisible={false}
         sheetLargestUndimmedDetent="all"
-        style={{}}
+        stackAnimation="none"
+        style={
+          {
+            "backgroundColor": "#f2f2f2ff",
+          }
+        }
       >
         <View
           style={
@@ -11758,7 +11803,12 @@ exports[`renders 5`] = `
         sheetExpandsWhenScrolledToEdge={true}
         sheetGrabberVisible={false}
         sheetLargestUndimmedDetent="all"
-        style={{}}
+        stackAnimation="none"
+        style={
+          {
+            "backgroundColor": "#f2f2f2ff",
+          }
+        }
       >
         <View
           style={
