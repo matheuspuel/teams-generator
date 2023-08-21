@@ -4,7 +4,7 @@ import {
   $,
   $f,
   A,
-  Eff,
+  F,
   Match,
   Num,
   O,
@@ -210,4 +210,4 @@ export const distributeTeams = (criteria: Criteria) =>
 export const generateRandomBalancedTeams =
   (criteria: Criteria) =>
   (players: Array<Player>): Effect<never, never, Array<Array<Player>>> =>
-    $(randomizeArray(players), Eff.map(distributeTeams(criteria)))
+    $(randomizeArray(players), F.map(distributeTeams(criteria)))

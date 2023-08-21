@@ -1,6 +1,6 @@
 /* eslint-disable functional/immutable-data */
 /* eslint-disable functional/no-expression-statements */
-import { $, A, Eff } from 'fp'
+import { $, A, F } from 'fp'
 import React from 'react'
 import { View as View_ } from 'react-native'
 import {
@@ -67,7 +67,7 @@ const RatingSlider_ = ({
     return Math.round(v / step) * step
   }
 
-  const onChange = (n: number) => Eff.runPromise(env.eventHandler(onChange_(n)))
+  const onChange = (n: number) => F.runPromise(env.eventHandler(onChange_(n)))
 
   const gesture = Gesture.Pan()
     .onBegin(e => {

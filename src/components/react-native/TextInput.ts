@@ -1,4 +1,4 @@
-import { $, Eff } from 'fp'
+import { $, F } from 'fp'
 import React from 'react'
 import { TextInput as RNTextInput_ } from 'react-native-gesture-handler'
 import {
@@ -57,13 +57,13 @@ const getRawProps =
     env,
   }: TextInputArgs): React.ComponentProps<typeof RNTextInput_> => ({
     value: props.value,
-    onChangeText: t => void Eff.runPromise(env.eventHandler(props.onChange(t))),
+    onChangeText: t => void F.runPromise(env.eventHandler(props.onChange(t))),
     onFocus: () => {
       // eslint-disable-next-line functional/no-expression-statements
       state.setIsFocused(true)
       // eslint-disable-next-line functional/no-expression-statements
       props.onFocus
-        ? void Eff.runPromise(env.eventHandler(props.onFocus))
+        ? void F.runPromise(env.eventHandler(props.onFocus))
         : undefined
     },
     onBlur: () => {
@@ -71,7 +71,7 @@ const getRawProps =
       state.setIsFocused(false)
       // eslint-disable-next-line functional/no-expression-statements
       props.onBlur
-        ? void Eff.runPromise(env.eventHandler(props.onBlur))
+        ? void F.runPromise(env.eventHandler(props.onBlur))
         : undefined
     },
     autoFocus: props.autoFocus,

@@ -19,7 +19,7 @@ import { TelemetryEnv } from 'src/services/Telemetry'
 import { defaultTheme } from 'src/services/Theme/default'
 import { Id } from 'src/utils/Entity'
 import { Ref } from 'src/utils/datatypes'
-import { $, Context, Eff, Num } from 'src/utils/fp'
+import { $, Context, F, Num } from 'src/utils/fp'
 import { UIRoot } from '.'
 
 const stateRef = defaultStateRef
@@ -28,15 +28,15 @@ const idGenerator = {
   generate: $(Ref.create(0), ref =>
     $(
       ref.getState,
-      Eff.map(Num.increment),
-      Eff.tap(ref.setState),
-      Eff.map(n => Id(n.toString())),
+      F.map(Num.increment),
+      F.tap(ref.setState),
+      F.map(n => Id(n.toString())),
     ),
   ),
 }
 
 const eventHandler = (e: AppEvent) =>
-  Eff.provideContext(
+  F.provideContext(
     appEventHandler(e),
     Context.mergedContext(
       AppStateRefEnv,
@@ -52,15 +52,15 @@ const eventHandler = (e: AppEvent) =>
     )({
       stateRef,
       backHandler: {
-        exit: Eff.unit,
-        subscribe: () => Eff.succeed({ unsubscribe: Eff.unit }),
+        exit: F.unit,
+        subscribe: () => F.succeed({ unsubscribe: F.unit }),
       },
-      share: { share: () => Eff.unit },
-      splashScreen: { hide: Eff.unit, preventAutoHide: Eff.unit },
+      share: { share: () => F.unit },
+      splashScreen: { hide: F.unit, preventAutoHide: F.unit },
       idGenerator,
-      Telemetry: { log: () => Eff.unit, send: Eff.unit },
+      Telemetry: { log: () => F.unit, send: F.unit },
       Metadata: {
-        get: Eff.succeed({
+        get: F.succeed({
           application: {
             native: { buildVersion: null, version: null },
             version: 'test',
@@ -73,21 +73,21 @@ const eventHandler = (e: AppEvent) =>
       },
       Repositories: {
         teams: {
-          groups: { get: Eff.succeed({}), set: () => Eff.unit },
+          groups: { get: F.succeed({}), set: () => F.unit },
           parameters: {
-            get: Eff.succeed(Parameters.initial),
-            set: () => Eff.unit,
+            get: F.succeed(Parameters.initial),
+            set: () => F.unit,
           },
           groupOrder: {
-            get: Eff.succeed(GroupOrder.initial),
-            set: () => Eff.unit,
+            get: F.succeed(GroupOrder.initial),
+            set: () => F.unit,
           },
         },
       },
     }),
   )
 
-const dispatch = (e: AppEvent) => Eff.runPromise(eventHandler(e))
+const dispatch = (e: AppEvent) => F.runPromise(eventHandler(e))
 
 it('renders', async () => {
   await dispatch(on.core.appLoaded())

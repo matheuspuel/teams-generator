@@ -1,4 +1,4 @@
-import { $, Eff, Effect, Eq, State, Tup } from 'fp'
+import { $, F, Effect, Eq, State, Tup } from 'fp'
 import * as Observable from 'src/utils/datatypes/Observable'
 import * as Ref from 'src/utils/datatypes/Ref'
 
@@ -18,19 +18,19 @@ export const create = <S>(initialState: S): StateRef<S> => {
   const execute: StateRef<S>['execute'] = f =>
     $(
       ref.getState,
-      Eff.flatMap(prev =>
+      F.flatMap(prev =>
         $(f(prev), result =>
           $(Tup.getSecond(result), next =>
             Eq.equals(Eq.strict())(prev)(next)
-              ? Eff.succeed(Tup.getFirst(result))
+              ? F.succeed(Tup.getFirst(result))
               : $(
                   ref.getState,
-                  Eff.flatMap(current =>
+                  F.flatMap(current =>
                     Eq.equals(Eq.strict())(prev)(current)
                       ? $(
                           ref.setState(next),
-                          Eff.flatMap(() => observable.dispatch(undefined)),
-                          Eff.map(() => Tup.getFirst(result)),
+                          F.flatMap(() => observable.dispatch(undefined)),
+                          F.map(() => Tup.getFirst(result)),
                         )
                       : execute(f),
                   ),

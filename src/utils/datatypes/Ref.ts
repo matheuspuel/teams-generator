@@ -1,4 +1,4 @@
-import { Eff, Effect } from '../fp'
+import { F, Effect } from '../fp'
 
 export type Ref<A> = {
   getState: Effect<never, never, A>
@@ -9,9 +9,9 @@ export const create = <A>(initialState: A): Ref<A> => {
   // eslint-disable-next-line functional/no-let
   let state: A = initialState
   return {
-    getState: Eff.sync(() => state),
+    getState: F.sync(() => state),
     setState: (nextState: A) =>
-      Eff.sync(() => {
+      F.sync(() => {
         // eslint-disable-next-line functional/no-expression-statements
         state = nextState
       }),

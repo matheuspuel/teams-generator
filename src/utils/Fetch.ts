@@ -1,4 +1,4 @@
-import { $, Data, E, Eff, Either, Json, identity } from 'fp'
+import { $, Data, E, F, Either, Json, identity } from 'fp'
 
 export type HttpMethod =
   | 'POST'
@@ -43,7 +43,7 @@ export const bare = (args: {
   headers: Record<string, string>
 }) =>
   $(
-    Eff.tryPromise({
+    F.tryPromise({
       try: () =>
         fetch(args.url, {
           method: args.method,
@@ -52,11 +52,11 @@ export const bare = (args: {
         }),
       catch: e => FetchingError({ error: e }),
     }),
-    Eff.map(r => ({
+    F.map(r => ({
       status: r.status,
       headers: r.headers,
       getBodyString: () =>
-        Eff.tryPromise({
+        F.tryPromise({
           try: () => r.text(),
           catch: e => BodyParsingError({ error: e }),
         }),
@@ -73,7 +73,7 @@ export const json = (args: {
     args.body === undefined ? E.right(undefined) : Json.stringify(args.body),
     identity<Either<unknown, undefined | string>>,
     E.mapLeft(e => StringifyJsonError({ error: e })),
-    Eff.flatMap(bodyString =>
+    F.flatMap(bodyString =>
       bare({
         method: args.method,
         url: args.url,
@@ -85,17 +85,17 @@ export const json = (args: {
         },
       }),
     ),
-    Eff.flatMap(({ getBodyString, ...r }) =>
+    F.flatMap(({ getBodyString, ...r }) =>
       $(
         getBodyString(),
-        Eff.flatMap(bodyString =>
+        F.flatMap(bodyString =>
           $(
             Json.parse(bodyString),
             identity<Either<unknown, Json.Json>>,
             E.mapLeft(e => ParseJsonError({ error: e })),
           ),
         ),
-        Eff.map(data => ({ ...r, data })),
+        F.map(data => ({ ...r, data })),
       ),
     ),
   )

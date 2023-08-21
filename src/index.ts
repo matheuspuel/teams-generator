@@ -1,4 +1,4 @@
-import { $, $f, Context, Eff, Effect } from 'fp'
+import { $, $f, Context, F, Effect } from 'fp'
 import { startApp } from 'src/app'
 import { AppEventHandlerEnv, appEventHandler } from 'src/events/handler'
 import { Event } from 'src/events/helpers'
@@ -44,16 +44,16 @@ const logEvent = (event: Event) =>
 const eventHandler = (e: AppEvent) =>
   $(
     logEvent(e),
-    Eff.flatMap(() => appEventHandler(e)),
+    F.flatMap(() => appEventHandler(e)),
   )
 
 const program = $(
   startApp,
   f =>
-    Eff.flatMap(
-      Eff.all([AppEventHandlerEnv, AppStateRefEnv]),
+    F.flatMap(
+      F.all([AppEventHandlerEnv, AppStateRefEnv]),
       ([{ eventHandler }, { stateRef }]) =>
-        Eff.provideService(f, UIServiceEnv, {
+        F.provideService(f, UIServiceEnv, {
           ui: defaultUI({
             theme: defaultTheme,
             safeArea: defaultSafeAreaService,
@@ -63,14 +63,14 @@ const program = $(
         }),
     ),
   f =>
-    Eff.flatMap(
-      Eff.context<Effect.Context<ReturnType<typeof eventHandler>>>(),
+    F.flatMap(
+      F.context<Effect.Context<ReturnType<typeof eventHandler>>>(),
       env =>
-        Eff.provideService(f, AppEventHandlerEnv, {
-          eventHandler: $f(eventHandler, Eff.provideContext(env)),
+        F.provideService(f, AppEventHandlerEnv, {
+          eventHandler: $f(eventHandler, F.provideContext(env)),
         }),
     ),
-  Eff.provideContext(
+  F.provideContext(
     Context.mergedContext(
       AppStateRefEnv,
       BackHandlerEnv,
@@ -104,4 +104,4 @@ const program = $(
 )
 
 // eslint-disable-next-line functional/no-expression-statements
-void Eff.runPromiseExit(program)
+void F.runPromiseExit(program)

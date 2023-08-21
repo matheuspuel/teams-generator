@@ -1,6 +1,6 @@
 import * as Application from 'expo-application'
 import * as Device from 'expo-device'
-import { $, $f, Eff, O, Option, identity } from 'fp'
+import { $, $f, F, O, Option, identity } from 'fp'
 import packageJSON from 'src/../package.json'
 import { IdGenerator, IdGeneratorEnv } from 'src/services/IdGenerator'
 import { defaultIdGenerator } from 'src/services/IdGenerator/default'
@@ -11,7 +11,7 @@ import { Ref } from 'src/utils/datatypes'
 
 const metadataRef = Ref.create<Option<Metadata>>(O.none())
 
-const getStaticMetadata = Eff.sync(() => ({
+const getStaticMetadata = F.sync(() => ({
   device: {
     modelName: Device.modelName,
     osVersion: Device.osVersion,
@@ -29,31 +29,31 @@ const getStaticMetadata = Eff.sync(() => ({
 export const defaultMetadataService: MetadataService = {
   get: $(
     metadataRef.getState,
-    Eff.flatMap(identity),
-    Eff.orElse(() =>
+    F.flatMap(identity),
+    F.orElse(() =>
       $(
-        Eff.all({
+        F.all({
           installation: $(
             Repository.metadata.installation.get,
-            Eff.map(_ => ({ ..._, isFirstLaunch: false })),
-            Eff.orElse(() =>
+            F.map(_ => ({ ..._, isFirstLaunch: false })),
+            F.orElse(() =>
               $(
                 IdGenerator.generate,
-                Eff.map(id => ({ id })),
-                Eff.tap(
+                F.map(id => ({ id })),
+                F.tap(
                   $f(
                     Repository.metadata.installation.set,
-                    Eff.catchAll(() => Eff.unit),
+                    F.catchAll(() => F.unit),
                   ),
                 ),
-                Eff.map(_ => ({ ..._, isFirstLaunch: true })),
+                F.map(_ => ({ ..._, isFirstLaunch: true })),
               ),
             ),
           ),
-          launch: Eff.map(IdGenerator.generate, id => ({ id })),
+          launch: F.map(IdGenerator.generate, id => ({ id })),
           staticMeta: getStaticMetadata,
         }),
-        Eff.map(
+        F.map(
           (v): Metadata => ({
             ...v.staticMeta,
             installation: { id: v.installation.id },
@@ -61,14 +61,14 @@ export const defaultMetadataService: MetadataService = {
             launch: v.launch,
           }),
         ),
-        Eff.tap(v => $(O.some(v), metadataRef.setState)),
+        F.tap(v => $(O.some(v), metadataRef.setState)),
       ),
     ),
-    Eff.provideService(RepositoryEnvs.metadata.installation, {
+    F.provideService(RepositoryEnvs.metadata.installation, {
       Repositories: {
         metadata: { installation: defaultInstallationRepository },
       },
     }),
-    Eff.provideService(IdGeneratorEnv, { idGenerator: defaultIdGenerator }),
+    F.provideService(IdGeneratorEnv, { idGenerator: defaultIdGenerator }),
   ),
 }

@@ -1,5 +1,5 @@
 import * as Context from '@effect/data/Context'
-import { Eff, Effect, Optic, S } from 'fp'
+import { F, Effect, Optic, S } from 'fp'
 import { RootState } from 'src/model'
 import { StateRef } from 'src/utils/datatypes'
 
@@ -15,12 +15,12 @@ export const subscribe: (
   AppStateRefEnv,
   never,
   { unsubscribe: Effect<never, never, void> }
-> = f => Eff.flatMap(AppStateRefEnv, env => env.stateRef.subscribe(f))
+> = f => F.flatMap(AppStateRefEnv, env => env.stateRef.subscribe(f))
 
 export const execute = <A>(
   f: S.State<RootState, A>,
 ): Effect<AppStateRefEnv, never, A> =>
-  Eff.flatMap(AppStateRefEnv, env => env.stateRef.execute(f))
+  F.flatMap(AppStateRefEnv, env => env.stateRef.execute(f))
 
 export const getRootState = S.get<RootState>()
 

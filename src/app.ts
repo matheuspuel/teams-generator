@@ -1,4 +1,4 @@
-import { $, Eff, Effect } from 'fp'
+import { $, F, Effect } from 'fp'
 import throttle from 'lodash.throttle'
 import { appEvents } from 'src/events'
 import { AppEventHandlerEnv, EventHandler } from 'src/events/handler'
@@ -17,11 +17,11 @@ const on = appEvents.core
 
 export const startApp = $(
   UI.start,
-  Eff.flatMap(() => EventHandler.handle(on.preventSplashScreenAutoHide())),
-  Eff.flatMap(() =>
-    Eff.flatMap(AppEventHandlerEnv, env =>
+  F.flatMap(() => EventHandler.handle(on.preventSplashScreenAutoHide())),
+  F.flatMap(() =>
+    F.flatMap(AppEventHandlerEnv, env =>
       BackHandler.subscribe(
-        Eff.provideService(
+        F.provideService(
           EventHandler.handle(appEvents.back()),
           AppEventHandlerEnv,
           env,
@@ -29,28 +29,27 @@ export const startApp = $(
       ),
     ),
   ),
-  Eff.flatMap(() => hydrate),
-  Eff.tap(() =>
-    Eff.flatMap(AppEventHandlerEnv, env =>
+  F.flatMap(() => hydrate),
+  F.tap(() =>
+    F.flatMap(AppEventHandlerEnv, env =>
       StateRef.subscribe(
         $(
           EventHandler.handle(on.saveState()),
-          Eff.provideService(AppEventHandlerEnv, env),
-          f =>
-            Eff.sync(throttle(() => Eff.runPromise(f), $(1000, milliseconds))),
+          F.provideService(AppEventHandlerEnv, env),
+          f => F.sync(throttle(() => F.runPromise(f), $(1000, milliseconds))),
         ),
       ),
     ),
   ),
-  Eff.tap(() => EventHandler.handle(on.appLoaded())),
-  Eff.tap(() =>
+  F.tap(() => EventHandler.handle(on.appLoaded())),
+  F.tap(() =>
     $(
-      Eff.all([Metadata.get, Timestamp.getNow]),
-      Eff.flatMap(([m, t]) =>
+      F.all([Metadata.get, Timestamp.getNow]),
+      F.flatMap(([m, t]) =>
         Telemetry.log([{ timestamp: t, event: 'start', data: m }]),
       ),
-      Eff.flatMap(() => Telemetry.send),
-      Eff.catchAll(() => Eff.unit),
+      F.flatMap(() => Telemetry.send),
+      F.catchAll(() => F.unit),
     ),
   ),
 )

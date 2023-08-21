@@ -1,6 +1,6 @@
 /* eslint-disable functional/functional-parameters */
 import * as Context from '@effect/data/Context'
-import { Eff } from 'src/utils/fp'
+import { F } from 'src/utils/fp'
 import * as Repositories from './repositories'
 
 export { Repositories }
@@ -36,47 +36,47 @@ export const RepositoryEnvs = {
 export const Repository = {
   teams: {
     groupOrder: {
-      get: Eff.flatMap(
+      get: F.flatMap(
         RepositoryEnvs.teams.groupOrder,
         r => r.Repositories.teams.groupOrder.get,
       ),
       set: (...args: Parameters<Repositories.teams.groupOrder['set']>) =>
-        Eff.flatMap(RepositoryEnvs.teams.groupOrder, r =>
+        F.flatMap(RepositoryEnvs.teams.groupOrder, r =>
           r.Repositories.teams.groupOrder.set(...args),
         ),
     },
     groups: {
-      get: Eff.flatMap(
+      get: F.flatMap(
         RepositoryEnvs.teams.groups,
         r => r.Repositories.teams.groups.get,
       ),
       set: (...args: Parameters<Repositories.teams.groups['set']>) =>
-        Eff.flatMap(RepositoryEnvs.teams.groups, r =>
+        F.flatMap(RepositoryEnvs.teams.groups, r =>
           r.Repositories.teams.groups.set(...args),
         ),
     },
     parameters: {
-      get: Eff.flatMap(
+      get: F.flatMap(
         RepositoryEnvs.teams.parameters,
         r => r.Repositories.teams.parameters.get,
       ),
       set: (...args: Parameters<Repositories.teams.parameters['set']>) =>
-        Eff.flatMap(RepositoryEnvs.teams.parameters, r =>
+        F.flatMap(RepositoryEnvs.teams.parameters, r =>
           r.Repositories.teams.parameters.set(...args),
         ),
     },
   },
   telemetry: {
     log: {
-      get: Eff.flatMap(
+      get: F.flatMap(
         RepositoryEnvs.telemetry.log,
         r => r.Repositories.telemetry.log.get,
       ),
       concat: (...args: Parameters<Repositories.telemetry.log['concat']>) =>
-        Eff.flatMap(RepositoryEnvs.telemetry.log, r =>
+        F.flatMap(RepositoryEnvs.telemetry.log, r =>
           r.Repositories.telemetry.log.concat(...args),
         ),
-      clear: Eff.flatMap(
+      clear: F.flatMap(
         RepositoryEnvs.telemetry.log,
         r => r.Repositories.telemetry.log.clear,
       ),
@@ -84,12 +84,12 @@ export const Repository = {
   },
   metadata: {
     installation: {
-      get: Eff.flatMap(
+      get: F.flatMap(
         RepositoryEnvs.metadata.installation,
         r => r.Repositories.metadata.installation.get,
       ),
       set: (...args: Parameters<Repositories.metadata.installation['set']>) =>
-        Eff.flatMap(RepositoryEnvs.metadata.installation, r =>
+        F.flatMap(RepositoryEnvs.metadata.installation, r =>
           r.Repositories.metadata.installation.set(...args),
         ),
     },

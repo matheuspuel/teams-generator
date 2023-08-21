@@ -1,4 +1,4 @@
-import { $, $f, Eff } from 'fp'
+import { $, $f, F } from 'fp'
 import * as Fetch from 'src/utils/Fetch'
 import * as Metadata from 'src/utils/Metadata'
 import { Telemetry } from '.'
@@ -18,13 +18,13 @@ const telemetryServerUrl = Metadata.matchEnv({
 export const defaultTelemetry: Telemetry = {
   log: $f(
     Repository.telemetry.log.concat,
-    Eff.provideService(RepositoryEnvs.telemetry.log, {
+    F.provideService(RepositoryEnvs.telemetry.log, {
       Repositories: { telemetry: { log: logRepository } },
     }),
   ),
   send: $(
     Repository.telemetry.log.get,
-    Eff.flatMap(logs =>
+    F.flatMap(logs =>
       Fetch.json({
         method: 'POST',
         url: telemetryServerUrl + '/api/v1/sorteio-times/logs',
@@ -32,8 +32,8 @@ export const defaultTelemetry: Telemetry = {
         body: logs,
       }),
     ),
-    Eff.flatMap(() => Repository.telemetry.log.clear),
-    Eff.provideService(RepositoryEnvs.telemetry.log, {
+    F.flatMap(() => Repository.telemetry.log.clear),
+    F.provideService(RepositoryEnvs.telemetry.log, {
       Repositories: { telemetry: { log: logRepository } },
     }),
   ),

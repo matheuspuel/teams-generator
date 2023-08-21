@@ -1,4 +1,4 @@
-import { $, $f, A, Eff, Effect, Eq, apply, not } from 'fp'
+import { $, $f, A, F, Effect, Eq, apply, not } from 'fp'
 import * as Ref from './Ref'
 
 type SubscribableFunction<A> = (value: A) => Effect<never, never, void>
@@ -15,11 +15,11 @@ export const create = <A>(): Observable<A> =>
     subscribe: (f: SubscribableFunction<A>) =>
       $(
         subscriptionsRef.getState,
-        Eff.flatMap($f(A.append(f), subscriptionsRef.setState)),
-        Eff.map(() => ({
+        F.flatMap($f(A.append(f), subscriptionsRef.setState)),
+        F.map(() => ({
           unsubscribe: $(
             subscriptionsRef.getState,
-            Eff.flatMap(
+            F.flatMap(
               $f(
                 A.filter(not(Eq.equals(Eq.strict())(f))),
                 subscriptionsRef.setState,
@@ -29,5 +29,5 @@ export const create = <A>(): Observable<A> =>
         })),
       ),
     dispatch: value =>
-      $(subscriptionsRef.getState, Eff.flatMap(Eff.forEach(apply(value)))),
+      $(subscriptionsRef.getState, F.flatMap(F.forEach(apply(value)))),
   }))

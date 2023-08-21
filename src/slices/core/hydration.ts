@@ -1,5 +1,5 @@
 import { get } from '@fp-ts/optic'
-import { $, $f, Eff, S } from 'fp'
+import { $, $f, F, S } from 'fp'
 import { GroupOrder, Parameters } from 'src/datatypes'
 import { root } from 'src/model/Optics'
 import { Repository } from 'src/services/Repositories'
@@ -8,33 +8,33 @@ import { emptyGroups } from '../groups'
 
 export const saveState = $(
   execute(getRootState),
-  Eff.tap($f(get(root.groups.$), Repository.teams.groups.set)),
-  Eff.tap($f(get(root.parameters.$), Repository.teams.parameters.set)),
-  Eff.tap($f(get(root.groupOrder.$), Repository.teams.groupOrder.set)),
-  Eff.catchAll(() => Eff.unit),
+  F.tap($f(get(root.groups.$), Repository.teams.groups.set)),
+  F.tap($f(get(root.parameters.$), Repository.teams.parameters.set)),
+  F.tap($f(get(root.groupOrder.$), Repository.teams.groupOrder.set)),
+  F.catchAll(() => F.unit),
 )
 
 export const hydrate = $(
-  Eff.Do,
-  Eff.bind('groups', () =>
+  F.Do,
+  F.bind('groups', () =>
     $(
       Repository.teams.groups.get,
-      Eff.catchAll(() => Eff.succeed(emptyGroups)),
+      F.catchAll(() => F.succeed(emptyGroups)),
     ),
   ),
-  Eff.bind('parameters', () =>
+  F.bind('parameters', () =>
     $(
       Repository.teams.parameters.get,
-      Eff.catchAll(() => Eff.succeed(Parameters.initial)),
+      F.catchAll(() => F.succeed(Parameters.initial)),
     ),
   ),
-  Eff.bind('groupOrder', () =>
+  F.bind('groupOrder', () =>
     $(
       Repository.teams.groupOrder.get,
-      Eff.catchAll(() => Eff.succeed(GroupOrder.initial)),
+      F.catchAll(() => F.succeed(GroupOrder.initial)),
     ),
   ),
-  Eff.tap(p =>
+  F.tap(p =>
     $(
       replaceSApp(root.groups.$)(p.groups),
       S.apFirst(replaceSApp(root.parameters.$)(p.parameters)),
@@ -42,5 +42,5 @@ export const hydrate = $(
       execute,
     ),
   ),
-  Eff.asUnit,
+  F.asUnit,
 )

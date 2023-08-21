@@ -1,6 +1,6 @@
 import { clockWith } from '@effect/io/Effect'
 import { get } from '@fp-ts/optic'
-import { $, A, Eff, Match, O, Rec, S, constant } from 'fp'
+import { $, A, F, Match, O, Rec, S, constant } from 'fp'
 import { Player, TeamsGenerator } from 'src/datatypes'
 import { getResultRatingDeviance } from 'src/datatypes/TeamsGenerator'
 import { root } from 'src/model/Optics'
@@ -25,8 +25,8 @@ export const generateResult = $(
       ),
     ),
   ),
-  Eff.bind('start', () => clockWith(c => c.currentTimeMillis)),
-  Eff.bind('result', ({ players, parameters }) =>
+  F.bind('start', () => clockWith(c => c.currentTimeMillis)),
+  F.bind('result', ({ players, parameters }) =>
     TeamsGenerator.generateRandomBalancedTeams({
       position: parameters.position,
       rating: parameters.rating,
@@ -45,14 +45,12 @@ export const generateResult = $(
       ),
     })(players),
   ),
-  Eff.bind('end', () => clockWith(c => c.currentTimeMillis)),
-  Eff.tap(({ result }) =>
-    $(result, O.some, replaceSApp(root.result.$), execute),
-  ),
-  Eff.tap(({ parameters, players, start, end, result }) =>
+  F.bind('end', () => clockWith(c => c.currentTimeMillis)),
+  F.tap(({ result }) => $(result, O.some, replaceSApp(root.result.$), execute)),
+  F.tap(({ parameters, players, start, end, result }) =>
     $(
       Metadata.get,
-      Eff.flatMap(meta =>
+      F.flatMap(meta =>
         Telemetry.log([
           {
             timestamp: end as Timestamp,
@@ -70,8 +68,8 @@ export const generateResult = $(
           },
         ]),
       ),
-      Eff.flatMap(() => Telemetry.send),
-      Eff.catchAll(() => Eff.unit),
+      F.flatMap(() => Telemetry.send),
+      F.catchAll(() => F.unit),
     ),
   ),
 )

@@ -1,4 +1,4 @@
-import { $, A, Eff, apply } from 'fp'
+import { $, A, F, apply } from 'fp'
 import React from 'react'
 import { RectButton } from 'react-native-gesture-handler'
 import {
@@ -58,7 +58,7 @@ const getRawProps = ({
   children: children,
   onPress:
     props.isEnabled !== false
-      ? () => Eff.runPromise(env.eventHandler(props.onPress))
+      ? () => F.runPromise(env.eventHandler(props.onPress))
       : undefined,
   rippleColor:
     props.isEnabled !== false

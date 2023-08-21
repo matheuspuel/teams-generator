@@ -4,7 +4,7 @@ import {
   $f,
   Apply,
   D,
-  Eff,
+  F,
   Effect,
   O,
   Optic,
@@ -74,10 +74,10 @@ export type AppEventHandlerRequirements = EventHandlerEnvFromTree<
 const defineEvents: <T extends AnyHandleEventTree>(tree: T) => T = identity
 
 const noArg: <A>(a: A) => (_: void) => A = constant
-const ignore = noArg(Eff.unit)
+const ignore = noArg(F.unit)
 
 const wait = (time: Duration): Effect<never, never, void> =>
-  Eff.promise(() => new Promise(res => setTimeout(() => res(), time)))
+  F.promise(() => new Promise(res => setTimeout(() => res(), time)))
 
 const closeParametersModal = replaceSApp(root.ui.modalParameters.$)(false)
 
@@ -86,8 +86,8 @@ export const appEventsDefinition = defineEvents({
   back: (_: void) =>
     $(
       execute(goBack),
-      Eff.tap(({ shouldBubbleUpEvent }) =>
-        shouldBubbleUpEvent ? BackHandler.exit : Eff.unit,
+      F.tap(({ shouldBubbleUpEvent }) =>
+        shouldBubbleUpEvent ? BackHandler.exit : F.unit,
       ),
     ),
   core: {
@@ -126,7 +126,7 @@ export const appEventsDefinition = defineEvents({
             getSApp(root.ui.modalUpsertGroup.$),
             S.map(O.filter(m => $(m.name, not(Str.isEmpty)))),
             execute,
-            Eff.flatMap(
+            F.flatMap(
               O.match({
                 onNone: () => ignore(),
                 onSome: m =>
@@ -136,7 +136,7 @@ export const appEventsDefinition = defineEvents({
                       onNone: () => createGroup({ name: m.name }),
                       onSome: id => execute(editGroup({ id, name: m.name })),
                     }),
-                    Eff.tap(() => execute(setUpsertGroupModal(O.none()))),
+                    F.tap(() => execute(setUpsertGroupModal(O.none()))),
                   ),
               }),
             ),
@@ -192,8 +192,8 @@ export const appEventsDefinition = defineEvents({
           S.flatMap(() => navigate('Result')),
           S.flatMap(() => closeParametersModal),
           execute,
-          Eff.tap(() => wait(0)),
-          Eff.flatMap(() => generateResult),
+          F.tap(() => wait(0)),
+          F.flatMap(() => generateResult),
         ),
     },
     player: {
@@ -245,7 +245,7 @@ export const appEventsDefinition = defineEvents({
         D.parseOption(Rating.Schema),
         v => v,
         O.map($f(replaceSApp(root.playerForm.rating.$), execute)),
-        O.getOrElse(() => Eff.unit),
+        O.getOrElse(() => F.unit),
       ),
     },
     delete: (_: void) => $(deleteCurrentPlayer, S.apFirst(goBack), execute),
@@ -261,9 +261,9 @@ export const appEventsDefinition = defineEvents({
         }),
         S.map(O.all),
         execute,
-        Eff.flatMap(
+        F.flatMap(
           O.match({
-            onNone: () => Eff.unit,
+            onNone: () => F.unit,
             onSome: ({ form, groupId, playerId }) =>
               $(
                 playerId,
@@ -272,7 +272,7 @@ export const appEventsDefinition = defineEvents({
                   onSome: id =>
                     execute(editPlayer({ groupId, player: { ...form, id } })),
                 }),
-                Eff.flatMap(() => execute(goBack)),
+                F.flatMap(() => execute(goBack)),
               ),
           }),
         ),
@@ -283,9 +283,9 @@ export const appEventsDefinition = defineEvents({
     share: (_: void) =>
       $(
         execute(S.gets(get(root.result.$))),
-        Eff.flatMap(
+        F.flatMap(
           O.match({
-            onNone: () => Eff.unit,
+            onNone: () => F.unit,
             onSome: $f(Player.TeamListShowSensitive.show, t =>
               ShareService.share({ message: t, title: 'Times' }),
             ),

@@ -1,4 +1,4 @@
-import { $, Eff, absurd, constVoid } from 'fp'
+import { $, F, absurd, constVoid } from 'fp'
 import * as Metadata from 'src/utils/Metadata'
 import { Timestamp } from 'src/utils/datatypes'
 import { LogData, LogLevel, Logger } from '.'
@@ -44,7 +44,7 @@ const buildDefaultMessage = ({
   (context === null ? '' : ': ' + JSON.stringify(context, undefined, 2))
 
 const defaultMessageLogger: Logger = args =>
-  Eff.sync(
+  F.sync(
     enabledLevels[args.level]
       ? $(buildDefaultMessage(args), t =>
           args.level === 'debug'
@@ -72,7 +72,7 @@ const getTrace =
   <A>(value: A): A =>
     $(
       Timestamp.getNow,
-      Eff.flatMap(now =>
+      F.flatMap(now =>
         typeof value === 'object' && value !== null
           ? logger({
               level: 'trace',
@@ -90,8 +90,8 @@ const getTrace =
               timestamp: now,
             }),
       ),
-      Eff.map(() => value),
-      Eff.runSync,
+      F.map(() => value),
+      F.runSync,
     )
 
 const getTraceMessage =
@@ -100,7 +100,7 @@ const getTraceMessage =
   <A>(value: A): A =>
     $(
       Timestamp.getNow,
-      Eff.flatMap(now =>
+      F.flatMap(now =>
         logger({
           level: 'trace',
           category: 'TRACE',
@@ -109,8 +109,8 @@ const getTraceMessage =
           timestamp: now,
         }),
       ),
-      Eff.map(() => value),
-      Eff.runSync,
+      F.map(() => value),
+      F.runSync,
     )
 
 export const trace = getTrace(defaultLogger)

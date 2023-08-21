@@ -2,7 +2,7 @@ import {
   $,
   $f,
   A,
-  Eff,
+  F,
   O,
   Optic,
   Option,
@@ -54,7 +54,7 @@ const addGroup = (group: Group) => modify(gs => ({ ...gs, [group.id]: group }))
 export const createGroup = ({ name }: { name: string }) =>
   $(
     IdGenerator.generate,
-    Eff.flatMap(id => execute(addGroup({ id, name, players: [] }))),
+    F.flatMap(id => execute(addGroup({ id, name, players: [] }))),
   )
 
 export const editGroup = (args: { id: Id; name: string }) =>
@@ -89,9 +89,7 @@ export const createPlayer = ({
 }) =>
   $(
     IdGenerator.generate,
-    Eff.flatMap(id =>
-      execute(addPlayer({ groupId, player: { ...player, id } })),
-    ),
+    F.flatMap(id => execute(addPlayer({ groupId, player: { ...player, id } }))),
   )
 
 export const editPlayer = (p: {

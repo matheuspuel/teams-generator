@@ -2,7 +2,7 @@
 import * as Context from '@effect/data/Context'
 import { Effect } from '@effect/io/Effect'
 import { Timestamp } from 'src/utils/datatypes'
-import { D, Eff } from 'src/utils/fp'
+import { D, F } from 'src/utils/fp'
 
 export const TelemetryLogSchema = D.struct({
   timestamp: Timestamp.Schema,
@@ -23,6 +23,6 @@ export const TelemetryEnv = Context.Tag<TelemetryEnv>()
 
 export const Telemetry = {
   log: (...args: Parameters<Telemetry['log']>) =>
-    Eff.flatMap(TelemetryEnv, env => env.Telemetry.log(...args)),
-  send: Eff.flatMap(TelemetryEnv, env => env.Telemetry.send),
+    F.flatMap(TelemetryEnv, env => env.Telemetry.log(...args)),
+  send: F.flatMap(TelemetryEnv, env => env.Telemetry.send),
 }

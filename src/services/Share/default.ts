@@ -1,11 +1,11 @@
-import { $, Eff } from 'fp'
+import { $, F } from 'fp'
 import { Share } from 'react-native'
 import { ShareService } from '.'
 
 export const defaultShareService: ShareService = {
   share: args =>
     $(
-      Eff.tryPromise(() => Share.share(args)),
-      Eff.catchAll(() => Eff.unit),
+      F.tryPromise(() => Share.share(args)),
+      F.catchAll(() => F.unit),
     ),
 }

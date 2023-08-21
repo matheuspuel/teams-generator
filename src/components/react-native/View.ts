@@ -1,4 +1,4 @@
-import { $, A, Eff, apply } from 'fp'
+import { $, A, F, apply } from 'fp'
 import React from 'react'
 import { View as RawView } from 'react-native'
 import {
@@ -53,7 +53,7 @@ const getRawProps = ({
   key: props.key,
   onLayout:
     props.onLayout &&
-    (() => props.onLayout && Eff.runPromise(env.eventHandler(props.onLayout))),
+    (() => props.onLayout && F.runPromise(env.eventHandler(props.onLayout))),
   style: {
     padding: props?.p,
     paddingHorizontal: props?.px,

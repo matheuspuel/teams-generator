@@ -1,5 +1,5 @@
 /* eslint-disable functional/no-expression-statements */
-import { $, Context, Eff } from 'fp'
+import { $, Context, F } from 'fp'
 import { Event, makeEventConstructors, makeEventHandler } from './helpers'
 
 const makeEvent =
@@ -9,7 +9,7 @@ const makeEvent =
     event: { _tag: tag, payload },
   })
 
-const ignore = (_: unknown) => Eff.unit
+const ignore = (_: unknown) => F.unit
 
 describe('makeEventConstructors', () => {
   test('makes', () => {
@@ -38,8 +38,8 @@ describe('makeEventHandler', () => {
           ba: (p: unknown) =>
             $(
               rEnv,
-              Eff.flatMap(r =>
-                Eff.sync(() => {
+              F.flatMap(r =>
+                F.sync(() => {
                   info = [p, r]
                 }),
               ),
@@ -47,8 +47,8 @@ describe('makeEventHandler', () => {
           bb: ignore,
         },
       })(makeEvent('b.ba')(1)),
-      Eff.provideService(rEnv, 2),
-      Eff.runSync,
+      F.provideService(rEnv, 2),
+      F.runSync,
     )
     expect(info).toStrictEqual([1, 2])
   })

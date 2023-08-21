@@ -1,16 +1,16 @@
 import { Effect } from '@effect/io/Effect'
 import * as Random from '@effect/io/Random'
-import { $, A, Eff, O, Option } from 'fp'
+import { $, A, F, O, Option } from 'fp'
 
 export const randomizeArray = <A>(
   as: Array<A>,
 ): Effect<never, never, Array<A>> =>
   $(
     randomExtractElem(as),
-    Eff.flatMap(
+    F.flatMap(
       O.match({
-        onNone: () => Eff.succeed(A.empty<A>()),
-        onSome: ([a, rest]) => $(randomizeArray(rest), Eff.map(A.append(a))),
+        onNone: () => F.succeed(A.empty<A>()),
+        onSome: ([a, rest]) => $(randomizeArray(rest), F.map(A.append(a))),
       }),
     ),
   )
@@ -20,7 +20,7 @@ const randomExtractElem = <A>(
 ): Effect<never, never, Option<[A, Array<A>]>> =>
   $(
     Random.nextIntBetween(0, as.length - 1),
-    Eff.map(i => extractElem(i)(as)),
+    F.map(i => extractElem(i)(as)),
   )
 
 const extractElem =
