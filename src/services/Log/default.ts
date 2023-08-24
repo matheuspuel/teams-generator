@@ -1,7 +1,7 @@
-import { $, F, absurd, constVoid } from 'fp'
+import { $, F, Layer, absurd, constVoid } from 'fp'
 import * as Metadata from 'src/utils/Metadata'
 import { Timestamp } from 'src/utils/datatypes'
-import { LogData, LogLevel, Logger } from '.'
+import { LogData, LogLevel, Logger, LoggerEnv } from '.'
 
 const productionLevels: Record<LogLevel, boolean> = {
   trace: false,
@@ -64,55 +64,6 @@ const defaultMessageLogger: Logger = args =>
       : () => constVoid,
   )
 
-export const defaultLogger: Logger = defaultMessageLogger
-
-const getTrace =
-  (logger: Logger) =>
-  (prefix: string) =>
-  <A>(value: A): A =>
-    $(
-      Timestamp.getNow,
-      F.flatMap(now =>
-        typeof value === 'object' && value !== null
-          ? logger({
-              level: 'trace',
-              category: 'TRACE',
-              message: prefix,
-              context: value,
-              timestamp: now,
-            })
-          : logger({
-              level: 'trace',
-              category: 'TRACE',
-              // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-              message: `${prefix}: ${value + ''}`,
-              context: null,
-              timestamp: now,
-            }),
-      ),
-      F.map(() => value),
-      F.runSync,
-    )
-
-const getTraceMessage =
-  (logger: Logger) =>
-  (message: string) =>
-  <A>(value: A): A =>
-    $(
-      Timestamp.getNow,
-      F.flatMap(now =>
-        logger({
-          level: 'trace',
-          category: 'TRACE',
-          message: message,
-          context: null,
-          timestamp: now,
-        }),
-      ),
-      F.map(() => value),
-      F.runSync,
-    )
-
-export const trace = getTrace(defaultLogger)
-
-export const traceMsg = getTraceMessage(defaultLogger)
+export const LoggerLive = LoggerEnv.context(defaultMessageLogger).pipe(
+  Layer.succeedContext,
+)

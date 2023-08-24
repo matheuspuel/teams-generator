@@ -5,6 +5,7 @@ exports[`Balance teams should return a balanced team 1`] = `
   [
     {
       "active": true,
+      "createdAt": 0,
       "id": "15",
       "name": "Marlon",
       "position": "A",
@@ -12,6 +13,7 @@ exports[`Balance teams should return a balanced team 1`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "2",
       "name": "Paulo A.",
       "position": "A",
@@ -19,6 +21,7 @@ exports[`Balance teams should return a balanced team 1`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "13",
       "name": "Vagner",
       "position": "M",
@@ -26,6 +29,7 @@ exports[`Balance teams should return a balanced team 1`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "4",
       "name": "Paulo G.",
       "position": "G",
@@ -33,6 +37,7 @@ exports[`Balance teams should return a balanced team 1`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "12",
       "name": "Gilmar",
       "position": "LD",
@@ -40,6 +45,7 @@ exports[`Balance teams should return a balanced team 1`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "3",
       "name": "Carlos",
       "position": "Z",
@@ -47,6 +53,7 @@ exports[`Balance teams should return a balanced team 1`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "23",
       "name": "Clóvis",
       "position": "Z",
@@ -54,6 +61,7 @@ exports[`Balance teams should return a balanced team 1`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "17",
       "name": "Jackson",
       "position": "A",
@@ -63,6 +71,7 @@ exports[`Balance teams should return a balanced team 1`] = `
   [
     {
       "active": true,
+      "createdAt": 0,
       "id": "9",
       "name": "Paulo S.",
       "position": "A",
@@ -70,6 +79,7 @@ exports[`Balance teams should return a balanced team 1`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "11",
       "name": "Anderson",
       "position": "Z",
@@ -77,6 +87,7 @@ exports[`Balance teams should return a balanced team 1`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "14",
       "name": "Douglas",
       "position": "LD",
@@ -84,6 +95,7 @@ exports[`Balance teams should return a balanced team 1`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "16",
       "name": "Marcos",
       "position": "M",
@@ -91,6 +103,7 @@ exports[`Balance teams should return a balanced team 1`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "18",
       "name": "Wagner",
       "position": "A",
@@ -98,6 +111,7 @@ exports[`Balance teams should return a balanced team 1`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "10",
       "name": "João",
       "position": "M",
@@ -105,6 +119,7 @@ exports[`Balance teams should return a balanced team 1`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "21",
       "name": "Lucas",
       "position": "Z",
@@ -112,8 +127,9 @@ exports[`Balance teams should return a balanced team 1`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "22",
-      "name": "Jeferson",
+      "name": "Jefferson",
       "position": "LD",
       "rating": 3,
     },
@@ -121,6 +137,7 @@ exports[`Balance teams should return a balanced team 1`] = `
   [
     {
       "active": true,
+      "createdAt": 0,
       "id": "1",
       "name": "Matheus",
       "position": "M",
@@ -128,6 +145,7 @@ exports[`Balance teams should return a balanced team 1`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "5",
       "name": "Peter",
       "position": "Z",
@@ -135,6 +153,7 @@ exports[`Balance teams should return a balanced team 1`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "6",
       "name": "Zeca",
       "position": "LE",
@@ -142,6 +161,7 @@ exports[`Balance teams should return a balanced team 1`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "7",
       "name": "Moisés",
       "position": "LD",
@@ -149,6 +169,7 @@ exports[`Balance teams should return a balanced team 1`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "19",
       "name": "Moa",
       "position": "A",
@@ -156,6 +177,7 @@ exports[`Balance teams should return a balanced team 1`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "20",
       "name": "Neto",
       "position": "A",
@@ -163,6 +185,7 @@ exports[`Balance teams should return a balanced team 1`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "8",
       "name": "Odilon",
       "position": "M",
@@ -177,6 +200,7 @@ exports[`Balance teams should return a balanced team 2`] = `
   [
     {
       "active": true,
+      "createdAt": 0,
       "id": "11",
       "name": "Anderson",
       "position": "Z",
@@ -184,6 +208,7 @@ exports[`Balance teams should return a balanced team 2`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "18",
       "name": "Wagner",
       "position": "A",
@@ -191,6 +216,7 @@ exports[`Balance teams should return a balanced team 2`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "16",
       "name": "Marcos",
       "position": "M",
@@ -198,6 +224,7 @@ exports[`Balance teams should return a balanced team 2`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "14",
       "name": "Douglas",
       "position": "LD",
@@ -205,6 +232,7 @@ exports[`Balance teams should return a balanced team 2`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "21",
       "name": "Lucas",
       "position": "Z",
@@ -212,6 +240,7 @@ exports[`Balance teams should return a balanced team 2`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "15",
       "name": "Marlon",
       "position": "A",
@@ -219,6 +248,7 @@ exports[`Balance teams should return a balanced team 2`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "1",
       "name": "Matheus",
       "position": "M",
@@ -228,6 +258,7 @@ exports[`Balance teams should return a balanced team 2`] = `
   [
     {
       "active": true,
+      "createdAt": 0,
       "id": "2",
       "name": "Paulo A.",
       "position": "A",
@@ -235,6 +266,7 @@ exports[`Balance teams should return a balanced team 2`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "3",
       "name": "Carlos",
       "position": "Z",
@@ -242,6 +274,7 @@ exports[`Balance teams should return a balanced team 2`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "10",
       "name": "João",
       "position": "M",
@@ -249,6 +282,7 @@ exports[`Balance teams should return a balanced team 2`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "9",
       "name": "Paulo S.",
       "position": "A",
@@ -256,6 +290,7 @@ exports[`Balance teams should return a balanced team 2`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "7",
       "name": "Moisés",
       "position": "LD",
@@ -263,13 +298,15 @@ exports[`Balance teams should return a balanced team 2`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "22",
-      "name": "Jeferson",
+      "name": "Jefferson",
       "position": "LD",
       "rating": 3,
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "8",
       "name": "Odilon",
       "position": "M",
@@ -279,6 +316,7 @@ exports[`Balance teams should return a balanced team 2`] = `
   [
     {
       "active": true,
+      "createdAt": 0,
       "id": "20",
       "name": "Neto",
       "position": "A",
@@ -286,6 +324,7 @@ exports[`Balance teams should return a balanced team 2`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "5",
       "name": "Peter",
       "position": "Z",
@@ -293,6 +332,7 @@ exports[`Balance teams should return a balanced team 2`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "6",
       "name": "Zeca",
       "position": "LE",
@@ -300,6 +340,7 @@ exports[`Balance teams should return a balanced team 2`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "13",
       "name": "Vagner",
       "position": "M",
@@ -307,6 +348,7 @@ exports[`Balance teams should return a balanced team 2`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "17",
       "name": "Jackson",
       "position": "A",
@@ -314,6 +356,7 @@ exports[`Balance teams should return a balanced team 2`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "12",
       "name": "Gilmar",
       "position": "LD",
@@ -321,6 +364,7 @@ exports[`Balance teams should return a balanced team 2`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "4",
       "name": "Paulo G.",
       "position": "G",
@@ -330,6 +374,7 @@ exports[`Balance teams should return a balanced team 2`] = `
   [
     {
       "active": true,
+      "createdAt": 0,
       "id": "23",
       "name": "Clóvis",
       "position": "Z",
@@ -337,6 +382,7 @@ exports[`Balance teams should return a balanced team 2`] = `
     },
     {
       "active": true,
+      "createdAt": 0,
       "id": "19",
       "name": "Moa",
       "position": "A",

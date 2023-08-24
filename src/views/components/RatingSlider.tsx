@@ -67,7 +67,7 @@ const RatingSlider_ = ({
     return Math.round(v / step) * step
   }
 
-  const onChange = (n: number) => F.runPromise(env.eventHandler(onChange_(n)))
+  const onChange = (n: number) => F.runPromise(env.EventHandler(onChange_(n)))
 
   const gesture = Gesture.Pan()
     .onBegin(e => {

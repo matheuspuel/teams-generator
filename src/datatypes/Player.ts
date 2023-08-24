@@ -2,27 +2,23 @@ import { sumAll } from '@effect/data/Number'
 import { $, $f, A, Bool, D, Num, Ord, Order, Show as Show_, Str } from 'fp'
 import { Id } from 'src/utils/Entity'
 import { normalize } from 'src/utils/String'
+import { Timestamp } from 'src/utils/datatypes'
 import * as Position from './Position'
 import * as Rating from './Rating'
 
 type Position = Position.Position
 type Rating = Rating.Rating
 
-export type Player = {
-  id: Id
-  name: string
-  rating: Rating
-  position: Position
-  active: boolean
-}
-
-export const Schema = D.struct({
+export interface Player extends D.To<typeof Schema_> {}
+const Schema_ = D.struct({
   id: Id,
   name: D.string,
   rating: Rating.Schema,
   position: Position.Schema,
   active: D.boolean,
+  createdAt: Timestamp.Schema,
 })
+export const Schema: D.Schema<D.From<typeof Schema_>, Player> = Schema_
 
 export const Player = Schema
 
@@ -46,6 +42,11 @@ export const RatingOrd: Order<Player> = $(
 export const ActiveOrd: Order<Player> = $(
   Bool.Order,
   Ord.mapInput(p => p.active),
+)
+
+export const CreatedAtOrder: Order<Player> = $(
+  Timestamp.Order,
+  Ord.mapInput(p => p.createdAt),
 )
 
 export const IdOrd: Order<Player> = $(

@@ -1,8 +1,8 @@
 import { BackHandler as BackHandler_ } from 'react-native'
-import { F } from 'src/utils/fp'
-import { BackHandler } from '.'
+import { F, Layer } from 'src/utils/fp'
+import { BackHandlerEnv } from '.'
 
-export const defaultBackHandler: BackHandler = {
+export const BackHandlerLive = BackHandlerEnv.context({
   exit: F.sync(() => BackHandler_.exitApp()),
   subscribe: f =>
     F.sync(() => {
@@ -16,4 +16,4 @@ export const defaultBackHandler: BackHandler = {
       )
       return { unsubscribe: F.sync(() => subscription.remove()) }
     }),
-}
+}).pipe(Layer.succeedContext)

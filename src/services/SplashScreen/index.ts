@@ -7,14 +7,9 @@ export type SplashScreen = {
   hide: Effect<never, never, void>
 }
 
-export type SplashScreenEnv = { splashScreen: SplashScreen }
-
-export const SplashScreenEnv = Context.Tag<SplashScreenEnv>()
+export const SplashScreenEnv = Context.Tag<SplashScreen>()
 
 export const SplashScreen = {
-  preventAutoHide: F.flatMap(
-    SplashScreenEnv,
-    env => env.splashScreen.preventAutoHide,
-  ),
-  hide: F.flatMap(SplashScreenEnv, env => env.splashScreen.hide),
+  preventAutoHide: F.flatMap(SplashScreenEnv, env => env.preventAutoHide),
+  hide: F.flatMap(SplashScreenEnv, env => env.hide),
 }

@@ -906,86 +906,6 @@ exports[`renders 2`] = `
             </View>
           </View>
           <RCTScrollView
-            ListEmptyComponent={
-              <View
-                style={
-                  {
-                    "alignItems": undefined,
-                    "alignSelf": undefined,
-                    "aspectRatio": undefined,
-                    "backgroundColor": undefined,
-                    "borderBottomLeftRadius": undefined,
-                    "borderBottomRightRadius": undefined,
-                    "borderBottomWidth": undefined,
-                    "borderColor": undefined,
-                    "borderLeftWidth": undefined,
-                    "borderRadius": undefined,
-                    "borderRightWidth": undefined,
-                    "borderTopLeftRadius": undefined,
-                    "borderTopRightRadius": undefined,
-                    "borderTopWidth": undefined,
-                    "borderWidth": undefined,
-                    "columnGap": undefined,
-                    "elevation": undefined,
-                    "flex": 1,
-                    "flexDirection": undefined,
-                    "gap": undefined,
-                    "height": undefined,
-                    "justifyContent": "center",
-                    "margin": undefined,
-                    "marginBottom": undefined,
-                    "marginHorizontal": undefined,
-                    "marginLeft": undefined,
-                    "marginRight": undefined,
-                    "marginTop": undefined,
-                    "marginVertical": undefined,
-                    "overflow": undefined,
-                    "padding": undefined,
-                    "paddingBottom": undefined,
-                    "paddingHorizontal": undefined,
-                    "paddingLeft": undefined,
-                    "paddingRight": undefined,
-                    "paddingTop": undefined,
-                    "paddingVertical": undefined,
-                    "rowGap": undefined,
-                    "width": undefined,
-                    "zIndex": undefined,
-                  }
-                }
-              >
-                <Text
-                  style={
-                    {
-                      "color": "#8d8d93ff",
-                      "flex": undefined,
-                      "fontSize": 16,
-                      "fontWeight": undefined,
-                      "height": undefined,
-                      "includeFontPadding": undefined,
-                      "lineHeight": undefined,
-                      "margin": undefined,
-                      "marginBottom": undefined,
-                      "marginHorizontal": undefined,
-                      "marginLeft": undefined,
-                      "marginRight": undefined,
-                      "marginTop": undefined,
-                      "marginVertical": undefined,
-                      "padding": undefined,
-                      "paddingBottom": undefined,
-                      "paddingHorizontal": undefined,
-                      "paddingLeft": undefined,
-                      "paddingRight": undefined,
-                      "paddingTop": undefined,
-                      "paddingVertical": undefined,
-                      "textAlign": "center",
-                      "width": undefined,
-                    }
-                  }
-                >
-                  Nenhum grupo cadastrado
-                </Text>
-              </View>
-            }
             contentContainerStyle={
               {
                 "columnGap": undefined,
@@ -1002,7 +922,15 @@ exports[`renders 2`] = `
                 "rowGap": undefined,
               }
             }
-            data={[]}
+            data={
+              [
+                {
+                  "id": "1",
+                  "name": "group 1",
+                  "players": [],
+                },
+              ]
+            }
             getItem={[Function]}
             getItemCount={[Function]}
             initialNumToRender={16}
@@ -1022,62 +950,37 @@ exports[`renders 2`] = `
           >
             <View>
               <View
+                onFocusCapture={[Function]}
                 onLayout={[Function]}
-                style={
-                  {
-                    "alignItems": undefined,
-                    "alignSelf": undefined,
-                    "aspectRatio": undefined,
-                    "backgroundColor": undefined,
-                    "borderBottomLeftRadius": undefined,
-                    "borderBottomRightRadius": undefined,
-                    "borderBottomWidth": undefined,
-                    "borderColor": undefined,
-                    "borderLeftWidth": undefined,
-                    "borderRadius": undefined,
-                    "borderRightWidth": undefined,
-                    "borderTopLeftRadius": undefined,
-                    "borderTopRightRadius": undefined,
-                    "borderTopWidth": undefined,
-                    "borderWidth": undefined,
-                    "columnGap": undefined,
-                    "elevation": undefined,
-                    "flex": 1,
-                    "flexDirection": undefined,
-                    "gap": undefined,
-                    "height": undefined,
-                    "justifyContent": "center",
-                    "margin": undefined,
-                    "marginBottom": undefined,
-                    "marginHorizontal": undefined,
-                    "marginLeft": undefined,
-                    "marginRight": undefined,
-                    "marginTop": undefined,
-                    "marginVertical": undefined,
-                    "overflow": undefined,
-                    "padding": undefined,
-                    "paddingBottom": undefined,
-                    "paddingHorizontal": undefined,
-                    "paddingLeft": undefined,
-                    "paddingRight": undefined,
-                    "paddingTop": undefined,
-                    "paddingVertical": undefined,
-                    "rowGap": undefined,
-                    "width": undefined,
-                    "zIndex": undefined,
-                  }
-                }
+                style={null}
               >
-                <Text
+                <RNGestureHandlerButton
+                  activeOpacity={0.105}
+                  collapsable={false}
+                  delayLongPress={600}
+                  handlerTag={8}
+                  handlerType="NativeViewGestureHandler"
+                  onActiveStateChange={[Function]}
+                  onGestureEvent={[Function]}
+                  onGestureHandlerEvent={[Function]}
+                  onGestureHandlerStateChange={[Function]}
+                  onHandlerStateChange={[Function]}
+                  onPress={[Function]}
                   style={
                     {
-                      "color": "#8d8d93ff",
+                      "alignItems": "center",
+                      "alignSelf": undefined,
+                      "aspectRatio": undefined,
+                      "backgroundColor": "#ffffffff",
+                      "borderColor": undefined,
+                      "borderRadius": 8,
+                      "columnGap": undefined,
+                      "elevation": 1,
                       "flex": undefined,
-                      "fontSize": 16,
-                      "fontWeight": undefined,
+                      "flexDirection": "row",
+                      "gap": undefined,
                       "height": undefined,
-                      "includeFontPadding": undefined,
-                      "lineHeight": undefined,
+                      "justifyContent": undefined,
                       "margin": undefined,
                       "marginBottom": undefined,
                       "marginHorizontal": undefined,
@@ -1085,20 +988,259 @@ exports[`renders 2`] = `
                       "marginRight": undefined,
                       "marginTop": undefined,
                       "marginVertical": undefined,
-                      "padding": undefined,
+                      "minHeight": undefined,
+                      "minWidth": undefined,
+                      "padding": 4,
                       "paddingBottom": undefined,
                       "paddingHorizontal": undefined,
                       "paddingLeft": undefined,
                       "paddingRight": undefined,
                       "paddingTop": undefined,
                       "paddingVertical": undefined,
-                      "textAlign": "center",
+                      "rowGap": undefined,
                       "width": undefined,
                     }
                   }
+                  underlayColor="black"
                 >
-                  Nenhum grupo cadastrado
-                </Text>
+                  <View
+                    collapsable={false}
+                    style={
+                      {
+                        "backgroundColor": "black",
+                        "borderBottomLeftRadius": undefined,
+                        "borderBottomRightRadius": undefined,
+                        "borderRadius": 8,
+                        "borderTopLeftRadius": undefined,
+                        "borderTopRightRadius": undefined,
+                        "bottom": 0,
+                        "left": 0,
+                        "opacity": 0,
+                        "position": "absolute",
+                        "right": 0,
+                        "top": 0,
+                      }
+                    }
+                  />
+                  <Text
+                    numberOfLines={1}
+                    style={
+                      {
+                        "color": "#1e1e1eff",
+                        "flex": 1,
+                        "fontSize": undefined,
+                        "fontWeight": "600",
+                        "height": undefined,
+                        "includeFontPadding": undefined,
+                        "lineHeight": undefined,
+                        "margin": undefined,
+                        "marginBottom": undefined,
+                        "marginHorizontal": undefined,
+                        "marginLeft": undefined,
+                        "marginRight": undefined,
+                        "marginTop": undefined,
+                        "marginVertical": undefined,
+                        "padding": 8,
+                        "paddingBottom": undefined,
+                        "paddingHorizontal": undefined,
+                        "paddingLeft": undefined,
+                        "paddingRight": undefined,
+                        "paddingTop": undefined,
+                        "paddingVertical": undefined,
+                        "textAlign": undefined,
+                        "width": undefined,
+                      }
+                    }
+                  >
+                    group 1
+                  </Text>
+                  <RNGestureHandlerButton
+                    activeOpacity={0.105}
+                    borderless={true}
+                    collapsable={false}
+                    delayLongPress={600}
+                    handlerTag={9}
+                    handlerType="NativeViewGestureHandler"
+                    onActiveStateChange={[Function]}
+                    onGestureEvent={[Function]}
+                    onGestureHandlerEvent={[Function]}
+                    onGestureHandlerStateChange={[Function]}
+                    onHandlerStateChange={[Function]}
+                    onPress={[Function]}
+                    style={
+                      {
+                        "alignItems": undefined,
+                        "alignSelf": undefined,
+                        "aspectRatio": undefined,
+                        "backgroundColor": undefined,
+                        "borderColor": undefined,
+                        "borderRadius": undefined,
+                        "columnGap": undefined,
+                        "elevation": undefined,
+                        "flex": undefined,
+                        "flexDirection": undefined,
+                        "gap": undefined,
+                        "height": undefined,
+                        "justifyContent": undefined,
+                        "margin": undefined,
+                        "marginBottom": undefined,
+                        "marginHorizontal": undefined,
+                        "marginLeft": undefined,
+                        "marginRight": undefined,
+                        "marginTop": undefined,
+                        "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
+                        "padding": undefined,
+                        "paddingBottom": undefined,
+                        "paddingHorizontal": 4,
+                        "paddingLeft": undefined,
+                        "paddingRight": undefined,
+                        "paddingTop": undefined,
+                        "paddingVertical": 8,
+                        "rowGap": undefined,
+                        "width": undefined,
+                      }
+                    }
+                    underlayColor="black"
+                  >
+                    <View
+                      collapsable={false}
+                      style={
+                        {
+                          "backgroundColor": "black",
+                          "borderBottomLeftRadius": undefined,
+                          "borderBottomRightRadius": undefined,
+                          "borderRadius": undefined,
+                          "borderTopLeftRadius": undefined,
+                          "borderTopRightRadius": undefined,
+                          "bottom": 0,
+                          "left": 0,
+                          "opacity": 0,
+                          "position": "absolute",
+                          "right": 0,
+                          "top": 0,
+                        }
+                      }
+                    />
+                    <Text
+                      allowFontScaling={false}
+                      selectable={false}
+                      style={
+                        [
+                          {
+                            "color": "#6d6d75ff",
+                            "fontSize": 24,
+                          },
+                          {
+                            "textAlign": undefined,
+                          },
+                          {
+                            "fontFamily": "material",
+                            "fontStyle": "normal",
+                            "fontWeight": "normal",
+                          },
+                          {},
+                        ]
+                      }
+                    >
+                      
+                    </Text>
+                  </RNGestureHandlerButton>
+                  <RNGestureHandlerButton
+                    activeOpacity={0.105}
+                    borderless={true}
+                    collapsable={false}
+                    delayLongPress={600}
+                    handlerTag={10}
+                    handlerType="NativeViewGestureHandler"
+                    onActiveStateChange={[Function]}
+                    onGestureEvent={[Function]}
+                    onGestureHandlerEvent={[Function]}
+                    onGestureHandlerStateChange={[Function]}
+                    onHandlerStateChange={[Function]}
+                    onPress={[Function]}
+                    style={
+                      {
+                        "alignItems": undefined,
+                        "alignSelf": undefined,
+                        "aspectRatio": undefined,
+                        "backgroundColor": undefined,
+                        "borderColor": undefined,
+                        "borderRadius": undefined,
+                        "columnGap": undefined,
+                        "elevation": undefined,
+                        "flex": undefined,
+                        "flexDirection": undefined,
+                        "gap": undefined,
+                        "height": undefined,
+                        "justifyContent": undefined,
+                        "margin": undefined,
+                        "marginBottom": undefined,
+                        "marginHorizontal": undefined,
+                        "marginLeft": undefined,
+                        "marginRight": undefined,
+                        "marginTop": undefined,
+                        "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
+                        "padding": undefined,
+                        "paddingBottom": undefined,
+                        "paddingHorizontal": 4,
+                        "paddingLeft": undefined,
+                        "paddingRight": undefined,
+                        "paddingTop": undefined,
+                        "paddingVertical": 8,
+                        "rowGap": undefined,
+                        "width": undefined,
+                      }
+                    }
+                    underlayColor="black"
+                  >
+                    <View
+                      collapsable={false}
+                      style={
+                        {
+                          "backgroundColor": "black",
+                          "borderBottomLeftRadius": undefined,
+                          "borderBottomRightRadius": undefined,
+                          "borderRadius": undefined,
+                          "borderTopLeftRadius": undefined,
+                          "borderTopRightRadius": undefined,
+                          "bottom": 0,
+                          "left": 0,
+                          "opacity": 0,
+                          "position": "absolute",
+                          "right": 0,
+                          "top": 0,
+                        }
+                      }
+                    />
+                    <Text
+                      allowFontScaling={false}
+                      selectable={false}
+                      style={
+                        [
+                          {
+                            "color": "#6d6d75ff",
+                            "fontSize": 24,
+                          },
+                          {
+                            "textAlign": undefined,
+                          },
+                          {
+                            "fontFamily": "material",
+                            "fontStyle": "normal",
+                            "fontWeight": "normal",
+                          },
+                          {},
+                        ]
+                      }
+                    >
+                      
+                    </Text>
+                  </RNGestureHandlerButton>
+                </RNGestureHandlerButton>
               </View>
             </View>
           </RCTScrollView>
@@ -1478,86 +1620,6 @@ exports[`renders 3`] = `
             </View>
           </View>
           <RCTScrollView
-            ListEmptyComponent={
-              <View
-                style={
-                  {
-                    "alignItems": undefined,
-                    "alignSelf": undefined,
-                    "aspectRatio": undefined,
-                    "backgroundColor": undefined,
-                    "borderBottomLeftRadius": undefined,
-                    "borderBottomRightRadius": undefined,
-                    "borderBottomWidth": undefined,
-                    "borderColor": undefined,
-                    "borderLeftWidth": undefined,
-                    "borderRadius": undefined,
-                    "borderRightWidth": undefined,
-                    "borderTopLeftRadius": undefined,
-                    "borderTopRightRadius": undefined,
-                    "borderTopWidth": undefined,
-                    "borderWidth": undefined,
-                    "columnGap": undefined,
-                    "elevation": undefined,
-                    "flex": 1,
-                    "flexDirection": undefined,
-                    "gap": undefined,
-                    "height": undefined,
-                    "justifyContent": "center",
-                    "margin": undefined,
-                    "marginBottom": undefined,
-                    "marginHorizontal": undefined,
-                    "marginLeft": undefined,
-                    "marginRight": undefined,
-                    "marginTop": undefined,
-                    "marginVertical": undefined,
-                    "overflow": undefined,
-                    "padding": undefined,
-                    "paddingBottom": undefined,
-                    "paddingHorizontal": undefined,
-                    "paddingLeft": undefined,
-                    "paddingRight": undefined,
-                    "paddingTop": undefined,
-                    "paddingVertical": undefined,
-                    "rowGap": undefined,
-                    "width": undefined,
-                    "zIndex": undefined,
-                  }
-                }
-              >
-                <Text
-                  style={
-                    {
-                      "color": "#8d8d93ff",
-                      "flex": undefined,
-                      "fontSize": 16,
-                      "fontWeight": undefined,
-                      "height": undefined,
-                      "includeFontPadding": undefined,
-                      "lineHeight": undefined,
-                      "margin": undefined,
-                      "marginBottom": undefined,
-                      "marginHorizontal": undefined,
-                      "marginLeft": undefined,
-                      "marginRight": undefined,
-                      "marginTop": undefined,
-                      "marginVertical": undefined,
-                      "padding": undefined,
-                      "paddingBottom": undefined,
-                      "paddingHorizontal": undefined,
-                      "paddingLeft": undefined,
-                      "paddingRight": undefined,
-                      "paddingTop": undefined,
-                      "paddingVertical": undefined,
-                      "textAlign": "center",
-                      "width": undefined,
-                    }
-                  }
-                >
-                  Nenhum grupo cadastrado
-                </Text>
-              </View>
-            }
             contentContainerStyle={
               {
                 "columnGap": undefined,
@@ -1574,7 +1636,15 @@ exports[`renders 3`] = `
                 "rowGap": undefined,
               }
             }
-            data={[]}
+            data={
+              [
+                {
+                  "id": "1",
+                  "name": "group 1",
+                  "players": [],
+                },
+              ]
+            }
             getItem={[Function]}
             getItemCount={[Function]}
             initialNumToRender={16}
@@ -1594,62 +1664,37 @@ exports[`renders 3`] = `
           >
             <View>
               <View
+                onFocusCapture={[Function]}
                 onLayout={[Function]}
-                style={
-                  {
-                    "alignItems": undefined,
-                    "alignSelf": undefined,
-                    "aspectRatio": undefined,
-                    "backgroundColor": undefined,
-                    "borderBottomLeftRadius": undefined,
-                    "borderBottomRightRadius": undefined,
-                    "borderBottomWidth": undefined,
-                    "borderColor": undefined,
-                    "borderLeftWidth": undefined,
-                    "borderRadius": undefined,
-                    "borderRightWidth": undefined,
-                    "borderTopLeftRadius": undefined,
-                    "borderTopRightRadius": undefined,
-                    "borderTopWidth": undefined,
-                    "borderWidth": undefined,
-                    "columnGap": undefined,
-                    "elevation": undefined,
-                    "flex": 1,
-                    "flexDirection": undefined,
-                    "gap": undefined,
-                    "height": undefined,
-                    "justifyContent": "center",
-                    "margin": undefined,
-                    "marginBottom": undefined,
-                    "marginHorizontal": undefined,
-                    "marginLeft": undefined,
-                    "marginRight": undefined,
-                    "marginTop": undefined,
-                    "marginVertical": undefined,
-                    "overflow": undefined,
-                    "padding": undefined,
-                    "paddingBottom": undefined,
-                    "paddingHorizontal": undefined,
-                    "paddingLeft": undefined,
-                    "paddingRight": undefined,
-                    "paddingTop": undefined,
-                    "paddingVertical": undefined,
-                    "rowGap": undefined,
-                    "width": undefined,
-                    "zIndex": undefined,
-                  }
-                }
+                style={null}
               >
-                <Text
+                <RNGestureHandlerButton
+                  activeOpacity={0.105}
+                  collapsable={false}
+                  delayLongPress={600}
+                  handlerTag={8}
+                  handlerType="NativeViewGestureHandler"
+                  onActiveStateChange={[Function]}
+                  onGestureEvent={[Function]}
+                  onGestureHandlerEvent={[Function]}
+                  onGestureHandlerStateChange={[Function]}
+                  onHandlerStateChange={[Function]}
+                  onPress={[Function]}
                   style={
                     {
-                      "color": "#8d8d93ff",
+                      "alignItems": "center",
+                      "alignSelf": undefined,
+                      "aspectRatio": undefined,
+                      "backgroundColor": "#ffffffff",
+                      "borderColor": undefined,
+                      "borderRadius": 8,
+                      "columnGap": undefined,
+                      "elevation": 1,
                       "flex": undefined,
-                      "fontSize": 16,
-                      "fontWeight": undefined,
+                      "flexDirection": "row",
+                      "gap": undefined,
                       "height": undefined,
-                      "includeFontPadding": undefined,
-                      "lineHeight": undefined,
+                      "justifyContent": undefined,
                       "margin": undefined,
                       "marginBottom": undefined,
                       "marginHorizontal": undefined,
@@ -1657,20 +1702,259 @@ exports[`renders 3`] = `
                       "marginRight": undefined,
                       "marginTop": undefined,
                       "marginVertical": undefined,
-                      "padding": undefined,
+                      "minHeight": undefined,
+                      "minWidth": undefined,
+                      "padding": 4,
                       "paddingBottom": undefined,
                       "paddingHorizontal": undefined,
                       "paddingLeft": undefined,
                       "paddingRight": undefined,
                       "paddingTop": undefined,
                       "paddingVertical": undefined,
-                      "textAlign": "center",
+                      "rowGap": undefined,
                       "width": undefined,
                     }
                   }
+                  underlayColor="black"
                 >
-                  Nenhum grupo cadastrado
-                </Text>
+                  <View
+                    collapsable={false}
+                    style={
+                      {
+                        "backgroundColor": "black",
+                        "borderBottomLeftRadius": undefined,
+                        "borderBottomRightRadius": undefined,
+                        "borderRadius": 8,
+                        "borderTopLeftRadius": undefined,
+                        "borderTopRightRadius": undefined,
+                        "bottom": 0,
+                        "left": 0,
+                        "opacity": 0,
+                        "position": "absolute",
+                        "right": 0,
+                        "top": 0,
+                      }
+                    }
+                  />
+                  <Text
+                    numberOfLines={1}
+                    style={
+                      {
+                        "color": "#1e1e1eff",
+                        "flex": 1,
+                        "fontSize": undefined,
+                        "fontWeight": "600",
+                        "height": undefined,
+                        "includeFontPadding": undefined,
+                        "lineHeight": undefined,
+                        "margin": undefined,
+                        "marginBottom": undefined,
+                        "marginHorizontal": undefined,
+                        "marginLeft": undefined,
+                        "marginRight": undefined,
+                        "marginTop": undefined,
+                        "marginVertical": undefined,
+                        "padding": 8,
+                        "paddingBottom": undefined,
+                        "paddingHorizontal": undefined,
+                        "paddingLeft": undefined,
+                        "paddingRight": undefined,
+                        "paddingTop": undefined,
+                        "paddingVertical": undefined,
+                        "textAlign": undefined,
+                        "width": undefined,
+                      }
+                    }
+                  >
+                    group 1
+                  </Text>
+                  <RNGestureHandlerButton
+                    activeOpacity={0.105}
+                    borderless={true}
+                    collapsable={false}
+                    delayLongPress={600}
+                    handlerTag={9}
+                    handlerType="NativeViewGestureHandler"
+                    onActiveStateChange={[Function]}
+                    onGestureEvent={[Function]}
+                    onGestureHandlerEvent={[Function]}
+                    onGestureHandlerStateChange={[Function]}
+                    onHandlerStateChange={[Function]}
+                    onPress={[Function]}
+                    style={
+                      {
+                        "alignItems": undefined,
+                        "alignSelf": undefined,
+                        "aspectRatio": undefined,
+                        "backgroundColor": undefined,
+                        "borderColor": undefined,
+                        "borderRadius": undefined,
+                        "columnGap": undefined,
+                        "elevation": undefined,
+                        "flex": undefined,
+                        "flexDirection": undefined,
+                        "gap": undefined,
+                        "height": undefined,
+                        "justifyContent": undefined,
+                        "margin": undefined,
+                        "marginBottom": undefined,
+                        "marginHorizontal": undefined,
+                        "marginLeft": undefined,
+                        "marginRight": undefined,
+                        "marginTop": undefined,
+                        "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
+                        "padding": undefined,
+                        "paddingBottom": undefined,
+                        "paddingHorizontal": 4,
+                        "paddingLeft": undefined,
+                        "paddingRight": undefined,
+                        "paddingTop": undefined,
+                        "paddingVertical": 8,
+                        "rowGap": undefined,
+                        "width": undefined,
+                      }
+                    }
+                    underlayColor="black"
+                  >
+                    <View
+                      collapsable={false}
+                      style={
+                        {
+                          "backgroundColor": "black",
+                          "borderBottomLeftRadius": undefined,
+                          "borderBottomRightRadius": undefined,
+                          "borderRadius": undefined,
+                          "borderTopLeftRadius": undefined,
+                          "borderTopRightRadius": undefined,
+                          "bottom": 0,
+                          "left": 0,
+                          "opacity": 0,
+                          "position": "absolute",
+                          "right": 0,
+                          "top": 0,
+                        }
+                      }
+                    />
+                    <Text
+                      allowFontScaling={false}
+                      selectable={false}
+                      style={
+                        [
+                          {
+                            "color": "#6d6d75ff",
+                            "fontSize": 24,
+                          },
+                          {
+                            "textAlign": undefined,
+                          },
+                          {
+                            "fontFamily": "material",
+                            "fontStyle": "normal",
+                            "fontWeight": "normal",
+                          },
+                          {},
+                        ]
+                      }
+                    >
+                      
+                    </Text>
+                  </RNGestureHandlerButton>
+                  <RNGestureHandlerButton
+                    activeOpacity={0.105}
+                    borderless={true}
+                    collapsable={false}
+                    delayLongPress={600}
+                    handlerTag={10}
+                    handlerType="NativeViewGestureHandler"
+                    onActiveStateChange={[Function]}
+                    onGestureEvent={[Function]}
+                    onGestureHandlerEvent={[Function]}
+                    onGestureHandlerStateChange={[Function]}
+                    onHandlerStateChange={[Function]}
+                    onPress={[Function]}
+                    style={
+                      {
+                        "alignItems": undefined,
+                        "alignSelf": undefined,
+                        "aspectRatio": undefined,
+                        "backgroundColor": undefined,
+                        "borderColor": undefined,
+                        "borderRadius": undefined,
+                        "columnGap": undefined,
+                        "elevation": undefined,
+                        "flex": undefined,
+                        "flexDirection": undefined,
+                        "gap": undefined,
+                        "height": undefined,
+                        "justifyContent": undefined,
+                        "margin": undefined,
+                        "marginBottom": undefined,
+                        "marginHorizontal": undefined,
+                        "marginLeft": undefined,
+                        "marginRight": undefined,
+                        "marginTop": undefined,
+                        "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
+                        "padding": undefined,
+                        "paddingBottom": undefined,
+                        "paddingHorizontal": 4,
+                        "paddingLeft": undefined,
+                        "paddingRight": undefined,
+                        "paddingTop": undefined,
+                        "paddingVertical": 8,
+                        "rowGap": undefined,
+                        "width": undefined,
+                      }
+                    }
+                    underlayColor="black"
+                  >
+                    <View
+                      collapsable={false}
+                      style={
+                        {
+                          "backgroundColor": "black",
+                          "borderBottomLeftRadius": undefined,
+                          "borderBottomRightRadius": undefined,
+                          "borderRadius": undefined,
+                          "borderTopLeftRadius": undefined,
+                          "borderTopRightRadius": undefined,
+                          "bottom": 0,
+                          "left": 0,
+                          "opacity": 0,
+                          "position": "absolute",
+                          "right": 0,
+                          "top": 0,
+                        }
+                      }
+                    />
+                    <Text
+                      allowFontScaling={false}
+                      selectable={false}
+                      style={
+                        [
+                          {
+                            "color": "#6d6d75ff",
+                            "fontSize": 24,
+                          },
+                          {
+                            "textAlign": undefined,
+                          },
+                          {
+                            "fontFamily": "material",
+                            "fontStyle": "normal",
+                            "fontWeight": "normal",
+                          },
+                          {},
+                        ]
+                      }
+                    >
+                      
+                    </Text>
+                  </RNGestureHandlerButton>
+                </RNGestureHandlerButton>
               </View>
             </View>
           </RCTScrollView>
@@ -1878,7 +2162,7 @@ exports[`renders 3`] = `
                     collapsable={false}
                     delayLongPress={600}
                     foreground={true}
-                    handlerTag={2}
+                    handlerTag={11}
                     handlerType="NativeViewGestureHandler"
                     onActiveStateChange={[Function]}
                     onGestureEvent={[Function]}
@@ -2060,7 +2344,7 @@ exports[`renders 3`] = `
                       collapsable={false}
                       delayLongPress={600}
                       foreground={true}
-                      handlerTag={3}
+                      handlerTag={12}
                       handlerType="NativeViewGestureHandler"
                       onActiveStateChange={[Function]}
                       onGestureEvent={[Function]}
@@ -2154,7 +2438,7 @@ exports[`renders 3`] = `
                       collapsable={false}
                       delayLongPress={600}
                       foreground={true}
-                      handlerTag={4}
+                      handlerTag={13}
                       handlerType="NativeViewGestureHandler"
                       onActiveStateChange={[Function]}
                       onGestureEvent={[Function]}
@@ -2248,7 +2532,7 @@ exports[`renders 3`] = `
                       collapsable={false}
                       delayLongPress={600}
                       foreground={true}
-                      handlerTag={5}
+                      handlerTag={14}
                       handlerType="NativeViewGestureHandler"
                       onActiveStateChange={[Function]}
                       onGestureEvent={[Function]}
@@ -2542,7 +2826,7 @@ exports[`renders 3`] = `
             activeOpacity={0.105}
             collapsable={false}
             delayLongPress={600}
-            handlerTag={6}
+            handlerTag={15}
             handlerType="NativeViewGestureHandler"
             onActiveStateChange={[Function]}
             onGestureEvent={[Function]}
@@ -3033,86 +3317,6 @@ exports[`renders 4`] = `
             </View>
           </View>
           <RCTScrollView
-            ListEmptyComponent={
-              <View
-                style={
-                  {
-                    "alignItems": undefined,
-                    "alignSelf": undefined,
-                    "aspectRatio": undefined,
-                    "backgroundColor": undefined,
-                    "borderBottomLeftRadius": undefined,
-                    "borderBottomRightRadius": undefined,
-                    "borderBottomWidth": undefined,
-                    "borderColor": undefined,
-                    "borderLeftWidth": undefined,
-                    "borderRadius": undefined,
-                    "borderRightWidth": undefined,
-                    "borderTopLeftRadius": undefined,
-                    "borderTopRightRadius": undefined,
-                    "borderTopWidth": undefined,
-                    "borderWidth": undefined,
-                    "columnGap": undefined,
-                    "elevation": undefined,
-                    "flex": 1,
-                    "flexDirection": undefined,
-                    "gap": undefined,
-                    "height": undefined,
-                    "justifyContent": "center",
-                    "margin": undefined,
-                    "marginBottom": undefined,
-                    "marginHorizontal": undefined,
-                    "marginLeft": undefined,
-                    "marginRight": undefined,
-                    "marginTop": undefined,
-                    "marginVertical": undefined,
-                    "overflow": undefined,
-                    "padding": undefined,
-                    "paddingBottom": undefined,
-                    "paddingHorizontal": undefined,
-                    "paddingLeft": undefined,
-                    "paddingRight": undefined,
-                    "paddingTop": undefined,
-                    "paddingVertical": undefined,
-                    "rowGap": undefined,
-                    "width": undefined,
-                    "zIndex": undefined,
-                  }
-                }
-              >
-                <Text
-                  style={
-                    {
-                      "color": "#8d8d93ff",
-                      "flex": undefined,
-                      "fontSize": 16,
-                      "fontWeight": undefined,
-                      "height": undefined,
-                      "includeFontPadding": undefined,
-                      "lineHeight": undefined,
-                      "margin": undefined,
-                      "marginBottom": undefined,
-                      "marginHorizontal": undefined,
-                      "marginLeft": undefined,
-                      "marginRight": undefined,
-                      "marginTop": undefined,
-                      "marginVertical": undefined,
-                      "padding": undefined,
-                      "paddingBottom": undefined,
-                      "paddingHorizontal": undefined,
-                      "paddingLeft": undefined,
-                      "paddingRight": undefined,
-                      "paddingTop": undefined,
-                      "paddingVertical": undefined,
-                      "textAlign": "center",
-                      "width": undefined,
-                    }
-                  }
-                >
-                  Nenhum grupo cadastrado
-                </Text>
-              </View>
-            }
             contentContainerStyle={
               {
                 "columnGap": undefined,
@@ -3129,7 +3333,15 @@ exports[`renders 4`] = `
                 "rowGap": undefined,
               }
             }
-            data={[]}
+            data={
+              [
+                {
+                  "id": "1",
+                  "name": "group 1",
+                  "players": [],
+                },
+              ]
+            }
             getItem={[Function]}
             getItemCount={[Function]}
             initialNumToRender={16}
@@ -3149,62 +3361,37 @@ exports[`renders 4`] = `
           >
             <View>
               <View
+                onFocusCapture={[Function]}
                 onLayout={[Function]}
-                style={
-                  {
-                    "alignItems": undefined,
-                    "alignSelf": undefined,
-                    "aspectRatio": undefined,
-                    "backgroundColor": undefined,
-                    "borderBottomLeftRadius": undefined,
-                    "borderBottomRightRadius": undefined,
-                    "borderBottomWidth": undefined,
-                    "borderColor": undefined,
-                    "borderLeftWidth": undefined,
-                    "borderRadius": undefined,
-                    "borderRightWidth": undefined,
-                    "borderTopLeftRadius": undefined,
-                    "borderTopRightRadius": undefined,
-                    "borderTopWidth": undefined,
-                    "borderWidth": undefined,
-                    "columnGap": undefined,
-                    "elevation": undefined,
-                    "flex": 1,
-                    "flexDirection": undefined,
-                    "gap": undefined,
-                    "height": undefined,
-                    "justifyContent": "center",
-                    "margin": undefined,
-                    "marginBottom": undefined,
-                    "marginHorizontal": undefined,
-                    "marginLeft": undefined,
-                    "marginRight": undefined,
-                    "marginTop": undefined,
-                    "marginVertical": undefined,
-                    "overflow": undefined,
-                    "padding": undefined,
-                    "paddingBottom": undefined,
-                    "paddingHorizontal": undefined,
-                    "paddingLeft": undefined,
-                    "paddingRight": undefined,
-                    "paddingTop": undefined,
-                    "paddingVertical": undefined,
-                    "rowGap": undefined,
-                    "width": undefined,
-                    "zIndex": undefined,
-                  }
-                }
+                style={null}
               >
-                <Text
+                <RNGestureHandlerButton
+                  activeOpacity={0.105}
+                  collapsable={false}
+                  delayLongPress={600}
+                  handlerTag={8}
+                  handlerType="NativeViewGestureHandler"
+                  onActiveStateChange={[Function]}
+                  onGestureEvent={[Function]}
+                  onGestureHandlerEvent={[Function]}
+                  onGestureHandlerStateChange={[Function]}
+                  onHandlerStateChange={[Function]}
+                  onPress={[Function]}
                   style={
                     {
-                      "color": "#8d8d93ff",
+                      "alignItems": "center",
+                      "alignSelf": undefined,
+                      "aspectRatio": undefined,
+                      "backgroundColor": "#ffffffff",
+                      "borderColor": undefined,
+                      "borderRadius": 8,
+                      "columnGap": undefined,
+                      "elevation": 1,
                       "flex": undefined,
-                      "fontSize": 16,
-                      "fontWeight": undefined,
+                      "flexDirection": "row",
+                      "gap": undefined,
                       "height": undefined,
-                      "includeFontPadding": undefined,
-                      "lineHeight": undefined,
+                      "justifyContent": undefined,
                       "margin": undefined,
                       "marginBottom": undefined,
                       "marginHorizontal": undefined,
@@ -3212,20 +3399,259 @@ exports[`renders 4`] = `
                       "marginRight": undefined,
                       "marginTop": undefined,
                       "marginVertical": undefined,
-                      "padding": undefined,
+                      "minHeight": undefined,
+                      "minWidth": undefined,
+                      "padding": 4,
                       "paddingBottom": undefined,
                       "paddingHorizontal": undefined,
                       "paddingLeft": undefined,
                       "paddingRight": undefined,
                       "paddingTop": undefined,
                       "paddingVertical": undefined,
-                      "textAlign": "center",
+                      "rowGap": undefined,
                       "width": undefined,
                     }
                   }
+                  underlayColor="black"
                 >
-                  Nenhum grupo cadastrado
-                </Text>
+                  <View
+                    collapsable={false}
+                    style={
+                      {
+                        "backgroundColor": "black",
+                        "borderBottomLeftRadius": undefined,
+                        "borderBottomRightRadius": undefined,
+                        "borderRadius": 8,
+                        "borderTopLeftRadius": undefined,
+                        "borderTopRightRadius": undefined,
+                        "bottom": 0,
+                        "left": 0,
+                        "opacity": 0,
+                        "position": "absolute",
+                        "right": 0,
+                        "top": 0,
+                      }
+                    }
+                  />
+                  <Text
+                    numberOfLines={1}
+                    style={
+                      {
+                        "color": "#1e1e1eff",
+                        "flex": 1,
+                        "fontSize": undefined,
+                        "fontWeight": "600",
+                        "height": undefined,
+                        "includeFontPadding": undefined,
+                        "lineHeight": undefined,
+                        "margin": undefined,
+                        "marginBottom": undefined,
+                        "marginHorizontal": undefined,
+                        "marginLeft": undefined,
+                        "marginRight": undefined,
+                        "marginTop": undefined,
+                        "marginVertical": undefined,
+                        "padding": 8,
+                        "paddingBottom": undefined,
+                        "paddingHorizontal": undefined,
+                        "paddingLeft": undefined,
+                        "paddingRight": undefined,
+                        "paddingTop": undefined,
+                        "paddingVertical": undefined,
+                        "textAlign": undefined,
+                        "width": undefined,
+                      }
+                    }
+                  >
+                    group 1
+                  </Text>
+                  <RNGestureHandlerButton
+                    activeOpacity={0.105}
+                    borderless={true}
+                    collapsable={false}
+                    delayLongPress={600}
+                    handlerTag={9}
+                    handlerType="NativeViewGestureHandler"
+                    onActiveStateChange={[Function]}
+                    onGestureEvent={[Function]}
+                    onGestureHandlerEvent={[Function]}
+                    onGestureHandlerStateChange={[Function]}
+                    onHandlerStateChange={[Function]}
+                    onPress={[Function]}
+                    style={
+                      {
+                        "alignItems": undefined,
+                        "alignSelf": undefined,
+                        "aspectRatio": undefined,
+                        "backgroundColor": undefined,
+                        "borderColor": undefined,
+                        "borderRadius": undefined,
+                        "columnGap": undefined,
+                        "elevation": undefined,
+                        "flex": undefined,
+                        "flexDirection": undefined,
+                        "gap": undefined,
+                        "height": undefined,
+                        "justifyContent": undefined,
+                        "margin": undefined,
+                        "marginBottom": undefined,
+                        "marginHorizontal": undefined,
+                        "marginLeft": undefined,
+                        "marginRight": undefined,
+                        "marginTop": undefined,
+                        "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
+                        "padding": undefined,
+                        "paddingBottom": undefined,
+                        "paddingHorizontal": 4,
+                        "paddingLeft": undefined,
+                        "paddingRight": undefined,
+                        "paddingTop": undefined,
+                        "paddingVertical": 8,
+                        "rowGap": undefined,
+                        "width": undefined,
+                      }
+                    }
+                    underlayColor="black"
+                  >
+                    <View
+                      collapsable={false}
+                      style={
+                        {
+                          "backgroundColor": "black",
+                          "borderBottomLeftRadius": undefined,
+                          "borderBottomRightRadius": undefined,
+                          "borderRadius": undefined,
+                          "borderTopLeftRadius": undefined,
+                          "borderTopRightRadius": undefined,
+                          "bottom": 0,
+                          "left": 0,
+                          "opacity": 0,
+                          "position": "absolute",
+                          "right": 0,
+                          "top": 0,
+                        }
+                      }
+                    />
+                    <Text
+                      allowFontScaling={false}
+                      selectable={false}
+                      style={
+                        [
+                          {
+                            "color": "#6d6d75ff",
+                            "fontSize": 24,
+                          },
+                          {
+                            "textAlign": undefined,
+                          },
+                          {
+                            "fontFamily": "material",
+                            "fontStyle": "normal",
+                            "fontWeight": "normal",
+                          },
+                          {},
+                        ]
+                      }
+                    >
+                      
+                    </Text>
+                  </RNGestureHandlerButton>
+                  <RNGestureHandlerButton
+                    activeOpacity={0.105}
+                    borderless={true}
+                    collapsable={false}
+                    delayLongPress={600}
+                    handlerTag={10}
+                    handlerType="NativeViewGestureHandler"
+                    onActiveStateChange={[Function]}
+                    onGestureEvent={[Function]}
+                    onGestureHandlerEvent={[Function]}
+                    onGestureHandlerStateChange={[Function]}
+                    onHandlerStateChange={[Function]}
+                    onPress={[Function]}
+                    style={
+                      {
+                        "alignItems": undefined,
+                        "alignSelf": undefined,
+                        "aspectRatio": undefined,
+                        "backgroundColor": undefined,
+                        "borderColor": undefined,
+                        "borderRadius": undefined,
+                        "columnGap": undefined,
+                        "elevation": undefined,
+                        "flex": undefined,
+                        "flexDirection": undefined,
+                        "gap": undefined,
+                        "height": undefined,
+                        "justifyContent": undefined,
+                        "margin": undefined,
+                        "marginBottom": undefined,
+                        "marginHorizontal": undefined,
+                        "marginLeft": undefined,
+                        "marginRight": undefined,
+                        "marginTop": undefined,
+                        "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
+                        "padding": undefined,
+                        "paddingBottom": undefined,
+                        "paddingHorizontal": 4,
+                        "paddingLeft": undefined,
+                        "paddingRight": undefined,
+                        "paddingTop": undefined,
+                        "paddingVertical": 8,
+                        "rowGap": undefined,
+                        "width": undefined,
+                      }
+                    }
+                    underlayColor="black"
+                  >
+                    <View
+                      collapsable={false}
+                      style={
+                        {
+                          "backgroundColor": "black",
+                          "borderBottomLeftRadius": undefined,
+                          "borderBottomRightRadius": undefined,
+                          "borderRadius": undefined,
+                          "borderTopLeftRadius": undefined,
+                          "borderTopRightRadius": undefined,
+                          "bottom": 0,
+                          "left": 0,
+                          "opacity": 0,
+                          "position": "absolute",
+                          "right": 0,
+                          "top": 0,
+                        }
+                      }
+                    />
+                    <Text
+                      allowFontScaling={false}
+                      selectable={false}
+                      style={
+                        [
+                          {
+                            "color": "#6d6d75ff",
+                            "fontSize": 24,
+                          },
+                          {
+                            "textAlign": undefined,
+                          },
+                          {
+                            "fontFamily": "material",
+                            "fontStyle": "normal",
+                            "fontWeight": "normal",
+                          },
+                          {},
+                        ]
+                      }
+                    >
+                      
+                    </Text>
+                  </RNGestureHandlerButton>
+                </RNGestureHandlerButton>
               </View>
             </View>
           </RCTScrollView>
@@ -3433,7 +3859,7 @@ exports[`renders 4`] = `
                     collapsable={false}
                     delayLongPress={600}
                     foreground={true}
-                    handlerTag={2}
+                    handlerTag={11}
                     handlerType="NativeViewGestureHandler"
                     onActiveStateChange={[Function]}
                     onGestureEvent={[Function]}
@@ -3615,7 +4041,7 @@ exports[`renders 4`] = `
                       collapsable={false}
                       delayLongPress={600}
                       foreground={true}
-                      handlerTag={3}
+                      handlerTag={12}
                       handlerType="NativeViewGestureHandler"
                       onActiveStateChange={[Function]}
                       onGestureEvent={[Function]}
@@ -3709,7 +4135,7 @@ exports[`renders 4`] = `
                       collapsable={false}
                       delayLongPress={600}
                       foreground={true}
-                      handlerTag={4}
+                      handlerTag={13}
                       handlerType="NativeViewGestureHandler"
                       onActiveStateChange={[Function]}
                       onGestureEvent={[Function]}
@@ -3803,7 +4229,7 @@ exports[`renders 4`] = `
                       collapsable={false}
                       delayLongPress={600}
                       foreground={true}
-                      handlerTag={5}
+                      handlerTag={14}
                       handlerType="NativeViewGestureHandler"
                       onActiveStateChange={[Function]}
                       onGestureEvent={[Function]}
@@ -4097,7 +4523,7 @@ exports[`renders 4`] = `
             activeOpacity={0.105}
             collapsable={false}
             delayLongPress={600}
-            handlerTag={6}
+            handlerTag={15}
             handlerType="NativeViewGestureHandler"
             onActiveStateChange={[Function]}
             onGestureEvent={[Function]}
@@ -4370,7 +4796,7 @@ exports[`renders 4`] = `
                   collapsable={false}
                   delayLongPress={600}
                   foreground={true}
-                  handlerTag={7}
+                  handlerTag={16}
                   handlerType="NativeViewGestureHandler"
                   onActiveStateChange={[Function]}
                   onGestureEvent={[Function]}
@@ -4506,7 +4932,7 @@ exports[`renders 4`] = `
                   collapsable={false}
                   delayLongPress={600}
                   foreground={true}
-                  handlerTag={8}
+                  handlerTag={17}
                   handlerType="NativeViewGestureHandler"
                   onActiveStateChange={[Function]}
                   onGestureEvent={[Function]}
@@ -4745,7 +5171,7 @@ exports[`renders 4`] = `
                   autoFocus={true}
                   collapsable={false}
                   cursorColor="#1e1e1eff"
-                  handlerTag={9}
+                  handlerTag={18}
                   handlerType="NativeViewGestureHandler"
                   onBlur={[Function]}
                   onChangeText={[Function]}
@@ -4919,7 +5345,7 @@ exports[`renders 4`] = `
                     borderless={true}
                     collapsable={false}
                     delayLongPress={600}
-                    handlerTag={10}
+                    handlerTag={19}
                     handlerType="NativeViewGestureHandler"
                     onActiveStateChange={[Function]}
                     onGestureEvent={[Function]}
@@ -5068,7 +5494,7 @@ exports[`renders 4`] = `
                     borderless={true}
                     collapsable={false}
                     delayLongPress={600}
-                    handlerTag={11}
+                    handlerTag={20}
                     handlerType="NativeViewGestureHandler"
                     onActiveStateChange={[Function]}
                     onGestureEvent={[Function]}
@@ -5217,7 +5643,7 @@ exports[`renders 4`] = `
                     borderless={true}
                     collapsable={false}
                     delayLongPress={600}
-                    handlerTag={12}
+                    handlerTag={21}
                     handlerType="NativeViewGestureHandler"
                     onActiveStateChange={[Function]}
                     onGestureEvent={[Function]}
@@ -5366,7 +5792,7 @@ exports[`renders 4`] = `
                     borderless={true}
                     collapsable={false}
                     delayLongPress={600}
-                    handlerTag={13}
+                    handlerTag={22}
                     handlerType="NativeViewGestureHandler"
                     onActiveStateChange={[Function]}
                     onGestureEvent={[Function]}
@@ -5515,7 +5941,7 @@ exports[`renders 4`] = `
                     borderless={true}
                     collapsable={false}
                     delayLongPress={600}
-                    handlerTag={14}
+                    handlerTag={23}
                     handlerType="NativeViewGestureHandler"
                     onActiveStateChange={[Function]}
                     onGestureEvent={[Function]}
@@ -5664,7 +6090,7 @@ exports[`renders 4`] = `
                     borderless={true}
                     collapsable={false}
                     delayLongPress={600}
-                    handlerTag={15}
+                    handlerTag={24}
                     handlerType="NativeViewGestureHandler"
                     onActiveStateChange={[Function]}
                     onGestureEvent={[Function]}
@@ -9928,7 +10354,7 @@ exports[`renders 4`] = `
           activeOpacity={0.105}
           collapsable={false}
           delayLongPress={600}
-          handlerTag={17}
+          handlerTag={26}
           handlerType="NativeViewGestureHandler"
           onActiveStateChange={[Function]}
           onGestureEvent={[Function]}
@@ -10386,86 +10812,6 @@ exports[`renders 5`] = `
             </View>
           </View>
           <RCTScrollView
-            ListEmptyComponent={
-              <View
-                style={
-                  {
-                    "alignItems": undefined,
-                    "alignSelf": undefined,
-                    "aspectRatio": undefined,
-                    "backgroundColor": undefined,
-                    "borderBottomLeftRadius": undefined,
-                    "borderBottomRightRadius": undefined,
-                    "borderBottomWidth": undefined,
-                    "borderColor": undefined,
-                    "borderLeftWidth": undefined,
-                    "borderRadius": undefined,
-                    "borderRightWidth": undefined,
-                    "borderTopLeftRadius": undefined,
-                    "borderTopRightRadius": undefined,
-                    "borderTopWidth": undefined,
-                    "borderWidth": undefined,
-                    "columnGap": undefined,
-                    "elevation": undefined,
-                    "flex": 1,
-                    "flexDirection": undefined,
-                    "gap": undefined,
-                    "height": undefined,
-                    "justifyContent": "center",
-                    "margin": undefined,
-                    "marginBottom": undefined,
-                    "marginHorizontal": undefined,
-                    "marginLeft": undefined,
-                    "marginRight": undefined,
-                    "marginTop": undefined,
-                    "marginVertical": undefined,
-                    "overflow": undefined,
-                    "padding": undefined,
-                    "paddingBottom": undefined,
-                    "paddingHorizontal": undefined,
-                    "paddingLeft": undefined,
-                    "paddingRight": undefined,
-                    "paddingTop": undefined,
-                    "paddingVertical": undefined,
-                    "rowGap": undefined,
-                    "width": undefined,
-                    "zIndex": undefined,
-                  }
-                }
-              >
-                <Text
-                  style={
-                    {
-                      "color": "#8d8d93ff",
-                      "flex": undefined,
-                      "fontSize": 16,
-                      "fontWeight": undefined,
-                      "height": undefined,
-                      "includeFontPadding": undefined,
-                      "lineHeight": undefined,
-                      "margin": undefined,
-                      "marginBottom": undefined,
-                      "marginHorizontal": undefined,
-                      "marginLeft": undefined,
-                      "marginRight": undefined,
-                      "marginTop": undefined,
-                      "marginVertical": undefined,
-                      "padding": undefined,
-                      "paddingBottom": undefined,
-                      "paddingHorizontal": undefined,
-                      "paddingLeft": undefined,
-                      "paddingRight": undefined,
-                      "paddingTop": undefined,
-                      "paddingVertical": undefined,
-                      "textAlign": "center",
-                      "width": undefined,
-                    }
-                  }
-                >
-                  Nenhum grupo cadastrado
-                </Text>
-              </View>
-            }
             contentContainerStyle={
               {
                 "columnGap": undefined,
@@ -10482,7 +10828,15 @@ exports[`renders 5`] = `
                 "rowGap": undefined,
               }
             }
-            data={[]}
+            data={
+              [
+                {
+                  "id": "1",
+                  "name": "group 1",
+                  "players": [],
+                },
+              ]
+            }
             getItem={[Function]}
             getItemCount={[Function]}
             initialNumToRender={16}
@@ -10502,62 +10856,37 @@ exports[`renders 5`] = `
           >
             <View>
               <View
+                onFocusCapture={[Function]}
                 onLayout={[Function]}
-                style={
-                  {
-                    "alignItems": undefined,
-                    "alignSelf": undefined,
-                    "aspectRatio": undefined,
-                    "backgroundColor": undefined,
-                    "borderBottomLeftRadius": undefined,
-                    "borderBottomRightRadius": undefined,
-                    "borderBottomWidth": undefined,
-                    "borderColor": undefined,
-                    "borderLeftWidth": undefined,
-                    "borderRadius": undefined,
-                    "borderRightWidth": undefined,
-                    "borderTopLeftRadius": undefined,
-                    "borderTopRightRadius": undefined,
-                    "borderTopWidth": undefined,
-                    "borderWidth": undefined,
-                    "columnGap": undefined,
-                    "elevation": undefined,
-                    "flex": 1,
-                    "flexDirection": undefined,
-                    "gap": undefined,
-                    "height": undefined,
-                    "justifyContent": "center",
-                    "margin": undefined,
-                    "marginBottom": undefined,
-                    "marginHorizontal": undefined,
-                    "marginLeft": undefined,
-                    "marginRight": undefined,
-                    "marginTop": undefined,
-                    "marginVertical": undefined,
-                    "overflow": undefined,
-                    "padding": undefined,
-                    "paddingBottom": undefined,
-                    "paddingHorizontal": undefined,
-                    "paddingLeft": undefined,
-                    "paddingRight": undefined,
-                    "paddingTop": undefined,
-                    "paddingVertical": undefined,
-                    "rowGap": undefined,
-                    "width": undefined,
-                    "zIndex": undefined,
-                  }
-                }
+                style={null}
               >
-                <Text
+                <RNGestureHandlerButton
+                  activeOpacity={0.105}
+                  collapsable={false}
+                  delayLongPress={600}
+                  handlerTag={8}
+                  handlerType="NativeViewGestureHandler"
+                  onActiveStateChange={[Function]}
+                  onGestureEvent={[Function]}
+                  onGestureHandlerEvent={[Function]}
+                  onGestureHandlerStateChange={[Function]}
+                  onHandlerStateChange={[Function]}
+                  onPress={[Function]}
                   style={
                     {
-                      "color": "#8d8d93ff",
+                      "alignItems": "center",
+                      "alignSelf": undefined,
+                      "aspectRatio": undefined,
+                      "backgroundColor": "#ffffffff",
+                      "borderColor": undefined,
+                      "borderRadius": 8,
+                      "columnGap": undefined,
+                      "elevation": 1,
                       "flex": undefined,
-                      "fontSize": 16,
-                      "fontWeight": undefined,
+                      "flexDirection": "row",
+                      "gap": undefined,
                       "height": undefined,
-                      "includeFontPadding": undefined,
-                      "lineHeight": undefined,
+                      "justifyContent": undefined,
                       "margin": undefined,
                       "marginBottom": undefined,
                       "marginHorizontal": undefined,
@@ -10565,20 +10894,259 @@ exports[`renders 5`] = `
                       "marginRight": undefined,
                       "marginTop": undefined,
                       "marginVertical": undefined,
-                      "padding": undefined,
+                      "minHeight": undefined,
+                      "minWidth": undefined,
+                      "padding": 4,
                       "paddingBottom": undefined,
                       "paddingHorizontal": undefined,
                       "paddingLeft": undefined,
                       "paddingRight": undefined,
                       "paddingTop": undefined,
                       "paddingVertical": undefined,
-                      "textAlign": "center",
+                      "rowGap": undefined,
                       "width": undefined,
                     }
                   }
+                  underlayColor="black"
                 >
-                  Nenhum grupo cadastrado
-                </Text>
+                  <View
+                    collapsable={false}
+                    style={
+                      {
+                        "backgroundColor": "black",
+                        "borderBottomLeftRadius": undefined,
+                        "borderBottomRightRadius": undefined,
+                        "borderRadius": 8,
+                        "borderTopLeftRadius": undefined,
+                        "borderTopRightRadius": undefined,
+                        "bottom": 0,
+                        "left": 0,
+                        "opacity": 0,
+                        "position": "absolute",
+                        "right": 0,
+                        "top": 0,
+                      }
+                    }
+                  />
+                  <Text
+                    numberOfLines={1}
+                    style={
+                      {
+                        "color": "#1e1e1eff",
+                        "flex": 1,
+                        "fontSize": undefined,
+                        "fontWeight": "600",
+                        "height": undefined,
+                        "includeFontPadding": undefined,
+                        "lineHeight": undefined,
+                        "margin": undefined,
+                        "marginBottom": undefined,
+                        "marginHorizontal": undefined,
+                        "marginLeft": undefined,
+                        "marginRight": undefined,
+                        "marginTop": undefined,
+                        "marginVertical": undefined,
+                        "padding": 8,
+                        "paddingBottom": undefined,
+                        "paddingHorizontal": undefined,
+                        "paddingLeft": undefined,
+                        "paddingRight": undefined,
+                        "paddingTop": undefined,
+                        "paddingVertical": undefined,
+                        "textAlign": undefined,
+                        "width": undefined,
+                      }
+                    }
+                  >
+                    group 1
+                  </Text>
+                  <RNGestureHandlerButton
+                    activeOpacity={0.105}
+                    borderless={true}
+                    collapsable={false}
+                    delayLongPress={600}
+                    handlerTag={9}
+                    handlerType="NativeViewGestureHandler"
+                    onActiveStateChange={[Function]}
+                    onGestureEvent={[Function]}
+                    onGestureHandlerEvent={[Function]}
+                    onGestureHandlerStateChange={[Function]}
+                    onHandlerStateChange={[Function]}
+                    onPress={[Function]}
+                    style={
+                      {
+                        "alignItems": undefined,
+                        "alignSelf": undefined,
+                        "aspectRatio": undefined,
+                        "backgroundColor": undefined,
+                        "borderColor": undefined,
+                        "borderRadius": undefined,
+                        "columnGap": undefined,
+                        "elevation": undefined,
+                        "flex": undefined,
+                        "flexDirection": undefined,
+                        "gap": undefined,
+                        "height": undefined,
+                        "justifyContent": undefined,
+                        "margin": undefined,
+                        "marginBottom": undefined,
+                        "marginHorizontal": undefined,
+                        "marginLeft": undefined,
+                        "marginRight": undefined,
+                        "marginTop": undefined,
+                        "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
+                        "padding": undefined,
+                        "paddingBottom": undefined,
+                        "paddingHorizontal": 4,
+                        "paddingLeft": undefined,
+                        "paddingRight": undefined,
+                        "paddingTop": undefined,
+                        "paddingVertical": 8,
+                        "rowGap": undefined,
+                        "width": undefined,
+                      }
+                    }
+                    underlayColor="black"
+                  >
+                    <View
+                      collapsable={false}
+                      style={
+                        {
+                          "backgroundColor": "black",
+                          "borderBottomLeftRadius": undefined,
+                          "borderBottomRightRadius": undefined,
+                          "borderRadius": undefined,
+                          "borderTopLeftRadius": undefined,
+                          "borderTopRightRadius": undefined,
+                          "bottom": 0,
+                          "left": 0,
+                          "opacity": 0,
+                          "position": "absolute",
+                          "right": 0,
+                          "top": 0,
+                        }
+                      }
+                    />
+                    <Text
+                      allowFontScaling={false}
+                      selectable={false}
+                      style={
+                        [
+                          {
+                            "color": "#6d6d75ff",
+                            "fontSize": 24,
+                          },
+                          {
+                            "textAlign": undefined,
+                          },
+                          {
+                            "fontFamily": "material",
+                            "fontStyle": "normal",
+                            "fontWeight": "normal",
+                          },
+                          {},
+                        ]
+                      }
+                    >
+                      
+                    </Text>
+                  </RNGestureHandlerButton>
+                  <RNGestureHandlerButton
+                    activeOpacity={0.105}
+                    borderless={true}
+                    collapsable={false}
+                    delayLongPress={600}
+                    handlerTag={10}
+                    handlerType="NativeViewGestureHandler"
+                    onActiveStateChange={[Function]}
+                    onGestureEvent={[Function]}
+                    onGestureHandlerEvent={[Function]}
+                    onGestureHandlerStateChange={[Function]}
+                    onHandlerStateChange={[Function]}
+                    onPress={[Function]}
+                    style={
+                      {
+                        "alignItems": undefined,
+                        "alignSelf": undefined,
+                        "aspectRatio": undefined,
+                        "backgroundColor": undefined,
+                        "borderColor": undefined,
+                        "borderRadius": undefined,
+                        "columnGap": undefined,
+                        "elevation": undefined,
+                        "flex": undefined,
+                        "flexDirection": undefined,
+                        "gap": undefined,
+                        "height": undefined,
+                        "justifyContent": undefined,
+                        "margin": undefined,
+                        "marginBottom": undefined,
+                        "marginHorizontal": undefined,
+                        "marginLeft": undefined,
+                        "marginRight": undefined,
+                        "marginTop": undefined,
+                        "marginVertical": undefined,
+                        "minHeight": undefined,
+                        "minWidth": undefined,
+                        "padding": undefined,
+                        "paddingBottom": undefined,
+                        "paddingHorizontal": 4,
+                        "paddingLeft": undefined,
+                        "paddingRight": undefined,
+                        "paddingTop": undefined,
+                        "paddingVertical": 8,
+                        "rowGap": undefined,
+                        "width": undefined,
+                      }
+                    }
+                    underlayColor="black"
+                  >
+                    <View
+                      collapsable={false}
+                      style={
+                        {
+                          "backgroundColor": "black",
+                          "borderBottomLeftRadius": undefined,
+                          "borderBottomRightRadius": undefined,
+                          "borderRadius": undefined,
+                          "borderTopLeftRadius": undefined,
+                          "borderTopRightRadius": undefined,
+                          "bottom": 0,
+                          "left": 0,
+                          "opacity": 0,
+                          "position": "absolute",
+                          "right": 0,
+                          "top": 0,
+                        }
+                      }
+                    />
+                    <Text
+                      allowFontScaling={false}
+                      selectable={false}
+                      style={
+                        [
+                          {
+                            "color": "#6d6d75ff",
+                            "fontSize": 24,
+                          },
+                          {
+                            "textAlign": undefined,
+                          },
+                          {
+                            "fontFamily": "material",
+                            "fontStyle": "normal",
+                            "fontWeight": "normal",
+                          },
+                          {},
+                        ]
+                      }
+                    >
+                      
+                    </Text>
+                  </RNGestureHandlerButton>
+                </RNGestureHandlerButton>
               </View>
             </View>
           </RCTScrollView>
@@ -10786,7 +11354,7 @@ exports[`renders 5`] = `
                     collapsable={false}
                     delayLongPress={600}
                     foreground={true}
-                    handlerTag={2}
+                    handlerTag={11}
                     handlerType="NativeViewGestureHandler"
                     onActiveStateChange={[Function]}
                     onGestureEvent={[Function]}
@@ -10968,7 +11536,7 @@ exports[`renders 5`] = `
                       collapsable={false}
                       delayLongPress={600}
                       foreground={true}
-                      handlerTag={3}
+                      handlerTag={12}
                       handlerType="NativeViewGestureHandler"
                       onActiveStateChange={[Function]}
                       onGestureEvent={[Function]}
@@ -11062,7 +11630,7 @@ exports[`renders 5`] = `
                       collapsable={false}
                       delayLongPress={600}
                       foreground={true}
-                      handlerTag={4}
+                      handlerTag={13}
                       handlerType="NativeViewGestureHandler"
                       onActiveStateChange={[Function]}
                       onGestureEvent={[Function]}
@@ -11156,7 +11724,7 @@ exports[`renders 5`] = `
                       collapsable={false}
                       delayLongPress={600}
                       foreground={true}
-                      handlerTag={5}
+                      handlerTag={14}
                       handlerType="NativeViewGestureHandler"
                       onActiveStateChange={[Function]}
                       onGestureEvent={[Function]}
@@ -11270,6 +11838,7 @@ exports[`renders 5`] = `
               [
                 {
                   "active": true,
+                  "createdAt": 0,
                   "id": "2",
                   "name": "player 1",
                   "position": "G",
@@ -11304,7 +11873,7 @@ exports[`renders 5`] = `
                   activeOpacity={0.105}
                   collapsable={false}
                   delayLongPress={600}
-                  handlerTag={18}
+                  handlerTag={27}
                   handlerType="NativeViewGestureHandler"
                   onActiveStateChange={[Function]}
                   onGestureEvent={[Function]}
@@ -11373,7 +11942,7 @@ exports[`renders 5`] = `
                     borderless={true}
                     collapsable={false}
                     delayLongPress={600}
-                    handlerTag={19}
+                    handlerTag={28}
                     handlerType="NativeViewGestureHandler"
                     onActiveStateChange={[Function]}
                     onGestureEvent={[Function]}
@@ -11658,7 +12227,7 @@ exports[`renders 5`] = `
             activeOpacity={0.105}
             collapsable={false}
             delayLongPress={600}
-            handlerTag={6}
+            handlerTag={15}
             handlerType="NativeViewGestureHandler"
             onActiveStateChange={[Function]}
             onGestureEvent={[Function]}
@@ -11977,7 +12546,7 @@ exports[`renders 5`] = `
                     collapsable={false}
                     delayLongPress={600}
                     foreground={true}
-                    handlerTag={30}
+                    handlerTag={39}
                     handlerType="NativeViewGestureHandler"
                     onActiveStateChange={[Function]}
                     onGestureEvent={[Function]}
@@ -12113,7 +12682,7 @@ exports[`renders 5`] = `
                     collapsable={false}
                     delayLongPress={600}
                     foreground={true}
-                    handlerTag={31}
+                    handlerTag={40}
                     handlerType="NativeViewGestureHandler"
                     onActiveStateChange={[Function]}
                     onGestureEvent={[Function]}
@@ -12389,7 +12958,7 @@ exports[`renders 5`] = `
                       }
                     }
                   >
-                    0
+                    1
                   </Text>
                 </Text>
                 <Text
@@ -12480,7 +13049,7 @@ exports[`renders 5`] = `
                       }
                     }
                   >
-                    NaN
+                    5,00
                   </Text>
                 </Text>
                 <Text
@@ -12571,9 +13140,150 @@ exports[`renders 5`] = `
                       }
                     }
                   >
-                    0
+                    5
                   </Text>
                 </Text>
+                <View
+                  style={
+                    {
+                      "alignItems": undefined,
+                      "alignSelf": undefined,
+                      "aspectRatio": undefined,
+                      "backgroundColor": undefined,
+                      "borderBottomLeftRadius": undefined,
+                      "borderBottomRightRadius": undefined,
+                      "borderBottomWidth": undefined,
+                      "borderColor": undefined,
+                      "borderLeftWidth": undefined,
+                      "borderRadius": undefined,
+                      "borderRightWidth": undefined,
+                      "borderTopLeftRadius": undefined,
+                      "borderTopRightRadius": undefined,
+                      "borderTopWidth": undefined,
+                      "borderWidth": undefined,
+                      "columnGap": undefined,
+                      "elevation": undefined,
+                      "flex": undefined,
+                      "flexDirection": "row",
+                      "gap": undefined,
+                      "height": undefined,
+                      "justifyContent": undefined,
+                      "margin": undefined,
+                      "marginBottom": undefined,
+                      "marginHorizontal": undefined,
+                      "marginLeft": undefined,
+                      "marginRight": undefined,
+                      "marginTop": undefined,
+                      "marginVertical": undefined,
+                      "overflow": undefined,
+                      "padding": 4,
+                      "paddingBottom": undefined,
+                      "paddingHorizontal": undefined,
+                      "paddingLeft": undefined,
+                      "paddingRight": undefined,
+                      "paddingTop": undefined,
+                      "paddingVertical": undefined,
+                      "rowGap": undefined,
+                      "width": undefined,
+                      "zIndex": undefined,
+                    }
+                  }
+                >
+                  <Text
+                    style={
+                      {
+                        "color": "#1e1e1eff",
+                        "flex": undefined,
+                        "fontSize": undefined,
+                        "fontWeight": "600",
+                        "height": undefined,
+                        "includeFontPadding": undefined,
+                        "lineHeight": undefined,
+                        "margin": undefined,
+                        "marginBottom": undefined,
+                        "marginHorizontal": undefined,
+                        "marginLeft": undefined,
+                        "marginRight": undefined,
+                        "marginTop": undefined,
+                        "marginVertical": undefined,
+                        "padding": undefined,
+                        "paddingBottom": undefined,
+                        "paddingHorizontal": undefined,
+                        "paddingLeft": undefined,
+                        "paddingRight": undefined,
+                        "paddingTop": undefined,
+                        "paddingVertical": undefined,
+                        "textAlign": undefined,
+                        "width": undefined,
+                      }
+                    }
+                  >
+                    5,0
+                  </Text>
+                  <Text
+                    numberOfLines={1}
+                    style={
+                      {
+                        "color": "#1e1e1eff",
+                        "flex": undefined,
+                        "fontSize": undefined,
+                        "fontWeight": undefined,
+                        "height": undefined,
+                        "includeFontPadding": undefined,
+                        "lineHeight": undefined,
+                        "margin": undefined,
+                        "marginBottom": undefined,
+                        "marginHorizontal": undefined,
+                        "marginLeft": undefined,
+                        "marginRight": undefined,
+                        "marginTop": undefined,
+                        "marginVertical": undefined,
+                        "padding": undefined,
+                        "paddingBottom": undefined,
+                        "paddingHorizontal": undefined,
+                        "paddingLeft": undefined,
+                        "paddingRight": undefined,
+                        "paddingTop": undefined,
+                        "paddingVertical": undefined,
+                        "textAlign": undefined,
+                        "width": undefined,
+                      }
+                    }
+                  >
+                     - player 1
+                  </Text>
+                  <Text
+                    style={
+                      {
+                        "color": "#1e1e1eff",
+                        "flex": undefined,
+                        "fontSize": undefined,
+                        "fontWeight": undefined,
+                        "height": undefined,
+                        "includeFontPadding": undefined,
+                        "lineHeight": undefined,
+                        "margin": undefined,
+                        "marginBottom": undefined,
+                        "marginHorizontal": undefined,
+                        "marginLeft": undefined,
+                        "marginRight": undefined,
+                        "marginTop": undefined,
+                        "marginVertical": undefined,
+                        "padding": undefined,
+                        "paddingBottom": undefined,
+                        "paddingHorizontal": undefined,
+                        "paddingLeft": undefined,
+                        "paddingRight": undefined,
+                        "paddingTop": undefined,
+                        "paddingVertical": undefined,
+                        "textAlign": undefined,
+                        "width": undefined,
+                      }
+                    }
+                  >
+                     (G)
+                  </Text>
+                </View>
               </View>
               <View
                 style={

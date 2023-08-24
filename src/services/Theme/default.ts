@@ -1,4 +1,6 @@
 import { color, palette } from 'src/utils/datatypes/Color'
+import { Layer } from 'src/utils/fp'
+import { AppThemeEnv } from '.'
 
 export const defaultTheme = {
   colors: {
@@ -18,3 +20,7 @@ export const defaultTheme = {
 }
 
 export const defaultColors = defaultTheme.colors
+
+export const AppThemeLive = AppThemeEnv.context(defaultTheme).pipe(
+  Layer.succeedContext,
+)

@@ -3,7 +3,7 @@ import { $, A, D, Ord, Order, Rec, Tup, absurd, identity } from 'fp'
 import { Player } from 'src/datatypes'
 import {
   ActiveOrd,
-  IdOrd,
+  CreatedAtOrder,
   NameOrd,
   PositionOrd,
   RatingOrd,
@@ -51,7 +51,7 @@ const typeToOrder = (type: GroupOrderType): Order<Player> =>
     : type === 'active'
     ? ActiveOrd
     : type === 'date'
-    ? IdOrd
+    ? CreatedAtOrder
     : absurd<never>(type)
 
 export const toOrder = (order: GroupOrder): Order<Player> =>

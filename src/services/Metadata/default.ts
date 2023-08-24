@@ -1,12 +1,12 @@
 import * as Application from 'expo-application'
 import * as Device from 'expo-device'
-import { $, $f, F, O, Option, identity } from 'fp'
+import { $, $f, F, Layer, O, Option, identity } from 'fp'
 import packageJSON from 'src/../package.json'
-import { IdGenerator, IdGeneratorEnv } from 'src/services/IdGenerator'
-import { defaultIdGenerator } from 'src/services/IdGenerator/default'
-import { Metadata, MetadataService } from 'src/services/Metadata'
-import { Repository, RepositoryEnvs } from 'src/services/Repositories'
-import { defaultInstallationRepository } from 'src/services/Repositories/metadata/installation/default'
+import { IdGenerator } from 'src/services/IdGenerator'
+import { IdGeneratorLive } from 'src/services/IdGenerator/default'
+import { Metadata, MetadataServiceEnv } from 'src/services/Metadata'
+import { Repository } from 'src/services/Repositories'
+import { InstallationRepositoryLive } from 'src/services/Repositories/metadata/installation/default'
 import { Ref } from 'src/utils/datatypes'
 
 const metadataRef = Ref.create<Option<Metadata>>(O.none())
@@ -26,7 +26,7 @@ const getStaticMetadata = F.sync(() => ({
   },
 }))
 
-export const defaultMetadataService: MetadataService = {
+export const MetadataServiceLive = MetadataServiceEnv.context({
   get: $(
     metadataRef.getState,
     F.flatMap(identity),
@@ -38,7 +38,7 @@ export const defaultMetadataService: MetadataService = {
             F.map(_ => ({ ..._, isFirstLaunch: false })),
             F.orElse(() =>
               $(
-                IdGenerator.generate,
+                IdGenerator.generate(),
                 F.map(id => ({ id })),
                 F.tap(
                   $f(
@@ -50,7 +50,7 @@ export const defaultMetadataService: MetadataService = {
               ),
             ),
           ),
-          launch: F.map(IdGenerator.generate, id => ({ id })),
+          launch: F.map(IdGenerator.generate(), id => ({ id })),
           staticMeta: getStaticMetadata,
         }),
         F.map(
@@ -64,11 +64,6 @@ export const defaultMetadataService: MetadataService = {
         F.tap(v => $(O.some(v), metadataRef.setState)),
       ),
     ),
-    F.provideService(RepositoryEnvs.metadata.installation, {
-      Repositories: {
-        metadata: { installation: defaultInstallationRepository },
-      },
-    }),
-    F.provideService(IdGeneratorEnv, { idGenerator: defaultIdGenerator }),
+    F.provideLayer(Layer.mergeAll(InstallationRepositoryLive, IdGeneratorLive)),
   ),
-}
+}).pipe(Layer.succeedContext)

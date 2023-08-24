@@ -1,16 +1,24 @@
-import { $, D, Effect, F, Num, Ord as Ord_, Order, Predicate } from 'fp'
-import { now } from 'fp-ts/Date'
+import {
+  $,
+  Clock,
+  D,
+  Effect,
+  F,
+  Num,
+  Ord,
+  Order as Order_,
+  Predicate,
+} from 'fp'
 import { Duration } from './Duration'
 
 export const Schema = $(D.number, D.brand('Timestamp'))
 
 export type Timestamp = D.To<typeof Schema>
 
-export const Ord: Order<Timestamp> = Num.Order
+export const Order: Order_<Timestamp> = Num.Order
 
-export const getNow: Effect<never, never, Timestamp> = F.sync(
-  () => now() as Timestamp,
-)
+export const getNow = (): Effect<never, never, Timestamp> =>
+  F.map(Clock.currentTimeMillis, Schema)
 
 export const add = (duration: Duration) => (timestamp: Timestamp) =>
   Num.add(duration)(timestamp) as Timestamp
@@ -29,7 +37,7 @@ export const differenceTo =
     differenceFrom(from)(to)
 
 export const isBefore: (comparedTo: Timestamp) => Predicate<Timestamp> =
-  Ord_.lt(Ord)
+  Ord.lt(Order)
 
 export const isAfter: (comparedTo: Timestamp) => Predicate<Timestamp> =
-  Ord_.gt(Ord)
+  Ord.gt(Order)

@@ -1,6 +1,6 @@
-import { O } from 'fp'
-import { SafeAreaService } from '.'
+import { Layer, O } from 'fp'
+import { SafeAreaServiceEnv } from '.'
 
-export const defaultSafeAreaService: SafeAreaService = {
+export const SafeAreaServiceLive = SafeAreaServiceEnv.context({
   initialMetrics: O.none(),
-}
+}).pipe(Layer.succeedContext)

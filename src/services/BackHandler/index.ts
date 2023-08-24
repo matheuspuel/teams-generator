@@ -9,12 +9,10 @@ export type BackHandler = {
   ) => Effect<never, never, { unsubscribe: Effect<never, never, void> }>
 }
 
-export type BackHandlerEnv = { backHandler: BackHandler }
-
-export const BackHandlerEnv = Context.Tag<BackHandlerEnv>()
+export const BackHandlerEnv = Context.Tag<BackHandler>()
 
 export const BackHandler = {
-  exit: F.flatMap(BackHandlerEnv, env => env.backHandler.exit),
+  exit: F.flatMap(BackHandlerEnv, env => env.exit),
   subscribe: (f: Effect<never, never, void>) =>
-    F.flatMap(BackHandlerEnv, env => env.backHandler.subscribe(f)),
+    F.flatMap(BackHandlerEnv, env => env.subscribe(f)),
 }

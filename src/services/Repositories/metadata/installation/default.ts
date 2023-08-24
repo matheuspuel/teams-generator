@@ -1,9 +1,12 @@
-import { D } from 'fp'
+import { D, Layer } from 'fp'
 import { createStorage } from 'src/utils/storage'
-import { Repositories } from '../..'
+import { RepositoryEnvs } from '../..'
 
-export const defaultInstallationRepository: Repositories.metadata.installation =
-  createStorage<{ id: string }, { id: string }>({
-    key: 'telemetry/installation',
-    schema: D.struct({ id: D.string }),
-  })
+export const InstallationRepositoryLive = RepositoryEnvs.metadata.installation
+  .context(
+    createStorage<{ id: string }, { id: string }>({
+      key: 'telemetry/installation',
+      schema: D.struct({ id: D.string }),
+    }),
+  )
+  .pipe(Layer.succeedContext)

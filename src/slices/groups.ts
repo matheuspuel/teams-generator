@@ -2,6 +2,7 @@ import {
   $,
   $f,
   A,
+  D,
   F,
   O,
   Optic,
@@ -18,8 +19,14 @@ import { root } from 'src/model/Optics'
 import { IdGenerator } from 'src/services/IdGenerator'
 import { execute, modifySApp } from 'src/services/StateRef'
 import { Id } from 'src/utils/Entity'
+import { Timestamp } from 'src/utils/datatypes'
 
-export type GroupsState = Record<Id, Group>
+export type GroupsState = { [groupId: Id]: Group }
+const GroupsState_ = D.record(Id.pipe(D.to), Group.Schema)
+export const GroupsState: D.Schema<
+  D.From<typeof GroupsState_>,
+  GroupsState
+> = GroupsState_
 
 export const emptyGroups: GroupsState = {}
 
@@ -53,7 +60,7 @@ const addGroup = (group: Group) => modify(gs => ({ ...gs, [group.id]: group }))
 
 export const createGroup = ({ name }: { name: string }) =>
   $(
-    IdGenerator.generate,
+    IdGenerator.generate(),
     F.flatMap(id => execute(addGroup({ id, name, players: [] }))),
   )
 
@@ -85,16 +92,20 @@ export const createPlayer = ({
   player,
 }: {
   groupId: Id
-  player: Omit<Player, 'active' | 'id'>
+  player: Omit<Player, 'active' | 'id' | 'createdAt'>
 }) =>
   $(
-    IdGenerator.generate,
-    F.flatMap(id => execute(addPlayer({ groupId, player: { ...player, id } }))),
+    F.all({ id: IdGenerator.generate(), time: Timestamp.getNow() }),
+    F.flatMap(({ id, time }) =>
+      execute(
+        addPlayer({ groupId, player: { ...player, id, createdAt: time } }),
+      ),
+    ),
   )
 
 export const editPlayer = (p: {
   groupId: Id
-  player: Omit<Player, 'active'>
+  player: Omit<Player, 'active' | 'createdAt'>
 }) =>
   modify(s =>
     $(
@@ -104,7 +115,9 @@ export const editPlayer = (p: {
         players: $(
           g.players,
           A.map(a =>
-            a.id === p.player.id ? { ...p.player, active: a.active } : a,
+            a.id === p.player.id
+              ? { ...p.player, active: a.active, createdAt: a.createdAt }
+              : a,
           ),
         ),
       })),

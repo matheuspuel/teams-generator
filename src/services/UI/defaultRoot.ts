@@ -1,8 +1,6 @@
-import { R } from 'fp'
 import React from 'react'
 import { UIRoot } from 'src/views'
+import { UIEnv } from '.'
 
-export type DefaultUIRequirements = R.EnvType<typeof UIRoot>
-
-export const DefaultUIRoot = (props: DefaultUIRequirements) =>
+export const DefaultUIRoot = (props: UIEnv) =>
   React.createElement(UIRoot, props)

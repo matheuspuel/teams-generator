@@ -1,7 +1,7 @@
-import { O } from 'fp'
-import { SafeAreaService } from '.'
+import { Layer, O } from 'fp'
+import { SafeAreaServiceEnv } from '.'
 
-export const testingSafeAreaService: SafeAreaService = {
+export const SafeAreaServiceTest = SafeAreaServiceEnv.context({
   initialMetrics: O.some({
     frame: {
       width: 320,
@@ -16,4 +16,4 @@ export const testingSafeAreaService: SafeAreaService = {
       top: 0,
     },
   }),
-}
+}).pipe(Layer.succeedContext)

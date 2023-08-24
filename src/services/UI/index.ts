@@ -1,24 +1,24 @@
 import * as Context from '@effect/data/Context'
 import { Effect } from '@effect/io/Effect'
-import { AppEventHandlerEnv } from 'src/events/handler'
+import { AppEventHandler } from 'src/services/EventHandler'
 import { F } from 'src/utils/fp'
-import { SafeAreaServiceEnv } from '../SafeArea'
-import { AppStateRefEnv } from '../StateRef'
-import { AppThemeEnv } from '../Theme'
+import { SafeAreaService } from '../SafeArea'
+import { AppStateRef } from '../StateRef'
+import { AppTheme } from '../Theme'
 
 export type UI = {
   start: Effect<never, never, void>
 }
 
-export type UIServiceEnv = { ui: UI }
-
-export const UIServiceEnv = Context.Tag<UIServiceEnv>()
+export const UIEnv = Context.Tag<UI>()
 
 export const UI = {
-  start: F.flatMap(UIServiceEnv, env => env.ui.start),
+  start: F.flatMap(UIEnv, env => env.start),
 }
 
-export type UIEnv = AppThemeEnv &
-  AppEventHandlerEnv &
-  SafeAreaServiceEnv &
-  AppStateRefEnv
+export type UIEnv = {
+  Theme: AppTheme
+  SafeArea: SafeAreaService
+  EventHandler: AppEventHandler
+  StateRef: AppStateRef
+}

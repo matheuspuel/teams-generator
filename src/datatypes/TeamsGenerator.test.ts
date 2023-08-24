@@ -5,6 +5,7 @@ import { $, A, Eq, Match, Ord, Rec, SG, Tup, constant, identity } from 'fp'
 import { playersMock } from 'src/mocks/Player'
 import { getCombinationsIndices } from 'src/utils/Combinations'
 import { Id } from 'src/utils/Entity'
+import { Timestamp } from 'src/utils/datatypes'
 import { Player, Position } from '.'
 import { distributeTeams, getFitOrdFromCriteria } from './TeamsGenerator'
 
@@ -121,11 +122,46 @@ describe('Balance teams', () => {
 
   it.skip('should return the optimal solution', () => {
     const playersCounterExample1: Array<Player> = [
-      { active: false, id: Id(''), name: '', rating: 6.5, position: 'M' },
-      { active: false, id: Id(''), name: '', rating: 3.5, position: 'M' },
-      { active: false, id: Id(''), name: '', rating: 2.5, position: 'LE' },
-      { active: false, id: Id(''), name: '', rating: 3, position: 'M' },
-      { active: false, id: Id(''), name: '', rating: 5, position: 'Z' },
+      {
+        active: false,
+        id: Id(''),
+        name: '',
+        rating: 6.5,
+        position: 'M',
+        createdAt: Timestamp.Schema(0),
+      },
+      {
+        active: false,
+        id: Id(''),
+        name: '',
+        rating: 3.5,
+        position: 'M',
+        createdAt: Timestamp.Schema(0),
+      },
+      {
+        active: false,
+        id: Id(''),
+        name: '',
+        rating: 2.5,
+        position: 'LE',
+        createdAt: Timestamp.Schema(0),
+      },
+      {
+        active: false,
+        id: Id(''),
+        name: '',
+        rating: 3,
+        position: 'M',
+        createdAt: Timestamp.Schema(0),
+      },
+      {
+        active: false,
+        id: Id(''),
+        name: '',
+        rating: 5,
+        position: 'Z',
+        createdAt: Timestamp.Schema(0),
+      },
     ]
     fc.assert(
       fc.property(

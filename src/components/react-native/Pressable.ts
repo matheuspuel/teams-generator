@@ -58,7 +58,7 @@ const getRawProps = ({
   children: children,
   onPress:
     props.isEnabled !== false
-      ? () => F.runPromise(env.eventHandler(props.onPress))
+      ? () => F.runPromise(env.EventHandler(props.onPress))
       : undefined,
   rippleColor:
     props.isEnabled !== false

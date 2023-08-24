@@ -53,7 +53,7 @@ const getRawProps = ({
   key: props.key,
   onLayout:
     props.onLayout &&
-    (() => props.onLayout && F.runPromise(env.eventHandler(props.onLayout))),
+    (() => props.onLayout && F.runPromise(env.EventHandler(props.onLayout))),
   style: {
     padding: props?.p,
     paddingHorizontal: props?.px,

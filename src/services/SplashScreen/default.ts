@@ -1,8 +1,8 @@
 import * as SplashScreen_ from 'expo-splash-screen'
-import { $, F } from 'fp'
-import { SplashScreen } from '.'
+import { $, F, Layer } from 'fp'
+import { SplashScreenEnv } from '.'
 
-export const defaultSplashScreen: SplashScreen = {
+export const SplashScreenLive = SplashScreenEnv.context({
   preventAutoHide: $(
     F.tryPromise(() => SplashScreen_.preventAutoHideAsync()),
     F.catchAll(() => F.unit),
@@ -11,4 +11,4 @@ export const defaultSplashScreen: SplashScreen = {
     F.tryPromise(() => SplashScreen_.hideAsync()),
     F.catchAll(() => F.unit),
   ),
-}
+}).pipe(Layer.succeedContext)

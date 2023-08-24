@@ -46,7 +46,7 @@ const getRawProps = ({
     props.onRequestClose &&
     (() =>
       props.onRequestClose &&
-      F.runPromise(env.eventHandler(props.onRequestClose))),
+      F.runPromise(env.EventHandler(props.onRequestClose))),
   style: {
     flex: props?.flex,
   },

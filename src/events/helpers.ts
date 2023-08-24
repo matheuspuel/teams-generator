@@ -116,7 +116,3 @@ export const makeEventHandler = <T extends AnyHandleEventTree>(
 export type EventHandler<E extends Event> = (
   event: E,
 ) => Effect<never, never, void>
-
-export type EventHandlerEnv<E extends Event> = {
-  eventHandler: EventHandler<E>
-}

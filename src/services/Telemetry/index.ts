@@ -17,12 +17,10 @@ export type Telemetry = {
   send: Effect<never, unknown, void>
 }
 
-export type TelemetryEnv = { Telemetry: Telemetry }
-
-export const TelemetryEnv = Context.Tag<TelemetryEnv>()
+export const TelemetryEnv = Context.Tag<Telemetry>()
 
 export const Telemetry = {
   log: (...args: Parameters<Telemetry['log']>) =>
-    F.flatMap(TelemetryEnv, env => env.Telemetry.log(...args)),
-  send: F.flatMap(TelemetryEnv, env => env.Telemetry.send),
+    F.flatMap(TelemetryEnv, env => env.log(...args)),
+  send: F.flatMap(TelemetryEnv, env => env.send),
 }

@@ -19,7 +19,7 @@ const randomExtractElem = <A>(
   as: Array<A>,
 ): Effect<never, never, Option<[A, Array<A>]>> =>
   $(
-    Random.nextIntBetween(0, as.length - 1),
+    Random.nextIntBetween(0, as.length),
     F.map(i => extractElem(i)(as)),
   )
 

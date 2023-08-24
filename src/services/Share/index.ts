@@ -1,5 +1,5 @@
 import * as Context from '@effect/data/Context'
-import { F, Effect } from 'src/utils/fp'
+import { Effect, F } from 'src/utils/fp'
 
 export type ShareService = {
   share: (args: {
@@ -8,12 +8,10 @@ export type ShareService = {
   }) => Effect<never, never, void>
 }
 
-export type ShareServiceEnv = { share: ShareService }
-
-export const ShareServiceEnv = Context.Tag<ShareServiceEnv>()
+export const ShareServiceEnv = Context.Tag<ShareService>()
 
 export const ShareService = {
   // eslint-disable-next-line functional/functional-parameters
   share: (...args: Parameters<ShareService['share']>) =>
-    F.flatMap(ShareServiceEnv, env => env.share.share(...args)),
+    F.flatMap(ShareServiceEnv, env => env.share(...args)),
 }

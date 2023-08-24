@@ -1,32 +1,26 @@
-import { $, $f, Context, F, Effect } from 'fp'
+import { $, F, Layer, pipe } from 'fp'
 import { startApp } from 'src/app'
-import { AppEventHandlerEnv, appEventHandler } from 'src/events/handler'
 import { Event } from 'src/events/helpers'
-import { defaultBackHandler } from 'src/services/BackHandler/default'
-import { defaultSplashScreen } from 'src/services/SplashScreen/default'
-import { defaultStateRef } from 'src/services/StateRef/default'
-import { defaultTheme } from 'src/services/Theme/default'
-import { defaultUI } from 'src/services/UI/default'
-import { AppEvent } from './events'
-import { BackHandlerEnv } from './services/BackHandler'
-import { IdGeneratorEnv } from './services/IdGenerator'
-import { defaultIdGenerator } from './services/IdGenerator/default'
-import { Log, LoggerEnv } from './services/Log'
-import { defaultLogger } from './services/Log/default'
-import { MetadataEnv } from './services/Metadata'
-import { defaultMetadataService } from './services/Metadata/default'
-import { RepositoryEnvs } from './services/Repositories'
-import { defaultGroupOrderRepository } from './services/Repositories/teams/groupOrder/default'
-import { defaultGroupsRepository } from './services/Repositories/teams/groups/default'
-import { defaultParametersRepository } from './services/Repositories/teams/parameters/default'
-import { defaultSafeAreaService } from './services/SafeArea/default'
-import { ShareServiceEnv } from './services/Share'
-import { defaultShareService } from './services/Share/default'
-import { SplashScreenEnv } from './services/SplashScreen'
-import { AppStateRefEnv } from './services/StateRef'
-import { TelemetryEnv } from './services/Telemetry'
-import { defaultTelemetry } from './services/Telemetry/default'
-import { UIServiceEnv } from './services/UI'
+import { BackHandlerLive } from 'src/services/BackHandler/default'
+import { AppEventHandlerEnv } from 'src/services/EventHandler'
+import { SplashScreenLive } from 'src/services/SplashScreen/default'
+import { StateRefLive } from 'src/services/StateRef/default'
+import { UILive } from 'src/services/UI/default'
+import { AppEvent, AppEventHandlerRequirements } from './events'
+import { AsyncStorageLive } from './services/AsyncStorage/live'
+import { AppEventHandlerLive } from './services/EventHandler/default'
+import { IdGeneratorLive } from './services/IdGenerator/default'
+import { Log, Logger } from './services/Log'
+import { LoggerLive } from './services/Log/default'
+import { MetadataServiceLive } from './services/Metadata/default'
+import { GroupOrderRepositoryLive } from './services/Repositories/teams/groupOrder/default'
+import { GroupsRepositoryLive } from './services/Repositories/teams/groups/default'
+import { ParametersRepositoryLive } from './services/Repositories/teams/parameters/default'
+import { LogRepositoryLive } from './services/Repositories/telemetry/log/default'
+import { SafeAreaServiceLive } from './services/SafeArea/default'
+import { ShareServiceLive } from './services/Share/default'
+import { TelemetryLive } from './services/Telemetry/default'
+import { AppThemeLive } from './services/Theme/default'
 
 const logEvent = (event: Event) =>
   $(Log.debug('Event'), l =>
@@ -41,67 +35,48 @@ const logEvent = (event: Event) =>
         ),
   )
 
-const eventHandler = (e: AppEvent) =>
-  $(
-    logEvent(e),
-    F.flatMap(() => appEventHandler(e)),
-  )
+const AppEventHandlerWithLogger = F.map(
+  F.context<Logger | AppEventHandlerRequirements>(),
+  ctx =>
+    AppEventHandlerEnv.context((e: AppEvent) =>
+      $(
+        logEvent(e),
+        F.flatMap(() => AppEventHandlerEnv.pipe(F.flatMap(h => h(e)))),
+        F.provideSomeLayer(AppEventHandlerLive),
+        F.provideContext(ctx),
+      ),
+    ),
+).pipe(Layer.effectContext)
 
-const program = $(
-  startApp,
-  f =>
-    F.flatMap(
-      F.all([AppEventHandlerEnv, AppStateRefEnv]),
-      ([{ eventHandler }, { stateRef }]) =>
-        F.provideService(f, UIServiceEnv, {
-          ui: defaultUI({
-            theme: defaultTheme,
-            safeArea: defaultSafeAreaService,
-            eventHandler,
-            stateRef,
-          }),
-        }),
+const appLayer = pipe(
+  AsyncStorageLive,
+  Layer.provideMerge(
+    Layer.mergeAll(
+      LogRepositoryLive,
+      GroupsRepositoryLive,
+      GroupOrderRepositoryLive,
+      ParametersRepositoryLive,
     ),
-  f =>
-    F.flatMap(
-      F.context<Effect.Context<ReturnType<typeof eventHandler>>>(),
-      env =>
-        F.provideService(f, AppEventHandlerEnv, {
-          eventHandler: $f(eventHandler, F.provideContext(env)),
-        }),
-    ),
-  F.provideContext(
-    Context.mergedContext(
-      AppStateRefEnv,
-      BackHandlerEnv,
-      SplashScreenEnv,
-      IdGeneratorEnv,
-      ShareServiceEnv,
-      LoggerEnv,
-      TelemetryEnv,
-      MetadataEnv,
-      RepositoryEnvs.teams.groupOrder,
-      RepositoryEnvs.teams.groups,
-      RepositoryEnvs.teams.parameters,
-    )({
-      stateRef: defaultStateRef,
-      backHandler: defaultBackHandler,
-      splashScreen: defaultSplashScreen,
-      idGenerator: defaultIdGenerator,
-      share: defaultShareService,
-      logger: defaultLogger,
-      Telemetry: defaultTelemetry,
-      Metadata: defaultMetadataService,
-      Repositories: {
-        teams: {
-          groups: defaultGroupsRepository,
-          groupOrder: defaultGroupOrderRepository,
-          parameters: defaultParametersRepository,
-        },
-      },
-    }),
   ),
+  Layer.provideMerge(
+    Layer.mergeAll(
+      LoggerLive,
+      MetadataServiceLive,
+      TelemetryLive,
+      IdGeneratorLive,
+      StateRefLive,
+      ShareServiceLive,
+      BackHandlerLive,
+      SplashScreenLive,
+      SafeAreaServiceLive,
+      AppThemeLive,
+    ),
+  ),
+  Layer.provideMerge(AppEventHandlerWithLogger),
+  Layer.provideMerge(UILive),
 )
+
+const program = $(startApp, F.provideLayer(appLayer))
 
 // eslint-disable-next-line functional/no-expression-statements
 void F.runPromiseExit(program)
