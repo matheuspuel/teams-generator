@@ -123,6 +123,19 @@ const GroupHeader = memoizedConst('GroupHeader')(
       ]),
       headerRight: Row({ px: 4, gap: 4 })([
         Pressable({
+          onPress: on.export.open(),
+          mr: 4,
+          p: 8,
+          borderless: true,
+          foreground: true,
+        })([
+          MaterialCommunityIcons({
+            name: 'export',
+            color: Colors.text.light,
+            size: 24,
+          }),
+        ]),
+        Pressable({
           onPress: on.sort.open(),
           p: 8,
           borderless: true,

@@ -12,6 +12,7 @@ import {
   constant,
   get,
   identity,
+  pipe,
 } from 'fp'
 import { Group, Player } from 'src/datatypes'
 import { RootState } from 'src/model'
@@ -71,6 +72,12 @@ export const editGroup = (args: { id: Id; name: string }) =>
       Rec.modifyOption(args.id, g => ({ ...g, name: args.name })),
       O.getOrElse(() => s),
     ),
+  )
+
+export const addImportedGroup = (group: Group) =>
+  pipe(
+    IdGenerator.generate(),
+    F.flatMap(id => execute(addGroup({ ...group, id }))),
   )
 
 export const deleteGroup = (args: { id: Id }) => modify(Rec.remove(args.id))

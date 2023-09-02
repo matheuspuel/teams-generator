@@ -54,9 +54,11 @@ module.exports = {
     'functional/prefer-immutable-types': 'off',
     'functional/functional-parameters': [
       'error',
-      { enforceParameterCount: false },
+      { allowRestParameter: true, enforceParameterCount: false },
     ],
     'functional/no-mixed-types': 'off',
     'functional/no-return-void': ['off'],
+    // sometimes it is necessary for using functions before defining them in the same file
+    'functional/prefer-tacit': 'off',
   },
 }

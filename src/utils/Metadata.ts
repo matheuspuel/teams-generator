@@ -13,7 +13,7 @@ export const envName =
     ? envName_
     : envName_ === 'development'
     ? envName_
-    : fatal('Unknown app environment')
+    : fatal('Unknown app environment: ' + String(envName_))
 
 export const matchEnv = <D, PW, S, P>(cases: {
   development: D

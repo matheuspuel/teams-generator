@@ -4,6 +4,7 @@ import {
   Fragment,
   Header,
   Input,
+  MaterialCommunityIcons,
   MaterialIcons,
   Modal,
   Pressable,
@@ -29,6 +30,7 @@ export const Groups = memoized('Groups')(
       modalDeleteGroup: Eq.strict(),
       modalUpsertGroup: Eq.strict(),
     }),
+    groups: Eq.mapInput(Eq.number, (a: GroupsState) => Rec.size(a)),
   }),
   ({
     ui: { modalDeleteGroup, modalUpsertGroup },
@@ -73,13 +75,30 @@ const ScreenHeader = memoizedConst('Header')(
       title: 'Grupos',
       headerStyle: { backgroundColor: Colors.primary.$5 },
       headerTitleStyle: { color: Colors.text.light },
-      headerRight: Pressable({
-        onPress: on.item.upsert.new(),
-        mr: 4,
-        p: 8,
-        borderless: true,
-        foreground: true,
-      })([MaterialIcons({ name: 'add', color: Colors.text.light, size: 24 })]),
+      headerRight: Row({ px: 4, gap: 4 })([
+        Pressable({
+          onPress: on.import.open(),
+          mr: 4,
+          p: 8,
+          borderless: true,
+          foreground: true,
+        })([
+          MaterialCommunityIcons({
+            name: 'import',
+            color: Colors.text.light,
+            size: 24,
+          }),
+        ]),
+        Pressable({
+          onPress: on.item.upsert.new(),
+          mr: 4,
+          p: 8,
+          borderless: true,
+          foreground: true,
+        })([
+          MaterialIcons({ name: 'add', color: Colors.text.light, size: 24 }),
+        ]),
+      ]),
     }),
   ]),
 )

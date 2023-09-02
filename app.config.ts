@@ -60,6 +60,20 @@ const getConfig = (): ExpoConfig => ({
         }) +
         '.png',
     },
+    intentFilters: [
+      {
+        autoVerify: true,
+        action: 'VIEW',
+        data: [{ mimeType: 'application/json' }],
+        category: ['DEFAULT'],
+      },
+      {
+        autoVerify: true,
+        action: 'SEND',
+        data: [{ mimeType: 'application/json' }],
+        category: ['DEFAULT'],
+      },
+    ],
   },
   web: { favicon: './assets/favicon.png' },
   extra: {

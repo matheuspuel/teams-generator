@@ -6,8 +6,10 @@ import { act, create } from 'react-test-renderer'
 import { GroupOrder, Parameters } from 'src/datatypes'
 import { AppEvent, appEvents as on } from 'src/events'
 import { BackHandlerEnv } from 'src/services/BackHandler'
+import { DocumentPickerEnv } from 'src/services/DocumentPicker'
 import { AppEventHandler, AppEventHandlerEnv } from 'src/services/EventHandler'
 import { AppEventHandlerLive } from 'src/services/EventHandler/default'
+import { FileSystemEnv } from 'src/services/FileSystem'
 import { IdGeneratorEnv } from 'src/services/IdGenerator'
 import { MetadataServiceEnv } from 'src/services/Metadata'
 import { RepositoryEnvs } from 'src/services/Repositories'
@@ -42,7 +44,19 @@ const testLayer = pipe(
       exit: F.unit,
       subscribe: () => F.succeed({ unsubscribe: F.unit }),
     }).pipe(Layer.succeedContext),
-    ShareServiceEnv.context({ share: () => F.unit }).pipe(Layer.succeedContext),
+    FileSystemEnv.context({
+      write: () => F.unit,
+      read: () => F.succeed(''),
+      copy: () => F.unit,
+      cacheDirectory: '',
+    }).pipe(Layer.succeedContext),
+    DocumentPickerEnv.context({
+      getDocument: () => F.succeed({ uri: '' }),
+    }).pipe(Layer.succeedContext),
+    ShareServiceEnv.context({
+      shareMessage: () => F.unit,
+      shareFile: () => F.unit,
+    }).pipe(Layer.succeedContext),
     SplashScreenEnv.context({ hide: F.unit, preventAutoHide: F.unit }).pipe(
       Layer.succeedContext,
     ),

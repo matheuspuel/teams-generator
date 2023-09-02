@@ -17,6 +17,7 @@ import {
   some,
 } from 'fp'
 import { Parameters as Parameters_, Player, Rating } from 'src/datatypes'
+import { exportGroup, importGroup } from 'src/export/group'
 import { RootState } from 'src/model'
 import { root } from 'src/model/Optics'
 import { BackHandler } from 'src/services/BackHandler'
@@ -97,6 +98,9 @@ export const appEventsDefinition = defineEvents({
     saveState: (_: void) => saveState,
   },
   groups: {
+    import: {
+      open: (_: void) => importGroup().pipe(F.either),
+    },
     item: {
       open: (id: Id) =>
         $(
@@ -235,6 +239,9 @@ export const appEventsDefinition = defineEvents({
         toggleAll: (_: void) => execute(toggleAllPlayersActive),
       },
     },
+    export: {
+      open: (_: void) => exportGroup().pipe(F.either),
+    },
   },
   player: {
     name: { change: $f(replaceSApp(root.playerForm.name.$), execute) },
@@ -287,7 +294,7 @@ export const appEventsDefinition = defineEvents({
           O.match({
             onNone: () => F.unit,
             onSome: $f(Player.TeamListShowSensitive.show, t =>
-              ShareService.share({ message: t, title: 'Times' }),
+              ShareService.shareMessage({ message: t, title: 'Times' }),
             ),
           }),
         ),

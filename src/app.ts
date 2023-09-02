@@ -7,6 +7,7 @@ import * as StateRef from 'src/services/StateRef'
 import { UI } from 'src/services/UI'
 import { hydrate } from 'src/slices/core/hydration'
 import { milliseconds } from 'src/utils/datatypes/Duration'
+import { setupReceiveURLHandler } from './export/group'
 import { Metadata } from './services/Metadata'
 import { Telemetry } from './services/Telemetry'
 import { Timestamp } from './utils/datatypes'
@@ -48,4 +49,6 @@ export const startApp = $(
       F.catchAll(() => F.unit),
     ),
   ),
+  // TODO run the stream detached
+  F.tap(() => setupReceiveURLHandler()),
 )

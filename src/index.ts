@@ -8,8 +8,11 @@ import { StateRefLive } from 'src/services/StateRef/default'
 import { UILive } from 'src/services/UI/default'
 import { AppEvent, AppEventHandlerRequirements } from './events'
 import { AsyncStorageLive } from './services/AsyncStorage/live'
+import { DocumentPickerLive } from './services/DocumentPicker/default'
 import { AppEventHandlerLive } from './services/EventHandler/default'
+import { FileSystemLive } from './services/FileSystem/default'
 import { IdGeneratorLive } from './services/IdGenerator/default'
+import { LinkingLive } from './services/Linking/default'
 import { Log, Logger } from './services/Log'
 import { LoggerLive } from './services/Log/default'
 import { MetadataServiceLive } from './services/Metadata/default'
@@ -60,6 +63,9 @@ const appLayer = pipe(
   ),
   Layer.provideMerge(
     Layer.mergeAll(
+      FileSystemLive,
+      DocumentPickerLive,
+      LinkingLive,
       LoggerLive,
       MetadataServiceLive,
       TelemetryLive,
