@@ -1,7 +1,7 @@
 import { $f, D, Data, F, O, Option, S, Str, Stream, get, pipe } from 'fp'
 import { Group } from 'src/datatypes'
 import { RootState } from 'src/model'
-import { root } from 'src/model/Optics'
+import { root } from 'src/model/optic'
 import { DocumentPicker } from 'src/services/DocumentPicker'
 import { FileSystem } from 'src/services/FileSystem'
 import { Linking } from 'src/services/Linking'
@@ -12,7 +12,7 @@ import { normalize } from 'src/utils/String'
 
 export const exportGroup = () =>
   pipe(
-    S.gets(get(root.ui.selectedGroupId.$)),
+    S.gets(get(root.at('ui').at('selectedGroupId'))),
     S.chain(
       O.match({
         onNone: () => S.of<RootState, Option<Group>>(O.none()),

@@ -6,7 +6,7 @@ import { SafeAreaProvider } from 'src/components/safe-area/SafeAreaProvider'
 import { Screen } from 'src/components/screens/Screen'
 import { ScreenStack } from 'src/components/screens/ScreenStack'
 import { RootState } from 'src/model'
-import { root } from 'src/model/Optics'
+import { root } from 'src/model/optic'
 import { Colors } from 'src/services/Theme'
 import { getGroupById } from 'src/slices/groups'
 import { GroupView } from 'src/views/Group'
@@ -27,7 +27,7 @@ export const Router = named2('Router')(({ model }: { model: RootState }) =>
                 GroupView(
                   Apply.sequenceS(R.Apply)({
                     group: $(
-                      get(root.ui.selectedGroupId.$),
+                      get(root.at('ui').at('selectedGroupId')),
                       R.chain(
                         O.match({
                           onNone: () => R.of(O.none()),
@@ -35,10 +35,10 @@ export const Router = named2('Router')(({ model }: { model: RootState }) =>
                         }),
                       ),
                     ),
-                    modalSortGroup: get(root.ui.modalSortGroup.$),
-                    modalParameters: get(root.ui.modalParameters.$),
-                    parameters: get(root.parameters.$),
-                    groupOrder: get(root.groupOrder.$),
+                    modalSortGroup: get(root.at('ui').at('modalSortGroup')),
+                    modalParameters: get(root.at('ui').at('modalParameters')),
+                    parameters: get(root.at('parameters')),
+                    groupOrder: get(root.at('groupOrder')),
                   })(model),
                 ),
               ]),
@@ -47,13 +47,13 @@ export const Router = named2('Router')(({ model }: { model: RootState }) =>
                 : route === 'Player'
                 ? [
                     Screen()([
-                      PlayerView({ form: get(root.playerForm.$)(model) }),
+                      PlayerView({ form: get(root.at('playerForm'))(model) }),
                     ]),
                   ]
                 : route === 'Result'
                 ? [
                     Screen()([
-                      ResultView({ result: get(root.result.$)(model) }),
+                      ResultView({ result: get(root.at('result'))(model) }),
                     ]),
                   ]
                 : absurd<never>(route)),

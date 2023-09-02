@@ -19,7 +19,7 @@ import {
 import { Parameters as Parameters_, Player, Rating } from 'src/datatypes'
 import { exportGroup, importGroup } from 'src/export/group'
 import { RootState } from 'src/model'
-import { root } from 'src/model/Optics'
+import { root } from 'src/model/optic'
 import { BackHandler } from 'src/services/BackHandler'
 import { ShareService } from 'src/services/Share'
 import { SplashScreen } from 'src/services/SplashScreen'
@@ -80,7 +80,9 @@ const ignore = noArg(F.unit)
 const wait = (time: Duration): Effect<never, never, void> =>
   F.promise(() => new Promise(res => setTimeout(() => res(), time)))
 
-const closeParametersModal = replaceSApp(root.ui.modalParameters.$)(false)
+const closeParametersModal = replaceSApp(root.at('ui').at('modalParameters'))(
+  false,
+)
 
 export const appEventsDefinition = defineEvents({
   doNothing: ignore,
@@ -94,7 +96,8 @@ export const appEventsDefinition = defineEvents({
   core: {
     preventSplashScreenAutoHide: (_: void) => SplashScreen.preventAutoHide,
     uiMount: (_: void) => SplashScreen.hide,
-    appLoaded: (_: void) => execute(replaceSApp(root.core.loaded.$)(true)),
+    appLoaded: (_: void) =>
+      execute(replaceSApp(root.at('core').at('isLoaded'))(true)),
     saveState: (_: void) => saveState,
   },
   groups: {
@@ -105,7 +108,9 @@ export const appEventsDefinition = defineEvents({
       open: (id: Id) =>
         $(
           navigate('Group'),
-          S.flatMap(() => replaceSApp(root.ui.selectedGroupId.$)(O.some(id))),
+          S.flatMap(() =>
+            replaceSApp(root.at('ui').at('selectedGroupId'))(O.some(id)),
+          ),
           execute,
         ),
       upsert: {
@@ -127,7 +132,7 @@ export const appEventsDefinition = defineEvents({
         form: { name: { change: $f(setUpsertGroupName, execute) } },
         submit: (_: void) =>
           $(
-            getSApp(root.ui.modalUpsertGroup.$),
+            getSApp(root.at('ui').at('modalUpsertGroup')),
             S.map(O.filter(m => $(m.name, not(Str.isEmpty)))),
             execute,
             F.flatMap(
@@ -151,7 +156,7 @@ export const appEventsDefinition = defineEvents({
         close: (_: void) => execute(setDeleteGroupModal(none())),
         submit: (_: void) =>
           $(
-            S.gets(Optic.get(root.ui.modalDeleteGroup.$)),
+            S.gets(Optic.get(root.at('ui').at('modalDeleteGroup'))),
             S.flatMap(
               O.match({
                 onNone: () => S.of<RootState, void>(undefined),
@@ -167,9 +172,9 @@ export const appEventsDefinition = defineEvents({
   group: {
     sort: {
       open: (_: void) =>
-        execute(replaceSApp(root.ui.modalSortGroup.$)(O.some(null))),
+        execute(replaceSApp(root.at('ui').at('modalSortGroup'))(O.some(null))),
       close: (_: void) =>
-        execute(replaceSApp(root.ui.modalSortGroup.$)(O.none())),
+        execute(replaceSApp(root.at('ui').at('modalSortGroup'))(O.none())),
       by: {
         name: (_: void) => $(onSelectGroupOrder('name'), execute),
         position: (_: void) => $(onSelectGroupOrder('position'), execute),
@@ -179,13 +184,14 @@ export const appEventsDefinition = defineEvents({
       },
     },
     parameters: {
-      open: (_: void) => execute(replaceSApp(root.ui.modalParameters.$)(true)),
+      open: (_: void) =>
+        execute(replaceSApp(root.at('ui').at('modalParameters'))(true)),
       close: (_: void) => execute(closeParametersModal),
       teamsCount: {
         decrement: (_: void) => execute(decrementTeamsCount),
         increment: (_: void) => execute(incrementTeamsCount),
         toggleType: (_: void) =>
-          $(modifySApp(root.parameters.$)(Parameters_.toggleType), execute),
+          $(modifySApp(root.at('parameters'))(Parameters_.toggleType), execute),
       },
       position: { toggle: (_: void) => execute(togglePosition) },
       rating: { toggle: (_: void) => execute(toggleRating) },
@@ -206,8 +212,8 @@ export const appEventsDefinition = defineEvents({
           navigate('Player'),
           S.flatMap(() =>
             $(
-              replaceSApp(root.ui.selectedPlayerId.$)(O.none()),
-              S.apFirst(replaceSApp(root.playerForm.$)(blankPlayerForm)),
+              replaceSApp(root.at('ui').at('selectedPlayerId'))(O.none()),
+              S.apFirst(replaceSApp(root.at('playerForm'))(blankPlayerForm)),
             ),
           ),
           execute,
@@ -223,9 +229,11 @@ export const appEventsDefinition = defineEvents({
                   onNone: () => S.of<RootState, void>(undefined),
                   onSome: $f(
                     getPlayerFormFromData,
-                    replaceSApp(root.playerForm.$),
+                    replaceSApp(root.at('playerForm')),
                     S.apFirst(
-                      replaceSApp(root.ui.selectedPlayerId.$)(O.some(playerId)),
+                      replaceSApp(root.at('ui').at('selectedPlayerId'))(
+                        O.some(playerId),
+                      ),
                     ),
                   ),
                 }),
@@ -244,14 +252,18 @@ export const appEventsDefinition = defineEvents({
     },
   },
   player: {
-    name: { change: $f(replaceSApp(root.playerForm.name.$), execute) },
-    position: { change: $f(replaceSApp(root.playerForm.position.$), execute) },
+    name: {
+      change: $f(replaceSApp(root.at('playerForm').at('name')), execute),
+    },
+    position: {
+      change: $f(replaceSApp(root.at('playerForm').at('position')), execute),
+    },
     rating: {
       change: $f(
         (v: number) => Math.round(v * 20) / 2,
         D.parseOption(Rating.Schema),
         v => v,
-        O.map($f(replaceSApp(root.playerForm.rating.$), execute)),
+        O.map($f(replaceSApp(root.at('playerForm').at('rating')), execute)),
         O.getOrElse(() => F.unit),
       ),
     },
@@ -260,11 +272,14 @@ export const appEventsDefinition = defineEvents({
       $(
         Apply.sequenceS(S.Apply)({
           form: $(
-            S.gets(get(root.playerForm.$)),
+            S.gets(get(root.at('playerForm'))),
             S.map(f => $(f, O.liftPredicate(not(() => Str.isEmpty(f.name))))),
           ),
-          groupId: S.gets(get(root.ui.selectedGroupId.$)),
-          playerId: $(S.gets(get(root.ui.selectedPlayerId.$)), S.map(O.some)),
+          groupId: S.gets(get(root.at('ui').at('selectedGroupId'))),
+          playerId: $(
+            S.gets(get(root.at('ui').at('selectedPlayerId'))),
+            S.map(O.some),
+          ),
         }),
         S.map(O.all),
         execute,
@@ -289,7 +304,7 @@ export const appEventsDefinition = defineEvents({
   result: {
     share: (_: void) =>
       $(
-        execute(S.gets(get(root.result.$))),
+        execute(S.gets(get(root.at('result')))),
         F.flatMap(
           O.match({
             onNone: () => F.unit,

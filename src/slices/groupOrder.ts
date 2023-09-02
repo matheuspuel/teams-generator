@@ -1,7 +1,7 @@
 import { $, $f, O, S } from 'fp'
 import { GroupOrder } from 'src/datatypes'
 import { GroupOrderType } from 'src/datatypes/GroupOrder'
-import { root } from 'src/model/Optics'
+import { root } from 'src/model/optic'
 import { modifySApp, replaceSApp } from 'src/services/StateRef'
 import { A } from 'src/utils/fp'
 
@@ -21,6 +21,6 @@ const selectGroupOrder =
 
 export const onSelectGroupOrder = $f(
   selectGroupOrder,
-  modifySApp(root.groupOrder.$),
-  S.apFirst(replaceSApp(root.ui.modalSortGroup.$)(O.none())),
+  modifySApp(root.at('groupOrder')),
+  S.apFirst(replaceSApp(root.at('ui').at('modalSortGroup'))(O.none())),
 )

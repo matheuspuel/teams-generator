@@ -1,16 +1,16 @@
 import { get } from '@fp-ts/optic'
 import { $, $f, F, S } from 'fp'
 import { GroupOrder, Parameters } from 'src/datatypes'
-import { root } from 'src/model/Optics'
+import { root } from 'src/model/optic'
 import { Repository } from 'src/services/Repositories'
 import { execute, getRootState, replaceSApp } from 'src/services/StateRef'
 import { emptyGroups } from '../groups'
 
 export const saveState = $(
   execute(getRootState),
-  F.tap($f(get(root.groups.$), Repository.teams.groups.set)),
-  F.tap($f(get(root.parameters.$), Repository.teams.parameters.set)),
-  F.tap($f(get(root.groupOrder.$), Repository.teams.groupOrder.set)),
+  F.tap($f(get(root.at('groups')), Repository.teams.groups.set)),
+  F.tap($f(get(root.at('parameters')), Repository.teams.parameters.set)),
+  F.tap($f(get(root.at('groupOrder')), Repository.teams.groupOrder.set)),
   F.catchAll(() => F.unit),
 )
 
@@ -36,9 +36,9 @@ export const hydrate = $(
   ),
   F.tap(p =>
     $(
-      replaceSApp(root.groups.$)(p.groups),
-      S.apFirst(replaceSApp(root.parameters.$)(p.parameters)),
-      S.apFirst(replaceSApp(root.groupOrder.$)(p.groupOrder)),
+      replaceSApp(root.at('groups'))(p.groups),
+      S.apFirst(replaceSApp(root.at('parameters'))(p.parameters)),
+      S.apFirst(replaceSApp(root.at('groupOrder'))(p.groupOrder)),
       execute,
     ),
   ),

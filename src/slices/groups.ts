@@ -16,7 +16,7 @@ import {
 } from 'fp'
 import { Group, Player } from 'src/datatypes'
 import { RootState } from 'src/model'
-import { root } from 'src/model/Optics'
+import { root } from 'src/model/optic'
 import { IdGenerator } from 'src/services/IdGenerator'
 import { execute, modifySApp } from 'src/services/StateRef'
 import { Id } from 'src/utils/Entity'
@@ -31,9 +31,9 @@ export const GroupsState: D.Schema<
 
 export const emptyGroups: GroupsState = {}
 
-const modify = modifySApp(root.groups.$)
+const modify = modifySApp(root.at('groups'))
 
-export const getGroupsRecord = Optic.get(root.groups.$)
+export const getGroupsRecord = Optic.get(root.at('groups'))
 
 export const getGroupById = (id: Id) => $f(getGroupsRecord, Rec.get(id))
 
@@ -48,7 +48,7 @@ const getPlayer = (args: { groupId: Id; id: Id }) =>
 
 export const getPlayerFromActiveGroup = (args: { playerId: Id }) =>
   $(
-    S.gets(get(root.ui.selectedGroupId.$)),
+    S.gets(get(root.at('ui').at('selectedGroupId'))),
     S.chain(
       O.match({
         onNone: () => S.of<RootState, Option<Player>>(O.none()),
@@ -139,7 +139,7 @@ export const deleteCurrentPlayer = S.modify((s: RootState) =>
       playerId: s.ui.selectedPlayerId,
     }),
     O.map(({ groupId, playerId }) =>
-      Optic.modify(root.groups.id(groupId).players.$)(
+      Optic.modify(root.at('groups').key(groupId).at('players'))(
         A.filter(p => p.id !== playerId),
       )(s),
     ),
@@ -149,14 +149,19 @@ export const deleteCurrentPlayer = S.modify((s: RootState) =>
 
 export const togglePlayerActive = ({ playerId }: { playerId: Id }) =>
   $(
-    S.gets(get(root.ui.selectedGroupId.$)),
+    S.gets(get(root.at('ui').at('selectedGroupId'))),
     S.chain(
       O.match({
         onNone: () => S.modify<RootState>(identity),
         onSome: groupId =>
-          modifySApp(root.groups.id(groupId).players.id(playerId).active.$)(
-            a => !a,
-          ),
+          modifySApp(
+            root
+              .at('groups')
+              .key(groupId)
+              .at('players')
+              .compose(Optic.findFirst(p => p.id === playerId))
+              .at('active'),
+          )(a => !a),
       }),
     ),
   )
@@ -176,7 +181,7 @@ export const toggleAllPlayersActive = S.modify((s: RootState) =>
               g.players,
               A.map(p => ({ ...p, active: !allActive })),
             ),
-          Optic.replace(root.groups.id(g.id).players.$),
+          Optic.replace(root.at('groups').key(g.id).at('players')),
           f => f(s),
         ),
     }),
