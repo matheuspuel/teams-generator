@@ -1,12 +1,12 @@
 /* eslint-disable functional/immutable-data */
 /* eslint-disable functional/no-expression-statements */
 /* eslint-disable functional/no-conditional-statements */
-import { $, Eq, F, O, Option, S } from 'fp'
+import * as Fiber from '@effect/io/Fiber'
+import { Eq, F, O, Option, S, Stream, pipe } from 'fp'
 import React from 'react'
 import { RootState } from 'src/model'
-import { execute, subscribe } from '.'
+import { AppStateRefEnv, changes, execute, getRootState } from '.'
 import { UIEnv } from '../UI'
-import { StateRefLive } from './default'
 
 export const useSelector = <A>({
   selector,
@@ -24,7 +24,7 @@ export const useSelector = <A>({
   let returnValue: A
   if (O.isNone(ref.current)) {
     returnValue = execute(S.gets(selector)).pipe(
-      F.provideLayer(StateRefLive),
+      F.provideService(AppStateRefEnv, env.StateRef),
       F.runSync,
     )
     ref.current = O.some({ state: returnValue, lastSentState: returnValue })
@@ -32,30 +32,36 @@ export const useSelector = <A>({
     returnValue = ref.current.value.lastSentState
   }
   React.useEffect(() => {
-    const subscription = $(
-      execute(S.gets(selector)),
-      F.flatMap(s =>
-        F.sync(() => {
-          if (
-            O.isSome(ref.current) &&
-            Eq.equals(eq)(s)(ref.current.value.lastSentState)
-          ) {
-            ref.current = O.some({
-              state: s,
-              lastSentState: ref.current.value.lastSentState,
-            })
-          } else {
-            ref.current = O.some({ state: s, lastSentState: s })
-            refresh()
-          }
-        }),
+    const fiber = pipe(
+      changes,
+      Stream.changes,
+      Stream.flatMap(() =>
+        pipe(
+          execute(getRootState),
+          F.map(selector),
+          F.flatMap(s =>
+            F.sync(() => {
+              if (
+                O.isSome(ref.current) &&
+                Eq.equals(eq)(s)(ref.current.value.lastSentState)
+              ) {
+                ref.current = O.some({
+                  state: s,
+                  lastSentState: ref.current.value.lastSentState,
+                })
+              } else {
+                ref.current = O.some({ state: s, lastSentState: s })
+                refresh()
+              }
+            }),
+          ),
+        ),
       ),
-      F.provideLayer(StateRefLive),
-      subscribe,
-      F.provideLayer(StateRefLive),
-      F.runSync,
+      Stream.runDrain,
+      F.provideService(AppStateRefEnv, env.StateRef),
+      F.runFork,
     )
-    return () => F.runSync(subscription.unsubscribe)
+    return () => void F.runPromiseExit(Fiber.interrupt(fiber))
   }, [selector, env, eq])
   return returnValue
 }

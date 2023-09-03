@@ -23,8 +23,7 @@ import { TelemetryEnv } from 'src/services/Telemetry'
 import { AppThemeEnv } from 'src/services/Theme'
 import { AppThemeLive } from 'src/services/Theme/default'
 import { Id } from 'src/utils/Entity'
-import { Ref } from 'src/utils/datatypes'
-import { $, Clock, F, Layer, Num, pipe } from 'src/utils/fp'
+import { $, Clock, F, Layer, Num, Ref, pipe } from 'src/utils/fp'
 import { UIRoot } from '.'
 
 const testLayer = pipe(
@@ -63,12 +62,12 @@ const testLayer = pipe(
     }).pipe(Layer.succeedContext),
     IdGeneratorEnv.context({
       generate: $(
-        Ref.create(0),
+        Ref.make(0).pipe(F.runSync),
         ref => () =>
           $(
-            ref.getState,
+            Ref.get(ref),
             F.map(Num.increment),
-            F.tap(ref.setState),
+            F.tap(v => Ref.set(ref, v)),
             F.map(n => Id(n.toString())),
           ),
       ),

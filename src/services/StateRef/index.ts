@@ -1,24 +1,20 @@
 import * as Context from '@effect/data/Context'
-import { Effect, F, Optic, S } from 'fp'
+import { Effect, F, Optic, S, Stream, SubscriptionRef } from 'fp'
 import { RootState } from 'src/model'
-import { StateRef } from 'src/utils/datatypes'
 
-export type AppStateRef = StateRef<RootState>
+export type AppStateRef = SubscriptionRef.SubscriptionRef<RootState>
 
 export const AppStateRefEnv = Context.Tag<AppStateRef>()
 
-export const subscribe: (
-  effect: Effect<never, never, void>,
-) => Effect<
-  AppStateRef,
-  never,
-  { unsubscribe: Effect<never, never, void> }
-> = f => F.flatMap(AppStateRefEnv, env => env.subscribe(f))
+export const changes: Stream.Stream<AppStateRef, never, void> = Stream.flatMap(
+  AppStateRefEnv,
+  env => env.changes,
+)
 
 export const execute = <A>(
   f: S.State<RootState, A>,
 ): Effect<AppStateRef, never, A> =>
-  F.flatMap(AppStateRefEnv, env => env.execute(f))
+  F.flatMap(AppStateRefEnv, env => SubscriptionRef.modify(env, f))
 
 export const getRootState = S.get<RootState>()
 

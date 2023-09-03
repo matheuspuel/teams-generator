@@ -57,7 +57,7 @@ export const setupReceiveURLHandler = () =>
     Stream.catchAll(() => Stream.empty),
     Stream.concat(Linking.startLinkingStream()),
     Stream.map(url => ({ url })),
-    Stream.runForEach(handleURL),
+    Stream.tap(handleURL),
   )
 
 const handleURL = (args: { url: string }) =>
@@ -75,9 +75,7 @@ const handleURL = (args: { url: string }) =>
             pipe(
               D.parse(anyVersionSchema)(data),
               F.flatMap(d =>
-                F.fail(
-                  d.version > currentVersion ? NewerVersionError() : F.fail(e),
-                ),
+                F.fail(d.version > currentVersion ? NewerVersionError() : e),
               ),
             ),
         }),

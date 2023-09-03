@@ -1,12 +1,10 @@
-import { $, Effect, F } from 'fp'
-import throttle from 'lodash.throttle'
+import { $, Duration, Effect, F, Stream, pipe } from 'fp'
 import { appEvents } from 'src/events'
 import { BackHandler } from 'src/services/BackHandler'
-import { AppEventHandler, AppEventHandlerEnv } from 'src/services/EventHandler'
+import { AppEventHandler } from 'src/services/EventHandler'
 import * as StateRef from 'src/services/StateRef'
 import { UI } from 'src/services/UI'
 import { hydrate } from 'src/slices/core/hydration'
-import { milliseconds } from 'src/utils/datatypes/Duration'
 import { setupReceiveURLHandler } from './export/group'
 import { Metadata } from './services/Metadata'
 import { Telemetry } from './services/Telemetry'
@@ -28,14 +26,13 @@ export const startApp = $(
   ),
   F.flatMap(() => hydrate),
   F.tap(() =>
-    F.flatMap(AppEventHandlerEnv, env =>
-      StateRef.subscribe(
-        $(
-          AppEventHandler.handle(on.saveState()),
-          F.provideService(AppEventHandlerEnv, env),
-          f => F.sync(throttle(() => F.runPromise(f), $(1000, milliseconds))),
-        ),
-      ),
+    pipe(
+      StateRef.changes,
+      Stream.debounce(Duration.decode('1000 millis')),
+      Stream.changes,
+      Stream.flatMap(() => AppEventHandler.handle(on.saveState())),
+      Stream.runDrain,
+      F.fork,
     ),
   ),
   F.tap(() => AppEventHandler.handle(on.appLoaded())),
@@ -49,6 +46,5 @@ export const startApp = $(
       F.catchAll(() => F.unit),
     ),
   ),
-  // TODO run the stream detached
-  F.tap(() => setupReceiveURLHandler()),
+  F.tap(() => setupReceiveURLHandler().pipe(Stream.runDrain)),
 )
