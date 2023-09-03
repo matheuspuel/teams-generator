@@ -4,7 +4,6 @@ import {
   $f,
   Apply,
   D,
-  Effect,
   F,
   O,
   Optic,
@@ -58,7 +57,6 @@ import {
   setUpsertGroupName,
 } from 'src/slices/ui'
 import { Id } from 'src/utils/Entity'
-import { Duration } from 'src/utils/datatypes'
 import {
   AnyHandleEventTree,
   EventFromTree,
@@ -76,9 +74,6 @@ const defineEvents: <T extends AnyHandleEventTree>(tree: T) => T = identity
 
 const noArg: <A>(a: A) => (_: void) => A = constant
 const ignore = noArg(F.unit)
-
-const wait = (time: Duration): Effect<never, never, void> =>
-  F.promise(() => new Promise(res => setTimeout(() => res(), time)))
 
 const closeParametersModal = replaceSApp(root.at('ui').at('modalParameters'))(
   false,
@@ -202,7 +197,7 @@ export const appEventsDefinition = defineEvents({
           S.flatMap(() => navigate('Result')),
           S.flatMap(() => closeParametersModal),
           execute,
-          F.tap(() => wait(0)),
+          F.tap(() => F.sleep(0)),
           F.flatMap(() => generateResult),
         ),
     },
