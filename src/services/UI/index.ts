@@ -7,14 +7,12 @@ import { AppStateRef } from '../StateRef'
 import { AppTheme } from '../Theme'
 
 export type UI = {
-  start: Effect<never, never, void>
+  start: () => Effect<never, never, void>
 }
 
 export const UIEnv = Context.Tag<UI>()
 
-export const UI = {
-  start: F.flatMap(UIEnv, env => env.start),
-}
+export const UI = F.serviceFunctions(UIEnv)
 
 export type UIEnv = {
   Theme: AppTheme

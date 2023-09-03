@@ -1,4 +1,4 @@
-import { $, A, O, apply } from 'fp'
+import { $, A, F, O, apply, pipe } from 'fp'
 import React from 'react'
 import { SafeAreaProvider as RawSafeAreaProvider_ } from 'react-native-safe-area-context'
 import {
@@ -7,7 +7,7 @@ import {
   UIColor,
   UIElement,
 } from 'src/components/types'
-import { SafeAreaService } from 'src/services/SafeArea'
+import { SafeAreaService, SafeAreaServiceEnv } from 'src/services/SafeArea'
 import { UIEnv } from 'src/services/UI'
 import { Color } from 'src/utils/datatypes'
 
@@ -30,8 +30,11 @@ const getRawProps = ({
   key?: string
 } => ({
   children: children,
-  initialMetrics: O.getOrUndefined(
-    SafeAreaService.initialMetrics(env.SafeArea),
+  initialMetrics: pipe(
+    SafeAreaService.initialMetrics(),
+    F.map(O.getOrUndefined),
+    F.provideService(SafeAreaServiceEnv, env.SafeArea),
+    F.runSync,
   ),
   style: {
     backgroundColor: props?.bg ? Color.toHex(props.bg(env)) : undefined,

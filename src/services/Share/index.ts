@@ -15,9 +15,4 @@ export type ShareService = {
 
 export const ShareServiceEnv = Context.Tag<ShareService>()
 
-export const ShareService = {
-  shareMessage: (...args: Parameters<ShareService['shareMessage']>) =>
-    F.flatMap(ShareServiceEnv, env => env.shareMessage(...args)),
-  shareFile: (...args: Parameters<ShareService['shareFile']>) =>
-    F.flatMap(ShareServiceEnv, env => env.shareFile(...args)),
-}
+export const ShareService = F.serviceFunctions(ShareServiceEnv)

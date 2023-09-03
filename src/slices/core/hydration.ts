@@ -18,19 +18,19 @@ export const hydrate = $(
   F.Do,
   F.bind('groups', () =>
     $(
-      Repository.teams.groups.get,
+      Repository.teams.groups.get(),
       F.catchAll(() => F.succeed(emptyGroups)),
     ),
   ),
   F.bind('parameters', () =>
     $(
-      Repository.teams.parameters.get,
+      Repository.teams.parameters.get(),
       F.catchAll(() => F.succeed(Parameters.initial)),
     ),
   ),
   F.bind('groupOrder', () =>
     $(
-      Repository.teams.groupOrder.get,
+      Repository.teams.groupOrder.get(),
       F.catchAll(() => F.succeed(GroupOrder.initial)),
     ),
   ),

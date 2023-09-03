@@ -3,7 +3,7 @@ import { Effect } from '@effect/io/Effect'
 import { F } from 'src/utils/fp'
 
 export type BackHandler = {
-  exit: Effect<never, never, void>
+  exit: () => Effect<never, never, void>
   subscribe: (
     f: Effect<never, never, void>,
   ) => Effect<never, never, { unsubscribe: Effect<never, never, void> }>
@@ -11,8 +11,4 @@ export type BackHandler = {
 
 export const BackHandlerEnv = Context.Tag<BackHandler>()
 
-export const BackHandler = {
-  exit: F.flatMap(BackHandlerEnv, env => env.exit),
-  subscribe: (f: Effect<never, never, void>) =>
-    F.flatMap(BackHandlerEnv, env => env.subscribe(f)),
-}
+export const BackHandler = F.serviceFunctions(BackHandlerEnv)

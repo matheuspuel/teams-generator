@@ -1,4 +1,4 @@
-import { $, F, Layer, pipe } from 'fp'
+import { $, F, Layer, LogLevel, Logger, pipe } from 'fp'
 import { startApp } from 'src/app'
 import { Event } from 'src/events/helpers'
 import { BackHandlerLive } from 'src/services/BackHandler/default'
@@ -13,8 +13,6 @@ import { AppEventHandlerLive } from './services/EventHandler/default'
 import { FileSystemLive } from './services/FileSystem/default'
 import { IdGeneratorLive } from './services/IdGenerator/default'
 import { LinkingLive } from './services/Linking/default'
-import { Log, Logger } from './services/Log'
-import { LoggerLive } from './services/Log/default'
 import { MetadataServiceLive } from './services/Metadata/default'
 import { GroupOrderRepositoryLive } from './services/Repositories/teams/groupOrder/default'
 import { GroupsRepositoryLive } from './services/Repositories/teams/groups/default'
@@ -24,35 +22,43 @@ import { SafeAreaServiceLive } from './services/SafeArea/default'
 import { ShareServiceLive } from './services/Share/default'
 import { TelemetryLive } from './services/Telemetry/default'
 import { AppThemeLive } from './services/Theme/default'
+import { envName } from './utils/Metadata'
+
+const minimumLogLevel =
+  envName === 'development' ? LogLevel.Debug : LogLevel.Info
 
 const logEvent = (event: Event) =>
-  $(Log.debug('Event'), l =>
-    event.event.payload === undefined
-      ? l(event.event._tag)(null)
-      : event.event.payload === null
-      ? l(event.event._tag + ': null')(null)
-      : typeof event.event.payload === 'object'
-      ? l(event.event._tag)(event.event.payload)
-      : l(event.event._tag + (': ' + JSON.stringify(event.event.payload)))(
-          null,
-        ),
+  $(
+    F.logDebug,
+    l =>
+      event.event.payload === undefined
+        ? l(event.event._tag)
+        : event.event.payload === null
+        ? l(event.event._tag + ': null')
+        : typeof event.event.payload === 'object'
+        ? l(event.event._tag + (': ' + JSON.stringify(event.event.payload)))
+        : l(event.event._tag + (': ' + JSON.stringify(event.event.payload))),
+    F.withLogSpan('Event'),
   )
 
 const AppEventHandlerWithLogger = F.map(
-  F.context<Logger | AppEventHandlerRequirements>(),
+  F.context<AppEventHandlerRequirements>(),
   ctx =>
-    AppEventHandlerEnv.context((e: AppEvent) =>
-      $(
-        logEvent(e),
-        F.flatMap(() => AppEventHandlerEnv.pipe(F.flatMap(h => h(e)))),
-        F.provideSomeLayer(AppEventHandlerLive),
-        F.provideContext(ctx),
-      ),
-    ),
+    AppEventHandlerEnv.context({
+      handle: (e: AppEvent) =>
+        $(
+          logEvent(e),
+          F.flatMap(() => AppEventHandlerEnv.pipe(F.flatMap(h => h.handle(e)))),
+          F.provideSomeLayer(AppEventHandlerLive),
+          F.provideContext(ctx),
+          Logger.withMinimumLogLevel(minimumLogLevel),
+        ),
+    }),
 ).pipe(Layer.effectContext)
 
 const appLayer = pipe(
-  AsyncStorageLive,
+  Logger.minimumLogLevel(minimumLogLevel),
+  Layer.provideMerge(AsyncStorageLive),
   Layer.provideMerge(
     Layer.mergeAll(
       LogRepositoryLive,
@@ -66,7 +72,6 @@ const appLayer = pipe(
       FileSystemLive,
       DocumentPickerLive,
       LinkingLive,
-      LoggerLive,
       MetadataServiceLive,
       TelemetryLive,
       IdGeneratorLive,

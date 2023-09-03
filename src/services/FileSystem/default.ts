@@ -11,7 +11,7 @@ export const FileSystemLive = FileSystemEnv.context({
       F.tap(() => write(args)),
     ),
   copy: args => copy(args),
-  cacheDirectory: ExpoFileSystem.cacheDirectory ?? '',
+  cacheDirectory: () => F.succeed(ExpoFileSystem.cacheDirectory ?? ''),
 }).pipe(Layer.succeedContext)
 
 const read = (args: { uri: string }) =>

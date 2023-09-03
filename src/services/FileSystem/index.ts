@@ -10,21 +10,13 @@ export type FileSystem = {
   copy: (args: {
     from: string
     to: string
-  }) => F.Effect<never, FileSystemError, void>
-  cacheDirectory: string
+  }) => Effect<never, FileSystemError, void>
+  cacheDirectory: () => Effect<never, never, string>
 }
 
 export const FileSystemEnv = Context.Tag<FileSystem>()
 
-export const FileSystem = {
-  read: (...args: Parameters<FileSystem['read']>) =>
-    F.flatMap(FileSystemEnv, env => env.read(...args)),
-  write: (...args: Parameters<FileSystem['write']>) =>
-    F.flatMap(FileSystemEnv, env => env.write(...args)),
-  copy: (...args: Parameters<FileSystem['copy']>) =>
-    F.flatMap(FileSystemEnv, env => env.copy(...args)),
-  cacheDirectory: F.map(FileSystemEnv, env => env.cacheDirectory),
-}
+export const FileSystem = F.serviceFunctions(FileSystemEnv)
 
 export interface FileSystemError extends Data.Case {
   _tag: 'FileSystemError'

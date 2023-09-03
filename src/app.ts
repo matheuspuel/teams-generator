@@ -17,7 +17,7 @@ export type AppEnv = Effect.Context<typeof startApp>
 const on = appEvents.core
 
 export const startApp = $(
-  UI.start,
+  UI.start(),
   F.flatMap(() => AppEventHandler.handle(on.preventSplashScreenAutoHide())),
   F.flatMap(() =>
     F.flatMap(F.context<AppEventHandler>(), ctx =>
@@ -41,11 +41,11 @@ export const startApp = $(
   F.tap(() => AppEventHandler.handle(on.appLoaded())),
   F.tap(() =>
     $(
-      F.all([Metadata.get, Timestamp.getNow()]),
+      F.all([Metadata.get(), Timestamp.getNow()]),
       F.flatMap(([m, t]) =>
         Telemetry.log([{ timestamp: t, event: 'start', data: m }]),
       ),
-      F.flatMap(() => Telemetry.send),
+      F.flatMap(() => Telemetry.send()),
       F.catchAll(() => F.unit),
     ),
   ),

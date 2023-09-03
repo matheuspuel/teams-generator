@@ -90,12 +90,12 @@ export const appEventsDefinition = defineEvents({
     $(
       execute(goBack),
       F.tap(({ shouldBubbleUpEvent }) =>
-        shouldBubbleUpEvent ? BackHandler.exit : F.unit,
+        shouldBubbleUpEvent ? BackHandler.exit() : F.unit,
       ),
     ),
   core: {
-    preventSplashScreenAutoHide: (_: void) => SplashScreen.preventAutoHide,
-    uiMount: (_: void) => SplashScreen.hide,
+    preventSplashScreenAutoHide: (_: void) => SplashScreen.preventAutoHide(),
+    uiMount: (_: void) => SplashScreen.hide(),
     appLoaded: (_: void) =>
       execute(replaceSApp(root.at('core').at('isLoaded'))(true)),
     saveState: (_: void) => saveState,

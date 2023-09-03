@@ -9,6 +9,4 @@ export type IdGenerator = {
 
 export const IdGeneratorEnv = Context.Tag<IdGenerator>()
 
-export const IdGenerator = {
-  generate: () => F.flatMap(IdGeneratorEnv, env => env.generate()),
-}
+export const IdGenerator = F.serviceFunctions(IdGeneratorEnv)

@@ -8,7 +8,7 @@ export const AsyncStorageLive = AsyncStorageEnv.context({
       F.tryPromise(() => RNAsyncStorage.getItem(key)),
       F.map(O.fromNullable),
     ),
-  setItem: key => value =>
+  setItem: ({ key, value }) =>
     F.tryPromise(() => RNAsyncStorage.setItem(key, value)),
   removeItem: key => F.tryPromise(() => RNAsyncStorage.removeItem(key)),
 }).pipe(Layer.succeedContext)

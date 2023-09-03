@@ -117,13 +117,13 @@ const anyVersionSchema = D.struct({
 })
 
 const temporaryImportUri = F.map(
-  FileSystem.cacheDirectory,
+  FileSystem.cacheDirectory(),
   cacheDir => cacheDir + '/import2.json',
 )
 
 const makeFileUri = (group: Group) =>
   F.map(
-    FileSystem.cacheDirectory,
+    FileSystem.cacheDirectory(),
     cacheDir =>
       cacheDir + '/export/' + toUri(group.name) + '.sorteio-times.json',
   )

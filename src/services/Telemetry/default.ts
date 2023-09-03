@@ -16,18 +16,19 @@ export const TelemetryLive = F.map(
   ctx =>
     TelemetryEnv.context({
       log: $f(Repository.telemetry.log.concat, F.provideContext(ctx)),
-      send: $(
-        Repository.telemetry.log.get,
-        F.flatMap(logs =>
-          Fetch.json({
-            method: 'POST',
-            url: telemetryServerUrl + '/api/v1/sorteio-times/logs',
-            headers: {},
-            body: logs,
-          }),
+      send: () =>
+        $(
+          Repository.telemetry.log.get(),
+          F.flatMap(logs =>
+            Fetch.json({
+              method: 'POST',
+              url: telemetryServerUrl + '/api/v1/sorteio-times/logs',
+              headers: {},
+              body: logs,
+            }),
+          ),
+          F.flatMap(() => Repository.telemetry.log.clear()),
+          F.provideContext(ctx),
         ),
-        F.flatMap(() => Repository.telemetry.log.clear),
-        F.provideContext(ctx),
-      ),
     }),
 ).pipe(Layer.effectContext)

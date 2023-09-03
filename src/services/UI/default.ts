@@ -20,6 +20,6 @@ export const UILive = F.map(
   }),
   env =>
     UIEnv.context({
-      start: startReactNativeUI(DefaultUIRoot(env)),
+      start: () => startReactNativeUI(DefaultUIRoot(env)),
     }),
 ).pipe(Layer.effectContext)

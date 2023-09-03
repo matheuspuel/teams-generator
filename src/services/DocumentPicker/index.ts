@@ -14,10 +14,7 @@ export type DocumentPicker = {
 
 export const DocumentPickerEnv = Context.Tag<DocumentPicker>()
 
-export const DocumentPicker = {
-  getDocument: (...args: Parameters<DocumentPicker['getDocument']>) =>
-    F.flatMap(DocumentPickerEnv, env => env.getDocument(...args)),
-}
+export const DocumentPicker = F.serviceFunctions(DocumentPickerEnv)
 
 export interface DocumentPickerError extends Data.Case {
   _tag: 'DocumentPickerError'

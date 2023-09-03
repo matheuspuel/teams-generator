@@ -41,14 +41,14 @@ const testLayer = pipe(
     ),
     StateRefLive,
     BackHandlerEnv.context({
-      exit: F.unit,
+      exit: () => F.unit,
       subscribe: () => F.succeed({ unsubscribe: F.unit }),
     }).pipe(Layer.succeedContext),
     FileSystemEnv.context({
       write: () => F.unit,
       read: () => F.succeed(''),
       copy: () => F.unit,
-      cacheDirectory: '',
+      cacheDirectory: () => F.succeed(''),
     }).pipe(Layer.succeedContext),
     DocumentPickerEnv.context({
       getDocument: () => F.succeed({ uri: '' }),
@@ -57,9 +57,10 @@ const testLayer = pipe(
       shareMessage: () => F.unit,
       shareFile: () => F.unit,
     }).pipe(Layer.succeedContext),
-    SplashScreenEnv.context({ hide: F.unit, preventAutoHide: F.unit }).pipe(
-      Layer.succeedContext,
-    ),
+    SplashScreenEnv.context({
+      hide: () => F.unit,
+      preventAutoHide: () => F.unit,
+    }).pipe(Layer.succeedContext),
     IdGeneratorEnv.context({
       generate: $(
         Ref.create(0),
@@ -72,33 +73,34 @@ const testLayer = pipe(
           ),
       ),
     }).pipe(Layer.succeedContext),
-    TelemetryEnv.context({ log: () => F.unit, send: F.unit }).pipe(
+    TelemetryEnv.context({ log: () => F.unit, send: () => F.unit }).pipe(
       Layer.succeedContext,
     ),
     MetadataServiceEnv.context({
-      get: F.succeed({
-        application: {
-          native: { buildVersion: null, version: null },
-          version: 'test',
-        },
-        device: {
-          modelName: null,
-          osVersion: null,
-          platformApiLevel: null,
-        },
-        installation: { id: '' },
-        launch: { id: '' },
-        isFirstLaunch: false,
-      }),
+      get: () =>
+        F.succeed({
+          application: {
+            native: { buildVersion: null, version: null },
+            version: 'test',
+          },
+          device: {
+            modelName: null,
+            osVersion: null,
+            platformApiLevel: null,
+          },
+          installation: { id: '' },
+          launch: { id: '' },
+          isFirstLaunch: false,
+        }),
     }).pipe(Layer.succeedContext),
     RepositoryEnvs.teams.groups
-      .context({ get: F.succeed({}), set: () => F.unit })
+      .context({ get: () => F.succeed({}), set: () => F.unit })
       .pipe(Layer.succeedContext),
     RepositoryEnvs.teams.parameters
-      .context({ get: F.succeed(Parameters.initial), set: () => F.unit })
+      .context({ get: () => F.succeed(Parameters.initial), set: () => F.unit })
       .pipe(Layer.succeedContext),
     RepositoryEnvs.teams.groupOrder
-      .context({ get: F.succeed(GroupOrder.initial), set: () => F.unit })
+      .context({ get: () => F.succeed(GroupOrder.initial), set: () => F.unit })
       .pipe(Layer.succeedContext),
     AppThemeLive,
     SafeAreaServiceTest,

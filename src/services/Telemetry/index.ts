@@ -14,13 +14,9 @@ export type TelemetryLog = D.To<typeof TelemetryLogSchema>
 
 export type Telemetry = {
   log: (logs: Array<TelemetryLog>) => Effect<never, unknown, void>
-  send: Effect<never, unknown, void>
+  send: () => Effect<never, unknown, void>
 }
 
 export const TelemetryEnv = Context.Tag<Telemetry>()
 
-export const Telemetry = {
-  log: (...args: Parameters<Telemetry['log']>) =>
-    F.flatMap(TelemetryEnv, env => env.log(...args)),
-  send: F.flatMap(TelemetryEnv, env => env.send),
-}
+export const Telemetry = F.serviceFunctions(TelemetryEnv)

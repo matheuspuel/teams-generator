@@ -51,7 +51,7 @@ export const generateResult = $(
   ),
   F.tap(({ parameters, players, start, end, result }) =>
     $(
-      Metadata.get,
+      Metadata.get(),
       F.flatMap(meta =>
         Telemetry.log([
           {
@@ -70,7 +70,7 @@ export const generateResult = $(
           },
         ]),
       ),
-      F.flatMap(() => Telemetry.send),
+      F.flatMap(() => Telemetry.send()),
       F.catchAll(() => F.unit),
     ),
   ),

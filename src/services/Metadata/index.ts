@@ -22,11 +22,9 @@ export type Metadata = {
 }
 
 export type MetadataService = {
-  get: Effect<never, never, Metadata>
+  get: () => Effect<never, never, Metadata>
 }
 
 export const MetadataServiceEnv = Context.Tag<MetadataService>()
 
-export const Metadata = {
-  get: F.flatMap(MetadataServiceEnv, env => env.get),
-}
+export const Metadata = F.serviceFunctions(MetadataServiceEnv)
