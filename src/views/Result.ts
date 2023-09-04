@@ -3,13 +3,14 @@ import {
   ActivityIndicator,
   Header,
   MaterialIcons,
-  Pressable,
   Row,
   ScrollView,
   Txt,
   TxtContext,
   View,
 } from 'src/components'
+import { HeaderButton } from 'src/components/derivative/HeaderButton'
+import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { named2 } from 'src/components/helpers'
 import { Player, Rating } from 'src/datatypes'
 import { appEvents } from 'src/events'
@@ -26,30 +27,16 @@ export const ResultView = named2('Result')(
           title: 'Resultado',
           headerStyle: { backgroundColor: Colors.primary.$5 },
           headerTitleStyle: { color: Colors.text.light },
-          headerLeft: Pressable({
-            onPress: appEvents.back(),
-            ml: 4,
-            p: 8,
-            borderless: true,
-            foreground: true,
-          })([
-            MaterialIcons({
-              name: 'arrow-back',
-              color: Colors.text.light,
-              size: 24,
+          headerLeft: HeaderButtonRow([
+            HeaderButton({
+              onPress: appEvents.back(),
+              icon: MaterialIcons({ name: 'arrow-back' }),
             }),
           ]),
-          headerRight: Pressable({
-            onPress: on.share(),
-            mr: 4,
-            p: 8,
-            borderless: true,
-            foreground: true,
-          })([
-            MaterialIcons({
-              name: 'share',
-              color: Colors.text.light,
-              size: 24,
+          headerRight: HeaderButtonRow([
+            HeaderButton({
+              onPress: on.share(),
+              icon: MaterialIcons({ name: 'share' }),
             }),
           ]),
         }),

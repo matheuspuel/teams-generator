@@ -6,6 +6,7 @@ import { UIEnv } from '.'
 import { SafeAreaServiceEnv } from '../SafeArea'
 import { AppStateRefEnv } from '../StateRef'
 import { AppThemeEnv } from '../Theme'
+import { initialUIContext } from './context'
 import { DefaultUIRoot } from './defaultRoot'
 
 const startReactNativeUI = (rootElement: Element): Effect<never, never, void> =>
@@ -17,6 +18,7 @@ export const UILive = F.map(
     SafeArea: SafeAreaServiceEnv,
     EventHandler: AppEventHandlerEnv,
     StateRef: AppStateRefEnv,
+    context: F.succeed(initialUIContext),
   }),
   env =>
     UIEnv.context({

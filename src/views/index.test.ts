@@ -22,6 +22,7 @@ import { StateRefLive } from 'src/services/StateRef/default'
 import { TelemetryEnv } from 'src/services/Telemetry'
 import { AppThemeEnv } from 'src/services/Theme'
 import { AppThemeLive } from 'src/services/Theme/default'
+import { initialUIContext } from 'src/services/UI/context'
 import { Id } from 'src/utils/Entity'
 import { $, Clock, F, Layer, Num, Ref, pipe } from 'src/utils/fp'
 import { UIRoot } from '.'
@@ -119,6 +120,7 @@ it('renders', async () => {
       SafeArea: SafeAreaServiceEnv,
       EventHandler: AppEventHandlerEnv,
       StateRef: AppStateRefEnv,
+      context: F.succeed(initialUIContext),
     }),
     env => UIRoot(env),
   ).pipe(F.provideLayer(testLayer), F.runSync)

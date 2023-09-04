@@ -10,6 +10,8 @@ import {
   Txt,
   View,
 } from 'src/components'
+import { HeaderButton } from 'src/components/derivative/HeaderButton'
+import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { memoizedConst, named2 } from 'src/components/helpers'
 import { Position, Rating } from 'src/datatypes'
 import { appEvents } from 'src/events'
@@ -26,27 +28,17 @@ const ScreenHeader = memoizedConst('Header')(
       title: 'Jogador',
       headerStyle: { backgroundColor: Colors.primary.$5 },
       headerTitleStyle: { color: Colors.text.light },
-      headerLeft: Pressable({
-        onPress: appEvents.back(),
-        ml: 4,
-        p: 8,
-        borderless: true,
-        foreground: true,
-      })([
-        MaterialIcons({
-          name: 'arrow-back',
-          color: Colors.text.light,
-          size: 24,
+      headerLeft: HeaderButtonRow([
+        HeaderButton({
+          onPress: appEvents.back(),
+          icon: MaterialIcons({ name: 'arrow-back' }),
         }),
       ]),
-      headerRight: Pressable({
-        onPress: on.delete(),
-        mr: 4,
-        p: 8,
-        borderless: true,
-        foreground: true,
-      })([
-        MaterialIcons({ name: 'delete', color: Colors.text.light, size: 24 }),
+      headerRight: HeaderButtonRow([
+        HeaderButton({
+          onPress: on.delete(),
+          icon: MaterialIcons({ name: 'delete' }),
+        }),
       ]),
     }),
   ]),

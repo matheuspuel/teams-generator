@@ -6,8 +6,8 @@ import { UIColor, UIElement } from '../types'
 
 export type IconProps = {
   name: React.ComponentProps<typeof RawIcons_>['name']
-  color: UIColor
-  size: number
+  color?: UIColor
+  size?: number
   align?: 'left' | 'right' | 'center'
 }
 
@@ -21,8 +21,8 @@ const getRawProps = ({
   env,
 }: IconArgs): React.ComponentProps<typeof RawIcons_> => ({
   name: props.name,
-  size: props.size,
-  color: Color.toHex(props.color(env)),
+  size: props.size ?? 24,
+  color: Color.toHex((props.color ?? env.context.textColor)(env)),
   style: { textAlign: props.align },
 })
 

@@ -15,6 +15,8 @@ import {
   TxtContext,
   View,
 } from 'src/components'
+import { HeaderButton } from 'src/components/derivative/HeaderButton'
+import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { memoized, memoizedConst } from 'src/components/helpers'
 import { Group } from 'src/datatypes'
 import { appEvents } from 'src/events'
@@ -79,27 +81,15 @@ const ScreenHeader = memoizedConst('Header')(
       title: 'Grupos',
       headerStyle: { backgroundColor: Colors.primary.$5 },
       headerTitleStyle: { color: Colors.text.light },
-      headerRight: Row({ px: 8, gap: 8 })([
-        Pressable({
+      headerRight: HeaderButtonRow([
+        HeaderButton({
           onPress: on.item.upsert.new(),
-          p: 8,
-          borderless: true,
-          foreground: true,
-        })([
-          MaterialIcons({ name: 'add', color: Colors.text.light, size: 24 }),
-        ]),
-        Pressable({
+          icon: MaterialIcons({ name: 'add' }),
+        }),
+        HeaderButton({
           onPress: on.menu.open(),
-          p: 8,
-          borderless: true,
-          foreground: true,
-        })([
-          MaterialIcons({
-            name: 'more-vert',
-            color: Colors.text.light,
-            size: 24,
-          }),
-        ]),
+          icon: MaterialIcons({ name: 'more-vert' }),
+        }),
       ]),
     }),
   ]),

@@ -5,6 +5,7 @@ import { F } from 'src/utils/fp'
 import { SafeAreaService } from '../SafeArea'
 import { AppStateRef } from '../StateRef'
 import { AppTheme } from '../Theme'
+import { UIContext } from './context'
 
 export type UI = {
   start: () => Effect<never, never, void>
@@ -19,4 +20,5 @@ export type UIEnv = {
   SafeArea: SafeAreaService
   EventHandler: AppEventHandler
   StateRef: AppStateRef
+  context: UIContext
 }
