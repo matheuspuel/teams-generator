@@ -1,4 +1,4 @@
-import { $, A, R, Rec, Tup } from 'fp'
+import { $, A, R, Rec, Str, Tup } from 'fp'
 import {
   Fragment,
   Header,
@@ -12,6 +12,7 @@ import {
 } from 'src/components'
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
+import { SolidButton } from 'src/components/derivative/SolidButton'
 import { memoizedConst, named2 } from 'src/components/helpers'
 import { Position, Rating } from 'src/datatypes'
 import { appEvents } from 'src/events'
@@ -108,23 +109,6 @@ export const RatingField = (rating: Rating) =>
     }),
   ])
 
-const SaveButton = ({ isEnabled }: { isEnabled: boolean }) =>
-  Pressable({
-    p: 16,
-    bg: isEnabled
-      ? Colors.primary.$5
-      : $(Colors.primary.$5, R.map(withOpacity(95))),
-    onPress: on.save(),
-    isEnabled: isEnabled,
-    rippleColor: Colors.black,
-    rippleOpacity: 0.5,
-  })([
-    Txt({
-      align: 'center',
-      color: isEnabled ? Colors.white : $(Colors.white, R.map(withOpacity(95))),
-    })('Gravar'),
-  ])
-
 export const PlayerView = named2('PlayerForm')(
   ({ form: { name, position, rating } }: { form: PlayerForm }) =>
     Fragment([
@@ -139,6 +123,11 @@ export const PlayerView = named2('PlayerForm')(
           RatingField(rating),
         ]),
       ]),
-      SaveButton({ isEnabled: !!name }),
+      SolidButton({
+        onPress: on.save(),
+        isEnabled: Str.isNonEmpty(name),
+        p: 16,
+        round: 0,
+      })([Txt({ align: 'center' })('Gravar')]),
     ]),
 )

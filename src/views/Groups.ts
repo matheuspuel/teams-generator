@@ -1,4 +1,4 @@
-import { $, A, Eq, O, Option, R, Rec, Tup } from 'fp'
+import { $, A, Eq, O, Option, Rec, Str, Tup } from 'fp'
 import {
   FlatList,
   Fragment,
@@ -14,10 +14,12 @@ import {
   View,
 } from 'src/components'
 import { CenterModal } from 'src/components/derivative/CenterModal'
+import { GhostButton } from 'src/components/derivative/GhostButton'
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { HeaderMenu } from 'src/components/derivative/HeaderMenu'
 import { HeaderMenuButton } from 'src/components/derivative/HeaderMenuButton'
+import { SolidButton } from 'src/components/derivative/SolidButton'
 import { memoized, memoizedConst } from 'src/components/helpers'
 import { Group } from 'src/datatypes'
 import { appEvents } from 'src/events'
@@ -25,7 +27,6 @@ import { RootState } from 'src/model'
 import { Colors } from 'src/services/Theme'
 import { GroupsState } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
-import { withOpacity } from 'src/utils/datatypes/Color'
 
 const on = appEvents.groups
 
@@ -167,32 +168,12 @@ const GroupModal = ({
           }),
         ]),
         View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
-        Row({ justify: 'end', p: 16 })([
-          Pressable({
-            onPress: on.item.upsert.close(),
-            mr: 8,
-            p: 12,
-            round: 4,
-            rippleColor: Colors.primary.$5,
-            rippleOpacity: 0.15,
-          })([Txt({ color: Colors.primary.$5 })('Cancelar')]),
-          Pressable({
-            p: 12,
-            round: 4,
-            bg: !form.name
-              ? $(Colors.primary.$5, R.map(withOpacity(95)))
-              : Colors.primary.$5,
+        Row({ justify: 'end', gap: 8, p: 16 })([
+          GhostButton({ onPress: on.item.upsert.close() })([Txt()('Cancelar')]),
+          SolidButton({
             onPress: on.item.upsert.submit(),
-            isEnabled: !!form.name,
-            rippleColor: Colors.black,
-            rippleOpacity: 0.5,
-          })([
-            Txt({
-              color: !form.name
-                ? $(Colors.white, R.map(withOpacity(95)))
-                : Colors.white,
-            })('Gravar'),
-          ]),
+            isEnabled: Str.isNonEmpty(form.name),
+          })([Txt()('Gravar')]),
         ]),
       ]),
     ),
@@ -226,20 +207,12 @@ const DeleteGroupModal = ({
     ),
     View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
     Row({ p: 16, gap: 8, justify: 'end' })([
-      Pressable({
-        p: 12,
-        round: 4,
-        rippleColor: Colors.danger.$5,
-        rippleOpacity: 0.15,
-        onPress: on.item.delete.close(),
-      })([Txt({ color: Colors.danger.$5 })('Cancelar')]),
-      Pressable({
-        p: 12,
-        round: 4,
-        bg: Colors.danger.$5,
-        rippleColor: Colors.black,
-        rippleOpacity: 0.5,
+      GhostButton({ onPress: on.item.delete.close(), color: Colors.danger.$5 })(
+        [Txt()('Cancelar')],
+      ),
+      SolidButton({
         onPress: on.item.delete.submit(),
-      })([Txt({ color: Colors.white })('Excluir')]),
+        color: Colors.danger.$5,
+      })([Txt()('Excluir')]),
     ]),
   ])

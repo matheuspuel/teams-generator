@@ -11,10 +11,12 @@ import {
   View,
 } from 'src/components'
 import { CenterModal } from 'src/components/derivative/CenterModal'
+import { GhostButton } from 'src/components/derivative/GhostButton'
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { HeaderMenu } from 'src/components/derivative/HeaderMenu'
 import { HeaderMenuButton } from 'src/components/derivative/HeaderMenuButton'
+import { SolidButton } from 'src/components/derivative/SolidButton'
 import {
   deepEq,
   memoized,
@@ -71,15 +73,9 @@ export const GroupView = memoized('GroupScreen')(
         contentContainerStyle: { flexGrow: 1, p: 8, gap: 8 },
         initialNumToRender: 16,
       }),
-      Pressable({
-        onPress: on.parameters.open(),
-        p: 16,
-        bg: Colors.primary.$5,
-        rippleColor: Colors.black,
-        rippleOpacity: 0.5,
-      })([
-        Txt({ align: 'center', color: Colors.white })('Sortear'),
-        Txt({ align: 'center', color: Colors.white, size: 12 })(
+      SolidButton({ onPress: on.parameters.open(), p: 16, round: 0 })([
+        Txt({ align: 'center' })('Sortear'),
+        Txt({ align: 'center', size: 12 })(
           $(
             group,
             O.match({
@@ -401,25 +397,9 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
       ]),
     ]),
     View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
-    Row({ p: 16, justify: 'end' })([
-      Row()([
-        Pressable({
-          onPress: on.parameters.close(),
-          mr: 8,
-          p: 12,
-          round: 4,
-          rippleColor: Colors.primary.$5,
-          rippleOpacity: 0.15,
-        })([Txt({ color: Colors.primary.$5 })('Cancelar')]),
-        Pressable({
-          onPress: on.parameters.shuffle(),
-          p: 12,
-          round: 4,
-          bg: Colors.primary.$5,
-          rippleColor: Colors.black,
-          rippleOpacity: 0.5,
-        })([Txt({ color: Colors.white })('Sortear')]),
-      ]),
+    Row({ p: 16, gap: 8, justify: 'end' })([
+      GhostButton({ onPress: on.parameters.close() })([Txt()('Cancelar')]),
+      SolidButton({ onPress: on.parameters.shuffle() })([Txt()('Sortear')]),
     ]),
   ])
 
