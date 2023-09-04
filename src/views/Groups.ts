@@ -6,7 +6,6 @@ import {
   Input,
   MaterialCommunityIcons,
   MaterialIcons,
-  Modal,
   Nothing,
   Pressable,
   Row,
@@ -14,6 +13,7 @@ import {
   TxtContext,
   View,
 } from 'src/components'
+import { CenterModal } from 'src/components/derivative/CenterModal'
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { HeaderMenu } from 'src/components/derivative/HeaderMenu'
@@ -146,89 +146,52 @@ const GroupModal = ({
   $(
     state,
     O.map(form =>
-      Modal({
-        transparent: true,
-        flex: 1,
-        animationType: 'fade',
-        statusBarTranslucent: true,
-        onRequestClose: on.item.upsert.close(),
+      CenterModal({
+        onClose: on.item.upsert.close(),
+        title: $(
+          state,
+          O.flatMap(s => s.id),
+          O.match({
+            onNone: () => 'Novo grupo',
+            onSome: () => 'Editar grupo',
+          }),
+        ),
       })([
-        Pressable({
-          onPress: on.item.upsert.close(),
-          flex: 1,
-          justify: 'center',
-          bg: $(Colors.black, R.map(withOpacity(63))),
-        })([
+        View({ p: 16 })([
+          Txt({ weight: 500, color: Colors.gray.$4, my: 4 })('Nome do grupo'),
+          Input({
+            placeholder: 'Ex: Futebol de quinta',
+            value: form.name,
+            onChange: on.item.upsert.form.name.change,
+            autoFocus: true,
+          }),
+        ]),
+        View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
+        Row({ justify: 'end', p: 16 })([
           Pressable({
-            onPress: appEvents.doNothing(),
-            bg: Colors.white,
-            m: 48,
-            round: 8,
-            shadow: 2,
+            onPress: on.item.upsert.close(),
+            mr: 8,
+            p: 12,
+            round: 4,
+            rippleColor: Colors.primary.$5,
+            rippleOpacity: 0.15,
+          })([Txt({ color: Colors.primary.$5 })('Cancelar')]),
+          Pressable({
+            p: 12,
+            round: 4,
+            bg: !form.name
+              ? $(Colors.primary.$5, R.map(withOpacity(95)))
+              : Colors.primary.$5,
+            onPress: on.item.upsert.submit(),
+            isEnabled: !!form.name,
             rippleColor: Colors.black,
-            rippleOpacity: 0,
+            rippleOpacity: 0.5,
           })([
-            Row({ align: 'center', p: 8 })([
-              Txt({
-                m: 8,
-                flex: 1,
-                size: 16,
-                weight: 600,
-                color: Colors.text.dark,
-              })(
-                $(
-                  state,
-                  O.flatMap(s => s.id),
-                  O.match({
-                    onNone: () => 'Novo grupo',
-                    onSome: () => 'Editar grupo',
-                  }),
-                ),
-              ),
-              Pressable({ onPress: on.item.upsert.close(), p: 8, round: 4 })([
-                MaterialIcons({ name: 'close', color: Colors.gray.$4 }),
-              ]),
-            ]),
-            View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
-            View({ p: 16 })([
-              Txt({ weight: 500, color: Colors.gray.$4, my: 4 })(
-                'Nome do grupo',
-              ),
-              Input({
-                placeholder: 'Ex: Futebol de quinta',
-                value: form.name,
-                onChange: on.item.upsert.form.name.change,
-                autoFocus: true,
-              }),
-            ]),
-            View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
-            Row({ justify: 'end', p: 16 })([
-              Pressable({
-                onPress: on.item.upsert.close(),
-                mr: 8,
-                p: 12,
-                round: 4,
-                rippleColor: Colors.primary.$5,
-                rippleOpacity: 0.15,
-              })([Txt({ color: Colors.primary.$5 })('Cancelar')]),
-              Pressable({
-                p: 12,
-                round: 4,
-                bg: !form.name
-                  ? $(Colors.primary.$5, R.map(withOpacity(95)))
-                  : Colors.primary.$5,
-                onPress: on.item.upsert.submit(),
-                isEnabled: !!form.name,
-                rippleColor: Colors.black,
-                rippleOpacity: 0.5,
-              })([
-                Txt({
-                  color: !form.name
-                    ? $(Colors.white, R.map(withOpacity(95)))
-                    : Colors.white,
-                })('Gravar'),
-              ]),
-            ]),
+            Txt({
+              color: !form.name
+                ? $(Colors.white, R.map(withOpacity(95)))
+                : Colors.white,
+            })('Gravar'),
           ]),
         ]),
       ]),
@@ -243,74 +206,40 @@ const DeleteGroupModal = ({
   state: Option<{ id: Id }>
   group: Option<Group>
 }) =>
-  Modal({
-    transparent: true,
+  CenterModal({
+    onClose: on.item.delete.close(),
     visible: O.isSome(state),
-    flex: 1,
-    animationType: 'fade',
-    statusBarTranslucent: true,
-    onRequestClose: on.item.delete.close(),
+    title: 'Excluir grupo',
   })([
-    Pressable({
-      onPress: on.item.delete.close(),
-      flex: 1,
-      bg: $(Colors.black, R.map(withOpacity(63))),
-      justify: 'center',
-    })([
-      Pressable({
-        onPress: appEvents.doNothing(),
-        bg: Colors.white,
-        m: 48,
-        round: 8,
-        shadow: 2,
-        rippleColor: Colors.black,
-        rippleOpacity: 0,
-      })([
-        Row({ align: 'center', p: 8 })([
-          Txt({
-            m: 8,
-            flex: 1,
-            size: 16,
-            weight: 600,
-            color: Colors.text.dark,
-          })('Excluir grupo'),
-          Pressable({ onPress: on.item.delete.close(), p: 8, round: 4 })([
-            MaterialIcons({ name: 'close', color: Colors.gray.$4 }),
+    View({ p: 16 })(
+      $(
+        group,
+        O.map(g =>
+          TxtContext({ color: Colors.text.dark })([
+            Txt()('Deseja excluir o grupo '),
+            Txt({ weight: 600, color: Colors.text.dark })(g.name),
+            Txt()(' e todos os jogadores?'),
           ]),
-        ]),
-        View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
-        View({ p: 16 })(
-          $(
-            group,
-            O.map(g =>
-              TxtContext({ color: Colors.text.dark })([
-                Txt()('Deseja excluir o grupo '),
-                Txt({ weight: 600, color: Colors.text.dark })(g.name),
-                Txt()(' e todos os jogadores?'),
-              ]),
-            ),
-            A.fromOption,
-          ),
         ),
-        View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
-        Row({ p: 16, justify: 'end' })([
-          Pressable({
-            mr: 8,
-            p: 12,
-            round: 4,
-            rippleColor: Colors.danger.$5,
-            rippleOpacity: 0.15,
-            onPress: on.item.delete.close(),
-          })([Txt({ color: Colors.danger.$5 })('Cancelar')]),
-          Pressable({
-            p: 12,
-            round: 4,
-            bg: Colors.danger.$5,
-            rippleColor: Colors.black,
-            rippleOpacity: 0.5,
-            onPress: on.item.delete.submit(),
-          })([Txt({ color: Colors.white })('Excluir')]),
-        ]),
-      ]),
+        A.fromOption,
+      ),
+    ),
+    View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
+    Row({ p: 16, gap: 8, justify: 'end' })([
+      Pressable({
+        p: 12,
+        round: 4,
+        rippleColor: Colors.danger.$5,
+        rippleOpacity: 0.15,
+        onPress: on.item.delete.close(),
+      })([Txt({ color: Colors.danger.$5 })('Cancelar')]),
+      Pressable({
+        p: 12,
+        round: 4,
+        bg: Colors.danger.$5,
+        rippleColor: Colors.black,
+        rippleOpacity: 0.5,
+        onPress: on.item.delete.submit(),
+      })([Txt({ color: Colors.white })('Excluir')]),
     ]),
   ])

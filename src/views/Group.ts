@@ -1,16 +1,16 @@
-import { $, A, Eq, Match, O, Option, R, constant } from 'fp'
+import { $, A, Eq, Match, O, Option, constant } from 'fp'
 import {
   FlatList,
   Header,
   MaterialCommunityIcons,
   MaterialIcons,
-  Modal,
   Nothing,
   Pressable,
   Row,
   Txt,
   View,
 } from 'src/components'
+import { CenterModal } from 'src/components/derivative/CenterModal'
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { HeaderMenu } from 'src/components/derivative/HeaderMenu'
@@ -25,7 +25,6 @@ import { Group, GroupOrder, Parameters, Player, Rating } from 'src/datatypes'
 import { GroupOrderType } from 'src/datatypes/GroupOrder'
 import { AppEvent, appEvents } from 'src/events'
 import { Colors } from 'src/services/Theme'
-import { withOpacity } from 'src/utils/datatypes/Color'
 
 const on = appEvents.group
 
@@ -220,91 +219,53 @@ const SortModal = ({
 }: {
   mainSort: { _tag: GroupOrderType; reverse: boolean }
 }) =>
-  Modal({
-    transparent: true,
-    flex: 1,
-    animationType: 'fade',
-    statusBarTranslucent: true,
-    onRequestClose: on.sort.close(),
-  })([
-    Pressable({
-      onPress: on.sort.close(),
-      flex: 1,
-      justify: 'center',
-      bg: $(Colors.black, R.map(withOpacity(63))),
-    })([
-      Pressable({
-        onPress: appEvents.doNothing(),
-        bg: Colors.white,
-        m: 48,
-        round: 8,
-        shadow: 2,
-        rippleColor: Colors.black,
-        rippleOpacity: 0,
-      })([
-        Row({ align: 'center', p: 8 })([
-          Txt({
-            m: 8,
-            flex: 1,
-            size: 16,
-            weight: 600,
-            color: Colors.text.dark,
-          })('Ordenação'),
-          Pressable({
-            p: 8,
-            round: 4,
-            onPress: on.sort.close(),
-          })([MaterialIcons({ name: 'close', color: Colors.gray.$4 })]),
-        ]),
-        View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
-        View({ roundB: 8, overflow: 'hidden' })([
-          FilterButton({
-            name: 'Nome',
-            onPress: on.sort.by.name(),
-            state: $(
-              mainSort._tag === 'name'
-                ? O.some({ reverse: mainSort.reverse })
-                : O.none(),
-            ),
-          }),
-          FilterButton({
-            name: 'Posição',
-            onPress: on.sort.by.position(),
-            state: $(
-              mainSort._tag === 'position'
-                ? O.some({ reverse: mainSort.reverse })
-                : O.none(),
-            ),
-          }),
-          FilterButton({
-            name: 'Habilidade',
-            onPress: on.sort.by.rating(),
-            state: $(
-              mainSort._tag === 'rating'
-                ? O.some({ reverse: mainSort.reverse })
-                : O.none(),
-            ),
-          }),
-          FilterButton({
-            name: 'Ativo',
-            onPress: on.sort.by.active(),
-            state: $(
-              mainSort._tag === 'active'
-                ? O.some({ reverse: mainSort.reverse })
-                : O.none(),
-            ),
-          }),
-          FilterButton({
-            name: 'Data',
-            onPress: on.sort.by.date(),
-            state: $(
-              mainSort._tag === 'date'
-                ? O.some({ reverse: mainSort.reverse })
-                : O.none(),
-            ),
-          }),
-        ]),
-      ]),
+  CenterModal({ onClose: on.sort.close(), title: 'Ordenação' })([
+    View({ roundB: 8, overflow: 'hidden' })([
+      FilterButton({
+        name: 'Nome',
+        onPress: on.sort.by.name(),
+        state: $(
+          mainSort._tag === 'name'
+            ? O.some({ reverse: mainSort.reverse })
+            : O.none(),
+        ),
+      }),
+      FilterButton({
+        name: 'Posição',
+        onPress: on.sort.by.position(),
+        state: $(
+          mainSort._tag === 'position'
+            ? O.some({ reverse: mainSort.reverse })
+            : O.none(),
+        ),
+      }),
+      FilterButton({
+        name: 'Habilidade',
+        onPress: on.sort.by.rating(),
+        state: $(
+          mainSort._tag === 'rating'
+            ? O.some({ reverse: mainSort.reverse })
+            : O.none(),
+        ),
+      }),
+      FilterButton({
+        name: 'Ativo',
+        onPress: on.sort.by.active(),
+        state: $(
+          mainSort._tag === 'active'
+            ? O.some({ reverse: mainSort.reverse })
+            : O.none(),
+        ),
+      }),
+      FilterButton({
+        name: 'Data',
+        onPress: on.sort.by.date(),
+        state: $(
+          mainSort._tag === 'date'
+            ? O.some({ reverse: mainSort.reverse })
+            : O.none(),
+        ),
+      }),
     ]),
   ])
 
@@ -336,166 +297,128 @@ const FilterButton = (props: {
   ])
 
 const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
-  Modal({
-    transparent: true,
-    flex: 1,
-    animationType: 'fade',
-    statusBarTranslucent: true,
-    onRequestClose: on.parameters.close(),
-  })([
-    Pressable({
-      onPress: on.parameters.close(),
-      flex: 1,
-      justify: 'center',
-      bg: $(Colors.black, R.map(withOpacity(63))),
-    })([
-      Pressable({
-        onPress: appEvents.doNothing(),
-        bg: Colors.white,
-        m: 24,
-        round: 8,
-        shadow: 2,
-        rippleColor: Colors.black,
-        rippleOpacity: 0,
-      })([
-        Row({ align: 'center', p: 8 })([
-          Txt({
-            m: 8,
-            flex: 1,
-            size: 16,
-            weight: 600,
-            color: Colors.text.dark,
-          })('Parâmetros'),
-          Pressable({
-            p: 8,
-            round: 4,
-            onPress: on.parameters.close(),
-          })([MaterialIcons({ name: 'close', color: Colors.gray.$4 })]),
-        ]),
-        View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
-        View({ p: 16 })([
-          Row({ align: 'center' })([
-            Pressable({
-              onPress: on.parameters.teamsCount.decrement(),
-              p: 12,
-              borderless: true,
-              rippleColor: Colors.primary.$5,
-              rippleOpacity: 0.15,
-            })([MaterialIcons({ name: 'remove', color: Colors.primary.$5 })]),
-            Txt({ p: 8, weight: 600, color: Colors.text.dark })(
-              $(
-                parameters.teamsCountMethod,
-                Match.valueTags({
-                  count: () => parameters.teamsCount.toString(),
-                  playersRequired: () => parameters.playersRequired.toString(),
-                }),
-              ),
-            ),
-            Pressable({
-              onPress: on.parameters.teamsCount.increment(),
-              p: 12,
-              borderless: true,
-              rippleColor: Colors.primary.$5,
-              rippleOpacity: 0.15,
-            })([MaterialIcons({ name: 'add', color: Colors.primary.$5 })]),
-            Pressable({
-              onPress: on.parameters.teamsCount.toggleType(),
-              flex: 1,
-              direction: 'row',
-              align: 'center',
-              round: 8,
-              p: 4,
-              pl: 8,
-              gap: 4,
-            })([
-              Txt({ flex: 1, color: Colors.text.dark })(
-                $(
-                  parameters.teamsCountMethod,
-                  Match.valueTags({
-                    count: () => 'Número de times',
-                    playersRequired: () => 'Número fixo de jogadores por time',
-                  }),
-                ),
-              ),
-              MaterialIcons({
-                name: 'swap-horiz',
-                size: 20,
-                color: Colors.primary.$5,
+  CenterModal({ onClose: on.parameters.close(), title: 'Parâmetros', m: 24 })([
+    View({ p: 16 })([
+      Row({ align: 'center' })([
+        Pressable({
+          onPress: on.parameters.teamsCount.decrement(),
+          p: 12,
+          borderless: true,
+          rippleColor: Colors.primary.$5,
+          rippleOpacity: 0.15,
+        })([MaterialIcons({ name: 'remove', color: Colors.primary.$5 })]),
+        Txt({ p: 8, weight: 600, color: Colors.text.dark })(
+          $(
+            parameters.teamsCountMethod,
+            Match.valueTags({
+              count: () => parameters.teamsCount.toString(),
+              playersRequired: () => parameters.playersRequired.toString(),
+            }),
+          ),
+        ),
+        Pressable({
+          onPress: on.parameters.teamsCount.increment(),
+          p: 12,
+          borderless: true,
+          rippleColor: Colors.primary.$5,
+          rippleOpacity: 0.15,
+        })([MaterialIcons({ name: 'add', color: Colors.primary.$5 })]),
+        Pressable({
+          onPress: on.parameters.teamsCount.toggleType(),
+          flex: 1,
+          direction: 'row',
+          align: 'center',
+          round: 8,
+          p: 4,
+          pl: 8,
+          gap: 4,
+        })([
+          Txt({ flex: 1, color: Colors.text.dark })(
+            $(
+              parameters.teamsCountMethod,
+              Match.valueTags({
+                count: () => 'Número de times',
+                playersRequired: () => 'Número fixo de jogadores por time',
               }),
-            ]),
-          ]),
-          Pressable({
-            onPress: on.parameters.position.toggle(),
-            direction: 'row',
-            align: 'center',
-            p: 8,
-            round: 8,
-          })([
-            parameters.position
-              ? View({
-                  borderWidth: 2,
-                  round: 4,
-                  h: 28,
-                  w: 28,
-                  bg: Colors.primary.$5,
-                  borderColor: Colors.primary.$5,
-                })([MaterialIcons({ name: 'check', color: Colors.white })])
-              : View({
-                  borderWidth: 2,
-                  round: 4,
-                  borderColor: Colors.gray.$3,
-                  h: 28,
-                  w: 28,
-                })([]),
-            Txt({ ml: 8, size: 14 })('Considerar posições'),
-          ]),
-          Pressable({
-            onPress: on.parameters.rating.toggle(),
-            direction: 'row',
-            align: 'center',
-            p: 8,
-            round: 8,
-          })([
-            parameters.rating
-              ? View({
-                  borderWidth: 2,
-                  round: 4,
-                  h: 28,
-                  w: 28,
-                  bg: Colors.primary.$5,
-                  borderColor: Colors.primary.$5,
-                })([MaterialIcons({ name: 'check', color: Colors.white })])
-              : View({
-                  borderWidth: 2,
-                  round: 4,
-                  borderColor: Colors.gray.$3,
-                  h: 28,
-                  w: 28,
-                })([]),
-            Txt({ ml: 8, size: 14 })('Considerar habilidade'),
-          ]),
+            ),
+          ),
+          MaterialIcons({
+            name: 'swap-horiz',
+            size: 20,
+            color: Colors.primary.$5,
+          }),
         ]),
-        View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
-        Row({ p: 16, justify: 'end' })([
-          Row()([
-            Pressable({
-              onPress: on.parameters.close(),
-              mr: 8,
-              p: 12,
+      ]),
+      Pressable({
+        onPress: on.parameters.position.toggle(),
+        direction: 'row',
+        align: 'center',
+        p: 8,
+        round: 8,
+      })([
+        parameters.position
+          ? View({
+              borderWidth: 2,
               round: 4,
-              rippleColor: Colors.primary.$5,
-              rippleOpacity: 0.15,
-            })([Txt({ color: Colors.primary.$5 })('Cancelar')]),
-            Pressable({
-              onPress: on.parameters.shuffle(),
-              p: 12,
-              round: 4,
+              h: 28,
+              w: 28,
               bg: Colors.primary.$5,
-              rippleColor: Colors.black,
-              rippleOpacity: 0.5,
-            })([Txt({ color: Colors.white })('Sortear')]),
-          ]),
-        ]),
+              borderColor: Colors.primary.$5,
+            })([MaterialIcons({ name: 'check', color: Colors.white })])
+          : View({
+              borderWidth: 2,
+              round: 4,
+              borderColor: Colors.gray.$3,
+              h: 28,
+              w: 28,
+            })([]),
+        Txt({ ml: 8, size: 14 })('Considerar posições'),
+      ]),
+      Pressable({
+        onPress: on.parameters.rating.toggle(),
+        direction: 'row',
+        align: 'center',
+        p: 8,
+        round: 8,
+      })([
+        parameters.rating
+          ? View({
+              borderWidth: 2,
+              round: 4,
+              h: 28,
+              w: 28,
+              bg: Colors.primary.$5,
+              borderColor: Colors.primary.$5,
+            })([MaterialIcons({ name: 'check', color: Colors.white })])
+          : View({
+              borderWidth: 2,
+              round: 4,
+              borderColor: Colors.gray.$3,
+              h: 28,
+              w: 28,
+            })([]),
+        Txt({ ml: 8, size: 14 })('Considerar habilidade'),
+      ]),
+    ]),
+    View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
+    Row({ p: 16, justify: 'end' })([
+      Row()([
+        Pressable({
+          onPress: on.parameters.close(),
+          mr: 8,
+          p: 12,
+          round: 4,
+          rippleColor: Colors.primary.$5,
+          rippleOpacity: 0.15,
+        })([Txt({ color: Colors.primary.$5 })('Cancelar')]),
+        Pressable({
+          onPress: on.parameters.shuffle(),
+          p: 12,
+          round: 4,
+          bg: Colors.primary.$5,
+          rippleColor: Colors.black,
+          rippleOpacity: 0.5,
+        })([Txt({ color: Colors.white })('Sortear')]),
       ]),
     ]),
   ])
