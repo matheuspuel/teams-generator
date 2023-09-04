@@ -1,3 +1,4 @@
+import { getDefaultHeaderHeight } from '@react-navigation/elements'
 import { $, A, Eq, Match, O, Option, R, constant } from 'fp'
 import {
   FlatList,
@@ -32,6 +33,7 @@ export const GroupView = memoized('GroupScreen')(
     modalParameters: Eq.strict(),
     modalSortGroup: Eq.strict(),
     groupOrder: deepEq,
+    menu: Eq.strict(),
   }),
   ({
     parameters,
@@ -39,12 +41,14 @@ export const GroupView = memoized('GroupScreen')(
     modalParameters,
     modalSortGroup,
     groupOrder,
+    menu,
   }: {
     parameters: Parameters
     group: Option<Group>
     modalParameters: boolean
     modalSortGroup: Option<null>
     groupOrder: GroupOrder
+    menu: boolean
   }) =>
     View({ flex: 1 })([
       GroupHeader,
@@ -91,6 +95,7 @@ export const GroupView = memoized('GroupScreen')(
           ),
         ),
       ]),
+      menu ? Menu : Nothing,
       ...(modalParameters ? [ParametersModal({ parameters })] : []),
       $(
         modalSortGroup,
@@ -121,40 +126,7 @@ const GroupHeader = memoizedConst('GroupHeader')(
           size: 24,
         }),
       ]),
-      headerRight: Row({ px: 4, gap: 4 })([
-        Pressable({
-          onPress: on.export.open(),
-          mr: 4,
-          p: 8,
-          borderless: true,
-          foreground: true,
-        })([
-          MaterialCommunityIcons({
-            name: 'export',
-            color: Colors.text.light,
-            size: 24,
-          }),
-        ]),
-        Pressable({
-          onPress: on.sort.open(),
-          p: 8,
-          borderless: true,
-          foreground: true,
-        })([
-          MaterialIcons({ name: 'sort', color: Colors.text.light, size: 24 }),
-        ]),
-        Pressable({
-          onPress: on.player.active.toggleAll(),
-          p: 8,
-          borderless: true,
-          foreground: true,
-        })([
-          MaterialCommunityIcons({
-            name: 'checkbox-multiple-outline',
-            color: Colors.text.light,
-            size: 24,
-          }),
-        ]),
+      headerRight: Row({ px: 8, gap: 8 })([
         Pressable({
           onPress: on.player.new(),
           p: 8,
@@ -163,10 +135,89 @@ const GroupHeader = memoizedConst('GroupHeader')(
         })([
           MaterialIcons({ name: 'add', color: Colors.text.light, size: 24 }),
         ]),
+        Pressable({
+          onPress: on.menu.open(),
+          p: 8,
+          borderless: true,
+          foreground: true,
+        })([
+          MaterialIcons({
+            name: 'more-vert',
+            color: Colors.text.light,
+            size: 24,
+          }),
+        ]),
       ]),
     }),
   ]),
 )
+
+const Menu = Modal({
+  transparent: true,
+  flex: 1,
+  animationType: 'fade',
+  onRequestClose: on.menu.close(),
+})([
+  Pressable({
+    onPress: on.menu.close(),
+    flex: 1,
+    align: 'end',
+    rippleColor: Colors.black,
+    rippleOpacity: 0,
+  })([
+    Pressable({
+      onPress: appEvents.doNothing(),
+      bg: Colors.white,
+      m: 8,
+      round: 8,
+      shadow: 2,
+      rippleColor: Colors.black,
+      rippleOpacity: 0,
+      mt: getDefaultHeaderHeight({ height: 1, width: 0 }, false, 0),
+    })([
+      View({ py: 8 })([
+        Pressable({
+          onPress: on.player.active.toggleAll(),
+          direction: 'row',
+          align: 'center',
+          p: 12,
+          gap: 8,
+        })([
+          MaterialCommunityIcons({
+            name: 'checkbox-multiple-outline',
+            color: Colors.primary.$5,
+            size: 24,
+          }),
+          Txt()('Selecionar todos'),
+        ]),
+        Pressable({
+          onPress: on.sort.open(),
+          direction: 'row',
+          align: 'center',
+          p: 12,
+          gap: 8,
+        })([
+          MaterialIcons({ name: 'sort', color: Colors.primary.$5, size: 24 }),
+          Txt()('Ordenar'),
+        ]),
+        Pressable({
+          onPress: on.export(),
+          direction: 'row',
+          align: 'center',
+          p: 12,
+          gap: 8,
+        })([
+          MaterialCommunityIcons({
+            name: 'export',
+            color: Colors.primary.$5,
+            size: 24,
+          }),
+          Txt()('Exportar grupo'),
+        ]),
+      ]),
+    ]),
+  ]),
+])
 
 const Item = memoized('GroupItem')(
   deepEq,

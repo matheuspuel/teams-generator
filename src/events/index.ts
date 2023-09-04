@@ -13,6 +13,7 @@ import {
   identity,
   none,
   not,
+  pipe,
   some,
 } from 'fp'
 import { Parameters as Parameters_, Player, Rating } from 'src/datatypes'
@@ -96,9 +97,19 @@ export const appEventsDefinition = defineEvents({
     saveState: (_: void) => saveState,
   },
   groups: {
-    import: {
-      open: (_: void) => importGroup().pipe(F.either),
+    menu: {
+      open: (_: void) =>
+        execute(replaceSApp(root.at('ui').at('homeMenu'))(true)),
+      close: (_: void) =>
+        execute(replaceSApp(root.at('ui').at('homeMenu'))(false)),
     },
+    import: (_: void) =>
+      pipe(
+        replaceSApp(root.at('ui').at('homeMenu'))(false),
+        execute,
+        F.tap(() => importGroup()),
+        F.ignore,
+      ),
     item: {
       open: (id: Id) =>
         $(
@@ -165,9 +176,19 @@ export const appEventsDefinition = defineEvents({
     },
   },
   group: {
+    menu: {
+      open: (_: void) =>
+        execute(replaceSApp(root.at('ui').at('groupMenu'))(true)),
+      close: (_: void) =>
+        execute(replaceSApp(root.at('ui').at('groupMenu'))(false)),
+    },
     sort: {
       open: (_: void) =>
-        execute(replaceSApp(root.at('ui').at('modalSortGroup'))(O.some(null))),
+        pipe(
+          replaceSApp(root.at('ui').at('modalSortGroup'))(O.some(null)),
+          S.tap(() => replaceSApp(root.at('ui').at('groupMenu'))(false)),
+          execute,
+        ),
       close: (_: void) =>
         execute(replaceSApp(root.at('ui').at('modalSortGroup'))(O.none())),
       by: {
@@ -201,6 +222,12 @@ export const appEventsDefinition = defineEvents({
           F.flatMap(() => generateResult),
         ),
     },
+    export: (_: void) =>
+      pipe(
+        execute(replaceSApp(root.at('ui').at('groupMenu'))(false)),
+        F.tap(() => exportGroup()),
+        F.ignore,
+      ),
     player: {
       new: (_: void) =>
         $(
@@ -239,11 +266,13 @@ export const appEventsDefinition = defineEvents({
         ),
       active: {
         toggle: (id: Id) => execute(togglePlayerActive({ playerId: id })),
-        toggleAll: (_: void) => execute(toggleAllPlayersActive),
+        toggleAll: (_: void) =>
+          pipe(
+            toggleAllPlayersActive,
+            S.tap(() => replaceSApp(root.at('ui').at('groupMenu'))(false)),
+            execute,
+          ),
       },
-    },
-    export: {
-      open: (_: void) => exportGroup().pipe(F.either),
     },
   },
   player: {

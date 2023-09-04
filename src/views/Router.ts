@@ -39,6 +39,7 @@ export const Router = named2('Router')(({ model }: { model: RootState }) =>
                     modalParameters: get(root.at('ui').at('modalParameters')),
                     parameters: get(root.at('parameters')),
                     groupOrder: get(root.at('groupOrder')),
+                    menu: get(root.at('ui').at('groupMenu')),
                   })(model),
                 ),
               ]),

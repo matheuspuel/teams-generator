@@ -20,6 +20,8 @@ export type RootState = {
     modalDeleteGroup: Option<{ id: Id }>
     modalParameters: boolean
     modalSortGroup: Option<null>
+    homeMenu: boolean
+    groupMenu: boolean
   }
   route: Route
 }
@@ -38,6 +40,8 @@ export const initialAppState: RootState = {
     modalDeleteGroup: O.none(),
     modalParameters: false,
     modalSortGroup: O.none(),
+    homeMenu: false,
+    groupMenu: false,
   },
   route: initialRoute,
 }
