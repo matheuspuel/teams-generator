@@ -128,13 +128,13 @@ const Item = memoized('GroupItem')(
         borderless: true,
         py: 8,
         px: 4,
-      })([MaterialIcons({ name: 'edit', size: 24, color: Colors.gray.$4 })]),
+      })([MaterialIcons({ name: 'edit', color: Colors.gray.$4 })]),
       Pressable({
         onPress: on.item.delete.open(id),
         borderless: true,
         py: 8,
         px: 4,
-      })([MaterialIcons({ name: 'delete', color: Colors.gray.$4, size: 24 })]),
+      })([MaterialIcons({ name: 'delete', color: Colors.gray.$4 })]),
     ]),
 )
 
@@ -186,11 +186,7 @@ const GroupModal = ({
                 ),
               ),
               Pressable({ onPress: on.item.upsert.close(), p: 8, round: 4 })([
-                MaterialIcons({
-                  name: 'close',
-                  size: 24,
-                  color: Colors.gray.$4,
-                }),
+                MaterialIcons({ name: 'close', color: Colors.gray.$4 }),
               ]),
             ]),
             View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
@@ -279,7 +275,7 @@ const DeleteGroupModal = ({
             color: Colors.text.dark,
           })('Excluir grupo'),
           Pressable({ onPress: on.item.delete.close(), p: 8, round: 4 })([
-            MaterialIcons({ name: 'close', size: 24, color: Colors.gray.$4 }),
+            MaterialIcons({ name: 'close', color: Colors.gray.$4 }),
           ]),
         ]),
         View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),

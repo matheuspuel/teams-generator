@@ -182,13 +182,7 @@ const Item = memoized('GroupItem')(
               w: 28,
               bg: Colors.primary.$5,
               borderColor: Colors.primary.$5,
-            })([
-              MaterialIcons({
-                name: 'check',
-                size: 24,
-                color: Colors.white,
-              }),
-            ])
+            })([MaterialIcons({ name: 'check', color: Colors.white })])
           : View({
               borderWidth: 2,
               round: 4,
@@ -260,9 +254,7 @@ const SortModal = ({
             p: 8,
             round: 4,
             onPress: on.sort.close(),
-          })([
-            MaterialIcons({ name: 'close', size: 24, color: Colors.gray.$4 }),
-          ]),
+          })([MaterialIcons({ name: 'close', color: Colors.gray.$4 })]),
         ]),
         View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
         View({ roundB: 8, overflow: 'hidden' })([
@@ -335,7 +327,6 @@ const FilterButton = (props: {
           onSome: ({ reverse }) =>
             MaterialCommunityIcons({
               name: reverse ? 'sort-descending' : 'sort-ascending',
-              size: 24,
               color: Colors.primary.$5,
             }),
         }),
@@ -379,9 +370,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
             p: 8,
             round: 4,
             onPress: on.parameters.close(),
-          })([
-            MaterialIcons({ name: 'close', size: 24, color: Colors.gray.$4 }),
-          ]),
+          })([MaterialIcons({ name: 'close', color: Colors.gray.$4 })]),
         ]),
         View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
         View({ p: 16 })([
@@ -392,13 +381,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
               borderless: true,
               rippleColor: Colors.primary.$5,
               rippleOpacity: 0.15,
-            })([
-              MaterialIcons({
-                name: 'remove',
-                size: 24,
-                color: Colors.primary.$5,
-              }),
-            ]),
+            })([MaterialIcons({ name: 'remove', color: Colors.primary.$5 })]),
             Txt({ p: 8, weight: 600, color: Colors.text.dark })(
               $(
                 parameters.teamsCountMethod,
@@ -414,13 +397,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
               borderless: true,
               rippleColor: Colors.primary.$5,
               rippleOpacity: 0.15,
-            })([
-              MaterialIcons({
-                name: 'add',
-                size: 24,
-                color: Colors.primary.$5,
-              }),
-            ]),
+            })([MaterialIcons({ name: 'add', color: Colors.primary.$5 })]),
             Pressable({
               onPress: on.parameters.teamsCount.toggleType(),
               flex: 1,
@@ -462,13 +439,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
                   w: 28,
                   bg: Colors.primary.$5,
                   borderColor: Colors.primary.$5,
-                })([
-                  MaterialIcons({
-                    name: 'check',
-                    size: 24,
-                    color: Colors.white,
-                  }),
-                ])
+                })([MaterialIcons({ name: 'check', color: Colors.white })])
               : View({
                   borderWidth: 2,
                   round: 4,
@@ -493,13 +464,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
                   w: 28,
                   bg: Colors.primary.$5,
                   borderColor: Colors.primary.$5,
-                })([
-                  MaterialIcons({
-                    name: 'check',
-                    size: 24,
-                    color: Colors.white,
-                  }),
-                ])
+                })([MaterialIcons({ name: 'check', color: Colors.white })])
               : View({
                   borderWidth: 2,
                   round: 4,
