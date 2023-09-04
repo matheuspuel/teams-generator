@@ -1,4 +1,3 @@
-import { getDefaultHeaderHeight } from '@react-navigation/elements'
 import { $, A, Eq, Match, O, Option, R, constant } from 'fp'
 import {
   FlatList,
@@ -14,6 +13,8 @@ import {
 } from 'src/components'
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
+import { HeaderMenu } from 'src/components/derivative/HeaderMenu'
+import { HeaderMenuButton } from 'src/components/derivative/HeaderMenuButton'
 import {
   deepEq,
   memoized,
@@ -135,71 +136,22 @@ const GroupHeader = memoizedConst('GroupHeader')(
   ]),
 )
 
-const Menu = Modal({
-  transparent: true,
-  flex: 1,
-  animationType: 'fade',
-  onRequestClose: on.menu.close(),
-})([
-  Pressable({
-    onPress: on.menu.close(),
-    flex: 1,
-    align: 'end',
-    rippleColor: Colors.black,
-    rippleOpacity: 0,
-  })([
-    Pressable({
-      onPress: appEvents.doNothing(),
-      bg: Colors.white,
-      m: 8,
-      round: 8,
-      shadow: 2,
-      rippleColor: Colors.black,
-      rippleOpacity: 0,
-      mt: getDefaultHeaderHeight({ height: 1, width: 0 }, false, 0),
-    })([
-      View({ py: 8 })([
-        Pressable({
-          onPress: on.player.active.toggleAll(),
-          direction: 'row',
-          align: 'center',
-          p: 12,
-          gap: 8,
-        })([
-          MaterialCommunityIcons({
-            name: 'checkbox-multiple-outline',
-            color: Colors.primary.$5,
-            size: 24,
-          }),
-          Txt()('Selecionar todos'),
-        ]),
-        Pressable({
-          onPress: on.sort.open(),
-          direction: 'row',
-          align: 'center',
-          p: 12,
-          gap: 8,
-        })([
-          MaterialIcons({ name: 'sort', color: Colors.primary.$5, size: 24 }),
-          Txt()('Ordenar'),
-        ]),
-        Pressable({
-          onPress: on.export(),
-          direction: 'row',
-          align: 'center',
-          p: 12,
-          gap: 8,
-        })([
-          MaterialCommunityIcons({
-            name: 'export',
-            color: Colors.primary.$5,
-            size: 24,
-          }),
-          Txt()('Exportar grupo'),
-        ]),
-      ]),
-    ]),
-  ]),
+const Menu = HeaderMenu({ onClose: on.menu.close() })([
+  HeaderMenuButton({
+    onPress: on.player.active.toggleAll(),
+    label: 'Selecionar todos',
+    icon: MaterialCommunityIcons({ name: 'checkbox-multiple-outline' }),
+  }),
+  HeaderMenuButton({
+    onPress: on.sort.open(),
+    label: 'Ordenar',
+    icon: MaterialIcons({ name: 'sort' }),
+  }),
+  HeaderMenuButton({
+    onPress: on.export(),
+    label: 'Exportar grupo',
+    icon: MaterialCommunityIcons({ name: 'export' }),
+  }),
 ])
 
 const Item = memoized('GroupItem')(

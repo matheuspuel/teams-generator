@@ -1,4 +1,3 @@
-import { getDefaultHeaderHeight } from '@react-navigation/elements'
 import { $, A, Eq, O, Option, R, Rec, Tup } from 'fp'
 import {
   FlatList,
@@ -17,6 +16,8 @@ import {
 } from 'src/components'
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
+import { HeaderMenu } from 'src/components/derivative/HeaderMenu'
+import { HeaderMenuButton } from 'src/components/derivative/HeaderMenuButton'
 import { memoized, memoizedConst } from 'src/components/helpers'
 import { Group } from 'src/datatypes'
 import { appEvents } from 'src/events'
@@ -95,47 +96,12 @@ const ScreenHeader = memoizedConst('Header')(
   ]),
 )
 
-const Menu = Modal({
-  transparent: true,
-  flex: 1,
-  animationType: 'fade',
-  onRequestClose: on.menu.close(),
-})([
-  Pressable({
-    onPress: on.menu.close(),
-    flex: 1,
-    align: 'end',
-    rippleColor: Colors.black,
-    rippleOpacity: 0,
-  })([
-    Pressable({
-      onPress: appEvents.doNothing(),
-      bg: Colors.white,
-      m: 8,
-      round: 8,
-      shadow: 2,
-      rippleColor: Colors.black,
-      rippleOpacity: 0,
-      mt: getDefaultHeaderHeight({ height: 1, width: 0 }, false, 0),
-    })([
-      View({ py: 8 })([
-        Pressable({
-          onPress: on.import(),
-          direction: 'row',
-          align: 'center',
-          p: 12,
-          gap: 8,
-        })([
-          MaterialCommunityIcons({
-            name: 'import',
-            color: Colors.primary.$5,
-            size: 24,
-          }),
-          Txt()('Importar grupo'),
-        ]),
-      ]),
-    ]),
-  ]),
+const Menu = HeaderMenu({ onClose: on.menu.close() })([
+  HeaderMenuButton({
+    onPress: on.import(),
+    label: 'Importar grupo',
+    icon: MaterialCommunityIcons({ name: 'import' }),
+  }),
 ])
 
 const Item = memoized('GroupItem')(
