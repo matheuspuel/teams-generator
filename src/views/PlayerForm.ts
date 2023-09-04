@@ -10,6 +10,7 @@ import {
   Txt,
   View,
 } from 'src/components'
+import { FormLabel } from 'src/components/derivative/FormLabel'
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { SolidButton } from 'src/components/derivative/SolidButton'
@@ -47,7 +48,7 @@ const ScreenHeader = memoizedConst('Header')(
 
 const NameField = (name: string) =>
   View({ p: 4 })([
-    Txt({ align: 'left', weight: 500, color: Colors.gray.$4, my: 4 })('Nome'),
+    FormLabel()('Nome'),
     Input({
       placeholder: 'Ex: Pedro',
       value: name,
@@ -58,9 +59,7 @@ const NameField = (name: string) =>
 
 const PositionField = (position: Position) =>
   View({ p: 4 })([
-    Txt({ align: 'left', weight: 500, color: Colors.gray.$4, my: 4 })(
-      'Posição',
-    ),
+    FormLabel()('Posição'),
     Row({ justify: 'space-evenly' })(
       $(
         Position.Dict,
@@ -95,9 +94,7 @@ const PositionField = (position: Position) =>
 
 export const RatingField = (rating: Rating) =>
   View({ p: 4 })([
-    Txt({ align: 'left', weight: 500, color: Colors.gray.$4, my: 4 })(
-      'Habilidade',
-    ),
+    FormLabel()('Habilidade'),
     Txt({ size: 24, weight: 700, color: Colors.primary.$5 })(
       Rating.Show.show(rating),
     ),

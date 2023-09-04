@@ -14,6 +14,7 @@ import {
   View,
 } from 'src/components'
 import { CenterModal } from 'src/components/derivative/CenterModal'
+import { FormLabel } from 'src/components/derivative/FormLabel'
 import { GhostButton } from 'src/components/derivative/GhostButton'
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
@@ -158,9 +159,7 @@ const GroupModal = ({
         ),
       })([
         View({ p: 16 })([
-          Txt({ align: 'left', weight: 500, color: Colors.gray.$4, my: 4 })(
-            'Nome do grupo',
-          ),
+          FormLabel()('Nome do grupo'),
           Input({
             placeholder: 'Ex: Futebol de quinta',
             value: form.name,
