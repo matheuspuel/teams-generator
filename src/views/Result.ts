@@ -77,15 +77,15 @@ const TeamItem = (props: {
     shadow: 1,
   })([
     Txt({ color: Colors.text.dark, size: 16, weight: 600 })(title),
-    TxtContext({ color: Colors.text.gray, size: 12 })([
+    TxtContext({ align: 'left', color: Colors.text.gray, size: 12 })([
       Txt()('Número de jogadores: '),
       Txt()(numPlayers.toString()),
     ]),
-    TxtContext({ color: Colors.text.gray, size: 12 })([
+    TxtContext({ align: 'left', color: Colors.text.gray, size: 12 })([
       Txt()('Média de habilidade: '),
       Txt()(avgRating),
     ]),
-    TxtContext({ color: Colors.text.gray, size: 12 })([
+    TxtContext({ align: 'left', color: Colors.text.gray, size: 12 })([
       Txt()('Total de habilidade: '),
       Txt()(totalRating.toString()),
     ]),

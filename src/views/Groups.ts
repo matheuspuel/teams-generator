@@ -197,7 +197,7 @@ const DeleteGroupModal = ({
       $(
         group,
         O.map(g =>
-          TxtContext({ color: Colors.text.dark })([
+          TxtContext({ align: 'left', color: Colors.text.dark })([
             Txt()('Deseja excluir o grupo '),
             Txt({ weight: 600, color: Colors.text.dark })(g.name),
             Txt()(' e todos os jogadores?'),

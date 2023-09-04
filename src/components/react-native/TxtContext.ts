@@ -38,7 +38,7 @@ const getRawProps = ({
     height: props?.h,
     flex: props?.flex,
     color: props?.color ? Color.toHex(props.color(env)) : undefined,
-    textAlign: props?.align,
+    textAlign: props?.align ?? 'center',
     fontSize: props?.size,
     fontWeight: props?.weight ? `${props.weight}` : undefined,
     lineHeight: props?.lineHeight,
