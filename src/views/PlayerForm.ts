@@ -47,7 +47,7 @@ const ScreenHeader = memoizedConst('Header')(
 
 const NameField = (name: string) =>
   View({ p: 4 })([
-    Txt({ weight: 500, color: Colors.gray.$4, my: 4 })('Nome'),
+    Txt({ align: 'left', weight: 500, color: Colors.gray.$4, my: 4 })('Nome'),
     Input({
       placeholder: 'Ex: Pedro',
       value: name,
@@ -58,7 +58,9 @@ const NameField = (name: string) =>
 
 const PositionField = (position: Position) =>
   View({ p: 4 })([
-    Txt({ weight: 500, color: Colors.gray.$4, my: 4 })('Posição'),
+    Txt({ align: 'left', weight: 500, color: Colors.gray.$4, my: 4 })(
+      'Posição',
+    ),
     Row({ justify: 'space-evenly' })(
       $(
         Position.Dict,
@@ -84,9 +86,7 @@ const PositionField = (position: Position) =>
                 position === p
                   ? Colors.primary.$5
                   : $(Colors.primary.$5, R.map(withOpacity(63))),
-            })([
-              Txt({ size: 18, align: 'center', color: Colors.text.light })(p),
-            ]),
+            })([Txt({ size: 18, color: Colors.text.light })(p)]),
           ]),
         ),
       ),
@@ -95,13 +95,12 @@ const PositionField = (position: Position) =>
 
 export const RatingField = (rating: Rating) =>
   View({ p: 4 })([
-    Txt({ weight: 500, color: Colors.gray.$4, my: 4 })('Habilidade'),
-    Txt({
-      align: 'center',
-      size: 24,
-      weight: 700,
-      color: Colors.primary.$5,
-    })(Rating.Show.show(rating)),
+    Txt({ align: 'left', weight: 500, color: Colors.gray.$4, my: 4 })(
+      'Habilidade',
+    ),
+    Txt({ size: 24, weight: 700, color: Colors.primary.$5 })(
+      Rating.Show.show(rating),
+    ),
     RatingSlider({
       initialPercentage: rating / 10,
       step: 0.05,
@@ -128,6 +127,6 @@ export const PlayerView = named2('PlayerForm')(
         isEnabled: Str.isNonEmpty(name),
         p: 16,
         round: 0,
-      })([Txt({ align: 'center' })('Gravar')]),
+      })([Txt()('Gravar')]),
     ]),
 )

@@ -66,16 +66,14 @@ export const GroupView = memoized('GroupScreen')(
         keyExtractor: ({ id }) => id,
         renderItem: Item,
         ListEmptyComponent: View({ flex: 1, justify: 'center' })([
-          Txt({ align: 'center', size: 16, color: Colors.gray.$3 })(
-            'Nenhum jogador cadastrado',
-          ),
+          Txt({ size: 16, color: Colors.gray.$3 })('Nenhum jogador cadastrado'),
         ]),
         contentContainerStyle: { flexGrow: 1, p: 8, gap: 8 },
         initialNumToRender: 16,
       }),
       SolidButton({ onPress: on.parameters.open(), p: 16, round: 0 })([
-        Txt({ align: 'center' })('Sortear'),
-        Txt({ align: 'center', size: 12 })(
+        Txt()('Sortear'),
+        Txt({ size: 12 })(
           $(
             group,
             O.match({
@@ -196,7 +194,6 @@ const Item = memoized('GroupItem')(
         bg: Colors.yellow.$3,
       })([
         Txt({
-          align: 'center',
           includeFontPadding: false,
           size: 18,
           weight: 600,
@@ -289,7 +286,7 @@ const FilterButton = (props: {
         }),
       ),
     ]),
-    Txt({ flex: 1 })(props.name),
+    Txt({ flex: 1, align: 'left' })(props.name),
   ])
 
 const ParametersModal = ({ parameters }: { parameters: Parameters }) =>

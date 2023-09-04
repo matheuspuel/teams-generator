@@ -76,12 +76,7 @@ const TeamItem = (props: {
     round: 8,
     shadow: 1,
   })([
-    Txt({
-      color: Colors.text.dark,
-      align: 'center',
-      size: 16,
-      weight: 600,
-    })(title),
+    Txt({ color: Colors.text.dark, size: 16, weight: 600 })(title),
     TxtContext({ color: Colors.text.gray, size: 12 })([
       Txt()('Número de jogadores: '),
       Txt()(numPlayers.toString()),

@@ -61,8 +61,9 @@ export const CenterModal =
 const Header = (props: { title: string; onClose: AppEvent }) =>
   Row({ align: 'center', p: 8 })([
     Txt({
-      m: 8,
       flex: 1,
+      align: 'left',
+      m: 8,
       size: 16,
       weight: 600,
       color: Colors.text.dark,

@@ -131,12 +131,9 @@ const RatingSlider_ = ({
                   ...(r % 1 === 0
                     ? [
                         View({ w: 40 })([
-                          Txt({
-                            align: 'center',
-                            size: 12,
-                            color: trackColor,
-                            weight: 900,
-                          })(r.toString()),
+                          Txt({ size: 12, color: trackColor, weight: 900 })(
+                            r.toString(),
+                          ),
                         ]),
                       ]
                     : []),

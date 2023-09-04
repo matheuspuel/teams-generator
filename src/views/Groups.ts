@@ -57,9 +57,7 @@ export const Groups = memoized('Groups')(
         ),
         renderItem: Item,
         ListEmptyComponent: View({ flex: 1, justify: 'center' })([
-          Txt({ align: 'center', size: 16, color: Colors.gray.$3 })(
-            'Nenhum grupo cadastrado',
-          ),
+          Txt({ size: 16, color: Colors.gray.$3 })('Nenhum grupo cadastrado'),
         ]),
         contentContainerStyle: { flexGrow: 1, p: 8, gap: 8 },
         initialNumToRender: 16,
@@ -120,6 +118,7 @@ const Item = memoized('GroupItem')(
       Txt({
         numberOfLines: 1,
         flex: 1,
+        align: 'left',
         p: 8,
         weight: 600,
         color: Colors.text.dark,
@@ -159,7 +158,9 @@ const GroupModal = ({
         ),
       })([
         View({ p: 16 })([
-          Txt({ weight: 500, color: Colors.gray.$4, my: 4 })('Nome do grupo'),
+          Txt({ align: 'left', weight: 500, color: Colors.gray.$4, my: 4 })(
+            'Nome do grupo',
+          ),
           Input({
             placeholder: 'Ex: Futebol de quinta',
             value: form.name,
