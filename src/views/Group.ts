@@ -1,4 +1,4 @@
-import { $, A, Eq, Match, O, Option, constant } from 'fp'
+import { $, A, Eq, Match, O, Option, R, constant } from 'fp'
 import {
   FlatList,
   Header,
@@ -10,7 +10,9 @@ import {
   Txt,
   View,
 } from 'src/components'
+import { BorderlessButton } from 'src/components/derivative/BorderlessButton'
 import { CenterModal } from 'src/components/derivative/CenterModal'
+import { Checkbox } from 'src/components/derivative/Checkbox'
 import { GhostButton } from 'src/components/derivative/GhostButton'
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
@@ -27,6 +29,7 @@ import { Group, GroupOrder, Parameters, Player, Rating } from 'src/datatypes'
 import { GroupOrderType } from 'src/datatypes/GroupOrder'
 import { AppEvent, appEvents } from 'src/events'
 import { Colors } from 'src/services/Theme'
+import { withOpacity } from 'src/utils/datatypes/Color'
 
 const on = appEvents.group
 
@@ -159,31 +162,12 @@ const Item = memoized('GroupItem')(
       shadow: 1,
       bg: Colors.white,
     })([
-      Pressable({
-        onPress: on.player.active.toggle(id),
-        borderless: true,
-        p: 8,
+      Checkbox({
+        onToggle: on.player.active.toggle(id),
+        isSelected: active,
+        m: 8,
         mr: -8,
-        rippleColor: Colors.primary.$5,
-        rippleOpacity: 0.15,
-      })([
-        active
-          ? View({
-              borderWidth: 2,
-              round: 4,
-              h: 28,
-              w: 28,
-              bg: Colors.primary.$5,
-              borderColor: Colors.primary.$5,
-            })([MaterialIcons({ name: 'check', color: Colors.white })])
-          : View({
-              borderWidth: 2,
-              round: 4,
-              borderColor: Colors.gray.$3,
-              h: 28,
-              w: 28,
-            })([]),
-      ]),
+      }),
       View({
         aspectRatio: 1,
         alignSelf: 'stretch',
@@ -217,47 +201,42 @@ const SortModal = ({
       FilterButton({
         name: 'Nome',
         onPress: on.sort.by.name(),
-        state: $(
+        state:
           mainSort._tag === 'name'
             ? O.some({ reverse: mainSort.reverse })
             : O.none(),
-        ),
       }),
       FilterButton({
         name: 'Posição',
         onPress: on.sort.by.position(),
-        state: $(
+        state:
           mainSort._tag === 'position'
             ? O.some({ reverse: mainSort.reverse })
             : O.none(),
-        ),
       }),
       FilterButton({
         name: 'Habilidade',
         onPress: on.sort.by.rating(),
-        state: $(
+        state:
           mainSort._tag === 'rating'
             ? O.some({ reverse: mainSort.reverse })
             : O.none(),
-        ),
       }),
       FilterButton({
         name: 'Ativo',
         onPress: on.sort.by.active(),
-        state: $(
+        state:
           mainSort._tag === 'active'
             ? O.some({ reverse: mainSort.reverse })
             : O.none(),
-        ),
       }),
       FilterButton({
         name: 'Data',
         onPress: on.sort.by.date(),
-        state: $(
+        state:
           mainSort._tag === 'date'
             ? O.some({ reverse: mainSort.reverse })
             : O.none(),
-        ),
       }),
     ]),
   ])
@@ -274,17 +253,14 @@ const FilterButton = (props: {
     onPress: props.onPress,
   })([
     View({ w: 36 })([
-      $(
-        props.state,
-        O.match({
-          onNone: () => Nothing,
-          onSome: ({ reverse }) =>
-            MaterialCommunityIcons({
-              name: reverse ? 'sort-descending' : 'sort-ascending',
-              color: Colors.primary.$5,
-            }),
-        }),
-      ),
+      O.match(props.state, {
+        onNone: () => Nothing,
+        onSome: ({ reverse }) =>
+          MaterialCommunityIcons({
+            name: reverse ? 'sort-descending' : 'sort-ascending',
+            color: Colors.primary.$5,
+          }),
+      }),
     ]),
     Txt({ flex: 1, align: 'left' })(props.name),
   ])
@@ -293,13 +269,9 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
   CenterModal({ onClose: on.parameters.close(), title: 'Parâmetros', m: 24 })([
     View({ p: 16 })([
       Row({ align: 'center' })([
-        Pressable({
-          onPress: on.parameters.teamsCount.decrement(),
-          p: 12,
-          borderless: true,
-          rippleColor: Colors.primary.$5,
-          rippleOpacity: 0.15,
-        })([MaterialIcons({ name: 'remove', color: Colors.primary.$5 })]),
+        BorderlessButton({ onPress: on.parameters.teamsCount.decrement() })([
+          MaterialIcons({ name: 'remove' }),
+        ]),
         Txt({ p: 8, weight: 600, color: Colors.text.dark })(
           $(
             parameters.teamsCountMethod,
@@ -309,24 +281,20 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
             }),
           ),
         ),
-        Pressable({
-          onPress: on.parameters.teamsCount.increment(),
-          p: 12,
-          borderless: true,
-          rippleColor: Colors.primary.$5,
-          rippleOpacity: 0.15,
-        })([MaterialIcons({ name: 'add', color: Colors.primary.$5 })]),
-        Pressable({
+        BorderlessButton({ onPress: on.parameters.teamsCount.increment() })([
+          MaterialIcons({ name: 'add' }),
+        ]),
+        GhostButton({
           onPress: on.parameters.teamsCount.toggleType(),
           flex: 1,
           direction: 'row',
           align: 'center',
-          round: 8,
           p: 4,
           pl: 8,
           gap: 4,
+          color: Colors.text.dark,
         })([
-          Txt({ flex: 1, color: Colors.text.dark })(
+          Txt({ flex: 1 })(
             $(
               parameters.teamsCountMethod,
               Match.valueTags({
@@ -348,23 +316,12 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
         align: 'center',
         p: 8,
         round: 8,
+        bg: $(Colors.white, R.map(withOpacity(0))),
       })([
-        parameters.position
-          ? View({
-              borderWidth: 2,
-              round: 4,
-              h: 28,
-              w: 28,
-              bg: Colors.primary.$5,
-              borderColor: Colors.primary.$5,
-            })([MaterialIcons({ name: 'check', color: Colors.white })])
-          : View({
-              borderWidth: 2,
-              round: 4,
-              borderColor: Colors.gray.$3,
-              h: 28,
-              w: 28,
-            })([]),
+        Checkbox({
+          onToggle: on.parameters.position.toggle(),
+          isSelected: parameters.position,
+        }),
         Txt({ ml: 8, size: 14 })('Considerar posições'),
       ]),
       Pressable({
@@ -373,23 +330,12 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
         align: 'center',
         p: 8,
         round: 8,
+        bg: $(Colors.white, R.map(withOpacity(0))),
       })([
-        parameters.rating
-          ? View({
-              borderWidth: 2,
-              round: 4,
-              h: 28,
-              w: 28,
-              bg: Colors.primary.$5,
-              borderColor: Colors.primary.$5,
-            })([MaterialIcons({ name: 'check', color: Colors.white })])
-          : View({
-              borderWidth: 2,
-              round: 4,
-              borderColor: Colors.gray.$3,
-              h: 28,
-              w: 28,
-            })([]),
+        Checkbox({
+          onToggle: on.parameters.rating.toggle(),
+          isSelected: parameters.rating,
+        }),
         Txt({ ml: 8, size: 14 })('Considerar habilidade'),
       ]),
     ]),
