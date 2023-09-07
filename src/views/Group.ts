@@ -316,7 +316,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
         align: 'center',
         p: 8,
         round: 8,
-        bg: $(Colors.white, F.map(withOpacity(0))),
+        bg: F.map(Colors.white, withOpacity(0)),
       })([
         Checkbox({
           onToggle: on.parameters.position.toggle(),
@@ -330,7 +330,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
         align: 'center',
         p: 8,
         round: 8,
-        bg: $(Colors.white, F.map(withOpacity(0))),
+        bg: F.map(Colors.white, withOpacity(0)),
       })([
         Checkbox({
           onToggle: on.parameters.rating.toggle(),

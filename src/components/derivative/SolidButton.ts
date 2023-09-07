@@ -1,4 +1,4 @@
-import { $, F, pipe } from 'fp'
+import { F, pipe } from 'fp'
 import { Pressable } from 'src/components'
 import { Colors } from 'src/services/Theme'
 import { withOpacity } from 'src/utils/datatypes/Color'
@@ -21,7 +21,7 @@ export const SolidButton = named3('SolidButton')(
         bg:
           props.bg ??
           pipe(props.color ?? Colors.primary.$5, c =>
-            props.isEnabled === false ? $(c, F.map(withOpacity(95))) : c,
+            props.isEnabled === false ? F.map(c, withOpacity(95)) : c,
           ),
         rippleColor: props.rippleColor ?? Colors.black,
         rippleOpacity: props.rippleOpacity ?? 0.5,
@@ -34,9 +34,7 @@ export const SolidButton = named3('SolidButton')(
                 context: {
                   ...env.context,
                   textColor: pipe(props.textColor ?? Colors.text.light, c =>
-                    props.isEnabled === false
-                      ? $(c, F.map(withOpacity(95)))
-                      : c,
+                    props.isEnabled === false ? F.map(c, withOpacity(95)) : c,
                   ),
                 },
               }),

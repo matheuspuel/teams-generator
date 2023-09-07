@@ -84,7 +84,7 @@ const PositionField = (position: Position) =>
               bg:
                 position === p
                   ? Colors.primary.$5
-                  : $(Colors.primary.$5, F.map(withOpacity(63))),
+                  : F.map(Colors.primary.$5, withOpacity(63)),
             })([Txt({ size: 18, color: Colors.text.light })(p)]),
           ]),
         ),

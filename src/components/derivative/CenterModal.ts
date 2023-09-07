@@ -1,4 +1,4 @@
-import { $, F } from 'fp'
+import { F } from 'fp'
 import {
   Fragment,
   MaterialIcons,
@@ -35,7 +35,7 @@ export const CenterModal = named3('CenterModal')(
           onPress: props.onClose,
           flex: 1,
           justify: 'center',
-          bg: $(Colors.black, F.map(withOpacity(63))),
+          bg: F.map(Colors.black, withOpacity(63)),
           rippleColor: Colors.black,
           rippleOpacity: 0,
         })([
