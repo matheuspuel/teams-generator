@@ -8,6 +8,7 @@ import { Id } from 'src/utils/Entity'
 
 export type RootState = {
   core: { isLoaded: boolean }
+  alert: Option<{ title: string; message: string; type: 'error' | 'success' }>
   parameters: Parameters
   groups: GroupsState
   playerForm: PlayerForm
@@ -28,6 +29,7 @@ export type RootState = {
 
 export const initialAppState: RootState = {
   core: { isLoaded: false },
+  alert: O.none(),
   groups: emptyGroups,
   parameters: Parameters.initial,
   playerForm: blankPlayerForm,

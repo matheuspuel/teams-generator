@@ -20,6 +20,7 @@ import { Parameters as Parameters_, Player, Rating } from 'src/datatypes'
 import { exportGroup, importGroupFromDocumentPicker } from 'src/export/group'
 import { RootState } from 'src/model'
 import { root } from 'src/model/optic'
+import { Alert } from 'src/services/Alert'
 import { BackHandler } from 'src/services/BackHandler'
 import { ShareService } from 'src/services/Share'
 import { SplashScreen } from 'src/services/SplashScreen'
@@ -96,6 +97,7 @@ export const appEventsDefinition = defineEvents({
       execute(replaceSApp(root.at('core').at('isLoaded'))(true)),
     saveState: (_: void) => saveState,
   },
+  alert: { dismiss: (_: void) => Alert.dismiss() },
   groups: {
     menu: {
       open: (_: void) =>

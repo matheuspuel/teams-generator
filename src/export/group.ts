@@ -1,8 +1,8 @@
 import { $f, D, Data, F, Match, O, Option, S, Str, Stream, get, pipe } from 'fp'
-import { Alert } from 'react-native'
 import { Group } from 'src/datatypes'
 import { RootState } from 'src/model'
 import { root } from 'src/model/optic'
+import { Alert } from 'src/services/Alert'
 import { DocumentPicker } from 'src/services/DocumentPicker'
 import { FileSystem } from 'src/services/FileSystem'
 import { Linking } from 'src/services/Linking'
@@ -62,7 +62,7 @@ export const setupReceiveURLHandler = () =>
 const importGroupFromFile = (args: { url: string }) =>
   pipe(
     temporaryImportUri,
-    F.tap(() => F.log(args.url)),
+    F.tap(() => F.logDebug(args.url)),
     F.tap(tempUri => FileSystem.copy({ from: args.url, to: tempUri })),
     F.tapError(e => F.logError(e.error)),
     F.flatMap(tempUri => FileSystem.read({ uri: tempUri })),
@@ -81,22 +81,27 @@ const importGroupFromFile = (args: { url: string }) =>
       ),
     ),
     F.flatMap(addImportedGroup),
-    F.tap(() => F.sync(() => Alert.alert('Grupo importado'))),
+    F.tap(() =>
+      Alert.alert({
+        type: 'success',
+        title: 'Sucesso',
+        message: 'Grupo importado',
+      }),
+    ),
     F.tapError(e =>
-      F.sync(() =>
-        Alert.alert(
-          'Falha ao importar grupo',
-          pipe(
-            e,
-            Match.valueTags({
-              NewerVersionError: () =>
-                'O arquivo foi criado com uma versão mais recente do aplicativo. Atualize o aplicativo e tente novamente.',
-              FileSystemError: () => 'Não foi possível acessar o arquivo.',
-              ParseError: () => 'O arquivo não é válido ou está corrompido',
-            }),
-          ),
+      Alert.alert({
+        type: 'error',
+        title: 'Falha ao importar grupo',
+        message: pipe(
+          e,
+          Match.valueTags({
+            NewerVersionError: () =>
+              'O arquivo foi criado com uma versão mais recente do aplicativo. Atualize o aplicativo e tente novamente.',
+            FileSystemError: () => 'Não foi possível acessar o arquivo.',
+            ParseError: () => 'O arquivo não é válido ou está corrompido',
+          }),
         ),
-      ),
+      }),
     ),
   )
 

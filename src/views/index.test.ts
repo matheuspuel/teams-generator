@@ -5,6 +5,7 @@
 import { act, create } from 'react-test-renderer'
 import { GroupOrder, Parameters } from 'src/datatypes'
 import { AppEvent, appEvents as on } from 'src/events'
+import { AlertLive } from 'src/services/Alert/default'
 import { BackHandlerEnv } from 'src/services/BackHandler'
 import { DocumentPickerEnv } from 'src/services/DocumentPicker'
 import { AppEventHandler } from 'src/services/EventHandler'
@@ -105,6 +106,7 @@ const testLayer = pipe(
     AppThemeLive,
     SafeAreaServiceTest,
   ),
+  Layer.provideMerge(AlertLive),
   Layer.provideMerge(AppEventHandlerLive),
 )
 

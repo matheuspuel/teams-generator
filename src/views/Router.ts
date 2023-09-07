@@ -1,5 +1,7 @@
 import { get } from '@fp-ts/optic'
 import { $, absurd, Apply, O, R } from 'fp'
+import { Nothing } from 'src/components'
+import { AlertToast } from 'src/components/derivative/AlertToast'
 import { StatusBar } from 'src/components/expo/StatusBar'
 import { named2 } from 'src/components/helpers'
 import { SafeAreaProvider } from 'src/components/safe-area/SafeAreaProvider'
@@ -61,5 +63,9 @@ export const Router = named2('Router')(({ model }: { model: RootState }) =>
             ],
       ),
     ]),
+    O.match(model.alert, {
+      onNone: () => Nothing,
+      onSome: alert => AlertToast(alert),
+    }),
   ]),
 )

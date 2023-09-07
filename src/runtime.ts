@@ -5,6 +5,7 @@ import { AppEventHandlerEnv } from 'src/services/EventHandler'
 import { SplashScreenLive } from 'src/services/SplashScreen/default'
 import { StateRefLive } from 'src/services/StateRef/default'
 import { AppEvent } from './events'
+import { AlertLive } from './services/Alert/default'
 import { AsyncStorageLive } from './services/AsyncStorage/live'
 import { DocumentPickerLive } from './services/DocumentPicker/default'
 import { AppEventHandlerLive } from './services/EventHandler/default'
@@ -59,6 +60,7 @@ const appLayer = pipe(
       GroupsRepositoryLive,
       GroupOrderRepositoryLive,
       ParametersRepositoryLive,
+      StateRefLive,
     ),
   ),
   Layer.provideMerge(
@@ -69,7 +71,7 @@ const appLayer = pipe(
       MetadataServiceLive,
       TelemetryLive,
       IdGeneratorLive,
-      StateRefLive,
+      AlertLive,
       ShareServiceLive,
       BackHandlerLive,
       SplashScreenLive,

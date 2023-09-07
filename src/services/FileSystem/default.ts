@@ -33,7 +33,7 @@ const copy = (args: { from: string; to: string }) =>
   })
 
 const makeDirectory = (args: { uri: string }) =>
-  F.log('make dir: ' + args.uri).pipe(
+  F.logDebug('make dir: ' + args.uri).pipe(
     F.flatMap(() =>
       F.tryPromise({
         try: () =>
