@@ -1,7 +1,7 @@
 import * as Context from '@effect/data/Context'
 import { Effect } from '@effect/io/Effect'
 import { AppEventHandler } from 'src/services/EventHandler'
-import { F } from 'src/utils/fp'
+import { F, Runtime } from 'src/utils/fp'
 import { SafeAreaService } from '../SafeArea'
 import { AppStateRef } from '../StateRef'
 import { AppTheme } from '../Theme'
@@ -18,7 +18,7 @@ export const UI = F.serviceFunctions(UIEnv)
 export type UIEnv = {
   Theme: AppTheme
   SafeArea: SafeAreaService
-  EventHandler: AppEventHandler
   StateRef: AppStateRef
   context: UIContext
+  runtime: Runtime.Runtime<AppEventHandler>
 }

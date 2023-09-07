@@ -118,9 +118,17 @@ it('renders', async () => {
     F.all({
       Theme: AppThemeEnv,
       SafeArea: SafeAreaServiceEnv,
-      EventHandler: AppEventHandlerEnv,
       StateRef: AppStateRefEnv,
       context: F.succeed(initialUIContext),
+      runtime: pipe(
+        AppEventHandlerEnv,
+        F.flatMap(handler =>
+          Layer.toRuntime(Layer.succeed(AppEventHandlerEnv, handler)),
+        ),
+        F.scoped,
+        F.cached,
+        F.flatten,
+      ),
     }),
     env => UIRoot(env),
   ).pipe(F.provideLayer(testLayer), F.runSync)

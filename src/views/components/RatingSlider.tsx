@@ -19,7 +19,7 @@ import { Fragment, Txt, View } from 'src/components'
 import { UIElement } from 'src/components/types'
 import { Rating } from 'src/datatypes'
 import { AppEvent } from 'src/events'
-import { runtime } from 'src/runtime'
+import { AppEventHandler } from 'src/services/EventHandler'
 import { Colors } from 'src/services/Theme'
 import { UIEnv } from 'src/services/UI'
 import { Color } from 'src/utils/datatypes'
@@ -69,7 +69,7 @@ const RatingSlider_ = ({
   }
 
   const onChange = (n: number) =>
-    Runtime.runPromise(runtime)(env.EventHandler.handle(onChange_(n)))
+    Runtime.runPromise(env.runtime)(AppEventHandler.handle(onChange_(n)))
 
   const gesture = Gesture.Pan()
     .onBegin(e => {

@@ -1,7 +1,7 @@
 import { registerRootComponent } from 'expo'
 import { Effect, F, Layer } from 'fp'
 import { Element } from 'src/components/types'
-import { AppEventHandlerEnv } from 'src/services/EventHandler'
+import { runtime } from 'src/runtime'
 import { UIEnv } from '.'
 import { SafeAreaServiceEnv } from '../SafeArea'
 import { AppStateRefEnv } from '../StateRef'
@@ -16,9 +16,9 @@ export const UILive = F.map(
   F.all({
     Theme: AppThemeEnv,
     SafeArea: SafeAreaServiceEnv,
-    EventHandler: AppEventHandlerEnv,
     StateRef: AppStateRefEnv,
     context: F.succeed(initialUIContext),
+    runtime: F.succeed(runtime),
   }),
   env =>
     UIEnv.context({
