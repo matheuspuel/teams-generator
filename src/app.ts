@@ -32,7 +32,7 @@ export const startApp = $(
       Stream.changes,
       Stream.flatMap(() => AppEventHandler.handle(on.saveState())),
       Stream.runDrain,
-      F.fork,
+      F.forkDaemon,
     ),
   ),
   F.tap(() => AppEventHandler.handle(on.appLoaded())),
@@ -46,5 +46,6 @@ export const startApp = $(
       F.catchAll(() => F.unit),
     ),
   ),
-  F.tap(() => setupReceiveURLHandler().pipe(Stream.runDrain)),
+  F.tap(() => setupReceiveURLHandler().pipe(Stream.runDrain, F.forkDaemon)),
+  F.tap(() => F.logDebug('startApp done')),
 )
