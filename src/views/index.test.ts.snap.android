@@ -1307,7 +1307,7 @@ exports[`renders 2`] = `
                         "paddingRight": undefined,
                         "paddingTop": undefined,
                         "paddingVertical": undefined,
-                        "textAlign": undefined,
+                        "textAlign": "left",
                         "width": undefined,
                       }
                     }
@@ -2162,7 +2162,7 @@ exports[`renders 3`] = `
                         "paddingRight": undefined,
                         "paddingTop": undefined,
                         "paddingVertical": undefined,
-                        "textAlign": undefined,
+                        "textAlign": "left",
                         "width": undefined,
                       }
                     }
@@ -3196,7 +3196,7 @@ exports[`renders 3`] = `
                 "aspectRatio": undefined,
                 "backgroundColor": "#136d15ff",
                 "borderColor": undefined,
-                "borderRadius": undefined,
+                "borderRadius": 0,
                 "columnGap": undefined,
                 "elevation": undefined,
                 "flex": undefined,
@@ -3233,7 +3233,7 @@ exports[`renders 3`] = `
                   "backgroundColor": "black",
                   "borderBottomLeftRadius": undefined,
                   "borderBottomRightRadius": undefined,
-                  "borderRadius": undefined,
+                  "borderRadius": 0,
                   "borderTopLeftRadius": undefined,
                   "borderTopRightRadius": undefined,
                   "bottom": 0,
@@ -3953,7 +3953,7 @@ exports[`renders 4`] = `
                         "paddingRight": undefined,
                         "paddingTop": undefined,
                         "paddingVertical": undefined,
-                        "textAlign": undefined,
+                        "textAlign": "left",
                         "width": undefined,
                       }
                     }
@@ -4987,7 +4987,7 @@ exports[`renders 4`] = `
                 "aspectRatio": undefined,
                 "backgroundColor": "#136d15ff",
                 "borderColor": undefined,
-                "borderRadius": undefined,
+                "borderRadius": 0,
                 "columnGap": undefined,
                 "elevation": undefined,
                 "flex": undefined,
@@ -5024,7 +5024,7 @@ exports[`renders 4`] = `
                   "backgroundColor": "black",
                   "borderBottomLeftRadius": undefined,
                   "borderBottomRightRadius": undefined,
-                  "borderRadius": undefined,
+                  "borderRadius": 0,
                   "borderTopLeftRadius": undefined,
                   "borderTopRightRadius": undefined,
                   "bottom": 0,
@@ -5702,7 +5702,7 @@ exports[`renders 4`] = `
                       "paddingRight": undefined,
                       "paddingTop": undefined,
                       "paddingVertical": undefined,
-                      "textAlign": undefined,
+                      "textAlign": "left",
                       "width": undefined,
                     }
                   }
@@ -5829,7 +5829,7 @@ exports[`renders 4`] = `
                       "paddingRight": undefined,
                       "paddingTop": undefined,
                       "paddingVertical": undefined,
-                      "textAlign": undefined,
+                      "textAlign": "left",
                       "width": undefined,
                     }
                   }
@@ -6848,7 +6848,7 @@ exports[`renders 4`] = `
                       "paddingRight": undefined,
                       "paddingTop": undefined,
                       "paddingVertical": undefined,
-                      "textAlign": undefined,
+                      "textAlign": "left",
                       "width": undefined,
                     }
                   }
@@ -10911,7 +10911,7 @@ exports[`renders 4`] = `
               "aspectRatio": undefined,
               "backgroundColor": "#136d155f",
               "borderColor": undefined,
-              "borderRadius": undefined,
+              "borderRadius": 0,
               "columnGap": undefined,
               "elevation": undefined,
               "flex": undefined,
@@ -10948,7 +10948,7 @@ exports[`renders 4`] = `
                 "backgroundColor": "black",
                 "borderBottomLeftRadius": undefined,
                 "borderBottomRightRadius": undefined,
-                "borderRadius": undefined,
+                "borderRadius": 0,
                 "borderTopLeftRadius": undefined,
                 "borderTopRightRadius": undefined,
                 "bottom": 0,
@@ -11636,7 +11636,7 @@ exports[`renders 5`] = `
                         "paddingRight": undefined,
                         "paddingTop": undefined,
                         "paddingVertical": undefined,
-                        "textAlign": undefined,
+                        "textAlign": "left",
                         "width": undefined,
                       }
                     }
@@ -12602,7 +12602,7 @@ exports[`renders 5`] = `
                         "gap": undefined,
                         "height": undefined,
                         "justifyContent": undefined,
-                        "margin": undefined,
+                        "margin": 0,
                         "marginBottom": undefined,
                         "marginHorizontal": undefined,
                         "marginLeft": undefined,
@@ -12816,7 +12816,7 @@ exports[`renders 5`] = `
                         "paddingRight": undefined,
                         "paddingTop": undefined,
                         "paddingVertical": undefined,
-                        "textAlign": undefined,
+                        "textAlign": "center",
                         "width": undefined,
                       }
                     }
@@ -12848,7 +12848,7 @@ exports[`renders 5`] = `
                         "paddingRight": undefined,
                         "paddingTop": undefined,
                         "paddingVertical": undefined,
-                        "textAlign": undefined,
+                        "textAlign": "center",
                         "width": undefined,
                       }
                     }
@@ -12879,7 +12879,7 @@ exports[`renders 5`] = `
                 "aspectRatio": undefined,
                 "backgroundColor": "#136d15ff",
                 "borderColor": undefined,
-                "borderRadius": undefined,
+                "borderRadius": 0,
                 "columnGap": undefined,
                 "elevation": undefined,
                 "flex": undefined,
@@ -12916,7 +12916,7 @@ exports[`renders 5`] = `
                   "backgroundColor": "black",
                   "borderBottomLeftRadius": undefined,
                   "borderBottomRightRadius": undefined,
-                  "borderRadius": undefined,
+                  "borderRadius": 0,
                   "borderTopLeftRadius": undefined,
                   "borderTopRightRadius": undefined,
                   "bottom": 0,
@@ -13228,7 +13228,7 @@ exports[`renders 5`] = `
                       collapsable={false}
                       delayLongPress={600}
                       foreground={true}
-                      handlerTag={39}
+                      handlerTag={41}
                       handlerType="NativeViewGestureHandler"
                       onActiveStateChange={[Function]}
                       onGestureEvent={[Function]}
@@ -13411,7 +13411,7 @@ exports[`renders 5`] = `
                       collapsable={false}
                       delayLongPress={600}
                       foreground={true}
-                      handlerTag={40}
+                      handlerTag={42}
                       handlerType="NativeViewGestureHandler"
                       onActiveStateChange={[Function]}
                       onGestureEvent={[Function]}
@@ -13623,7 +13623,7 @@ exports[`renders 5`] = `
                       "paddingRight": undefined,
                       "paddingTop": undefined,
                       "paddingVertical": undefined,
-                      "textAlign": undefined,
+                      "textAlign": "left",
                       "width": undefined,
                     }
                   }
@@ -13631,7 +13631,7 @@ exports[`renders 5`] = `
                   <Text
                     style={
                       {
-                        "color": undefined,
+                        "color": "#1e1e1eff",
                         "flex": undefined,
                         "fontSize": undefined,
                         "fontWeight": undefined,
@@ -13652,7 +13652,7 @@ exports[`renders 5`] = `
                         "paddingRight": undefined,
                         "paddingTop": undefined,
                         "paddingVertical": undefined,
-                        "textAlign": undefined,
+                        "textAlign": "center",
                         "width": undefined,
                       }
                     }
@@ -13662,7 +13662,7 @@ exports[`renders 5`] = `
                   <Text
                     style={
                       {
-                        "color": undefined,
+                        "color": "#1e1e1eff",
                         "flex": undefined,
                         "fontSize": undefined,
                         "fontWeight": undefined,
@@ -13683,7 +13683,7 @@ exports[`renders 5`] = `
                         "paddingRight": undefined,
                         "paddingTop": undefined,
                         "paddingVertical": undefined,
-                        "textAlign": undefined,
+                        "textAlign": "center",
                         "width": undefined,
                       }
                     }
@@ -13714,7 +13714,7 @@ exports[`renders 5`] = `
                       "paddingRight": undefined,
                       "paddingTop": undefined,
                       "paddingVertical": undefined,
-                      "textAlign": undefined,
+                      "textAlign": "left",
                       "width": undefined,
                     }
                   }
@@ -13722,7 +13722,7 @@ exports[`renders 5`] = `
                   <Text
                     style={
                       {
-                        "color": undefined,
+                        "color": "#1e1e1eff",
                         "flex": undefined,
                         "fontSize": undefined,
                         "fontWeight": undefined,
@@ -13743,7 +13743,7 @@ exports[`renders 5`] = `
                         "paddingRight": undefined,
                         "paddingTop": undefined,
                         "paddingVertical": undefined,
-                        "textAlign": undefined,
+                        "textAlign": "center",
                         "width": undefined,
                       }
                     }
@@ -13753,7 +13753,7 @@ exports[`renders 5`] = `
                   <Text
                     style={
                       {
-                        "color": undefined,
+                        "color": "#1e1e1eff",
                         "flex": undefined,
                         "fontSize": undefined,
                         "fontWeight": undefined,
@@ -13774,7 +13774,7 @@ exports[`renders 5`] = `
                         "paddingRight": undefined,
                         "paddingTop": undefined,
                         "paddingVertical": undefined,
-                        "textAlign": undefined,
+                        "textAlign": "center",
                         "width": undefined,
                       }
                     }
@@ -13805,7 +13805,7 @@ exports[`renders 5`] = `
                       "paddingRight": undefined,
                       "paddingTop": undefined,
                       "paddingVertical": undefined,
-                      "textAlign": undefined,
+                      "textAlign": "left",
                       "width": undefined,
                     }
                   }
@@ -13813,7 +13813,7 @@ exports[`renders 5`] = `
                   <Text
                     style={
                       {
-                        "color": undefined,
+                        "color": "#1e1e1eff",
                         "flex": undefined,
                         "fontSize": undefined,
                         "fontWeight": undefined,
@@ -13834,7 +13834,7 @@ exports[`renders 5`] = `
                         "paddingRight": undefined,
                         "paddingTop": undefined,
                         "paddingVertical": undefined,
-                        "textAlign": undefined,
+                        "textAlign": "center",
                         "width": undefined,
                       }
                     }
@@ -13844,7 +13844,7 @@ exports[`renders 5`] = `
                   <Text
                     style={
                       {
-                        "color": undefined,
+                        "color": "#1e1e1eff",
                         "flex": undefined,
                         "fontSize": undefined,
                         "fontWeight": undefined,
@@ -13865,7 +13865,7 @@ exports[`renders 5`] = `
                         "paddingRight": undefined,
                         "paddingTop": undefined,
                         "paddingVertical": undefined,
-                        "textAlign": undefined,
+                        "textAlign": "center",
                         "width": undefined,
                       }
                     }
@@ -13943,7 +13943,7 @@ exports[`renders 5`] = `
                         "paddingRight": undefined,
                         "paddingTop": undefined,
                         "paddingVertical": undefined,
-                        "textAlign": undefined,
+                        "textAlign": "center",
                         "width": undefined,
                       }
                     }
@@ -13975,7 +13975,7 @@ exports[`renders 5`] = `
                         "paddingRight": undefined,
                         "paddingTop": undefined,
                         "paddingVertical": undefined,
-                        "textAlign": undefined,
+                        "textAlign": "center",
                         "width": undefined,
                       }
                     }
@@ -14006,7 +14006,7 @@ exports[`renders 5`] = `
                         "paddingRight": undefined,
                         "paddingTop": undefined,
                         "paddingVertical": undefined,
-                        "textAlign": undefined,
+                        "textAlign": "center",
                         "width": undefined,
                       }
                     }
@@ -14115,7 +14115,7 @@ exports[`renders 5`] = `
                       "paddingRight": undefined,
                       "paddingTop": undefined,
                       "paddingVertical": undefined,
-                      "textAlign": undefined,
+                      "textAlign": "left",
                       "width": undefined,
                     }
                   }
@@ -14123,7 +14123,7 @@ exports[`renders 5`] = `
                   <Text
                     style={
                       {
-                        "color": undefined,
+                        "color": "#1e1e1eff",
                         "flex": undefined,
                         "fontSize": undefined,
                         "fontWeight": undefined,
@@ -14144,7 +14144,7 @@ exports[`renders 5`] = `
                         "paddingRight": undefined,
                         "paddingTop": undefined,
                         "paddingVertical": undefined,
-                        "textAlign": undefined,
+                        "textAlign": "center",
                         "width": undefined,
                       }
                     }
@@ -14154,7 +14154,7 @@ exports[`renders 5`] = `
                   <Text
                     style={
                       {
-                        "color": undefined,
+                        "color": "#1e1e1eff",
                         "flex": undefined,
                         "fontSize": undefined,
                         "fontWeight": undefined,
@@ -14175,7 +14175,7 @@ exports[`renders 5`] = `
                         "paddingRight": undefined,
                         "paddingTop": undefined,
                         "paddingVertical": undefined,
-                        "textAlign": undefined,
+                        "textAlign": "center",
                         "width": undefined,
                       }
                     }
@@ -14206,7 +14206,7 @@ exports[`renders 5`] = `
                       "paddingRight": undefined,
                       "paddingTop": undefined,
                       "paddingVertical": undefined,
-                      "textAlign": undefined,
+                      "textAlign": "left",
                       "width": undefined,
                     }
                   }
@@ -14214,7 +14214,7 @@ exports[`renders 5`] = `
                   <Text
                     style={
                       {
-                        "color": undefined,
+                        "color": "#1e1e1eff",
                         "flex": undefined,
                         "fontSize": undefined,
                         "fontWeight": undefined,
@@ -14235,7 +14235,7 @@ exports[`renders 5`] = `
                         "paddingRight": undefined,
                         "paddingTop": undefined,
                         "paddingVertical": undefined,
-                        "textAlign": undefined,
+                        "textAlign": "center",
                         "width": undefined,
                       }
                     }
@@ -14245,7 +14245,7 @@ exports[`renders 5`] = `
                   <Text
                     style={
                       {
-                        "color": undefined,
+                        "color": "#1e1e1eff",
                         "flex": undefined,
                         "fontSize": undefined,
                         "fontWeight": undefined,
@@ -14266,7 +14266,7 @@ exports[`renders 5`] = `
                         "paddingRight": undefined,
                         "paddingTop": undefined,
                         "paddingVertical": undefined,
-                        "textAlign": undefined,
+                        "textAlign": "center",
                         "width": undefined,
                       }
                     }
@@ -14297,7 +14297,7 @@ exports[`renders 5`] = `
                       "paddingRight": undefined,
                       "paddingTop": undefined,
                       "paddingVertical": undefined,
-                      "textAlign": undefined,
+                      "textAlign": "left",
                       "width": undefined,
                     }
                   }
@@ -14305,7 +14305,7 @@ exports[`renders 5`] = `
                   <Text
                     style={
                       {
-                        "color": undefined,
+                        "color": "#1e1e1eff",
                         "flex": undefined,
                         "fontSize": undefined,
                         "fontWeight": undefined,
@@ -14326,7 +14326,7 @@ exports[`renders 5`] = `
                         "paddingRight": undefined,
                         "paddingTop": undefined,
                         "paddingVertical": undefined,
-                        "textAlign": undefined,
+                        "textAlign": "center",
                         "width": undefined,
                       }
                     }
@@ -14336,7 +14336,7 @@ exports[`renders 5`] = `
                   <Text
                     style={
                       {
-                        "color": undefined,
+                        "color": "#1e1e1eff",
                         "flex": undefined,
                         "fontSize": undefined,
                         "fontWeight": undefined,
@@ -14357,7 +14357,7 @@ exports[`renders 5`] = `
                         "paddingRight": undefined,
                         "paddingTop": undefined,
                         "paddingVertical": undefined,
-                        "textAlign": undefined,
+                        "textAlign": "center",
                         "width": undefined,
                       }
                     }
