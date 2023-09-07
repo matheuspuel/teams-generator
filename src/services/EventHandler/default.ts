@@ -14,10 +14,6 @@ export const AppEventHandlerLive = F.map(
   ctx =>
     AppEventHandlerEnv.context({
       handle: (event: AppEvent) =>
-        $(
-          appEventHandler_(event),
-          F.catchAll(() => F.unit),
-          F.provideContext(ctx),
-        ),
+        $(appEventHandler_(event), F.ignore, F.provideContext(ctx)),
     }),
 ).pipe(Layer.effectContext)

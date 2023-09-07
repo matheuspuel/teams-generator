@@ -2,9 +2,10 @@
 /* eslint-disable functional/no-expression-statements */
 /* eslint-disable functional/no-conditional-statements */
 import * as Fiber from '@effect/io/Fiber'
-import { Eq, F, O, Option, S, Stream, pipe } from 'fp'
+import { Eq, F, O, Option, Runtime, S, Stream, pipe } from 'fp'
 import React from 'react'
 import { RootState } from 'src/model'
+import { runtime } from 'src/runtime'
 import { AppStateRefEnv, changes, execute, getRootState } from '.'
 import { UIEnv } from '../UI'
 
@@ -25,7 +26,7 @@ export const useSelector = <A>({
   if (O.isNone(ref.current)) {
     returnValue = execute(S.gets(selector)).pipe(
       F.provideService(AppStateRefEnv, env.StateRef),
-      F.runSync,
+      Runtime.runSync(runtime),
     )
     ref.current = O.some({ state: returnValue, lastSentState: returnValue })
   } else {
@@ -59,9 +60,9 @@ export const useSelector = <A>({
       ),
       Stream.runDrain,
       F.provideService(AppStateRefEnv, env.StateRef),
-      F.runFork,
+      Runtime.runFork(runtime),
     )
-    return () => void F.runPromiseExit(Fiber.interrupt(fiber))
+    return () => void Runtime.runPromiseExit(runtime)(Fiber.interrupt(fiber))
   }, [selector, env, eq])
   return returnValue
 }

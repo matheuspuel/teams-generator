@@ -1,6 +1,6 @@
 /* eslint-disable functional/immutable-data */
 /* eslint-disable functional/no-expression-statements */
-import { $, A, F } from 'fp'
+import { $, A, Runtime } from 'fp'
 import React from 'react'
 import { View as View_ } from 'react-native'
 import {
@@ -19,6 +19,7 @@ import { Fragment, Txt, View } from 'src/components'
 import { UIElement } from 'src/components/types'
 import { Rating } from 'src/datatypes'
 import { AppEvent } from 'src/events'
+import { runtime } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
 import { UIEnv } from 'src/services/UI'
 import { Color } from 'src/utils/datatypes'
@@ -68,7 +69,7 @@ const RatingSlider_ = ({
   }
 
   const onChange = (n: number) =>
-    F.runPromise(env.EventHandler.handle(onChange_(n)))
+    Runtime.runPromise(runtime)(env.EventHandler.handle(onChange_(n)))
 
   const gesture = Gesture.Pan()
     .onBegin(e => {

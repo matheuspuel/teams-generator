@@ -1,4 +1,4 @@
-import { $, A, F, apply } from 'fp'
+import { $, A, Runtime, apply } from 'fp'
 import React from 'react'
 import { View as RawView } from 'react-native'
 import {
@@ -15,6 +15,7 @@ import {
   UIElement,
 } from 'src/components/types'
 import { AppEvent } from 'src/events'
+import { runtime } from 'src/runtime'
 import { UIEnv } from 'src/services/UI'
 import { Color } from 'src/utils/datatypes'
 
@@ -54,7 +55,8 @@ const getRawProps = ({
   onLayout:
     props.onLayout &&
     (() =>
-      props.onLayout && F.runPromise(env.EventHandler.handle(props.onLayout))),
+      props.onLayout &&
+      Runtime.runPromise(runtime)(env.EventHandler.handle(props.onLayout))),
   style: {
     padding: props?.p,
     paddingHorizontal: props?.px,

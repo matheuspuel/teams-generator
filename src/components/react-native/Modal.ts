@@ -1,11 +1,11 @@
-import { $, A, apply } from 'fp'
+import { $, A, Runtime, apply } from 'fp'
 import React from 'react'
 import { Modal as RNModal_ } from 'react-native'
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler'
 import { Children, JSXElementsChildren, UIElement } from 'src/components/types'
 import { AppEvent } from 'src/events'
+import { runtime } from 'src/runtime'
 import { UIEnv } from 'src/services/UI'
-import { F } from 'src/utils/fp'
 
 export type ModalStyleProps = { flex?: number }
 
@@ -46,7 +46,9 @@ const getRawProps = ({
     props.onRequestClose &&
     (() =>
       props.onRequestClose &&
-      F.runPromise(env.EventHandler.handle(props.onRequestClose))),
+      Runtime.runPromise(runtime)(
+        env.EventHandler.handle(props.onRequestClose),
+      )),
   style: {
     flex: props?.flex,
   },

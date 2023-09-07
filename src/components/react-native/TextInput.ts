@@ -1,4 +1,4 @@
-import { $, F } from 'fp'
+import { $, Runtime } from 'fp'
 import React from 'react'
 import { TextInput as RNTextInput_ } from 'react-native-gesture-handler'
 import {
@@ -11,6 +11,7 @@ import {
   UIElement,
 } from 'src/components/types'
 import { AppEvent } from 'src/events'
+import { runtime } from 'src/runtime'
 import { UIEnv } from 'src/services/UI'
 import { Color } from 'src/utils/datatypes'
 
@@ -58,13 +59,17 @@ const getRawProps =
   }: TextInputArgs): React.ComponentProps<typeof RNTextInput_> => ({
     value: props.value,
     onChangeText: t =>
-      void F.runPromise(env.EventHandler.handle(props.onChange(t))),
+      void Runtime.runPromise(runtime)(
+        env.EventHandler.handle(props.onChange(t)),
+      ),
     onFocus: () => {
       // eslint-disable-next-line functional/no-expression-statements
       state.setIsFocused(true)
       // eslint-disable-next-line functional/no-expression-statements
       props.onFocus
-        ? void F.runPromise(env.EventHandler.handle(props.onFocus))
+        ? void Runtime.runPromise(runtime)(
+            env.EventHandler.handle(props.onFocus),
+          )
         : undefined
     },
     onBlur: () => {
@@ -72,7 +77,9 @@ const getRawProps =
       state.setIsFocused(false)
       // eslint-disable-next-line functional/no-expression-statements
       props.onBlur
-        ? void F.runPromise(env.EventHandler.handle(props.onBlur))
+        ? void Runtime.runPromise(runtime)(
+            env.EventHandler.handle(props.onBlur),
+          )
         : undefined
     },
     autoFocus: props.autoFocus,
