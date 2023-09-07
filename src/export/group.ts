@@ -1,4 +1,5 @@
-import { $f, D, Data, F, O, Option, S, Str, Stream, get, pipe } from 'fp'
+import { $f, D, Data, F, Match, O, Option, S, Str, Stream, get, pipe } from 'fp'
+import { Alert } from 'react-native'
 import { Group } from 'src/datatypes'
 import { RootState } from 'src/model'
 import { root } from 'src/model/optic'
@@ -42,12 +43,10 @@ export const exportGroup = () =>
     ),
   )
 
-export const importGroup = () =>
+export const importGroupFromDocumentPicker = () =>
   pipe(
     DocumentPicker.getDocument({ type: ['application/json'] }),
-    F.flatMap(f => FileSystem.read({ uri: f.uri })),
-    F.flatMap(D.parse(schema)),
-    F.flatMap(addImportedGroup),
+    F.flatMap(f => importGroupFromFile({ url: f.uri })),
   )
 
 export const setupReceiveURLHandler = () =>
@@ -57,10 +56,10 @@ export const setupReceiveURLHandler = () =>
     Stream.catchAll(() => Stream.empty),
     Stream.concat(Linking.startLinkingStream()),
     Stream.map(url => ({ url })),
-    Stream.tap(handleURL),
+    Stream.tap(importGroupFromFile),
   )
 
-const handleURL = (args: { url: string }) =>
+const importGroupFromFile = (args: { url: string }) =>
   pipe(
     temporaryImportUri,
     F.tap(() => F.log(args.url)),
@@ -82,6 +81,23 @@ const handleURL = (args: { url: string }) =>
       ),
     ),
     F.flatMap(addImportedGroup),
+    F.tap(() => F.sync(() => Alert.alert('Grupo importado'))),
+    F.tapError(e =>
+      F.sync(() =>
+        Alert.alert(
+          'Falha ao importar grupo',
+          pipe(
+            e,
+            Match.valueTags({
+              NewerVersionError: () =>
+                'O arquivo foi criado com uma versão mais recente do aplicativo. Atualize o aplicativo e tente novamente.',
+              FileSystemError: () => 'Não foi possível acessar o arquivo.',
+              ParseError: () => 'O arquivo não é válido ou está corrompido',
+            }),
+          ),
+        ),
+      ),
+    ),
   )
 
 const dataSchema = Group.Schema

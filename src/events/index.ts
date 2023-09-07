@@ -17,7 +17,7 @@ import {
   some,
 } from 'fp'
 import { Parameters as Parameters_, Player, Rating } from 'src/datatypes'
-import { exportGroup, importGroup } from 'src/export/group'
+import { exportGroup, importGroupFromDocumentPicker } from 'src/export/group'
 import { RootState } from 'src/model'
 import { root } from 'src/model/optic'
 import { BackHandler } from 'src/services/BackHandler'
@@ -107,7 +107,7 @@ export const appEventsDefinition = defineEvents({
       pipe(
         replaceSApp(root.at('ui').at('homeMenu'))(false),
         execute,
-        F.tap(() => importGroup()),
+        F.tap(() => importGroupFromDocumentPicker()),
         F.ignore,
       ),
     item: {

@@ -18,7 +18,7 @@ export const DocumentPickerLive = DocumentPickerEnv.context({
               ? (args.type as DeepMutable<typeof args.type>)
               : undefined,
             multiple: false,
-            copyToCacheDirectory: true,
+            copyToCacheDirectory: false,
           }),
         catch: e => DocumentPickerError({ error: enforceErrorInstance(e) }),
       }),
