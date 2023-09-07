@@ -2,9 +2,10 @@ import { getDefaultHeaderHeight } from '@react-navigation/elements'
 import { Modal, Pressable, View } from 'src/components'
 import { AppEvent, appEvents } from 'src/events'
 import { Colors } from 'src/services/Theme'
+import { named3 } from '../helpers'
 import { Children } from '../types'
 
-export const HeaderMenu =
+export const HeaderMenu = named3('HeaderMenu')(
   (props: { onClose: AppEvent }) => (children: Children) =>
     Modal({
       transparent: true,
@@ -30,4 +31,5 @@ export const HeaderMenu =
           mt: getDefaultHeaderHeight({ height: 1, width: 0 }, false, 0),
         })([View({ py: 8 })(children)]),
       ]),
-    ])
+    ]),
+)

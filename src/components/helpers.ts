@@ -9,6 +9,10 @@ export type UIComponent2<Args extends [unknown, unknown]> = (
   a0: Args[0],
 ) => (a1: Args[1]) => Element
 
+export type UIComponent3<Args extends [unknown, unknown, unknown]> = (
+  a0: Args[0],
+) => (a1: Args[1]) => (a2: Args[2]) => Element
+
 type UIUnderlyingComponent<Args extends [...Array<unknown>]> = (
   args: UIBundledProps<Args>,
 ) => Element
@@ -27,6 +31,13 @@ const toUnderlying2 =
   args =>
     component(args[0])(args[1])
 
+const toUnderlying3 =
+  <A1, A2, A3>(
+    component: UIComponent3<[A1, A2, A3]>,
+  ): UIUnderlyingComponent<[A1, A2, A3]> =>
+  args =>
+    component(args[0])(args[1])(args[2])
+
 const fromUnderlying1 =
   <A1>(component: UIUnderlyingComponent<[A1]>): UIComponent1<[A1]> =>
   a1 =>
@@ -39,6 +50,15 @@ const fromUnderlying2 =
   a1 =>
   a2 =>
     component([a1, a2])
+
+const fromUnderlying3 =
+  <A1, A2, A3>(
+    component: UIUnderlyingComponent<[A1, A2, A3]>,
+  ): UIComponent3<[A1, A2, A3]> =>
+  a1 =>
+  a2 =>
+  a3 =>
+    component([a1, a2, a3])
 
 export const toElementCreator =
   <Args extends [...Array<unknown>]>(
@@ -62,6 +82,13 @@ export const transformUnderlyingComponent2 =
   ): UIComponent2<[A1, A2]> =>
     fromUnderlying2(toElementCreator(transformation(toUnderlying2(component))))
 
+export const transformUnderlyingComponent3 =
+  <A1, A2, A3>(component: UIComponent3<[A1, A2, A3]>) =>
+  (
+    transformation: Endomorphism<UIUnderlyingComponent<[A1, A2, A3]>>,
+  ): UIComponent3<[A1, A2, A3]> =>
+    fromUnderlying3(toElementCreator(transformation(toUnderlying3(component))))
+
 export const nameFunction =
   (name: string) =>
   // eslint-disable-next-line @typescript-eslint/ban-types
@@ -78,6 +105,13 @@ export const named2 =
   (name: string) =>
   <A1, A2>(component: UIComponent2<[A1, A2]>): UIComponent2<[A1, A2]> =>
     transformUnderlyingComponent2(component)(nameFunction(name))
+
+export const named3 =
+  (name: string) =>
+  <A1, A2, A3>(
+    component: UIComponent3<[A1, A2, A3]>,
+  ): UIComponent3<[A1, A2, A3]> =>
+    transformUnderlyingComponent3(component)(nameFunction(name))
 
 export const memoized1 =
   (name: string) =>
