@@ -6,6 +6,7 @@ import {
 import React from 'react'
 import { UIEnv } from 'src/services/UI'
 import { Color } from 'src/utils/datatypes'
+import { Runtime } from 'src/utils/fp'
 import { UIColor, UIElement } from '../types'
 
 export type StatusBarProps = {
@@ -29,7 +30,7 @@ const getRawProps = ({
 }: StatusBarArgs): React.ComponentProps<typeof RawStatusBar_> => ({
   animated: props.animated,
   backgroundColor: props.backgroundColor
-    ? Color.toHex(props.backgroundColor(env))
+    ? Color.toHex(Runtime.runSync(env.runtime)(props.backgroundColor))
     : undefined,
   hidden: props.hidden,
   hideTransitionAnimation: props.hideTransitionAnimation,

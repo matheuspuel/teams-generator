@@ -1,5 +1,6 @@
-import { Reader } from 'fp'
+import { Effect, Reader } from 'fp'
 import React from 'react'
+import { AppTheme } from 'src/services/Theme'
 import { UIEnv } from 'src/services/UI'
 import { Color } from 'src/utils/datatypes'
 
@@ -79,4 +80,4 @@ export type UIElement = Reader<UIEnv, Element>
 
 export type Children = ReadonlyArray<UIElement>
 
-export type UIColor = Reader<UIEnv, Color>
+export type UIColor = Effect<AppTheme, never, Color>

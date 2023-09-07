@@ -85,10 +85,10 @@ const getRawProps =
     autoFocus: props.autoFocus,
     placeholder: props.placeholder,
     placeholderTextColor: props.placeholderTextColor
-      ? Color.toHex(props.placeholderTextColor(env))
+      ? Color.toHex(Runtime.runSync(env.runtime)(props.placeholderTextColor))
       : undefined,
     cursorColor: props.cursorColor
-      ? Color.toHex(props.cursorColor(env))
+      ? Color.toHex(Runtime.runSync(env.runtime)(props.cursorColor))
       : undefined,
     style: {
       padding: props?.p,
@@ -120,11 +120,13 @@ const getRawProps =
       flex: props?.flex,
       backgroundColor: $(
         (state.isFocused && props.focused?.bg) || props.bg,
-        getColor => getColor && Color.toHex(getColor(env)),
+        getColor =>
+          getColor && Color.toHex(Runtime.runSync(env.runtime)(getColor)),
       ),
       borderColor: $(
         (state.isFocused && props.focused?.borderColor) || props.borderColor,
-        getColor => getColor && Color.toHex(getColor(env)),
+        getColor =>
+          getColor && Color.toHex(Runtime.runSync(env.runtime)(getColor)),
       ),
       alignSelf:
         props?.alignSelf === 'start'

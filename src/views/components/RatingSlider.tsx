@@ -105,7 +105,9 @@ const RatingSlider_ = ({
           style={{
             height: trackWidth,
             borderRadius: trackWidth / 2,
-            backgroundColor: Color.toHex(trackColor(env)),
+            backgroundColor: Color.toHex(
+              Runtime.runSync(env.runtime)(trackColor),
+            ),
           }}
         >
           {$(
@@ -151,7 +153,9 @@ const RatingSlider_ = ({
                 width: thumbSize,
                 height: thumbSize,
                 borderRadius: thumbSize / 2,
-                backgroundColor: Color.toHex(thumbColor(env)),
+                backgroundColor: Color.toHex(
+                  Runtime.runSync(env.runtime)(thumbColor),
+                ),
               },
               animatedStyles,
             ]}

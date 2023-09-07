@@ -1,4 +1,4 @@
-import { $, A, apply } from 'fp'
+import { $, A, Runtime, apply } from 'fp'
 import React from 'react'
 import { Text as RNText_ } from 'react-native'
 import { Children, JSXElementsChildren, UIElement } from 'src/components/types'
@@ -37,7 +37,9 @@ const getRawProps = ({
     width: props?.w,
     height: props?.h,
     flex: props?.flex,
-    color: props?.color ? Color.toHex(props.color(env)) : undefined,
+    color: props?.color
+      ? Color.toHex(Runtime.runSync(env.runtime)(props.color))
+      : undefined,
     textAlign: props?.align ?? 'center',
     fontSize: props?.size,
     fontWeight: props?.weight ? `${props.weight}` : undefined,

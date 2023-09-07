@@ -5,7 +5,7 @@ import * as Fiber from '@effect/io/Fiber'
 import { Eq, F, O, Option, Runtime, S, Stream, pipe } from 'fp'
 import React from 'react'
 import { RootState } from 'src/model'
-import { AppStateRefEnv, changes, execute, getRootState } from '.'
+import { changes, execute, getRootState } from '.'
 import { UIEnv } from '../UI'
 
 export const useSelector = <A>({
@@ -23,10 +23,7 @@ export const useSelector = <A>({
   // eslint-disable-next-line functional/no-let
   let returnValue: A
   if (O.isNone(ref.current)) {
-    returnValue = execute(S.gets(selector)).pipe(
-      F.provideService(AppStateRefEnv, env.StateRef),
-      Runtime.runSync(env.runtime),
-    )
+    returnValue = Runtime.runSync(env.runtime)(execute(S.gets(selector)))
     ref.current = O.some({ state: returnValue, lastSentState: returnValue })
   } else {
     returnValue = ref.current.value.lastSentState
@@ -58,7 +55,6 @@ export const useSelector = <A>({
         ),
       ),
       Stream.runDrain,
-      F.provideService(AppStateRefEnv, env.StateRef),
       Runtime.runFork(env.runtime),
     )
     return () =>

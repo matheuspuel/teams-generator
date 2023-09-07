@@ -7,7 +7,7 @@ import {
   UIColor,
   UIElement,
 } from 'src/components/types'
-import { SafeAreaService, SafeAreaServiceEnv } from 'src/services/SafeArea'
+import { SafeAreaService } from 'src/services/SafeArea'
 import { UIEnv } from 'src/services/UI'
 import { Color } from 'src/utils/datatypes'
 
@@ -33,11 +33,12 @@ const getRawProps = ({
   initialMetrics: pipe(
     SafeAreaService.initialMetrics(),
     F.map(O.getOrUndefined),
-    F.provideService(SafeAreaServiceEnv, env.SafeArea),
     Runtime.runSync(env.runtime),
   ),
   style: {
-    backgroundColor: props?.bg ? Color.toHex(props.bg(env)) : undefined,
+    backgroundColor: props?.bg
+      ? Color.toHex(Runtime.runSync(env.runtime)(props.bg))
+      : undefined,
   },
 })
 

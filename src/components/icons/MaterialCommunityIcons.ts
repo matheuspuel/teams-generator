@@ -2,6 +2,7 @@ import RawIcons_ from '@expo/vector-icons/MaterialCommunityIcons'
 import React from 'react'
 import { UIEnv } from 'src/services/UI'
 import { Color } from 'src/utils/datatypes'
+import { Runtime } from 'src/utils/fp'
 import { UIColor, UIElement } from '../types'
 
 export type IconProps = {
@@ -22,7 +23,9 @@ const getRawProps = ({
 }: IconArgs): React.ComponentProps<typeof RawIcons_> => ({
   name: props.name,
   size: props.size ?? 24,
-  color: Color.toHex((props.color ?? env.context.textColor)(env)),
+  color: Color.toHex(
+    Runtime.runSync(env.runtime)(props.color ?? env.context.textColor),
+  ),
   style: { textAlign: props.align },
 })
 

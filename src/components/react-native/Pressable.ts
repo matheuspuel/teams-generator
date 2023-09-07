@@ -66,7 +66,7 @@ const getRawProps = ({
     props.isEnabled !== false
       ? props.rippleColor
         ? $(
-            props.rippleColor(env),
+            Runtime.runSync(env.runtime)(props.rippleColor),
             Color.withOpacity(Math.round((props.rippleOpacity ?? 1) * 255)),
             Color.toHex,
           )
@@ -100,9 +100,11 @@ const getRawProps = ({
     aspectRatio: props?.aspectRatio,
     flex: props?.flex,
     flexDirection: props?.direction,
-    backgroundColor: props?.bg ? Color.toHex(props.bg(env)) : undefined,
+    backgroundColor: props?.bg
+      ? Color.toHex(Runtime.runSync(env.runtime)(props.bg))
+      : undefined,
     borderColor: props?.borderColor
-      ? Color.toHex(props.borderColor(env))
+      ? Color.toHex(Runtime.runSync(env.runtime)(props.borderColor))
       : undefined,
     justifyContent:
       props?.justify === 'start'

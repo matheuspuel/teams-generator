@@ -1,4 +1,4 @@
-import { $, A, Eq, Match, O, Option, R, constant } from 'fp'
+import { $, A, Eq, F, Match, O, Option, constant } from 'fp'
 import {
   FlatList,
   Header,
@@ -316,7 +316,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
         align: 'center',
         p: 8,
         round: 8,
-        bg: $(Colors.white, R.map(withOpacity(0))),
+        bg: $(Colors.white, F.map(withOpacity(0))),
       })([
         Checkbox({
           onToggle: on.parameters.position.toggle(),
@@ -330,7 +330,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
         align: 'center',
         p: 8,
         round: 8,
-        bg: $(Colors.white, R.map(withOpacity(0))),
+        bg: $(Colors.white, F.map(withOpacity(0))),
       })([
         Checkbox({
           onToggle: on.parameters.rating.toggle(),

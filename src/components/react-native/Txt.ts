@@ -8,6 +8,7 @@ import {
 } from 'src/components/types'
 import { UIEnv } from 'src/services/UI'
 import { Color } from 'src/utils/datatypes'
+import { Runtime } from 'src/utils/fp'
 
 export type TextStyleProps = PaddingProps &
   MarginProps & {
@@ -51,7 +52,9 @@ const getRawProps = ({
     width: props?.w,
     height: props?.h,
     flex: props?.flex,
-    color: Color.toHex((props?.color ?? env.context.textColor)(env)),
+    color: Color.toHex(
+      Runtime.runSync(env.runtime)(props?.color ?? env.context.textColor),
+    ),
     textAlign: props?.align ?? 'center',
     fontSize: props?.size,
     fontWeight: props?.weight ? `${props.weight}` : undefined,

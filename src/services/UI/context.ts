@@ -1,9 +1,8 @@
-import { Color } from 'src/utils/datatypes'
-import { UIEnv } from '.'
+import { UIColor } from 'src/components/types'
 import { Colors } from '../Theme'
 
 export type UIContext = {
-  textColor: (env: UIEnv) => Color
+  textColor: UIColor
 }
 
 export const initialUIContext: UIContext = {

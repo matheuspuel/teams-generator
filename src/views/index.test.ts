@@ -7,20 +7,20 @@ import { GroupOrder, Parameters } from 'src/datatypes'
 import { AppEvent, appEvents as on } from 'src/events'
 import { BackHandlerEnv } from 'src/services/BackHandler'
 import { DocumentPickerEnv } from 'src/services/DocumentPicker'
-import { AppEventHandler, AppEventHandlerEnv } from 'src/services/EventHandler'
+import { AppEventHandler } from 'src/services/EventHandler'
 import { AppEventHandlerLive } from 'src/services/EventHandler/default'
 import { FileSystemEnv } from 'src/services/FileSystem'
 import { IdGeneratorEnv } from 'src/services/IdGenerator'
 import { MetadataServiceEnv } from 'src/services/Metadata'
 import { RepositoryEnvs } from 'src/services/Repositories'
-import { SafeAreaServiceEnv } from 'src/services/SafeArea'
+import { SafeAreaService } from 'src/services/SafeArea'
 import { SafeAreaServiceTest } from 'src/services/SafeArea/testing'
 import { ShareServiceEnv } from 'src/services/Share'
 import { SplashScreenEnv } from 'src/services/SplashScreen'
-import { AppStateRefEnv } from 'src/services/StateRef'
+import { AppStateRef } from 'src/services/StateRef'
 import { StateRefLive } from 'src/services/StateRef/default'
 import { TelemetryEnv } from 'src/services/Telemetry'
-import { AppThemeEnv } from 'src/services/Theme'
+import { AppTheme } from 'src/services/Theme'
 import { AppThemeLive } from 'src/services/Theme/default'
 import { initialUIContext } from 'src/services/UI/context'
 import { Id } from 'src/utils/Entity'
@@ -116,19 +116,10 @@ it('renders', async () => {
 
   const UI = F.map(
     F.all({
-      Theme: AppThemeEnv,
-      SafeArea: SafeAreaServiceEnv,
-      StateRef: AppStateRefEnv,
       context: F.succeed(initialUIContext),
-      runtime: pipe(
-        AppEventHandlerEnv,
-        F.flatMap(handler =>
-          Layer.toRuntime(Layer.succeed(AppEventHandlerEnv, handler)),
-        ),
-        F.scoped,
-        F.cached,
-        F.flatten,
-      ),
+      runtime: F.runtime<
+        AppEventHandler | AppTheme | SafeAreaService | AppStateRef
+      >(),
     }),
     env => UIRoot(env),
   ).pipe(F.provideLayer(testLayer), F.runSync)

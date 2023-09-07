@@ -16,9 +16,8 @@ export const UIEnv = Context.Tag<UI>()
 export const UI = F.serviceFunctions(UIEnv)
 
 export type UIEnv = {
-  Theme: AppTheme
-  SafeArea: SafeAreaService
-  StateRef: AppStateRef
   context: UIContext
-  runtime: Runtime.Runtime<AppEventHandler>
+  runtime: Runtime.Runtime<
+    AppEventHandler | AppTheme | SafeAreaService | AppStateRef
+  >
 }

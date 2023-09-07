@@ -1,4 +1,4 @@
-import { $, A, R, Rec, Str, Tup } from 'fp'
+import { $, A, F, Rec, Str, Tup } from 'fp'
 import {
   Fragment,
   Header,
@@ -84,7 +84,7 @@ const PositionField = (position: Position) =>
               bg:
                 position === p
                   ? Colors.primary.$5
-                  : $(Colors.primary.$5, R.map(withOpacity(63))),
+                  : $(Colors.primary.$5, F.map(withOpacity(63))),
             })([Txt({ size: 18, color: Colors.text.light })(p)]),
           ]),
         ),

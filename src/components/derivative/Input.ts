@@ -1,4 +1,4 @@
-import { $, R } from 'fp'
+import { $, F } from 'fp'
 import { Platform } from 'react-native'
 import { Colors } from 'src/services/Theme'
 import { withOpacity } from 'src/utils/datatypes/Color'
@@ -25,7 +25,7 @@ export const Input = named2('Input')((props: InputProps) =>
     ...props,
     borderColor: props.borderColor ?? Colors.gray.$2,
     focused: {
-      bg: $(props.color ?? Colors.primary.$5, R.map(withOpacity(31))),
+      bg: $(props.color ?? Colors.primary.$5, F.map(withOpacity(31))),
       borderColor: props.color ?? Colors.primary.$5,
       ...props.focused,
     },

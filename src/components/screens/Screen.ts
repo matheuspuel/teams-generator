@@ -1,4 +1,4 @@
-import { $, A, apply } from 'fp'
+import { $, A, Runtime, apply } from 'fp'
 import React from 'react'
 import { Screen as RNSScreen_ } from 'react-native-screens'
 import { Children, JSXElementsChildren, UIElement } from 'src/components/types'
@@ -23,7 +23,11 @@ const getRawProps = ({
 } => ({
   children: children,
   stackAnimation: 'none',
-  style: { backgroundColor: Color.toHex(Colors.background(env)) },
+  style: {
+    backgroundColor: Color.toHex(
+      Runtime.runSync(env.runtime)(Colors.background),
+    ),
+  },
 })
 
 const Screen_ = (args: ScreenArgs) =>
