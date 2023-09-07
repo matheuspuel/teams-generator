@@ -67,12 +67,6 @@ const getConfig = (): ExpoConfig => ({
         data: [{ mimeType: 'application/json' }],
         category: ['DEFAULT'],
       },
-      {
-        autoVerify: true,
-        action: 'SEND',
-        data: [{ mimeType: 'application/json' }],
-        category: ['DEFAULT'],
-      },
     ],
   },
   web: { favicon: './assets/favicon.png' },
