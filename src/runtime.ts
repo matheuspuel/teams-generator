@@ -1,14 +1,10 @@
-import { $, F, Layer, LogLevel, Logger, pipe } from 'fp'
-import { Event } from 'src/events/helpers'
+import { F, Layer, LogLevel, Logger, pipe } from 'fp'
 import { BackHandlerLive } from 'src/services/BackHandler/default'
-import { AppEventHandlerEnv } from 'src/services/EventHandler'
 import { SplashScreenLive } from 'src/services/SplashScreen/default'
 import { StateRefLive } from 'src/services/StateRef/default'
-import { AppEvent } from './events'
 import { AlertLive } from './services/Alert/default'
 import { AsyncStorageLive } from './services/AsyncStorage/live'
 import { DocumentPickerLive } from './services/DocumentPicker/default'
-import { AppEventHandlerLive } from './services/EventHandler/default'
 import { FileSystemLive } from './services/FileSystem/default'
 import { IdGeneratorLive } from './services/IdGenerator/default'
 import { LinkingLive } from './services/Linking/default'
@@ -24,30 +20,6 @@ import { AppThemeLive } from './services/Theme/default'
 import { envName } from './utils/Metadata'
 
 const DEV_MINIMUM_LOG_LEVEL = LogLevel.Debug
-
-const logEvent = (event: Event) =>
-  $(
-    F.logDebug,
-    l =>
-      event.event.payload === undefined
-        ? l(event.event._tag)
-        : event.event.payload === null
-        ? l(event.event._tag + ': null')
-        : typeof event.event.payload === 'object'
-        ? l(event.event._tag + (': ' + JSON.stringify(event.event.payload)))
-        : l(event.event._tag + (': ' + JSON.stringify(event.event.payload))),
-    F.withLogSpan('Event'),
-  )
-
-const AppEventHandlerWithLogger = F.map(AppEventHandlerEnv, handler =>
-  AppEventHandlerEnv.context({
-    handle: (e: AppEvent) =>
-      pipe(
-        logEvent(e),
-        F.flatMap(() => handler.handle(e)),
-      ),
-  }),
-).pipe(F.provideLayer(AppEventHandlerLive), Layer.effectContext)
 
 const appLayer = pipe(
   Logger.minimumLogLevel(
@@ -79,7 +51,6 @@ const appLayer = pipe(
       AppThemeLive,
     ),
   ),
-  Layer.provideMerge(AppEventHandlerWithLogger),
 )
 
 export const runtime = pipe(

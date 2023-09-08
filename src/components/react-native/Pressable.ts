@@ -14,7 +14,6 @@ import {
   UIElement,
 } from 'src/components/types'
 import { AppEvent } from 'src/events'
-import { AppEventHandler } from 'src/services/EventHandler'
 import { UIEnv } from 'src/services/UI'
 import { Color } from 'src/utils/datatypes'
 
@@ -59,8 +58,7 @@ const getRawProps = ({
   children: children,
   onPress:
     props.isEnabled !== false
-      ? () =>
-          Runtime.runPromise(env.runtime)(AppEventHandler.handle(props.onPress))
+      ? () => Runtime.runPromise(env.runtime)(props.onPress)
       : undefined,
   rippleColor:
     props.isEnabled !== false

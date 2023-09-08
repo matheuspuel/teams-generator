@@ -11,7 +11,6 @@ import {
   UIElement,
 } from 'src/components/types'
 import { AppEvent } from 'src/events'
-import { AppEventHandler } from 'src/services/EventHandler'
 import { UIEnv } from 'src/services/UI'
 import { Color } from 'src/utils/datatypes'
 
@@ -58,18 +57,13 @@ const getRawProps =
     env,
   }: TextInputArgs): React.ComponentProps<typeof RNTextInput_> => ({
     value: props.value,
-    onChangeText: t =>
-      void Runtime.runPromise(env.runtime)(
-        AppEventHandler.handle(props.onChange(t)),
-      ),
+    onChangeText: t => void Runtime.runPromise(env.runtime)(props.onChange(t)),
     onFocus: () => {
       // eslint-disable-next-line functional/no-expression-statements
       state.setIsFocused(true)
       // eslint-disable-next-line functional/no-expression-statements
       props.onFocus
-        ? void Runtime.runPromise(env.runtime)(
-            AppEventHandler.handle(props.onFocus),
-          )
+        ? void Runtime.runPromise(env.runtime)(props.onFocus)
         : undefined
     },
     onBlur: () => {
@@ -77,9 +71,7 @@ const getRawProps =
       state.setIsFocused(false)
       // eslint-disable-next-line functional/no-expression-statements
       props.onBlur
-        ? void Runtime.runPromise(env.runtime)(
-            AppEventHandler.handle(props.onBlur),
-          )
+        ? void Runtime.runPromise(env.runtime)(props.onBlur)
         : undefined
     },
     autoFocus: props.autoFocus,

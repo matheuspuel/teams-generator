@@ -1,6 +1,6 @@
 import * as Context from '@effect/data/Context'
 import { Effect } from '@effect/io/Effect'
-import { AppEventHandler } from 'src/services/EventHandler'
+import { AppEvent } from 'src/events'
 import { F, Runtime } from 'src/utils/fp'
 import { SafeAreaService } from '../SafeArea'
 import { AppStateRef } from '../StateRef'
@@ -18,6 +18,6 @@ export const UI = F.serviceFunctions(UIEnv)
 export type UIEnv = {
   context: UIContext
   runtime: Runtime.Runtime<
-    AppEventHandler | AppTheme | SafeAreaService | AppStateRef
+    Effect.Context<AppEvent> | AppTheme | SafeAreaService | AppStateRef
   >
 }

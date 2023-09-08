@@ -8,8 +8,6 @@ import { AppEvent, appEvents as on } from 'src/events'
 import { AlertLive } from 'src/services/Alert/default'
 import { BackHandlerEnv } from 'src/services/BackHandler'
 import { DocumentPickerEnv } from 'src/services/DocumentPicker'
-import { AppEventHandler } from 'src/services/EventHandler'
-import { AppEventHandlerLive } from 'src/services/EventHandler/default'
 import { FileSystemEnv } from 'src/services/FileSystem'
 import { IdGeneratorEnv } from 'src/services/IdGenerator'
 import { MetadataServiceEnv } from 'src/services/Metadata'
@@ -25,7 +23,7 @@ import { AppTheme } from 'src/services/Theme'
 import { AppThemeLive } from 'src/services/Theme/default'
 import { initialUIContext } from 'src/services/UI/context'
 import { Id } from 'src/utils/Entity'
-import { $, Clock, F, Layer, Num, Ref, pipe } from 'src/utils/fp'
+import { $, Clock, Effect, F, Layer, Num, Ref, pipe } from 'src/utils/fp'
 import { UIRoot } from '.'
 
 const testLayer = pipe(
@@ -107,11 +105,10 @@ const testLayer = pipe(
     SafeAreaServiceTest,
   ),
   Layer.provideMerge(AlertLive),
-  Layer.provideMerge(AppEventHandlerLive),
 )
 
 const dispatch = (e: AppEvent) =>
-  AppEventHandler.handle(e).pipe(F.provideLayer(testLayer), F.runPromise)
+  e.pipe(F.provideLayer(testLayer), F.runPromise)
 
 it('renders', async () => {
   await dispatch(on.core.appLoaded())
@@ -120,7 +117,7 @@ it('renders', async () => {
     F.all({
       context: F.succeed(initialUIContext),
       runtime: F.runtime<
-        AppEventHandler | AppTheme | SafeAreaService | AppStateRef
+        Effect.Context<AppEvent> | AppTheme | SafeAreaService | AppStateRef
       >(),
     }),
     env => UIRoot(env),

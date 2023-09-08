@@ -4,7 +4,6 @@ import { Modal as RNModal_ } from 'react-native'
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler'
 import { Children, JSXElementsChildren, UIElement } from 'src/components/types'
 import { AppEvent } from 'src/events'
-import { AppEventHandler } from 'src/services/EventHandler'
 import { UIEnv } from 'src/services/UI'
 
 export type ModalStyleProps = { flex?: number }
@@ -46,9 +45,7 @@ const getRawProps = ({
     props.onRequestClose &&
     (() =>
       props.onRequestClose &&
-      Runtime.runPromise(env.runtime)(
-        AppEventHandler.handle(props.onRequestClose),
-      )),
+      Runtime.runPromise(env.runtime)(props.onRequestClose)),
   style: {
     flex: props?.flex,
   },

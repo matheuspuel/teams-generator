@@ -1,8 +1,7 @@
 import { $, Duration, Effect, F, Stream, pipe } from 'fp'
 import { appEvents } from 'src/events'
 import { BackHandler } from 'src/services/BackHandler'
-import { AppEventHandler } from 'src/services/EventHandler'
-import { StateRef } from 'src/services/StateRef'
+import { AppStateRef, StateRef } from 'src/services/StateRef'
 import { UI } from 'src/services/UI'
 import { hydrate } from 'src/slices/core/hydration'
 import { setupReceiveURLHandler } from './export/group'
@@ -16,12 +15,10 @@ const on = appEvents.core
 
 export const startApp = $(
   UI.start(),
-  F.flatMap(() => AppEventHandler.handle(on.preventSplashScreenAutoHide())),
+  F.flatMap(() => on.preventSplashScreenAutoHide()),
   F.flatMap(() =>
-    F.flatMap(F.context<AppEventHandler>(), ctx =>
-      BackHandler.subscribe(
-        AppEventHandler.handle(appEvents.back()).pipe(F.provideContext(ctx)),
-      ),
+    F.flatMap(F.context<AppStateRef | BackHandler>(), ctx =>
+      BackHandler.subscribe(appEvents.back().pipe(F.provideContext(ctx))),
     ),
   ),
   F.flatMap(() => hydrate),
@@ -30,12 +27,12 @@ export const startApp = $(
       StateRef.changes,
       Stream.debounce(Duration.decode('1000 millis')),
       Stream.changes,
-      Stream.flatMap(() => AppEventHandler.handle(on.saveState())),
+      Stream.flatMap(() => on.saveState()),
       Stream.runDrain,
       F.forkDaemon,
     ),
   ),
-  F.tap(() => AppEventHandler.handle(on.appLoaded())),
+  F.tap(() => on.appLoaded()),
   F.tap(() =>
     $(
       F.all([Metadata.get(), Timestamp.getNow()]),

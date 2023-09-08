@@ -15,7 +15,6 @@ import {
   UIElement,
 } from 'src/components/types'
 import { AppEvent } from 'src/events'
-import { AppEventHandler } from 'src/services/EventHandler'
 import { UIEnv } from 'src/services/UI'
 import { Color } from 'src/utils/datatypes'
 
@@ -54,9 +53,7 @@ const getRawProps = ({
   key: props.key,
   onLayout:
     props.onLayout &&
-    (() =>
-      props.onLayout &&
-      Runtime.runPromise(env.runtime)(AppEventHandler.handle(props.onLayout))),
+    (() => props.onLayout && Runtime.runPromise(env.runtime)(props.onLayout)),
   style: {
     padding: props?.p,
     paddingHorizontal: props?.px,

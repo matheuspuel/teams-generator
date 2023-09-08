@@ -4,6 +4,7 @@ import {
   $f,
   Apply,
   D,
+  Effect,
   F,
   O,
   Optic,
@@ -59,20 +60,15 @@ import {
   setUpsertGroupName,
 } from 'src/slices/ui'
 import { Id } from 'src/utils/Entity'
-import {
-  AnyHandleEventTree,
-  EventFromTree,
-  EventHandlerEnvFromTree,
-  makeEventConstructors,
-} from './helpers'
+import { AnyEventTree, EventEnvFromTree } from './helpers'
 
-export type AppEvent = EventFromTree<typeof appEventsDefinition>
-
-export type AppEventHandlerRequirements = EventHandlerEnvFromTree<
-  typeof appEventsDefinition
+export type AppEvent = Effect<
+  EventEnvFromTree<typeof appEvents>,
+  never,
+  unknown
 >
 
-const defineEvents: <T extends AnyHandleEventTree>(tree: T) => T = identity
+const defineEvents: <T extends AnyEventTree>(tree: T) => T = identity
 
 const noArg: <A>(a: A) => (_: void) => A = constant
 const ignore = noArg(F.unit)
@@ -81,7 +77,7 @@ const closeParametersModal = replaceSApp(root.at('ui').at('modalParameters'))(
   false,
 )
 
-export const appEventsDefinition = defineEvents({
+export const appEvents = defineEvents({
   doNothing: ignore,
   back: (_: void) =>
     $(
@@ -363,5 +359,3 @@ export const appEventsDefinition = defineEvents({
       ),
   },
 })
-
-export const appEvents = makeEventConstructors(appEventsDefinition)<AppEvent>()
