@@ -1,7 +1,7 @@
-import { $, $f, Match, Num, Optic, Ord, apply, modify } from 'fp'
+import { $f, Match, Num, Optic, Ord, apply, modify, pipe } from 'fp'
 import { MINIMUM_NUMBER_OF_TEAMS, Parameters } from 'src/datatypes/Parameters'
 import { root } from 'src/model/optic'
-import { modifySApp } from 'src/services/StateRef'
+import { StateRef } from 'src/services/StateRef'
 import { toggle } from 'src/utils/fp/boolean'
 import { decrement, increment } from 'src/utils/fp/number'
 
@@ -9,16 +9,16 @@ const params = root.at('parameters')
 
 export const getParameters = Optic.get(params)
 
-export const togglePosition = modifySApp(params.at('position'))(toggle)
+export const togglePosition = StateRef.on(params.at('position')).update(toggle)
 
-export const toggleRating = modifySApp(params.at('rating'))(toggle)
+export const toggleRating = StateRef.on(params.at('rating')).update(toggle)
 
 const teamsCountClamp = Ord.clamp(Num.Order)(MINIMUM_NUMBER_OF_TEAMS, 9)
 
 const playersRequiredClamp = Ord.clamp(Num.Order)(2, 99)
 
-export const incrementTeamsCount = modifySApp(params)(p =>
-  $(
+export const incrementTeamsCount = StateRef.on(params).update(p =>
+  pipe(
     p.teamsCountMethod,
     Match.valueTags({
       count: () =>
@@ -34,8 +34,8 @@ export const incrementTeamsCount = modifySApp(params)(p =>
   ),
 )
 
-export const decrementTeamsCount = modifySApp(params)(p =>
-  $(
+export const decrementTeamsCount = StateRef.on(params).update(p =>
+  pipe(
     p.teamsCountMethod,
     Match.valueTags({
       count: () =>

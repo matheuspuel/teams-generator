@@ -1,24 +1,9 @@
-import {
-  $,
-  $f,
-  A,
-  D,
-  F,
-  O,
-  Optic,
-  Option,
-  Rec,
-  S,
-  constant,
-  get,
-  identity,
-  pipe,
-} from 'fp'
+import { $, $f, A, D, F, O, Optic, Rec, constant, pipe } from 'fp'
 import { Group, Player } from 'src/datatypes'
 import { RootState } from 'src/model'
 import { root } from 'src/model/optic'
 import { IdGenerator } from 'src/services/IdGenerator'
-import { StateRef, modifySApp } from 'src/services/StateRef'
+import { StateRef } from 'src/services/StateRef'
 import { Id } from 'src/utils/Entity'
 import { Timestamp } from 'src/utils/datatypes'
 
@@ -31,43 +16,43 @@ export const GroupsState: D.Schema<
 
 export const emptyGroups: GroupsState = {}
 
-const modify = modifySApp(root.at('groups'))
+const refOnGroups = StateRef.on(root.at('groups'))
 
 export const getGroupsRecord = Optic.get(root.at('groups'))
 
 export const getGroupById = (id: Id) => $f(getGroupsRecord, Rec.get(id))
 
 const getPlayer = (args: { groupId: Id; id: Id }) =>
-  S.gets(
-    $f(
-      getGroupById(args.groupId),
-      O.match_({ onNone: constant([]), onSome: g => g.players }),
-      A.findFirst(p => p.id === args.id),
-    ),
+  $f(
+    getGroupById(args.groupId),
+    O.match_({ onNone: constant([]), onSome: g => g.players }),
+    A.findFirst(p => p.id === args.id),
   )
 
 export const getPlayerFromActiveGroup = (args: { playerId: Id }) =>
   $(
-    S.gets(get(root.at('ui').at('selectedGroupId'))),
-    S.chain(
+    StateRef.on(root.at('ui').at('selectedGroupId')).get,
+    F.flatMap(
       O.match({
-        onNone: () => S.of<RootState, Option<Player>>(O.none()),
-        onSome: groupId => getPlayer({ groupId, id: args.playerId }),
+        onNone: () => F.succeed(O.none()),
+        onSome: groupId =>
+          StateRef.get.pipe(F.map(getPlayer({ groupId, id: args.playerId }))),
       }),
     ),
   )
 
-const addGroup = (group: Group) => modify(gs => ({ ...gs, [group.id]: group }))
+const addGroup = (group: Group) =>
+  refOnGroups.update(gs => ({ ...gs, [group.id]: group }))
 
 export const createGroup = ({ name }: { name: string }) =>
   $(
     IdGenerator.generate(),
-    F.flatMap(id => StateRef.modify(addGroup({ id, name, players: [] }))),
+    F.flatMap(id => addGroup({ id, name, players: [] })),
   )
 
 export const editGroup = (args: { id: Id; name: string }) =>
-  modify(s =>
-    $(
+  refOnGroups.update(s =>
+    pipe(
       s,
       Rec.modifyOption(args.id, g => ({ ...g, name: args.name })),
       O.getOrElse(() => s),
@@ -77,13 +62,14 @@ export const editGroup = (args: { id: Id; name: string }) =>
 export const addImportedGroup = (group: Group) =>
   pipe(
     IdGenerator.generate(),
-    F.flatMap(id => StateRef.modify(addGroup({ ...group, id }))),
+    F.flatMap(id => addGroup({ ...group, id })),
   )
 
-export const deleteGroup = (args: { id: Id }) => modify(Rec.remove(args.id))
+export const deleteGroup = (args: { id: Id }) =>
+  refOnGroups.update(Rec.remove(args.id))
 
 const addPlayer = (args: { groupId: Id; player: Omit<Player, 'active'> }) =>
-  modify(s =>
+  refOnGroups.update(s =>
     $(
       s,
       Rec.modifyOption(args.groupId, g => ({
@@ -104,9 +90,7 @@ export const createPlayer = ({
   $(
     F.all({ id: IdGenerator.generate(), time: Timestamp.getNow() }),
     F.flatMap(({ id, time }) =>
-      StateRef.modify(
-        addPlayer({ groupId, player: { ...player, id, createdAt: time } }),
-      ),
+      addPlayer({ groupId, player: { ...player, id, createdAt: time } }),
     ),
   )
 
@@ -114,8 +98,8 @@ export const editPlayer = (p: {
   groupId: Id
   player: Omit<Player, 'active' | 'createdAt'>
 }) =>
-  modify(s =>
-    $(
+  refOnGroups.update(s =>
+    pipe(
       s,
       Rec.modifyOption(p.groupId, g => ({
         ...g,
@@ -132,8 +116,8 @@ export const editPlayer = (p: {
     ),
   )
 
-export const deleteCurrentPlayer = S.modify((s: RootState) =>
-  $(
+export const deleteCurrentPlayer = (s: RootState) =>
+  pipe(
     O.all({
       groupId: s.ui.selectedGroupId,
       playerId: s.ui.selectedPlayerId,
@@ -144,30 +128,29 @@ export const deleteCurrentPlayer = S.modify((s: RootState) =>
       )(s),
     ),
     O.getOrElse(() => s),
-  ),
-)
+  )
 
 export const togglePlayerActive = ({ playerId }: { playerId: Id }) =>
   $(
-    S.gets(get(root.at('ui').at('selectedGroupId'))),
-    S.chain(
+    StateRef.on(root.at('ui').at('selectedGroupId')).get,
+    F.flatMap(
       O.match({
-        onNone: () => S.modify<RootState>(identity),
+        onNone: () => F.unit,
         onSome: groupId =>
-          modifySApp(
+          StateRef.onOption(
             root
               .at('groups')
               .key(groupId)
               .at('players')
               .compose(Optic.findFirst(p => p.id === playerId))
               .at('active'),
-          )(a => !a),
+          ).update(a => !a),
       }),
     ),
   )
 
-export const toggleAllPlayersActive = S.modify((s: RootState) =>
-  $(
+export const toggleAllPlayersActive = (s: RootState) =>
+  pipe(
     s.ui.selectedGroupId,
     O.flatMap(id => $(s.groups, Rec.get(id))),
     O.match({
@@ -185,5 +168,4 @@ export const toggleAllPlayersActive = S.modify((s: RootState) =>
           f => f(s),
         ),
     }),
-  ),
-)
+  )

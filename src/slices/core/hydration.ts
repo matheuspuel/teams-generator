@@ -1,9 +1,9 @@
 import { get } from '@fp-ts/optic'
-import { $, $f, F, S } from 'fp'
+import { $, $f, F, pipe } from 'fp'
 import { GroupOrder, Parameters } from 'src/datatypes'
 import { root } from 'src/model/optic'
 import { Repository } from 'src/services/Repositories'
-import { StateRef, replaceSApp } from 'src/services/StateRef'
+import { StateRef } from 'src/services/StateRef'
 import { emptyGroups } from '../groups'
 
 export const saveState = $(
@@ -35,11 +35,10 @@ export const hydrate = $(
     ),
   ),
   F.tap(p =>
-    $(
-      replaceSApp(root.at('groups'))(p.groups),
-      S.apFirst(replaceSApp(root.at('parameters'))(p.parameters)),
-      S.apFirst(replaceSApp(root.at('groupOrder'))(p.groupOrder)),
-      StateRef.modify,
+    pipe(
+      StateRef.on(root.at('groups')).set(p.groups),
+      F.tap(() => StateRef.on(root.at('parameters')).set(p.parameters)),
+      F.tap(() => StateRef.on(root.at('groupOrder')).set(p.groupOrder)),
     ),
   ),
   F.asUnit,

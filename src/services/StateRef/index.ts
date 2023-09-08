@@ -1,10 +1,20 @@
 import * as Context from '@effect/data/Context'
-import { F, Optic, S, Stream, SubscriptionRef } from 'fp'
+import { F, O, Optic, Option, Stream, SubscriptionRef, flow, pipe } from 'fp'
 import { RootState } from 'src/model'
 
 export type AppStateRef = SubscriptionRef.SubscriptionRef<RootState>
 
 export const AppStateRefEnv = Context.Tag<AppStateRef>()
+
+// const preparedSubscriptionRef = <A>(
+//   ref: SubscriptionRef.SubscriptionRef<A>,
+// ) => ({
+//   changes: ref.changes,
+//   get: SubscriptionRef.get(ref),
+//   set: (a: A) => SubscriptionRef.set(ref, a),
+//   update: (f: (a: A) => A) => SubscriptionRef.update(ref, f),
+//   modify: <B>(f: (a: A) => readonly [B, A]) => SubscriptionRef.modify(ref, f),
+// })
 
 const preparedSubscriptionRefFromService = <A>(
   tag: Context.Tag<
@@ -20,18 +30,41 @@ const preparedSubscriptionRefFromService = <A>(
     F.flatMap(tag, SubscriptionRef.modify(f)),
 })
 
-export const StateRef = preparedSubscriptionRefFromService(AppStateRefEnv)
+const StateRef_ = preparedSubscriptionRefFromService(AppStateRefEnv)
 
-export const getSApp: <A>(
-  optic: Optic.PolyReversedPrism<RootState, RootState, A, A>,
-) => S.State<RootState, A> = optic => S.gets(Optic.get(optic))
-
-export const modifySApp: <A, B>(
-  optic: Optic.PolyOptional<RootState, RootState, A, B>,
-) => (f: (a: A) => B) => S.State<RootState, void> = optic => f =>
-  S.modify(Optic.modify(optic)(f))
-
-export const replaceSApp: <A>(
-  optic: Optic.PolySetter<RootState, RootState, A>,
-) => (a: A) => S.State<RootState, void> = optic => a =>
-  S.modify(Optic.replace(optic)(a))
+export const StateRef = {
+  ...StateRef_,
+  on: <B>(optic: Optic.PolyReversedPrism<RootState, RootState, B, B>) => ({
+    changes: StateRef_.changes.pipe(Stream.map(r => Optic.get(optic)(r))),
+    get: StateRef_.get.pipe(F.map(r => Optic.get(optic)(r))),
+    set: (b: B) => StateRef_.update(Optic.replace(optic)(b)),
+    update: (f: (b: B) => B) => StateRef_.update(Optic.modify(optic)(f)),
+    modify: <C>(f: (b: B) => readonly [C, B]) =>
+      StateRef_.modify<C>(r =>
+        pipe(
+          Optic.get(optic)(r),
+          f,
+          v => [v[0], Optic.replace(optic)(v[1])(r)] as const,
+        ),
+      ),
+  }),
+  onOption: <B>(optic: Optic.PolyOptional<RootState, RootState, B, B>) => ({
+    changes: StateRef_.changes.pipe(Stream.map(r => Optic.getOption(optic)(r))),
+    get: StateRef_.get.pipe(F.map(r => Optic.getOption(optic)(r))),
+    set: (b: B) => StateRef_.update(Optic.replace(optic)(b)),
+    update: (f: (b: B) => B) => StateRef_.update(Optic.modify(optic)(f)),
+    modify: <C>(f: (b: B) => readonly [C, B]) =>
+      StateRef_.modify<Option<C>>(r =>
+        pipe(
+          O.fromFpTs(Optic.getOption(optic)(r)),
+          O.map(
+            flow(
+              f,
+              v => [O.some(v[0]), Optic.replace(optic)(v[1])(r)] as const,
+            ),
+          ),
+          O.getOrElse(() => [O.none<C>(), r] as const),
+        ),
+      ),
+  }),
+}

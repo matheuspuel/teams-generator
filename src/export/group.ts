@@ -1,6 +1,5 @@
-import { $f, D, Data, F, Match, O, Option, S, Str, Stream, get, pipe } from 'fp'
+import { $f, D, Data, F, Match, O, Str, Stream, pipe } from 'fp'
 import { Group } from 'src/datatypes'
-import { RootState } from 'src/model'
 import { root } from 'src/model/optic'
 import { Alert } from 'src/services/Alert'
 import { DocumentPicker } from 'src/services/DocumentPicker'
@@ -13,14 +12,13 @@ import { normalize } from 'src/utils/String'
 
 export const exportGroup = () =>
   pipe(
-    S.gets(get(root.at('ui').at('selectedGroupId'))),
-    S.chain(
+    StateRef.on(root.at('ui').at('selectedGroupId')).get,
+    F.flatMap(
       O.match({
-        onNone: () => S.of<RootState, Option<Group>>(O.none()),
-        onSome: id => S.gets(getGroupById(id)),
+        onNone: () => F.succeed(O.none()),
+        onSome: id => pipe(StateRef.get, F.map(getGroupById(id))),
       }),
     ),
-    StateRef.modify,
     F.flatten,
     F.bindTo('group'),
     F.bind('fileUri', ({ group }) => makeFileUri(group)),

@@ -1,14 +1,14 @@
 import { root } from 'src/model/optic'
-import { replaceSApp } from 'src/services/StateRef'
+import { StateRef } from 'src/services/StateRef'
 
-export const setUpsertGroupModal = replaceSApp(
+export const setUpsertGroupModal = StateRef.on(
   root.at('ui').at('modalUpsertGroup'),
-)
+).set
 
-export const setUpsertGroupName = replaceSApp(
+export const setUpsertGroupName = StateRef.onOption(
   root.at('ui').at('modalUpsertGroup').some_().at('name'),
-)
+).set
 
-export const setDeleteGroupModal = replaceSApp(
+export const setDeleteGroupModal = StateRef.on(
   root.at('ui').at('modalDeleteGroup'),
-)
+).set

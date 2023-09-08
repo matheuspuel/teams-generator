@@ -1,8 +1,8 @@
-import { $, $f, O, S } from 'fp'
+import { $, F, O, flow } from 'fp'
 import { GroupOrder } from 'src/datatypes'
 import { GroupOrderType } from 'src/datatypes/GroupOrder'
 import { root } from 'src/model/optic'
-import { modifySApp, replaceSApp } from 'src/services/StateRef'
+import { StateRef } from 'src/services/StateRef'
 import { A } from 'src/utils/fp'
 
 const selectGroupOrder =
@@ -19,8 +19,8 @@ const selectGroupOrder =
           ),
     )
 
-export const onSelectGroupOrder = $f(
+export const onSelectGroupOrder = flow(
   selectGroupOrder,
-  modifySApp(root.at('groupOrder')),
-  S.apFirst(replaceSApp(root.at('ui').at('modalSortGroup'))(O.none())),
+  StateRef.on(root.at('groupOrder')).update,
+  F.tap(() => StateRef.on(root.at('ui').at('modalSortGroup')).set(O.none())),
 )

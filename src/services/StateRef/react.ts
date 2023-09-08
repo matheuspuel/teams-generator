@@ -2,7 +2,7 @@
 /* eslint-disable functional/no-expression-statements */
 /* eslint-disable functional/no-conditional-statements */
 import * as Fiber from '@effect/io/Fiber'
-import { Eq, F, O, Option, Runtime, S, Stream, pipe } from 'fp'
+import { Duration, Eq, F, O, Option, Runtime, Stream, pipe } from 'fp'
 import React from 'react'
 import { RootState } from 'src/model'
 import { StateRef } from '.'
@@ -24,7 +24,7 @@ export const useSelector = <A>({
   let returnValue: A
   if (O.isNone(ref.current)) {
     returnValue = Runtime.runSync(env.runtime)(
-      StateRef.modify(S.gets(selector)),
+      StateRef.get.pipe(F.map(selector)),
     )
     ref.current = O.some({ state: returnValue, lastSentState: returnValue })
   } else {
@@ -33,6 +33,7 @@ export const useSelector = <A>({
   React.useEffect(() => {
     const fiber = pipe(
       StateRef.changes,
+      Stream.debounce(Duration.decode(0)),
       Stream.changes,
       Stream.flatMap(() =>
         pipe(
