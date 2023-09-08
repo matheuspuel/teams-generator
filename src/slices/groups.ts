@@ -18,7 +18,7 @@ import { Group, Player } from 'src/datatypes'
 import { RootState } from 'src/model'
 import { root } from 'src/model/optic'
 import { IdGenerator } from 'src/services/IdGenerator'
-import { execute, modifySApp } from 'src/services/StateRef'
+import { StateRef, modifySApp } from 'src/services/StateRef'
 import { Id } from 'src/utils/Entity'
 import { Timestamp } from 'src/utils/datatypes'
 
@@ -62,7 +62,7 @@ const addGroup = (group: Group) => modify(gs => ({ ...gs, [group.id]: group }))
 export const createGroup = ({ name }: { name: string }) =>
   $(
     IdGenerator.generate(),
-    F.flatMap(id => execute(addGroup({ id, name, players: [] }))),
+    F.flatMap(id => StateRef.modify(addGroup({ id, name, players: [] }))),
   )
 
 export const editGroup = (args: { id: Id; name: string }) =>
@@ -77,7 +77,7 @@ export const editGroup = (args: { id: Id; name: string }) =>
 export const addImportedGroup = (group: Group) =>
   pipe(
     IdGenerator.generate(),
-    F.flatMap(id => execute(addGroup({ ...group, id }))),
+    F.flatMap(id => StateRef.modify(addGroup({ ...group, id }))),
   )
 
 export const deleteGroup = (args: { id: Id }) => modify(Rec.remove(args.id))
@@ -104,7 +104,7 @@ export const createPlayer = ({
   $(
     F.all({ id: IdGenerator.generate(), time: Timestamp.getNow() }),
     F.flatMap(({ id, time }) =>
-      execute(
+      StateRef.modify(
         addPlayer({ groupId, player: { ...player, id, createdAt: time } }),
       ),
     ),

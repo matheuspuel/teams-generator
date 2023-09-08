@@ -5,7 +5,7 @@ import { Player, TeamsGenerator } from 'src/datatypes'
 import { getResultRatingDeviance } from 'src/datatypes/TeamsGenerator'
 import { root } from 'src/model/optic'
 import { Metadata } from 'src/services/Metadata'
-import { execute, replaceSApp } from 'src/services/StateRef'
+import { StateRef, replaceSApp } from 'src/services/StateRef'
 import { Telemetry } from 'src/services/Telemetry'
 import { Timestamp } from 'src/utils/datatypes'
 
@@ -14,7 +14,7 @@ export type GeneratedResult = Array<Array<Player>>
 export const eraseResult = replaceSApp(root.at('result'))(O.none())
 
 export const generateResult = $(
-  execute(
+  StateRef.modify(
     S.gets(s =>
       $(
         get(root.at('ui').at('selectedGroupId'))(s),
@@ -47,7 +47,7 @@ export const generateResult = $(
   ),
   F.bind('end', () => clockWith(c => c.currentTimeMillis)),
   F.tap(({ result }) =>
-    $(result, O.some, replaceSApp(root.at('result')), execute),
+    $(result, O.some, replaceSApp(root.at('result')), StateRef.modify),
   ),
   F.tap(({ parameters, players, start, end, result }) =>
     $(

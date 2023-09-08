@@ -1,22 +1,26 @@
 import * as Context from '@effect/data/Context'
-import { Effect, F, Optic, S, Stream, SubscriptionRef } from 'fp'
+import { F, Optic, S, Stream, SubscriptionRef } from 'fp'
 import { RootState } from 'src/model'
 
 export type AppStateRef = SubscriptionRef.SubscriptionRef<RootState>
 
 export const AppStateRefEnv = Context.Tag<AppStateRef>()
 
-export const changes: Stream.Stream<AppStateRef, never, void> = Stream.flatMap(
-  AppStateRefEnv,
-  env => env.changes,
-)
+const preparedSubscriptionRefFromService = <A>(
+  tag: Context.Tag<
+    SubscriptionRef.SubscriptionRef<A>,
+    SubscriptionRef.SubscriptionRef<A>
+  >,
+) => ({
+  changes: Stream.flatMap(tag, env => env.changes),
+  get: F.flatMap(tag, SubscriptionRef.get),
+  set: (a: A) => F.flatMap(tag, SubscriptionRef.set(a)),
+  update: (f: (a: A) => A) => F.flatMap(tag, SubscriptionRef.update(f)),
+  modify: <B>(f: (a: A) => readonly [B, A]) =>
+    F.flatMap(tag, SubscriptionRef.modify(f)),
+})
 
-export const execute = <A>(
-  f: S.State<RootState, A>,
-): Effect<AppStateRef, never, A> =>
-  F.flatMap(AppStateRefEnv, env => SubscriptionRef.modify(env, f))
-
-export const getRootState = S.get<RootState>()
+export const StateRef = preparedSubscriptionRefFromService(AppStateRefEnv)
 
 export const getSApp: <A>(
   optic: Optic.PolyReversedPrism<RootState, RootState, A, A>,

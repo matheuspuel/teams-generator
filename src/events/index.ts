@@ -25,7 +25,7 @@ import { BackHandler } from 'src/services/BackHandler'
 import { ShareService } from 'src/services/Share'
 import { SplashScreen } from 'src/services/SplashScreen'
 import {
-  execute,
+  StateRef,
   getSApp,
   modifySApp,
   replaceSApp,
@@ -85,7 +85,7 @@ export const appEventsDefinition = defineEvents({
   doNothing: ignore,
   back: (_: void) =>
     $(
-      execute(goBack),
+      StateRef.modify(goBack),
       F.tap(({ shouldBubbleUpEvent }) =>
         shouldBubbleUpEvent ? BackHandler.exit() : F.unit,
       ),
@@ -94,21 +94,21 @@ export const appEventsDefinition = defineEvents({
     preventSplashScreenAutoHide: (_: void) => SplashScreen.preventAutoHide(),
     uiMount: (_: void) => SplashScreen.hide(),
     appLoaded: (_: void) =>
-      execute(replaceSApp(root.at('core').at('isLoaded'))(true)),
+      StateRef.modify(replaceSApp(root.at('core').at('isLoaded'))(true)),
     saveState: (_: void) => saveState,
   },
   alert: { dismiss: (_: void) => Alert.dismiss() },
   groups: {
     menu: {
       open: (_: void) =>
-        execute(replaceSApp(root.at('ui').at('homeMenu'))(true)),
+        StateRef.modify(replaceSApp(root.at('ui').at('homeMenu'))(true)),
       close: (_: void) =>
-        execute(replaceSApp(root.at('ui').at('homeMenu'))(false)),
+        StateRef.modify(replaceSApp(root.at('ui').at('homeMenu'))(false)),
     },
     import: (_: void) =>
       pipe(
         replaceSApp(root.at('ui').at('homeMenu'))(false),
-        execute,
+        StateRef.modify,
         F.tap(() => importGroupFromDocumentPicker()),
         F.ignore,
       ),
@@ -119,11 +119,13 @@ export const appEventsDefinition = defineEvents({
           S.flatMap(() =>
             replaceSApp(root.at('ui').at('selectedGroupId'))(O.some(id)),
           ),
-          execute,
+          StateRef.modify,
         ),
       upsert: {
         new: (_: void) =>
-          execute(setUpsertGroupModal(some({ id: O.none(), name: '' }))),
+          StateRef.modify(
+            setUpsertGroupModal(some({ id: O.none(), name: '' })),
+          ),
         edit: (id: Id) =>
           $(
             S.gets(getGroupById(id)),
@@ -134,15 +136,15 @@ export const appEventsDefinition = defineEvents({
                   setUpsertGroupModal(some({ id: O.some(id), name: g.name })),
               }),
             ),
-            execute,
+            StateRef.modify,
           ),
-        close: (_: void) => execute(setUpsertGroupModal(none())),
-        form: { name: { change: $f(setUpsertGroupName, execute) } },
+        close: (_: void) => StateRef.modify(setUpsertGroupModal(none())),
+        form: { name: { change: $f(setUpsertGroupName, StateRef.modify) } },
         submit: (_: void) =>
           $(
             getSApp(root.at('ui').at('modalUpsertGroup')),
             S.map(O.filter(m => $(m.name, not(Str.isEmpty)))),
-            execute,
+            StateRef.modify,
             F.flatMap(
               O.match({
                 onNone: () => ignore(),
@@ -151,17 +153,18 @@ export const appEventsDefinition = defineEvents({
                     m.id,
                     O.match({
                       onNone: () => createGroup({ name: m.name }),
-                      onSome: id => execute(editGroup({ id, name: m.name })),
+                      onSome: id =>
+                        StateRef.modify(editGroup({ id, name: m.name })),
                     }),
-                    F.tap(() => execute(setUpsertGroupModal(O.none()))),
+                    F.tap(() => StateRef.modify(setUpsertGroupModal(O.none()))),
                   ),
               }),
             ),
           ),
       },
       delete: {
-        open: (id: Id) => execute(setDeleteGroupModal(some({ id }))),
-        close: (_: void) => execute(setDeleteGroupModal(none())),
+        open: (id: Id) => StateRef.modify(setDeleteGroupModal(some({ id }))),
+        close: (_: void) => StateRef.modify(setDeleteGroupModal(none())),
         submit: (_: void) =>
           $(
             S.gets(Optic.get(root.at('ui').at('modalDeleteGroup'))),
@@ -172,7 +175,7 @@ export const appEventsDefinition = defineEvents({
               }),
             ),
             S.apFirst(setDeleteGroupModal(none())),
-            execute,
+            StateRef.modify,
           ),
       },
     },
@@ -180,53 +183,59 @@ export const appEventsDefinition = defineEvents({
   group: {
     menu: {
       open: (_: void) =>
-        execute(replaceSApp(root.at('ui').at('groupMenu'))(true)),
+        StateRef.modify(replaceSApp(root.at('ui').at('groupMenu'))(true)),
       close: (_: void) =>
-        execute(replaceSApp(root.at('ui').at('groupMenu'))(false)),
+        StateRef.modify(replaceSApp(root.at('ui').at('groupMenu'))(false)),
     },
     sort: {
       open: (_: void) =>
         pipe(
           replaceSApp(root.at('ui').at('modalSortGroup'))(O.some(null)),
           S.tap(() => replaceSApp(root.at('ui').at('groupMenu'))(false)),
-          execute,
+          StateRef.modify,
         ),
       close: (_: void) =>
-        execute(replaceSApp(root.at('ui').at('modalSortGroup'))(O.none())),
+        StateRef.modify(
+          replaceSApp(root.at('ui').at('modalSortGroup'))(O.none()),
+        ),
       by: {
-        name: (_: void) => $(onSelectGroupOrder('name'), execute),
-        position: (_: void) => $(onSelectGroupOrder('position'), execute),
-        rating: (_: void) => $(onSelectGroupOrder('rating'), execute),
-        active: (_: void) => $(onSelectGroupOrder('active'), execute),
-        date: (_: void) => $(onSelectGroupOrder('date'), execute),
+        name: (_: void) => $(onSelectGroupOrder('name'), StateRef.modify),
+        position: (_: void) =>
+          $(onSelectGroupOrder('position'), StateRef.modify),
+        rating: (_: void) => $(onSelectGroupOrder('rating'), StateRef.modify),
+        active: (_: void) => $(onSelectGroupOrder('active'), StateRef.modify),
+        date: (_: void) => $(onSelectGroupOrder('date'), StateRef.modify),
       },
     },
     parameters: {
       open: (_: void) =>
-        execute(replaceSApp(root.at('ui').at('modalParameters'))(true)),
-      close: (_: void) => execute(closeParametersModal),
+        StateRef.modify(replaceSApp(root.at('ui').at('modalParameters'))(true)),
+      close: (_: void) => StateRef.modify(closeParametersModal),
       teamsCount: {
-        decrement: (_: void) => execute(decrementTeamsCount),
-        increment: (_: void) => execute(incrementTeamsCount),
+        decrement: (_: void) => StateRef.modify(decrementTeamsCount),
+        increment: (_: void) => StateRef.modify(incrementTeamsCount),
         toggleType: (_: void) =>
-          $(modifySApp(root.at('parameters'))(Parameters_.toggleType), execute),
+          $(
+            modifySApp(root.at('parameters'))(Parameters_.toggleType),
+            StateRef.modify,
+          ),
       },
-      position: { toggle: (_: void) => execute(togglePosition) },
-      rating: { toggle: (_: void) => execute(toggleRating) },
+      position: { toggle: (_: void) => StateRef.modify(togglePosition) },
+      rating: { toggle: (_: void) => StateRef.modify(toggleRating) },
       shuffle: (_: void) =>
         $(
           S.of<RootState, void>(undefined),
           S.flatMap(() => eraseResult),
           S.flatMap(() => navigate('Result')),
           S.flatMap(() => closeParametersModal),
-          execute,
+          StateRef.modify,
           F.tap(() => F.sleep(0)),
           F.flatMap(() => generateResult),
         ),
     },
     export: (_: void) =>
       pipe(
-        execute(replaceSApp(root.at('ui').at('groupMenu'))(false)),
+        StateRef.modify(replaceSApp(root.at('ui').at('groupMenu'))(false)),
         F.tap(() => exportGroup()),
         F.ignore,
       ),
@@ -240,7 +249,7 @@ export const appEventsDefinition = defineEvents({
               S.apFirst(replaceSApp(root.at('playerForm'))(blankPlayerForm)),
             ),
           ),
-          execute,
+          StateRef.modify,
         ),
       open: (playerId: Id) =>
         $(
@@ -264,36 +273,46 @@ export const appEventsDefinition = defineEvents({
               ),
             ),
           ),
-          execute,
+          StateRef.modify,
         ),
       active: {
-        toggle: (id: Id) => execute(togglePlayerActive({ playerId: id })),
+        toggle: (id: Id) =>
+          StateRef.modify(togglePlayerActive({ playerId: id })),
         toggleAll: (_: void) =>
           pipe(
             toggleAllPlayersActive,
             S.tap(() => replaceSApp(root.at('ui').at('groupMenu'))(false)),
-            execute,
+            StateRef.modify,
           ),
       },
     },
   },
   player: {
     name: {
-      change: $f(replaceSApp(root.at('playerForm').at('name')), execute),
+      change: $f(
+        replaceSApp(root.at('playerForm').at('name')),
+        StateRef.modify,
+      ),
     },
     position: {
-      change: $f(replaceSApp(root.at('playerForm').at('position')), execute),
+      change: $f(
+        replaceSApp(root.at('playerForm').at('position')),
+        StateRef.modify,
+      ),
     },
     rating: {
       change: $f(
         (v: number) => Math.round(v * 20) / 2,
         D.parseOption(Rating.Schema),
         v => v,
-        O.map($f(replaceSApp(root.at('playerForm').at('rating')), execute)),
+        O.map(
+          $f(replaceSApp(root.at('playerForm').at('rating')), StateRef.modify),
+        ),
         O.getOrElse(() => F.unit),
       ),
     },
-    delete: (_: void) => $(deleteCurrentPlayer, S.apFirst(goBack), execute),
+    delete: (_: void) =>
+      $(deleteCurrentPlayer, S.apFirst(goBack), StateRef.modify),
     save: (_: void) =>
       $(
         Apply.sequenceS(S.Apply)({
@@ -308,7 +327,7 @@ export const appEventsDefinition = defineEvents({
           ),
         }),
         S.map(O.all),
-        execute,
+        StateRef.modify,
         F.flatMap(
           O.match({
             onNone: () => F.unit,
@@ -318,9 +337,11 @@ export const appEventsDefinition = defineEvents({
                 O.match({
                   onNone: () => createPlayer({ groupId, player: form }),
                   onSome: id =>
-                    execute(editPlayer({ groupId, player: { ...form, id } })),
+                    StateRef.modify(
+                      editPlayer({ groupId, player: { ...form, id } }),
+                    ),
                 }),
-                F.flatMap(() => execute(goBack)),
+                F.flatMap(() => StateRef.modify(goBack)),
               ),
           }),
         ),
@@ -330,7 +351,7 @@ export const appEventsDefinition = defineEvents({
   result: {
     share: (_: void) =>
       $(
-        execute(S.gets(get(root.at('result')))),
+        StateRef.modify(S.gets(get(root.at('result')))),
         F.flatMap(
           O.match({
             onNone: () => F.unit,

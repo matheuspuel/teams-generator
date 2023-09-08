@@ -7,7 +7,7 @@ import { DocumentPicker } from 'src/services/DocumentPicker'
 import { FileSystem } from 'src/services/FileSystem'
 import { Linking } from 'src/services/Linking'
 import { ShareService } from 'src/services/Share'
-import { execute } from 'src/services/StateRef'
+import { StateRef } from 'src/services/StateRef'
 import { addImportedGroup, getGroupById } from 'src/slices/groups'
 import { normalize } from 'src/utils/String'
 
@@ -20,7 +20,7 @@ export const exportGroup = () =>
         onSome: id => S.gets(getGroupById(id)),
       }),
     ),
-    execute,
+    StateRef.modify,
     F.flatten,
     F.bindTo('group'),
     F.bind('fileUri', ({ group }) => makeFileUri(group)),

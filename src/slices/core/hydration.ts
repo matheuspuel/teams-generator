@@ -3,11 +3,11 @@ import { $, $f, F, S } from 'fp'
 import { GroupOrder, Parameters } from 'src/datatypes'
 import { root } from 'src/model/optic'
 import { Repository } from 'src/services/Repositories'
-import { execute, getRootState, replaceSApp } from 'src/services/StateRef'
+import { StateRef, replaceSApp } from 'src/services/StateRef'
 import { emptyGroups } from '../groups'
 
 export const saveState = $(
-  execute(getRootState),
+  StateRef.get,
   F.tap($f(get(root.at('groups')), Repository.teams.groups.set)),
   F.tap($f(get(root.at('parameters')), Repository.teams.parameters.set)),
   F.tap($f(get(root.at('groupOrder')), Repository.teams.groupOrder.set)),
@@ -39,7 +39,7 @@ export const hydrate = $(
       replaceSApp(root.at('groups'))(p.groups),
       S.apFirst(replaceSApp(root.at('parameters'))(p.parameters)),
       S.apFirst(replaceSApp(root.at('groupOrder'))(p.groupOrder)),
-      execute,
+      StateRef.modify,
     ),
   ),
   F.asUnit,

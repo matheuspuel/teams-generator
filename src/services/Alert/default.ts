@@ -1,14 +1,14 @@
 import { Duration, F, Layer, O, Stream, SubscriptionRef, pipe } from 'fp'
 import { root } from 'src/model/optic'
 import { AlertEnv } from '.'
-import { AppStateRef, execute, replaceSApp } from '../StateRef'
+import { AppStateRef, StateRef, replaceSApp } from '../StateRef'
 
 const ref = SubscriptionRef.make<void>(undefined).pipe(F.runSync)
 
 const stream = pipe(
   ref.changes,
   Stream.debounce(Duration.decode('5 seconds')),
-  Stream.tap(() => execute(replaceSApp(root.at('alert'))(O.none()))),
+  Stream.tap(() => StateRef.modify(replaceSApp(root.at('alert'))(O.none()))),
 )
 
 export const AlertLive = pipe(
@@ -24,13 +24,13 @@ export const AlertLive = pipe(
         message: string
       }) =>
         pipe(
-          execute(replaceSApp(root.at('alert'))(O.some(args))),
+          StateRef.modify(replaceSApp(root.at('alert'))(O.some(args))),
           F.tap(() => SubscriptionRef.set(ref, undefined)),
           F.provideContext(ctx),
         ),
       dismiss: () =>
         pipe(
-          execute(replaceSApp(root.at('alert'))(O.none())),
+          StateRef.modify(replaceSApp(root.at('alert'))(O.none())),
           F.provideContext(ctx),
         ),
     }),
