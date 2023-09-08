@@ -23,7 +23,17 @@ import { AppTheme } from 'src/services/Theme'
 import { AppThemeLive } from 'src/services/Theme/default'
 import { initialUIContext } from 'src/services/UI/context'
 import { Id } from 'src/utils/Entity'
-import { $, Clock, Effect, F, Layer, Num, Ref, pipe } from 'src/utils/fp'
+import {
+  $,
+  Clock,
+  Effect,
+  F,
+  Layer,
+  Num,
+  Ref,
+  Stream,
+  pipe,
+} from 'src/utils/fp'
 import { UIRoot } from '.'
 
 const testLayer = pipe(
@@ -41,7 +51,7 @@ const testLayer = pipe(
     StateRefLive,
     BackHandlerEnv.context({
       exit: () => F.unit,
-      subscribe: () => F.succeed({ unsubscribe: F.unit }),
+      stream: Stream.never,
     }).pipe(Layer.succeedContext),
     FileSystemEnv.context({
       write: () => F.unit,

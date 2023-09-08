@@ -1,7 +1,7 @@
 import { $, Duration, Effect, F, Stream, pipe } from 'fp'
 import { appEvents } from 'src/events'
 import { BackHandler } from 'src/services/BackHandler'
-import { AppStateRef, StateRef } from 'src/services/StateRef'
+import { StateRef } from 'src/services/StateRef'
 import { UI } from 'src/services/UI'
 import { hydrate } from 'src/slices/core/hydration'
 import { setupReceiveURLHandler } from './export/group'
@@ -17,8 +17,11 @@ export const startApp = $(
   UI.start(),
   F.flatMap(() => on.preventSplashScreenAutoHide()),
   F.flatMap(() =>
-    F.flatMap(F.context<AppStateRef | BackHandler>(), ctx =>
-      BackHandler.subscribe(appEvents.back().pipe(F.provideContext(ctx))),
+    pipe(
+      BackHandler.stream,
+      Stream.tap(() => appEvents.back()),
+      Stream.runDrain,
+      F.forkDaemon,
     ),
   ),
   F.flatMap(() => hydrate),
