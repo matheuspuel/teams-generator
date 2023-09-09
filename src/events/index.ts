@@ -7,6 +7,7 @@ import {
   O,
   Str,
   constant,
+  flow,
   identity,
   none,
   not,
@@ -20,7 +21,7 @@ import { Alert } from 'src/services/Alert'
 import { BackHandler } from 'src/services/BackHandler'
 import { ShareService } from 'src/services/Share'
 import { SplashScreen } from 'src/services/SplashScreen'
-import { StateRef } from 'src/services/StateRef'
+import { State, StateRef } from 'src/services/StateRef'
 import { saveState } from 'src/slices/core/hydration'
 import { onSelectGroupOrder } from 'src/slices/groupOrder'
 import {
@@ -58,20 +59,23 @@ export type AppEvent = Effect<
   unknown
 >
 
+const exec = StateRef.execute
+
 const defineEvents: <T extends AnyEventTree>(tree: T) => T = identity
 
 const noArg: <A>(a: A) => () => A = constant
 const ignore = noArg(F.unit)
 
-const closeParametersModal = StateRef.on(
-  root.at('ui').at('modalParameters'),
-).set(false)
+const closeParametersModal = State.on(root.at('ui').at('modalParameters')).set(
+  false,
+)
 
 export const appEvents = defineEvents({
   doNothing: ignore,
   back: () =>
     $(
-      StateRef.modify(goBack),
+      State.modify(goBack),
+      exec,
       F.tap(({ shouldBubbleUpEvent }) =>
         shouldBubbleUpEvent ? BackHandler.exit() : F.unit,
       ),
@@ -79,18 +83,19 @@ export const appEvents = defineEvents({
   core: {
     preventSplashScreenAutoHide: () => SplashScreen.preventAutoHide(),
     uiMount: () => SplashScreen.hide(),
-    appLoaded: () => StateRef.on(root.at('core').at('isLoaded')).set(true),
+    appLoaded: () => exec(State.on(root.at('core').at('isLoaded')).set(true)),
     saveState: () => saveState,
   },
   alert: { dismiss: () => Alert.dismiss() },
   groups: {
     menu: {
-      open: () => StateRef.on(root.at('ui').at('homeMenu')).set(true),
-      close: () => StateRef.on(root.at('ui').at('homeMenu')).set(false),
+      open: () => exec(State.on(root.at('ui').at('homeMenu')).set(true)),
+      close: () => exec(State.on(root.at('ui').at('homeMenu')).set(false)),
     },
     import: () =>
       pipe(
-        StateRef.on(root.at('ui').at('homeMenu')).set(false),
+        State.on(root.at('ui').at('homeMenu')).set(false),
+        exec,
         F.tap(() => importGroupFromDocumentPicker()),
         F.ignore,
       ),
@@ -98,15 +103,16 @@ export const appEvents = defineEvents({
       open: (id: Id) =>
         pipe(
           navigate('Group'),
-          F.flatMap(() =>
-            StateRef.on(root.at('ui').at('selectedGroupId')).set(O.some(id)),
+          F.tap(() =>
+            State.on(root.at('ui').at('selectedGroupId')).set(O.some(id)),
           ),
+          exec,
         ),
       upsert: {
-        new: () => setUpsertGroupModal(some({ id: O.none(), name: '' })),
+        new: () => exec(setUpsertGroupModal(some({ id: O.none(), name: '' }))),
         edit: (id: Id) =>
           $(
-            StateRef.get,
+            State.get,
             F.map(getGroupById(id)),
             F.flatMap(
               O.match({
@@ -115,12 +121,13 @@ export const appEvents = defineEvents({
                   setUpsertGroupModal(some({ id: O.some(id), name: g.name })),
               }),
             ),
+            exec,
           ),
-        close: () => setUpsertGroupModal(none()),
-        form: { name: { change: setUpsertGroupName } },
+        close: () => exec(setUpsertGroupModal(none())),
+        form: { name: { change: flow(setUpsertGroupName, exec) } },
         submit: () =>
-          $(
-            StateRef.on(root.at('ui').at('modalUpsertGroup')).get,
+          pipe(
+            State.on(root.at('ui').at('modalUpsertGroup')).get,
             F.map(O.filter(m => $(m.name, not(Str.isEmpty)))),
             F.flatMap(
               O.match({
@@ -136,14 +143,15 @@ export const appEvents = defineEvents({
                   ),
               }),
             ),
+            exec,
           ),
       },
       delete: {
-        open: (id: Id) => setDeleteGroupModal(some({ id })),
-        close: () => setDeleteGroupModal(none()),
+        open: (id: Id) => exec(setDeleteGroupModal(some({ id }))),
+        close: () => exec(setDeleteGroupModal(none())),
         submit: () =>
           $(
-            StateRef.on(root.at('ui').at('modalDeleteGroup')).get,
+            State.on(root.at('ui').at('modalDeleteGroup')).get,
             F.flatMap(
               O.match({
                 onNone: () => F.unit,
@@ -151,132 +159,134 @@ export const appEvents = defineEvents({
               }),
             ),
             F.tap(() => setDeleteGroupModal(none())),
+            exec,
           ),
       },
     },
   },
   group: {
     menu: {
-      open: () => StateRef.on(root.at('ui').at('groupMenu')).set(true),
-      close: () => StateRef.on(root.at('ui').at('groupMenu')).set(false),
+      open: () => exec(State.on(root.at('ui').at('groupMenu')).set(true)),
+      close: () => exec(State.on(root.at('ui').at('groupMenu')).set(false)),
     },
     sort: {
       open: () =>
         pipe(
-          StateRef.on(root.at('ui').at('modalSortGroup')).set(O.some(null)),
-          F.tap(() => StateRef.on(root.at('ui').at('groupMenu')).set(false)),
+          State.on(root.at('ui').at('modalSortGroup')).set(O.some(null)),
+          F.tap(() => State.on(root.at('ui').at('groupMenu')).set(false)),
+          exec,
         ),
       close: () =>
-        StateRef.on(root.at('ui').at('modalSortGroup')).set(O.none()),
+        exec(State.on(root.at('ui').at('modalSortGroup')).set(O.none())),
       by: {
-        name: () => onSelectGroupOrder('name'),
-        position: () => onSelectGroupOrder('position'),
-        rating: () => onSelectGroupOrder('rating'),
-        active: () => onSelectGroupOrder('active'),
-        date: () => onSelectGroupOrder('date'),
+        name: () => exec(onSelectGroupOrder('name')),
+        position: () => exec(onSelectGroupOrder('position')),
+        rating: () => exec(onSelectGroupOrder('rating')),
+        active: () => exec(onSelectGroupOrder('active')),
+        date: () => exec(onSelectGroupOrder('date')),
       },
     },
     parameters: {
-      open: () => StateRef.on(root.at('ui').at('modalParameters')).set(true),
-      close: () => closeParametersModal,
+      open: () => exec(State.on(root.at('ui').at('modalParameters')).set(true)),
+      close: () => exec(closeParametersModal),
       teamsCount: {
-        decrement: () => decrementTeamsCount,
-        increment: () => incrementTeamsCount,
+        decrement: () => exec(decrementTeamsCount),
+        increment: () => exec(incrementTeamsCount),
         toggleType: () =>
-          StateRef.on(root.at('parameters')).update(Parameters_.toggleType),
+          exec(State.on(root.at('parameters')).update(Parameters_.toggleType)),
       },
-      position: { toggle: () => togglePosition },
-      rating: { toggle: () => toggleRating },
+      position: { toggle: () => exec(togglePosition) },
+      rating: { toggle: () => exec(toggleRating) },
       shuffle: () =>
         $(
           F.unit,
           F.flatMap(() => eraseResult),
           F.flatMap(() => navigate('Result')),
           F.flatMap(() => closeParametersModal),
+          exec,
           F.tap(() => F.sleep(0)),
           F.flatMap(() => generateResult),
         ),
     },
     export: () =>
       pipe(
-        StateRef.on(root.at('ui').at('groupMenu')).set(false),
+        State.on(root.at('ui').at('groupMenu')).set(false),
+        exec,
         F.tap(() => exportGroup()),
         F.ignore,
       ),
     player: {
       new: () =>
-        $(
+        pipe(
           navigate('Player'),
-          F.flatMap(() =>
-            StateRef.on(root.at('ui').at('selectedPlayerId')).set(O.none()),
+          F.tap(() =>
+            State.on(root.at('ui').at('selectedPlayerId')).set(O.none()),
           ),
-          F.tap(() => StateRef.on(root.at('playerForm')).set(blankPlayerForm)),
+          F.tap(() => State.on(root.at('playerForm')).set(blankPlayerForm)),
+          exec,
         ),
       open: (playerId: Id) =>
-        $(
+        pipe(
           navigate('Player'),
-          F.flatMap(() =>
-            $(
-              getPlayerFromActiveGroup({ playerId }),
-              F.flatMap(
-                O.match({
-                  onNone: () => F.unit,
-                  onSome: v =>
-                    pipe(
-                      StateRef.on(root.at('playerForm')).set(
-                        getPlayerFormFromData(v),
-                      ),
-                      F.tap(() =>
-                        StateRef.on(root.at('ui').at('selectedPlayerId')).set(
-                          O.some(playerId),
-                        ),
-                      ),
+          F.flatMap(() => getPlayerFromActiveGroup({ playerId })),
+          F.flatMap(
+            O.match({
+              onNone: () => F.unit,
+              onSome: v =>
+                pipe(
+                  State.on(root.at('playerForm')).set(getPlayerFormFromData(v)),
+                  F.tap(() =>
+                    State.on(root.at('ui').at('selectedPlayerId')).set(
+                      O.some(playerId),
                     ),
-                }),
-              ),
-            ),
+                  ),
+                ),
+            }),
           ),
+          exec,
         ),
       active: {
-        toggle: (id: Id) => togglePlayerActive({ playerId: id }),
+        toggle: (id: Id) => exec(togglePlayerActive({ playerId: id })),
         toggleAll: () =>
           pipe(
-            StateRef.update(toggleAllPlayersActive),
-            F.tap(() => StateRef.on(root.at('ui').at('groupMenu')).set(false)),
+            State.update(toggleAllPlayersActive),
+            F.tap(() => State.on(root.at('ui').at('groupMenu')).set(false)),
+            exec,
           ),
       },
     },
   },
   player: {
     name: {
-      change: StateRef.on(root.at('playerForm').at('name')).set,
+      change: flow(State.on(root.at('playerForm').at('name')).set, exec),
     },
     position: {
-      change: StateRef.on(root.at('playerForm').at('position')).set,
+      change: flow(State.on(root.at('playerForm').at('position')).set, exec),
     },
     rating: {
-      change: $f(
+      change: flow(
         (v: number) => Math.round(v * 20) / 2,
         D.parseOption(Rating.Schema),
-        O.map($f(StateRef.on(root.at('playerForm').at('rating')).set)),
+        O.map(flow(State.on(root.at('playerForm').at('rating')).set, exec)),
         O.getOrElse(() => F.unit),
       ),
     },
     delete: () =>
       pipe(
-        StateRef.update(deleteCurrentPlayer),
-        F.tap(() => StateRef.modify(goBack)),
+        State.update(deleteCurrentPlayer),
+        F.tap(() => State.modify(goBack)),
+        exec,
       ),
     save: () =>
-      $(
+      pipe(
         F.all({
           form: pipe(
-            StateRef.on(root.at('playerForm')).get,
+            State.on(root.at('playerForm')).get,
             F.map(f => $(f, O.liftPredicate(not(() => Str.isEmpty(f.name))))),
           ),
-          groupId: StateRef.on(root.at('ui').at('selectedGroupId')).get,
+          groupId: State.on(root.at('ui').at('selectedGroupId')).get,
           playerId: pipe(
-            StateRef.on(root.at('ui').at('selectedPlayerId')).get,
+            State.on(root.at('ui').at('selectedPlayerId')).get,
             F.map(O.some),
           ),
         }),
@@ -292,16 +302,18 @@ export const appEvents = defineEvents({
                   onSome: id =>
                     editPlayer({ groupId, player: { ...form, id } }),
                 }),
-                F.flatMap(() => StateRef.modify(goBack)),
+                F.flatMap(() => State.modify(goBack)),
               ),
           }),
         ),
+        exec,
       ),
   },
   result: {
     share: () =>
       pipe(
-        StateRef.on(root.at('result')).get,
+        State.on(root.at('result')).get,
+        StateRef.query,
         F.flatMap(
           O.match({
             onNone: () => F.unit,

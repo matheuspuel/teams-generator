@@ -3,11 +3,11 @@ import { $, $f, F, pipe } from 'fp'
 import { GroupOrder, Parameters } from 'src/datatypes'
 import { root } from 'src/model/optic'
 import { Repository } from 'src/services/Repositories'
-import { StateRef } from 'src/services/StateRef'
+import { State, StateRef } from 'src/services/StateRef'
 import { emptyGroups } from '../groups'
 
 export const saveState = $(
-  StateRef.get,
+  StateRef.query(State.get),
   F.tap($f(get(root.at('groups')), Repository.teams.groups.set)),
   F.tap($f(get(root.at('parameters')), Repository.teams.parameters.set)),
   F.tap($f(get(root.at('groupOrder')), Repository.teams.groupOrder.set)),
@@ -36,9 +36,10 @@ export const hydrate = $(
   ),
   F.tap(p =>
     pipe(
-      StateRef.on(root.at('groups')).set(p.groups),
-      F.tap(() => StateRef.on(root.at('parameters')).set(p.parameters)),
-      F.tap(() => StateRef.on(root.at('groupOrder')).set(p.groupOrder)),
+      State.on(root.at('groups')).set(p.groups),
+      F.tap(() => State.on(root.at('parameters')).set(p.parameters)),
+      F.tap(() => State.on(root.at('groupOrder')).set(p.groupOrder)),
+      StateRef.execute,
     ),
   ),
   F.asUnit,

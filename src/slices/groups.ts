@@ -3,7 +3,7 @@ import { Group, Player } from 'src/datatypes'
 import { RootState } from 'src/model'
 import { root } from 'src/model/optic'
 import { IdGenerator } from 'src/services/IdGenerator'
-import { StateRef } from 'src/services/StateRef'
+import { State } from 'src/services/StateRef'
 import { Id } from 'src/utils/Entity'
 import { Timestamp } from 'src/utils/datatypes'
 
@@ -16,7 +16,7 @@ export const GroupsState: D.Schema<
 
 export const emptyGroups: GroupsState = {}
 
-const refOnGroups = StateRef.on(root.at('groups'))
+const refOnGroups = State.on(root.at('groups'))
 
 export const getGroupsRecord = Optic.get(root.at('groups'))
 
@@ -31,12 +31,12 @@ const getPlayer = (args: { groupId: Id; id: Id }) =>
 
 export const getPlayerFromActiveGroup = (args: { playerId: Id }) =>
   $(
-    StateRef.on(root.at('ui').at('selectedGroupId')).get,
+    State.on(root.at('ui').at('selectedGroupId')).get,
     F.flatMap(
       O.match({
         onNone: () => F.succeed(O.none()),
         onSome: groupId =>
-          StateRef.get.pipe(F.map(getPlayer({ groupId, id: args.playerId }))),
+          State.get.pipe(F.map(getPlayer({ groupId, id: args.playerId }))),
       }),
     ),
   )
@@ -132,12 +132,12 @@ export const deleteCurrentPlayer = (s: RootState) =>
 
 export const togglePlayerActive = ({ playerId }: { playerId: Id }) =>
   $(
-    StateRef.on(root.at('ui').at('selectedGroupId')).get,
+    State.on(root.at('ui').at('selectedGroupId')).get,
     F.flatMap(
       O.match({
         onNone: () => F.unit,
         onSome: groupId =>
-          StateRef.onOption(
+          State.onOption(
             root
               .at('groups')
               .key(groupId)

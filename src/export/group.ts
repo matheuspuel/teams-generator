@@ -6,20 +6,21 @@ import { DocumentPicker } from 'src/services/DocumentPicker'
 import { FileSystem } from 'src/services/FileSystem'
 import { Linking } from 'src/services/Linking'
 import { ShareService } from 'src/services/Share'
-import { StateRef } from 'src/services/StateRef'
+import { State, StateRef } from 'src/services/StateRef'
 import { addImportedGroup, getGroupById } from 'src/slices/groups'
 import { normalize } from 'src/utils/String'
 
 export const exportGroup = () =>
   pipe(
-    StateRef.on(root.at('ui').at('selectedGroupId')).get,
+    State.on(root.at('ui').at('selectedGroupId')).get,
     F.flatMap(
       O.match({
         onNone: () => F.succeed(O.none()),
-        onSome: id => pipe(StateRef.get, F.map(getGroupById(id))),
+        onSome: id => pipe(State.get, F.map(getGroupById(id))),
       }),
     ),
     F.flatten,
+    StateRef.query,
     F.bindTo('group'),
     F.bind('fileUri', ({ group }) => makeFileUri(group)),
     F.tap(({ group, fileUri }) =>
@@ -78,7 +79,7 @@ const importGroupFromFile = (args: { url: string }) =>
         }),
       ),
     ),
-    F.flatMap(addImportedGroup),
+    F.flatMap(g => StateRef.execute(addImportedGroup(g))),
     F.tap(() =>
       Alert.alert({
         type: 'success',

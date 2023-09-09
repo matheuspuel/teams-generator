@@ -2,7 +2,7 @@ import { $, F, O, flow } from 'fp'
 import { GroupOrder } from 'src/datatypes'
 import { GroupOrderType } from 'src/datatypes/GroupOrder'
 import { root } from 'src/model/optic'
-import { StateRef } from 'src/services/StateRef'
+import { State } from 'src/services/StateRef'
 import { A } from 'src/utils/fp'
 
 const selectGroupOrder =
@@ -21,6 +21,6 @@ const selectGroupOrder =
 
 export const onSelectGroupOrder = flow(
   selectGroupOrder,
-  StateRef.on(root.at('groupOrder')).update,
-  F.tap(() => StateRef.on(root.at('ui').at('modalSortGroup')).set(O.none())),
+  State.on(root.at('groupOrder')).update,
+  F.tap(() => State.on(root.at('ui').at('modalSortGroup')).set(O.none())),
 )

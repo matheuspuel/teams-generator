@@ -2,13 +2,13 @@ import { get, replace } from '@fp-ts/optic'
 import { $, Tup, absurd } from 'fp'
 import { RootState } from 'src/model'
 import { root } from 'src/model/optic'
-import { StateRef } from 'src/services/StateRef'
+import { State } from 'src/services/StateRef'
 
 export type Route = 'Groups' | 'Group' | 'Player' | 'Result'
 
 export const initialRoute: Route = 'Groups'
 
-export const navigate = StateRef.on(root.at('route')).set
+export const navigate = State.on(root.at('route')).set
 
 export const goBack = (s: RootState) =>
   $(

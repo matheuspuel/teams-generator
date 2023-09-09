@@ -2,7 +2,7 @@
 /* eslint-disable functional/no-expression-statements */
 /* eslint-disable functional/no-conditional-statements */
 import * as Fiber from '@effect/io/Fiber'
-import { Duration, Eq, F, O, Option, Runtime, Stream, pipe } from 'fp'
+import { Eq, F, O, Option, Runtime, Stream, pipe } from 'fp'
 import React from 'react'
 import { RootState } from 'src/model'
 import { StateRef } from '.'
@@ -33,7 +33,6 @@ export const useSelector = <A>({
   React.useEffect(() => {
     const fiber = pipe(
       StateRef.changes,
-      Stream.debounce(Duration.decode(0)),
       Stream.changes,
       Stream.flatMap(() =>
         pipe(

@@ -5,16 +5,16 @@ import { Player, TeamsGenerator } from 'src/datatypes'
 import { getResultRatingDeviance } from 'src/datatypes/TeamsGenerator'
 import { root } from 'src/model/optic'
 import { Metadata } from 'src/services/Metadata'
-import { StateRef } from 'src/services/StateRef'
+import { State, StateRef } from 'src/services/StateRef'
 import { Telemetry } from 'src/services/Telemetry'
 import { Timestamp } from 'src/utils/datatypes'
 
 export type GeneratedResult = Array<Array<Player>>
 
-export const eraseResult = StateRef.on(root.at('result')).set(O.none())
+export const eraseResult = State.on(root.at('result')).set(O.none())
 
 export const generateResult = $(
-  StateRef.get,
+  StateRef.query(State.get),
   F.map(s =>
     pipe(
       get(root.at('ui').at('selectedGroupId'))(s),
@@ -45,7 +45,9 @@ export const generateResult = $(
     })(players),
   ),
   F.bind('end', () => clockWith(c => c.currentTimeMillis)),
-  F.tap(({ result }) => $(result, O.some, StateRef.on(root.at('result')).set)),
+  F.tap(({ result }) =>
+    pipe(result, O.some, State.on(root.at('result')).set, StateRef.execute),
+  ),
   F.tap(({ parameters, players, start, end, result }) =>
     $(
       Metadata.get(),
