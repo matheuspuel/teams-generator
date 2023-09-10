@@ -70,7 +70,7 @@ export const generateResult = $(
         ]),
       ),
       F.flatMap(() => Telemetry.send()),
-      F.catchAll(() => F.unit),
+      F.ignore,
     ),
   ),
 )

@@ -113,37 +113,31 @@ export const appEvents = defineEvents({
         edit: (id: Id) =>
           $(
             State.get,
-            F.map(getGroupById(id)),
-            F.flatMap(
-              O.match({
-                onNone: () => F.unit,
-                onSome: g =>
-                  setUpsertGroupModal(some({ id: O.some(id), name: g.name })),
-              }),
+            F.flatMap(getGroupById(id)),
+            F.flatMap(g =>
+              setUpsertGroupModal(some({ id: O.some(id), name: g.name })),
             ),
             exec,
+            F.ignore,
           ),
         close: () => exec(setUpsertGroupModal(none())),
         form: { name: { change: flow(setUpsertGroupName, exec) } },
         submit: () =>
           pipe(
             State.on(root.at('ui').at('modalUpsertGroup')).get,
-            F.map(O.filter(m => $(m.name, not(Str.isEmpty)))),
-            F.flatMap(
-              O.match({
-                onNone: () => F.unit,
-                onSome: m =>
-                  $(
-                    m.id,
-                    O.match({
-                      onNone: () => createGroup({ name: m.name }),
-                      onSome: id => editGroup({ id, name: m.name }),
-                    }),
-                    F.tap(() => setUpsertGroupModal(O.none())),
-                  ),
-              }),
+            F.flatMap(O.filter(m => $(m.name, not(Str.isEmpty)))),
+            F.flatMap(m =>
+              $(
+                m.id,
+                O.match({
+                  onNone: () => createGroup({ name: m.name }),
+                  onSome: id => editGroup({ id, name: m.name }),
+                }),
+                F.tap(() => setUpsertGroupModal(O.none())),
+              ),
             ),
             exec,
+            F.ignore,
           ),
       },
       delete: {
@@ -152,14 +146,11 @@ export const appEvents = defineEvents({
         submit: () =>
           $(
             State.on(root.at('ui').at('modalDeleteGroup')).get,
-            F.flatMap(
-              O.match({
-                onNone: () => F.unit,
-                onSome: ({ id }) => deleteGroup({ id }),
-              }),
-            ),
+            F.flatten,
+            F.flatMap(({ id }) => deleteGroup({ id })),
             F.tap(() => setDeleteGroupModal(none())),
             exec,
+            F.ignore,
           ),
       },
     },
@@ -229,21 +220,19 @@ export const appEvents = defineEvents({
         pipe(
           navigate('Player'),
           F.flatMap(() => getPlayerFromActiveGroup({ playerId })),
-          F.flatMap(
-            O.match({
-              onNone: () => F.unit,
-              onSome: v =>
-                pipe(
-                  State.on(root.at('playerForm')).set(getPlayerFormFromData(v)),
-                  F.tap(() =>
-                    State.on(root.at('ui').at('selectedPlayerId')).set(
-                      O.some(playerId),
-                    ),
-                  ),
+          F.flatten,
+          F.flatMap(v =>
+            pipe(
+              State.on(root.at('playerForm')).set(getPlayerFormFromData(v)),
+              F.tap(() =>
+                State.on(root.at('ui').at('selectedPlayerId')).set(
+                  O.some(playerId),
                 ),
-            }),
+              ),
+            ),
           ),
           exec,
+          F.ignore,
         ),
       active: {
         toggle: (id: Id) => exec(togglePlayerActive({ playerId: id })),
@@ -282,31 +271,25 @@ export const appEvents = defineEvents({
         F.all({
           form: pipe(
             State.on(root.at('playerForm')).get,
-            F.map(f => $(f, O.liftPredicate(not(() => Str.isEmpty(f.name))))),
+            F.flatMap(f =>
+              $(f, O.liftPredicate(not(() => Str.isEmpty(f.name)))),
+            ),
           ),
-          groupId: State.on(root.at('ui').at('selectedGroupId')).get,
-          playerId: pipe(
-            State.on(root.at('ui').at('selectedPlayerId')).get,
-            F.map(O.some),
-          ),
+          groupId: F.flatten(State.on(root.at('ui').at('selectedGroupId')).get),
+          playerId: State.on(root.at('ui').at('selectedPlayerId')).get,
         }),
-        F.map(O.all),
-        F.flatMap(
-          O.match({
-            onNone: () => F.unit,
-            onSome: ({ form, groupId, playerId }) =>
-              $(
-                playerId,
-                O.match({
-                  onNone: () => createPlayer({ groupId, player: form }),
-                  onSome: id =>
-                    editPlayer({ groupId, player: { ...form, id } }),
-                }),
-                F.flatMap(() => State.modify(goBack)),
-              ),
-          }),
+        F.flatMap(({ form, groupId, playerId }) =>
+          $(
+            playerId,
+            O.match({
+              onNone: () => createPlayer({ groupId, player: form }),
+              onSome: id => editPlayer({ groupId, player: { ...form, id } }),
+            }),
+            F.flatMap(() => State.modify(goBack)),
+          ),
         ),
         exec,
+        F.ignore,
       ),
   },
   result: {
@@ -314,14 +297,13 @@ export const appEvents = defineEvents({
       pipe(
         State.on(root.at('result')).get,
         StateRef.query,
+        F.flatten,
         F.flatMap(
-          O.match({
-            onNone: () => F.unit,
-            onSome: $f(Player.TeamListShowSensitive.show, t =>
-              ShareService.shareMessage({ message: t, title: 'Times' }),
-            ),
-          }),
+          $f(Player.TeamListShowSensitive.show, t =>
+            ShareService.shareMessage({ message: t, title: 'Times' }),
+          ),
         ),
+        F.ignore,
       ),
   },
 })

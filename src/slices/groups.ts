@@ -32,13 +32,11 @@ const getPlayer = (args: { groupId: Id; id: Id }) =>
 export const getPlayerFromActiveGroup = (args: { playerId: Id }) =>
   $(
     State.on(root.at('ui').at('selectedGroupId')).get,
-    F.flatMap(
-      O.match({
-        onNone: () => F.succeed(O.none()),
-        onSome: groupId =>
-          State.get.pipe(F.map(getPlayer({ groupId, id: args.playerId }))),
-      }),
+    F.flatten,
+    F.flatMap(groupId =>
+      State.get.pipe(F.flatMap(getPlayer({ groupId, id: args.playerId }))),
     ),
+    F.optionFromOptional,
   )
 
 const addGroup = (group: Group) =>
@@ -133,20 +131,18 @@ export const deleteCurrentPlayer = (s: RootState) =>
 export const togglePlayerActive = ({ playerId }: { playerId: Id }) =>
   $(
     State.on(root.at('ui').at('selectedGroupId')).get,
-    F.flatMap(
-      O.match({
-        onNone: () => F.unit,
-        onSome: groupId =>
-          State.onOption(
-            root
-              .at('groups')
-              .key(groupId)
-              .at('players')
-              .compose(Optic.findFirst(p => p.id === playerId))
-              .at('active'),
-          ).update(a => !a),
-      }),
+    F.flatten,
+    F.flatMap(groupId =>
+      State.onOption(
+        root
+          .at('groups')
+          .key(groupId)
+          .at('players')
+          .compose(Optic.findFirst(p => p.id === playerId))
+          .at('active'),
+      ).update(a => !a),
     ),
+    F.ignore,
   )
 
 export const toggleAllPlayersActive = (s: RootState) =>
