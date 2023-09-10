@@ -23,17 +23,7 @@ import { AppTheme } from 'src/services/Theme'
 import { AppThemeLive } from 'src/services/Theme/default'
 import { initialUIContext } from 'src/services/UI/context'
 import { Id } from 'src/utils/Entity'
-import {
-  $,
-  Clock,
-  Effect,
-  F,
-  Layer,
-  Num,
-  Ref,
-  Stream,
-  pipe,
-} from 'src/utils/fp'
+import { Clock, Effect, F, Layer, Num, Ref, Stream, pipe } from 'src/utils/fp'
 import { UIRoot } from '.'
 
 const testLayer = pipe(
@@ -71,10 +61,10 @@ const testLayer = pipe(
       preventAutoHide: () => F.unit,
     }).pipe(Layer.succeedContext),
     IdGeneratorEnv.context({
-      generate: $(
+      generate: pipe(
         Ref.make(0).pipe(F.runSync),
         ref => () =>
-          $(
+          pipe(
             Ref.get(ref),
             F.map(Num.increment),
             F.tap(v => Ref.set(ref, v)),

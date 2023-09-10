@@ -1,4 +1,4 @@
-import { pipe as $ } from '@effect/data/Function'
+import { pipe } from '@effect/data/Function'
 import * as Match_ from '@effect/match'
 
 export * from '@effect/match'
@@ -17,7 +17,7 @@ export const valueSomeTags =
     fields: P,
   ) =>
   (value: R) =>
-    $(value, Match_.value, Match_.tags(fields))
+    pipe(value, Match_.value, Match_.tags(fields))
 
 export const valueTagsOrElse =
   <

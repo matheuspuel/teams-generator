@@ -1,4 +1,4 @@
-import { $, A, Eq, F, Match, O, Option, constant } from 'fp'
+import { A, Eq, F, Match, O, Option, constant, pipe } from 'fp'
 import {
   FlatList,
   Header,
@@ -60,7 +60,7 @@ export const GroupView = memoized('GroupScreen')(
     View({ flex: 1 })([
       GroupHeader,
       FlatList({
-        data: $(
+        data: pipe(
           group,
           O.map(g => g.players),
           O.getOrElse(() => []),
@@ -77,7 +77,7 @@ export const GroupView = memoized('GroupScreen')(
       SolidButton({ onPress: on.parameters.open(), p: 16, round: 0 })([
         Txt()('Sortear'),
         Txt({ size: 12 })(
-          $(
+          pipe(
             group,
             O.match({
               onNone: constant<Array<Player>>([]),
@@ -96,7 +96,7 @@ export const GroupView = memoized('GroupScreen')(
       ]),
       menu ? Menu : Nothing,
       ...(modalParameters ? [ParametersModal({ parameters })] : []),
-      $(
+      pipe(
         modalSortGroup,
         O.match({
           onNone: () => Nothing,
@@ -273,7 +273,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
           MaterialIcons({ name: 'remove' }),
         ]),
         Txt({ p: 8, weight: 600, color: Colors.text.dark })(
-          $(
+          pipe(
             parameters.teamsCountMethod,
             Match.valueTags({
               count: () => parameters.teamsCount.toString(),
@@ -295,7 +295,7 @@ const ParametersModal = ({ parameters }: { parameters: Parameters }) =>
           color: Colors.text.dark,
         })([
           Txt({ flex: 1 })(
-            $(
+            pipe(
               parameters.teamsCountMethod,
               Match.valueTags({
                 count: () => 'Número de times',

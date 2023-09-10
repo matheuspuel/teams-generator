@@ -1,4 +1,4 @@
-import { $f, Match, Num, Optic, Ord, apply, modify, pipe } from 'fp'
+import { Match, Num, Optic, Ord, apply, flow, modify, pipe } from 'fp'
 import { MINIMUM_NUMBER_OF_TEAMS, Parameters } from 'src/datatypes/Parameters'
 import { root } from 'src/model/optic'
 import { State } from 'src/services/StateRef'
@@ -23,11 +23,11 @@ export const incrementTeamsCount = State.on(params).update(p =>
     Match.valueTags({
       count: () =>
         modify(Optic.id<Parameters>().at('teamsCount'))(
-          $f(increment, teamsCountClamp),
+          flow(increment, teamsCountClamp),
         ),
       playersRequired: () =>
         modify(Optic.id<Parameters>().at('playersRequired'))(
-          $f(increment, playersRequiredClamp),
+          flow(increment, playersRequiredClamp),
         ),
     }),
     apply(p),
@@ -40,11 +40,11 @@ export const decrementTeamsCount = State.on(params).update(p =>
     Match.valueTags({
       count: () =>
         modify(Optic.id<Parameters>().at('teamsCount'))(
-          $f(decrement, teamsCountClamp),
+          flow(decrement, teamsCountClamp),
         ),
       playersRequired: () =>
         modify(Optic.id<Parameters>().at('playersRequired'))(
-          $f(decrement, playersRequiredClamp),
+          flow(decrement, playersRequiredClamp),
         ),
     }),
     apply(p),

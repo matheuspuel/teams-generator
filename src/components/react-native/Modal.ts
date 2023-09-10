@@ -1,4 +1,4 @@
-import { $, A, Runtime, apply } from 'fp'
+import { A, Runtime, apply, pipe } from 'fp'
 import React from 'react'
 import { Modal as RNModal_ } from 'react-native'
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler'
@@ -62,5 +62,5 @@ export const Modal =
     React.createElement(
       Modal_,
       { x: props, env },
-      ...$(children, A.map(apply(env))),
+      ...pipe(children, A.map(apply(env))),
     )

@@ -1,4 +1,4 @@
-import { $ } from 'fp'
+import { pipe } from 'fp'
 
 const thousandsSeparator = '.' as '.' | ','
 const decimalSeparator = thousandsSeparator === '.' ? ',' : '.'
@@ -9,7 +9,7 @@ export const parseLocaleNumber = (stringNumber: string) =>
     .replace(new RegExp(`\\${decimalSeparator}`), '.')
 
 const addThousandsSeparators = (numStr: string) =>
-  $(
+  pipe(
     numStr.indexOf(decimalSeparator),
     i => (i === -1 ? numStr.length : i),
     i => addThousandsSeparators_(i)(numStr),
@@ -17,26 +17,26 @@ const addThousandsSeparators = (numStr: string) =>
 const addThousandsSeparators_ =
   (i: number) =>
   (s: string): string =>
-    $(i - 3, i =>
+    pipe(i - 3, i =>
       i < 1
         ? s
-        : $(
+        : pipe(
             s.slice(0, i) + thousandsSeparator + s.slice(i, s.length),
             addThousandsSeparators_(i),
           ),
     )
 
 const numStringToLocale = (numStr: string) =>
-  $(
+  pipe(
     decimalSeparator === ',' ? numStr.replace('.', ',') : numStr,
     addThousandsSeparators,
   )
 
 export const toFixedLocale = (fractionDigits: number) => (value: number) =>
-  $(value.toFixed(fractionDigits), numStringToLocale)
+  pipe(value.toFixed(fractionDigits), numStringToLocale)
 
 export const numberToLocaleString = (value: number) =>
-  $(value.toString(), numStringToLocale)
+  pipe(value.toString(), numStringToLocale)
 
 export const formatPercentage = (value: number) =>
   numberToLocaleString(value * 100) + '%'

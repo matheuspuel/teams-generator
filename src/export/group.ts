@@ -1,4 +1,4 @@
-import { $f, D, Data, F, Match, O, Str, Stream, pipe } from 'fp'
+import { D, Data, F, Match, O, Str, Stream, flow, pipe } from 'fp'
 import { Group } from 'src/datatypes'
 import { root } from 'src/model/optic'
 import { Alert } from 'src/services/Alert'
@@ -146,7 +146,7 @@ const makeFileUri = (group: Group) =>
       cacheDir + '/export/' + toUri(group.name) + '.sorteio-times.json',
   )
 
-const toUri = $f(
+const toUri = flow(
   normalize,
   Str.replace(/ /g, '-'),
   Str.replace(/[^a-z0-9-]/g, ''),

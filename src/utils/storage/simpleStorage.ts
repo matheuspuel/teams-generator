@@ -1,7 +1,7 @@
-import { $f, F, Effect, Json, O } from 'fp'
+import { Effect, F, Json, O, flow } from 'fp'
 import { AsyncStorageFP } from './wrapper'
 
-const get: (key: string) => Effect<never, unknown, Json.Json> = $f(
+const get: (key: string) => Effect<never, unknown, Json.Json> = flow(
   AsyncStorageFP.getItem,
   F.flatMap(O.fromNullable),
   F.flatMap(Json.parse),
@@ -10,7 +10,7 @@ const get: (key: string) => Effect<never, unknown, Json.Json> = $f(
 const set: (
   key: string,
 ) => (value: unknown) => Effect<never, unknown, void> = key =>
-  $f(Json.stringify, F.flatMap(AsyncStorageFP.setItem(key)))
+  flow(Json.stringify, F.flatMap(AsyncStorageFP.setItem(key)))
 
 const remove: (key: string) => Effect<never, void, void> =
   AsyncStorageFP.removeItem

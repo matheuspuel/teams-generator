@@ -83,14 +83,7 @@ import { Refinement } from 'fp-ts/Refinement'
 import * as S from 'fp-ts/State'
 import { State } from 'fp-ts/State'
 import * as ST from 'fp-ts/StateT'
-import {
-  pipe as $,
-  flow as $f,
-  LazyArg,
-  flow,
-  identity,
-  pipe,
-} from 'fp-ts/function'
+import { LazyArg, flow, identity, pipe } from 'fp-ts/function'
 
 const liftOption =
   (F: any) =>
@@ -442,9 +435,9 @@ const _FromEither = { fromEither }
  * @since 2.14.0
  */
 export const flatMap: {
-  <A, S, E2, B>(f: (a: A) => StateEither<S, E2, B>): <E1>(
-    ma: StateEither<S, E1, A>,
-  ) => StateEither<S, E1 | E2, B>
+  <A, S, E2, B>(
+    f: (a: A) => StateEither<S, E2, B>,
+  ): <E1>(ma: StateEither<S, E1, A>) => StateEither<S, E1 | E2, B>
   <S, E1, A, E2, B>(
     ma: StateEither<S, E1, A>,
     f: (a: A) => StateEither<S, E2, B>,
@@ -463,9 +456,9 @@ const flatMapEither_ = (F: any, M: any) =>
  * @since 2.16.0
  */
 export const flatMapEither: {
-  <A, E2, B>(f: (a: A) => Either<E2, B>): <S, E1>(
-    self: StateEither<S, E1, A>,
-  ) => StateEither<S, E1 | E2, B>
+  <A, E2, B>(
+    f: (a: A) => Either<E2, B>,
+  ): <S, E1>(self: StateEither<S, E1, A>) => StateEither<S, E1 | E2, B>
   <S, E1, A, E2, B>(
     self: StateEither<S, E1, A>,
     f: (a: A) => Either<E2, B>,
@@ -477,9 +470,10 @@ export const flatMapEither: {
  * @since 2.16.0
  */
 export const flatMapOption: {
-  <A, E2, B>(f: (a: A) => Option<B>, onNone: (a: A) => E2): <S, E1>(
-    self: StateEither<S, E1, A>,
-  ) => StateEither<S, E1 | E2, B>
+  <A, E2, B>(
+    f: (a: A) => Option<B>,
+    onNone: (a: A) => E2,
+  ): <S, E1>(self: StateEither<S, E1, A>) => StateEither<S, E1 | E2, B>
   <S, E1, A, E2, B>(
     self: StateEither<S, E1, A>,
     f: (a: A) => Option<B>,
@@ -492,9 +486,9 @@ export const flatMapOption: {
  * @since 2.16.0
  */
 export const flatMapState: {
-  <S, A, B>(f: (a: A) => State<S, B>): <E>(
-    self: StateEither<S, E, A>,
-  ) => StateEither<S, E, B>
+  <S, A, B>(
+    f: (a: A) => State<S, B>,
+  ): <E>(self: StateEither<S, E, A>) => StateEither<S, E, B>
   <S, E, A, B>(
     self: StateEither<S, E, A>,
     f: (a: A) => State<S, B>,
@@ -807,9 +801,9 @@ export const tap: {
     self: StateEither<S, E1, A>,
     f: (a: A) => StateEither<S, E2, _>,
   ): StateEither<S, E1 | E2, A>
-  <A, S, E2, _>(f: (a: A) => StateEither<S, E2, _>): <E1>(
-    self: StateEither<S, E1, A>,
-  ) => StateEither<S, E2 | E1, A>
+  <A, S, E2, _>(
+    f: (a: A) => StateEither<S, E2, _>,
+  ): <E1>(self: StateEither<S, E1, A>) => StateEither<S, E2 | E1, A>
 } = /*#__PURE__*/ dual(2, tapChainable(Chain))
 
 /**
@@ -820,9 +814,9 @@ export const tap: {
  * @since 2.16.0
  */
 export const tapEither: {
-  <A, E2, _>(f: (a: A) => Either<E2, _>): <S, E1>(
-    self: StateEither<S, E1, A>,
-  ) => StateEither<S, E2 | E1, A>
+  <A, E2, _>(
+    f: (a: A) => Either<E2, _>,
+  ): <S, E1>(self: StateEither<S, E1, A>) => StateEither<S, E2 | E1, A>
   <S, E1, A, E2, _>(
     self: StateEither<S, E1, A>,
     f: (a: A) => Either<E2, _>,
@@ -959,15 +953,18 @@ export const chainFirstEitherKW: <A, E2, B>(
  * @since 2.4.4
  */
 export const fromPredicate: {
-  <E, A, B extends A>(refinement: Refinement<A, B>, onFalse: (a: A) => E): <S>(
-    a: A,
-  ) => StateEither<S, E, B>
-  <E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): <S, B extends A = A>(
-    b: B,
-  ) => StateEither<S, E, B>
-  <E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): <S>(
-    a: A,
-  ) => StateEither<S, E, A>
+  <E, A, B extends A>(
+    refinement: Refinement<A, B>,
+    onFalse: (a: A) => E,
+  ): <S>(a: A) => StateEither<S, E, B>
+  <E, A>(
+    predicate: Predicate<A>,
+    onFalse: (a: A) => E,
+  ): <S, B extends A = A>(b: B) => StateEither<S, E, B>
+  <E, A>(
+    predicate: Predicate<A>,
+    onFalse: (a: A) => E,
+  ): <S>(a: A) => StateEither<S, E, A>
 } = /*#__PURE__*/ fromPredicate_(FromEither)
 
 /**
@@ -975,15 +972,18 @@ export const fromPredicate: {
  * @since 2.4.4
  */
 export const filterOrElse: {
-  <E, A, B extends A>(refinement: Refinement<A, B>, onFalse: (a: A) => E): <S>(
-    ma: StateEither<S, E, A>,
-  ) => StateEither<S, E, B>
-  <E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): <S, B extends A>(
-    mb: StateEither<S, E, B>,
-  ) => StateEither<S, E, B>
-  <E, A>(predicate: Predicate<A>, onFalse: (a: A) => E): <S>(
-    ma: StateEither<S, E, A>,
-  ) => StateEither<S, E, A>
+  <E, A, B extends A>(
+    refinement: Refinement<A, B>,
+    onFalse: (a: A) => E,
+  ): <S>(ma: StateEither<S, E, A>) => StateEither<S, E, B>
+  <E, A>(
+    predicate: Predicate<A>,
+    onFalse: (a: A) => E,
+  ): <S, B extends A>(mb: StateEither<S, E, B>) => StateEither<S, E, B>
+  <E, A>(
+    predicate: Predicate<A>,
+    onFalse: (a: A) => E,
+  ): <S>(ma: StateEither<S, E, A>) => StateEither<S, E, A>
 } = /*#__PURE__*/ filterOrElse_(FromEither, Chain)
 
 /**
@@ -995,18 +995,20 @@ export const filterOrElse: {
  * @since 2.9.0
  */
 export const filterOrElseW: {
-  <A, B extends A, E2>(refinement: Refinement<A, B>, onFalse: (a: A) => E2): <
-    S,
-    E1,
-  >(
-    ma: StateEither<S, E1, A>,
-  ) => StateEither<S, E1 | E2, B>
-  <A, E2>(predicate: Predicate<A>, onFalse: (a: A) => E2): <S, E1, B extends A>(
+  <A, B extends A, E2>(
+    refinement: Refinement<A, B>,
+    onFalse: (a: A) => E2,
+  ): <S, E1>(ma: StateEither<S, E1, A>) => StateEither<S, E1 | E2, B>
+  <A, E2>(
+    predicate: Predicate<A>,
+    onFalse: (a: A) => E2,
+  ): <S, E1, B extends A>(
     mb: StateEither<S, E1, B>,
   ) => StateEither<S, E1 | E2, B>
-  <A, E2>(predicate: Predicate<A>, onFalse: (a: A) => E2): <S, E1>(
-    ma: StateEither<S, E1, A>,
-  ) => StateEither<S, E1 | E2, A>
+  <A, E2>(
+    predicate: Predicate<A>,
+    onFalse: (a: A) => E2,
+  ): <S, E1>(ma: StateEither<S, E1, A>) => StateEither<S, E1 | E2, A>
 } = filterOrElse
 
 /**
@@ -1234,14 +1236,14 @@ export const matchStateEither =
     onRight: (a: A) => StateEither<S, EC, C>,
   ) =>
   (ma: StateEither<S, E, A>): StateEither<S, EB | EC, B | C> =>
-    $(
+    pipe(
       ma,
       toStateWithEither,
       S.flatMap(
-        $f(
+        flow(
           E.matchW(
-            $f(onLeft, toStateWithEither),
-            $f(onRight, toStateWithEither),
+            flow(onLeft, toStateWithEither),
+            flow(onRight, toStateWithEither),
           ),
           (v): State<S, E.Either<EB | EC, B | C>> => v,
         ),

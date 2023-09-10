@@ -39,8 +39,6 @@ export * as Bool from './boolean'
 export * as Num from './number'
 
 export {
-  pipe as $,
-  flow as $f,
   LazyArg,
   absurd,
   apply,

@@ -1,5 +1,5 @@
 import RawHeader_ from '@react-navigation/elements/src/Header/Header'
-import { $, Runtime, constant } from 'fp'
+import { Runtime, constant, pipe } from 'fp'
 import React from 'react'
 import { Element, UIColor, UIElement } from 'src/components/types'
 import { UIEnv } from 'src/services/UI'
@@ -25,14 +25,14 @@ const getRawProps = ({
   title: props.title,
   headerStyle: props.headerStyle
     ? {
-        backgroundColor: $(props.headerStyle.backgroundColor, c =>
+        backgroundColor: pipe(props.headerStyle.backgroundColor, c =>
           c ? Color.toHex(Runtime.runSync(env.runtime)(c)) : undefined,
         ),
       }
     : undefined,
   headerTitleStyle: props.headerTitleStyle
     ? {
-        color: $(props.headerTitleStyle.color, c =>
+        color: pipe(props.headerTitleStyle.color, c =>
           c ? Color.toHex(Runtime.runSync(env.runtime)(c)) : undefined,
         ),
       }

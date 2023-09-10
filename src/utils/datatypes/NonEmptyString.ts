@@ -1,6 +1,6 @@
-import { $, D } from 'fp'
+import { D, pipe } from 'fp'
 
-export const NonEmptyString = $(
+export const NonEmptyString = pipe(
   D.string,
   D.nonEmpty(),
   D.brand('NonEmptyString'),

@@ -1,4 +1,4 @@
-import { $, D, Endomorphism, Match, Optic } from 'fp'
+import { D, Endomorphism, Match, Optic, pipe } from 'fp'
 
 export type Parameters = {
   teamsCountMethod: { _tag: 'count' } | { _tag: 'playersRequired' }
@@ -38,7 +38,7 @@ export const initial: Parameters = {
 export const MINIMUM_NUMBER_OF_TEAMS = 2
 
 export const numOfTeams = (numOfPlayersAvailable: number) => (p: Parameters) =>
-  $(
+  pipe(
     p.teamsCountMethod,
     Match.valueTags({
       count: () => p.teamsCount,

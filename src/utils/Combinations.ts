@@ -1,4 +1,4 @@
-import { $, $f, A, identity } from 'fp'
+import { A, flow, identity, pipe } from 'fp'
 
 export const getCombinations: (
   n: number,
@@ -7,10 +7,10 @@ export const getCombinations: (
     ? [[]]
     : A.length(as) < n
     ? []
-    : $(
+    : pipe(
         as,
         A.map((a, i) =>
-          $(A.drop(i + 1)(as), getCombinations(n - 1), A.map(A.append(a))),
+          pipe(A.drop(i + 1)(as), getCombinations(n - 1), A.map(A.append(a))),
         ),
         A.flatten,
       )
@@ -22,13 +22,13 @@ export const getCombinationsIndices =
       ? [[]]
       : n < k
       ? []
-      : $(
+      : pipe(
           A.makeBy(n, identity),
           A.map(i =>
-            $(
+            pipe(
               getCombinationsIndices(k - 1)(n - i - 1),
               A.map(
-                $f(
+                flow(
                   A.map(v => v + i + 1),
                   A.prepend(i),
                 ),

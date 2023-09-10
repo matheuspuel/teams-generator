@@ -1,4 +1,15 @@
-import { $, A, D, identity, Num, Ord as Ord_, Order, Rec, Show, Tup } from 'fp'
+import {
+  A,
+  D,
+  Num,
+  Ord as Ord_,
+  Order,
+  Rec,
+  Show,
+  Tup,
+  identity,
+  pipe,
+} from 'fp'
 
 export const Dict = {
   G: null,
@@ -12,7 +23,7 @@ export const Dict = {
 export type Position = keyof typeof Dict
 
 export const Schema: D.Schema<Position> = D.literal(
-  ...$(Dict, Rec.toEntries, A.map(Tup.getFirst)),
+  ...pipe(Dict, Rec.toEntries, A.map(Tup.getFirst)),
 )
 
 export const Position = Schema
@@ -26,7 +37,7 @@ const order: Record<Position, number> = {
   A: 6,
 }
 
-export const Ord: Order<Position> = $(
+export const Ord: Order<Position> = pipe(
   Num.Order,
   Ord_.mapInput(a => order[a]),
 )

@@ -1,5 +1,5 @@
 export * from '@effect/data/Number'
-import { pipe as $ } from '@effect/data/Function'
+import { pipe } from '@effect/data/Function'
 import { sumAll } from '@effect/data/Number'
 import { Predicate } from '@effect/data/Predicate'
 import * as A from '@effect/data/ReadonlyArray'
@@ -13,7 +13,7 @@ export const subtract = (subtrahend: number) => (minuend: number) =>
 
 export const div = (divisor: number) => (dividend: number) => dividend / divisor
 
-export const avg = (ns: Array<number>) => $(ns, sumAll, div(A.length(ns)))
+export const avg = (ns: Array<number>) => pipe(ns, sumAll, div(A.length(ns)))
 
 export const increment = add(1)
 

@@ -1,4 +1,4 @@
-import { $, A, constUndefined } from 'fp'
+import { A, constUndefined, pipe } from 'fp'
 import React from 'react'
 import { FlatList as RNFlatList_ } from 'react-native'
 import { GapProps, PaddingProps, UIElement } from 'src/components/types'
@@ -41,7 +41,7 @@ const getRawProps = <A>({
 }: FlatListArgs<A>): React.ComponentProps<typeof RNFlatList_<A>> => ({
   data: props.data,
   renderItem: ({ item, index }) => props.renderItem(item, index)(env),
-  ListEmptyComponent: $(
+  ListEmptyComponent: pipe(
     props.data,
     A.match({
       onEmpty: () => props.ListEmptyComponent(env),
@@ -49,7 +49,7 @@ const getRawProps = <A>({
     }),
   ),
   keyExtractor: props.keyExtractor,
-  getItemLayout: $(props.getItemLayout, f =>
+  getItemLayout: pipe(props.getItemLayout, f =>
     f ? (data, index) => f(data ? (data as Array<A>) : [], index) : undefined,
   ),
   removeClippedSubviews: props.removeClippedSubviews,

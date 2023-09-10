@@ -1,4 +1,4 @@
-import { $, Data, E, F, Either, Json, identity } from 'fp'
+import { Data, E, Either, F, Json, identity, pipe } from 'fp'
 
 export type HttpMethod =
   | 'POST'
@@ -42,7 +42,7 @@ export const bare = (args: {
   bodyString?: string
   headers: Record<string, string>
 }) =>
-  $(
+  pipe(
     F.tryPromise({
       try: () =>
         fetch(args.url, {
@@ -69,7 +69,7 @@ export const json = (args: {
   body?: unknown
   headers: Record<string, string>
 }) =>
-  $(
+  pipe(
     args.body === undefined ? E.right(undefined) : Json.stringify(args.body),
     identity<Either<unknown, undefined | string>>,
     E.mapLeft(e => StringifyJsonError({ error: e })),
@@ -86,10 +86,10 @@ export const json = (args: {
       }),
     ),
     F.flatMap(({ getBodyString, ...r }) =>
-      $(
+      pipe(
         getBodyString(),
         F.flatMap(bodyString =>
-          $(
+          pipe(
             Json.parse(bodyString),
             identity<Either<unknown, Json.Json>>,
             E.mapLeft(e => ParseJsonError({ error: e })),

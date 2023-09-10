@@ -1,4 +1,4 @@
-import { $, A, Runtime, apply } from 'fp'
+import { A, Runtime, apply, pipe } from 'fp'
 import React from 'react'
 import { RectButton } from 'react-native-gesture-handler'
 import {
@@ -63,7 +63,7 @@ const getRawProps = ({
   rippleColor:
     props.isEnabled !== false
       ? props.rippleColor
-        ? $(
+        ? pipe(
             Runtime.runSync(env.runtime)(props.rippleColor),
             Color.withOpacity(Math.round((props.rippleOpacity ?? 1) * 255)),
             Color.toHex,
@@ -123,7 +123,7 @@ const getRawProps = ({
         ? 'flex-end'
         : props?.alignSelf,
     elevation: props?.shadow,
-    ...$(
+    ...pipe(
       props?.absolute
         ? { ...props.absolute, position: 'absolute' }
         : props?.absolute === false
@@ -144,5 +144,5 @@ export const Pressable =
     React.createElement(
       Pressable_,
       { x: props, env },
-      ...$(children, A.map(apply(env))),
+      ...pipe(children, A.map(apply(env))),
     )

@@ -1,4 +1,4 @@
-import { $f, A, Endomorphism, Eq, Rec } from 'fp'
+import { A, Endomorphism, Eq, Rec, flow } from 'fp'
 import React from 'react'
 
 type Element = React.ReactElement
@@ -120,7 +120,7 @@ export const memoized1 =
     component: UIComponent1<[A1]>,
   ): UIComponent1<[A1]> =>
     transformUnderlyingComponent1(component)(
-      $f(
+      flow(
         nameFunction(name),
         c => React.memo(c, propsAreEqual) as UIUnderlyingComponent<[A1]>,
       ),
@@ -133,7 +133,7 @@ export const memoized2 =
     component: UIComponent2<[A1, A2]>,
   ): UIComponent2<[A1, A2]> =>
     transformUnderlyingComponent2(component)(
-      $f(
+      flow(
         nameFunction(name),
         c => React.memo(c, propsAreEqual) as UIUnderlyingComponent<[A1, A2]>,
       ),
@@ -143,7 +143,7 @@ export const memoizedConst =
   (name: string) =>
   <A1>(component: UIComponent1<[A1]>): UIComponent1<[A1]> =>
     transformUnderlyingComponent1(component)(
-      $f(
+      flow(
         nameFunction(name),
         c =>
           React.memo(c, Eq.tuple(Eq.strict())) as UIUnderlyingComponent<[A1]>,
@@ -157,7 +157,7 @@ export const memoized =
     component: UIComponent2<[A1, A2]>,
   ): UIComponent2<[A1, A2]> =>
     transformUnderlyingComponent2(component)(
-      $f(
+      flow(
         nameFunction(name),
         c =>
           React.memo(

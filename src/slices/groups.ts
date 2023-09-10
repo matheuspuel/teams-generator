@@ -1,4 +1,4 @@
-import { $, $f, A, D, F, O, Optic, Rec, constant, pipe } from 'fp'
+import { A, D, F, O, Optic, Rec, constant, flow, pipe } from 'fp'
 import { Group, Player } from 'src/datatypes'
 import { RootState } from 'src/model'
 import { root } from 'src/model/optic'
@@ -20,17 +20,17 @@ const refOnGroups = State.on(root.at('groups'))
 
 export const getGroupsRecord = Optic.get(root.at('groups'))
 
-export const getGroupById = (id: Id) => $f(getGroupsRecord, Rec.get(id))
+export const getGroupById = (id: Id) => flow(getGroupsRecord, Rec.get(id))
 
 const getPlayer = (args: { groupId: Id; id: Id }) =>
-  $f(
+  flow(
     getGroupById(args.groupId),
     O.match_({ onNone: constant([]), onSome: g => g.players }),
     A.findFirst(p => p.id === args.id),
   )
 
 export const getPlayerFromActiveGroup = (args: { playerId: Id }) =>
-  $(
+  pipe(
     State.on(root.at('ui').at('selectedGroupId')).get,
     F.flatten,
     F.flatMap(groupId =>
@@ -43,7 +43,7 @@ const addGroup = (group: Group) =>
   refOnGroups.update(gs => ({ ...gs, [group.id]: group }))
 
 export const createGroup = ({ name }: { name: string }) =>
-  $(
+  pipe(
     IdGenerator.generate(),
     F.flatMap(id => addGroup({ id, name, players: [] })),
   )
@@ -68,7 +68,7 @@ export const deleteGroup = (args: { id: Id }) =>
 
 const addPlayer = (args: { groupId: Id; player: Omit<Player, 'active'> }) =>
   refOnGroups.update(s =>
-    $(
+    pipe(
       s,
       Rec.modifyOption(args.groupId, g => ({
         ...g,
@@ -85,7 +85,7 @@ export const createPlayer = ({
   groupId: Id
   player: Omit<Player, 'active' | 'id' | 'createdAt'>
 }) =>
-  $(
+  pipe(
     F.all({ id: IdGenerator.generate(), time: Timestamp.getNow() }),
     F.flatMap(({ id, time }) =>
       addPlayer({ groupId, player: { ...player, id, createdAt: time } }),
@@ -101,7 +101,7 @@ export const editPlayer = (p: {
       s,
       Rec.modifyOption(p.groupId, g => ({
         ...g,
-        players: $(
+        players: pipe(
           g.players,
           A.map(a =>
             a.id === p.player.id
@@ -129,7 +129,7 @@ export const deleteCurrentPlayer = (s: RootState) =>
   )
 
 export const togglePlayerActive = ({ playerId }: { playerId: Id }) =>
-  $(
+  pipe(
     State.on(root.at('ui').at('selectedGroupId')).get,
     F.flatten,
     F.flatMap(groupId =>
@@ -148,15 +148,15 @@ export const togglePlayerActive = ({ playerId }: { playerId: Id }) =>
 export const toggleAllPlayersActive = (s: RootState) =>
   pipe(
     s.ui.selectedGroupId,
-    O.flatMap(id => $(s.groups, Rec.get(id))),
+    O.flatMap(id => pipe(s.groups, Rec.get(id))),
     O.match({
       onNone: () => s,
       onSome: g =>
-        $(
+        pipe(
           g.players,
           A.every(p => p.active),
           allActive =>
-            $(
+            pipe(
               g.players,
               A.map(p => ({ ...p, active: !allActive })),
             ),

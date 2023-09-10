@@ -1,16 +1,16 @@
 import { Effect } from '@effect/io/Effect'
 import * as Random from '@effect/io/Random'
-import { $, A, F, O, Option } from 'fp'
+import { A, F, O, Option, pipe } from 'fp'
 
 export const randomizeArray = <A>(
   as: Array<A>,
 ): Effect<never, never, Array<A>> =>
-  $(
+  pipe(
     randomExtractElem(as),
     F.flatMap(
       O.match({
         onNone: () => F.succeed(A.empty<A>()),
-        onSome: ([a, rest]) => $(randomizeArray(rest), F.map(A.append(a))),
+        onSome: ([a, rest]) => pipe(randomizeArray(rest), F.map(A.append(a))),
       }),
     ),
   )
@@ -18,7 +18,7 @@ export const randomizeArray = <A>(
 const randomExtractElem = <A>(
   as: Array<A>,
 ): Effect<never, never, Option<[A, Array<A>]>> =>
-  $(
+  pipe(
     Random.nextIntBetween(0, as.length),
     F.map(i => extractElem(i)(as)),
   )

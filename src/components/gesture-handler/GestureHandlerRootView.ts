@@ -1,4 +1,4 @@
-import { $, A, apply } from 'fp'
+import { A, apply, pipe } from 'fp'
 import React from 'react'
 import { GestureHandlerRootView as GestureHandlerRootView_ } from 'react-native-gesture-handler'
 import { Children, UIElement } from 'src/components/types'
@@ -10,5 +10,5 @@ export const GestureHandlerRootView =
     React.createElement(
       GestureHandlerRootView_,
       { style: { flex: 1 } },
-      ...$(children, A.map(apply(env))),
+      ...pipe(children, A.map(apply(env))),
     )

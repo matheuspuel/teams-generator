@@ -1,5 +1,5 @@
 import { get, replace } from '@fp-ts/optic'
-import { $, Tup, absurd } from 'fp'
+import { Tup, absurd, pipe } from 'fp'
 import { RootState } from 'src/model'
 import { root } from 'src/model/optic'
 import { State } from 'src/services/StateRef'
@@ -11,7 +11,7 @@ export const initialRoute: Route = 'Groups'
 export const navigate = State.on(root.at('route')).set
 
 export const goBack = (s: RootState) =>
-  $(
+  pipe(
     get(root.at('route'))(s),
     (r): [{ shouldBubbleUpEvent: boolean }, Route] =>
       r === 'Groups'

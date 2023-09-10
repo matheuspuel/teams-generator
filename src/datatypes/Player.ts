@@ -1,5 +1,5 @@
 import { sumAll } from '@effect/data/Number'
-import { $, $f, A, Bool, D, Num, Ord, Order, Show as Show_, Str } from 'fp'
+import { A, Bool, D, Num, Ord, Order, Show as Show_, Str, flow, pipe } from 'fp'
 import { Id } from 'src/utils/Entity'
 import { normalize } from 'src/utils/String'
 import { Timestamp } from 'src/utils/datatypes'
@@ -24,32 +24,32 @@ export const Player = Schema
 
 export const isActive = (p: Player) => p.active
 
-export const PositionOrd: Order<Player> = $(
+export const PositionOrd: Order<Player> = pipe(
   Position.Ord,
   Ord.mapInput(p => p.position),
 )
 
-export const NameOrd: Order<Player> = $(
+export const NameOrd: Order<Player> = pipe(
   Str.Order,
-  Ord.mapInput($f(p => p.name, normalize)),
+  Ord.mapInput(flow(p => p.name, normalize)),
 )
 
-export const RatingOrd: Order<Player> = $(
+export const RatingOrd: Order<Player> = pipe(
   Num.Order,
   Ord.mapInput(p => p.rating),
 )
 
-export const ActiveOrd: Order<Player> = $(
+export const ActiveOrd: Order<Player> = pipe(
   Bool.Order,
   Ord.mapInput(p => p.active),
 )
 
-export const CreatedAtOrder: Order<Player> = $(
+export const CreatedAtOrder: Order<Player> = pipe(
   Timestamp.Order,
   Ord.mapInput(p => p.createdAt),
 )
 
-export const IdOrd: Order<Player> = $(
+export const IdOrd: Order<Player> = pipe(
   Str.Order,
   Ord.mapInput(p => p.id),
 )
@@ -62,7 +62,7 @@ export const Show: Show_.Show<Player> = {
 }
 
 export const ListShow: Show_.Show<Array<Player>> = {
-  show: $f(
+  show: flow(
     A.sortBy(PositionOrd, Ord.reverse(RatingOrd), NameOrd),
     A.map(Show.show),
     A.join('\n'),
@@ -70,7 +70,7 @@ export const ListShow: Show_.Show<Array<Player>> = {
 }
 
 export const TeamListShow: Show_.Show<Array<Array<Player>>> = {
-  show: $f(
+  show: flow(
     A.map(ListShow.show),
     A.map((t, i) => `Time ${i + 1}\n\n${t}`),
     A.join('\n\n'),
@@ -82,7 +82,7 @@ export const ShowSensitive: Show_.Show<Player> = {
 }
 
 export const ListShowSensitive: Show_.Show<Array<Player>> = {
-  show: $f(
+  show: flow(
     A.sortBy(PositionOrd, NameOrd),
     A.map(ShowSensitive.show),
     A.join('\n'),
@@ -90,7 +90,7 @@ export const ListShowSensitive: Show_.Show<Array<Player>> = {
 }
 
 export const TeamListShowSensitive: Show_.Show<Array<Array<Player>>> = {
-  show: $f(
+  show: flow(
     A.map(ListShowSensitive.show),
     A.map((t, i) => `Time ${i + 1}\n\n${t}`),
     A.join('\n\n'),
@@ -100,7 +100,7 @@ export const TeamListShowSensitive: Show_.Show<Array<Array<Player>>> = {
 export const getRatingTotal: (players: Array<Player>) => number = players =>
   sumAll(A.map(players, p => p.rating))
 
-export const getRatingAvg: (players: Array<Player>) => number = $f(
+export const getRatingAvg: (players: Array<Player>) => number = flow(
   A.map(p => p.rating),
   Num.avg,
 )

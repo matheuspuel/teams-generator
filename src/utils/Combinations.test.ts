@@ -1,6 +1,6 @@
 /* eslint-disable functional/no-expression-statements */
 import * as fc from 'fast-check'
-import { $, $f, A } from 'fp'
+import { A, flow, pipe } from 'fp'
 import { getCombinationsIndices } from './Combinations'
 import { factorial } from './Math'
 
@@ -11,7 +11,10 @@ describe('getCombinationsIndices', () => {
         fc.integer({ min: 0, max: 6 }),
         fc.integer({ min: 0, max: 6 }),
         (n, k) =>
-          $(getCombinationsIndices(k)(n), A.every($f(A.length, s => s === k))),
+          pipe(
+            getCombinationsIndices(k)(n),
+            A.every(flow(A.length, s => s === k)),
+          ),
       ),
     )
   })
@@ -22,7 +25,7 @@ describe('getCombinationsIndices', () => {
         fc.integer({ min: 0, max: 6 }),
         fc.integer({ min: 0, max: 6 }),
         (n, k) =>
-          $(
+          pipe(
             getCombinationsIndices(k)(n),
             A.length,
             s =>

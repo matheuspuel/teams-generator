@@ -1,4 +1,4 @@
-import { $, $f, D, Ord, Order, Str } from 'fp'
+import { D, Ord, Order, Str, flow, pipe } from 'fp'
 import { Id } from 'src/utils/Entity'
 import { normalize } from 'src/utils/String'
 import { Player } from './Player'
@@ -13,7 +13,7 @@ export const Schema: D.Schema<D.From<typeof Schema_>, Group> = Schema_
 
 export const Group = Schema
 
-export const NameOrd: Order<Group> = $(
+export const NameOrd: Order<Group> = pipe(
   Str.Order,
-  Ord.mapInput($f(p => p.name, normalize)),
+  Ord.mapInput(flow(p => p.name, normalize)),
 )

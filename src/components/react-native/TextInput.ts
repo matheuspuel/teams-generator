@@ -1,4 +1,4 @@
-import { $, Runtime } from 'fp'
+import { pipe, Runtime } from 'fp'
 import React from 'react'
 import { TextInput as RNTextInput_ } from 'react-native-gesture-handler'
 import {
@@ -110,12 +110,12 @@ const getRawProps =
       width: props?.w,
       height: props?.h,
       flex: props?.flex,
-      backgroundColor: $(
+      backgroundColor: pipe(
         (state.isFocused && props.focused?.bg) || props.bg,
         getColor =>
           getColor && Color.toHex(Runtime.runSync(env.runtime)(getColor)),
       ),
-      borderColor: $(
+      borderColor: pipe(
         (state.isFocused && props.focused?.borderColor) || props.borderColor,
         getColor =>
           getColor && Color.toHex(Runtime.runSync(env.runtime)(getColor)),

@@ -1,4 +1,4 @@
-import { $, A, F, Rec, Str, Tup } from 'fp'
+import { A, F, Rec, Str, Tup, pipe } from 'fp'
 import {
   Fragment,
   Header,
@@ -61,7 +61,7 @@ const PositionField = (position: Position) =>
   View({ p: 4 })([
     FormLabel()('Posição'),
     Row({ justify: 'space-evenly' })(
-      $(
+      pipe(
         Position.Dict,
         Rec.toEntries,
         A.map(Tup.getFirst),

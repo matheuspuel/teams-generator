@@ -1,7 +1,7 @@
 /* eslint-disable functional/no-expression-statements */
 import * as Arb from '@effect/schema/Arbitrary'
 import * as fc from 'fast-check'
-import { $, A, Eq, Match, Ord, Rec, SG, Tup, constant, identity } from 'fp'
+import { A, Eq, Match, Ord, Rec, SG, Tup, constant, identity, pipe } from 'fp'
 import { playersMock } from 'src/mocks/Player'
 import { getCombinationsIndices } from 'src/utils/Combinations'
 import { Id } from 'src/utils/Entity'
@@ -14,16 +14,16 @@ const getAllCombinationsOfSubListsWithEqualLength =
   <A>(as: Array<A>): Array<Array<Array<A>>> =>
     numOfLists <= 1
       ? [[as]]
-      : $(
+      : pipe(
           getCombinationsIndices(Math.floor(as.length / numOfLists))(
             A.length(as),
           ),
           A.map(is =>
-            $(
+            pipe(
               as,
               A.partition((_, i) => is.includes(i)),
               ([cs, bs]) =>
-                $(
+                pipe(
                   getAllCombinationsOfSubListsWithEqualLength(numOfLists - 1)(
                     cs,
                   ),
@@ -39,14 +39,14 @@ const getAllCombinationsOfSubListsWithFixedLength =
   <A>(as: Array<A>): Array<Array<Array<A>>> =>
     as.length <= listLength
       ? [[as]]
-      : $(
+      : pipe(
           getCombinationsIndices(listLength)(as.length),
           A.flatMap(is =>
-            $(
+            pipe(
               as,
               A.partition((_, i) => is.includes(i)),
               ([bs, as]) =>
-                $(
+                pipe(
                   getAllCombinationsOfSubListsWithFixedLength(listLength)(bs),
                   A.map(A.prepend(as)),
                 ),
@@ -56,7 +56,7 @@ const getAllCombinationsOfSubListsWithFixedLength =
 
 const distributeTeamsUsingCombinations: typeof distributeTeams =
   params => players =>
-    $(
+    pipe(
       params.distribution,
       Match.valueTags({
         numOfTeams: ({ numOfTeams }) =>
@@ -168,7 +168,7 @@ describe('Balance teams', () => {
         paramsArb,
         fc.array(Arb.to(Player.Schema)(fc), { minLength: 1, maxLength: 8 }),
         (params, players) =>
-          $(getFitOrdFromCriteria(params), fitOrd =>
+          pipe(getFitOrdFromCriteria(params), fitOrd =>
             Ord.equals(fitOrd)(distributeTeams(params)(players))(
               distributeTeamsUsingCombinations(params)(players),
             ),
@@ -192,7 +192,7 @@ describe('Balance teams', () => {
   it('should return the same players', () => {
     fc.assert(
       fc.property(balanceTeamsArb, ({ params, players }) =>
-        $(
+        pipe(
           distributeTeams(params)(players),
           A.flatten,
           Eq.equals(A.getUnorderedEquivalence(Eq.strict()))(players),
@@ -207,7 +207,7 @@ describe('Balance teams', () => {
         balanceTeamsArb,
         ({ params, players }) =>
           distributeTeams(params)(players).length ===
-          $(
+          pipe(
             params.distribution,
             Match.valueTags({
               numOfTeams: ({ numOfTeams }) => numOfTeams,
@@ -225,7 +225,7 @@ describe('Balance teams', () => {
         distributeTeams(params)(players).every(
           (t, i, ts) =>
             t.length ===
-            $(
+            pipe(
               params.distribution,
               Match.valueTags({
                 numOfTeams: ({ numOfTeams }) =>
@@ -246,11 +246,11 @@ describe('Balance teams', () => {
   it('should not have teams with player count difference higher than one in any position', () => {
     fc.assert(
       fc.property(balanceTeamsArb, ({ params, players }) =>
-        $(distributeTeams({ ...params, position: true })(players), teams =>
+        pipe(distributeTeams({ ...params, position: true })(players), teams =>
           teams.every(a =>
             teams.every(
               b =>
-                $(
+                pipe(
                   params.distribution,
                   Match.valueTags({
                     fixedNumberOfPlayers: ({ fixedNumberOfPlayers }) =>
@@ -259,7 +259,7 @@ describe('Balance teams', () => {
                     numOfTeams: () => false,
                   }),
                 ) ||
-                $(
+                pipe(
                   Position.Dict,
                   Rec.toEntries,
                   A.map(Tup.getFirst),

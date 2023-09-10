@@ -1,4 +1,4 @@
-import { $, A, Runtime, apply } from 'fp'
+import { A, Runtime, apply, pipe } from 'fp'
 import React from 'react'
 import { View as RawView } from 'react-native'
 import {
@@ -112,7 +112,7 @@ const getRawProps = ({
         ? 'flex-end'
         : props?.alignSelf,
     elevation: props?.shadow,
-    ...$(
+    ...pipe(
       props?.absolute
         ? { ...props.absolute, position: 'absolute' }
         : props?.absolute === false
@@ -132,5 +132,5 @@ export const View =
     React.createElement(
       RawView,
       getRawProps({ props, env }),
-      ...$(children, A.map(apply(env))),
+      ...pipe(children, A.map(apply(env))),
     )

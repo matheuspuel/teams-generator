@@ -1,6 +1,6 @@
 import * as Application from 'expo-application'
 import * as Device from 'expo-device'
-import { $, $f, F, Layer, O, Option, Ref, identity } from 'fp'
+import { F, Layer, O, Option, Ref, flow, identity, pipe } from 'fp'
 import packageJSON from 'src/../package.json'
 import { IdGenerator } from 'src/services/IdGenerator'
 import { IdGeneratorLive } from 'src/services/IdGenerator/default'
@@ -27,21 +27,21 @@ const getStaticMetadata = F.sync(() => ({
 
 export const MetadataServiceLive = MetadataServiceEnv.context({
   get: () =>
-    $(
+    pipe(
       Ref.get(metadataRef),
       F.flatMap(identity),
       F.orElse(() =>
-        $(
+        pipe(
           F.all({
-            installation: $(
+            installation: pipe(
               Repository.metadata.installation.get(),
               F.map(_ => ({ ..._, isFirstLaunch: false })),
               F.orElse(() =>
-                $(
+                pipe(
                   IdGenerator.generate(),
                   F.map(id => ({ id })),
                   F.tap(
-                    $f(
+                    flow(
                       Repository.metadata.installation.set,
                       F.catchAll(() => F.unit),
                     ),
@@ -61,7 +61,7 @@ export const MetadataServiceLive = MetadataServiceEnv.context({
               launch: v.launch,
             }),
           ),
-          F.tap(v => $(O.some(v), x => Ref.set(metadataRef, x))),
+          F.tap(v => pipe(O.some(v), x => Ref.set(metadataRef, x))),
         ),
       ),
       F.provideLayer(

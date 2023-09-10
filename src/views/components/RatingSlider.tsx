@@ -1,6 +1,6 @@
 /* eslint-disable functional/immutable-data */
 /* eslint-disable functional/no-expression-statements */
-import { $, A, Runtime } from 'fp'
+import { A, Runtime, pipe } from 'fp'
 import React from 'react'
 import { View as View_ } from 'react-native'
 import {
@@ -108,7 +108,7 @@ const RatingSlider_ = ({
             ),
           }}
         >
-          {$(
+          {pipe(
             Rating.List,
             A.map(r =>
               View({

@@ -1,4 +1,4 @@
-import { $, A, Eq, O, Option, Rec, Str, Tup } from 'fp'
+import { A, Eq, O, Option, Rec, Str, Tup, pipe } from 'fp'
 import {
   FlatList,
   Fragment,
@@ -50,7 +50,7 @@ export const Groups = memoized('Groups')(
     View({ flex: 1, onLayout: appEvents.core.uiMount() })([
       ScreenHeader,
       FlatList({
-        data: $(
+        data: pipe(
           groups,
           Rec.toEntries,
           A.map(Tup.getSecond),
@@ -67,10 +67,10 @@ export const Groups = memoized('Groups')(
       GroupModal({ state: modalUpsertGroup }),
       DeleteGroupModal({
         state: modalDeleteGroup,
-        group: $(
+        group: pipe(
           modalDeleteGroup,
           O.map(({ id }) => id),
-          O.flatMap(id => $(groups, Rec.get(id))),
+          O.flatMap(id => pipe(groups, Rec.get(id))),
         ),
       }),
     ]),
@@ -144,12 +144,12 @@ const GroupModal = ({
 }: {
   state: Option<{ id: Option<Id>; name: string }>
 }) =>
-  $(
+  pipe(
     state,
     O.map(form =>
       CenterModal({
         onClose: on.item.upsert.close(),
-        title: $(
+        title: pipe(
           state,
           O.flatMap(s => s.id),
           O.match({
@@ -193,7 +193,7 @@ const DeleteGroupModal = ({
     title: 'Excluir grupo',
   })([
     View({ p: 16 })(
-      $(
+      pipe(
         group,
         O.map(g =>
           TxtContext({ align: 'left', color: Colors.text.dark })([

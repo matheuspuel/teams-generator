@@ -1,4 +1,4 @@
-import { $, $f, F, Layer } from 'fp'
+import { F, Layer, flow, pipe } from 'fp'
 import * as Fetch from 'src/utils/Fetch'
 import * as Metadata from 'src/utils/Metadata'
 import { TelemetryEnv } from '.'
@@ -15,9 +15,9 @@ export const TelemetryLive = F.map(
   F.context<Repositories.telemetry.log>(),
   ctx =>
     TelemetryEnv.context({
-      log: $f(Repository.telemetry.log.concat, F.provideContext(ctx)),
+      log: flow(Repository.telemetry.log.concat, F.provideContext(ctx)),
       send: () =>
-        $(
+        pipe(
           Repository.telemetry.log.get(),
           F.flatMap(logs =>
             Fetch.json({

@@ -1,4 +1,4 @@
-import { $, A, Num, O, Option, Ord } from 'fp'
+import { A, Num, O, Option, Ord, pipe } from 'fp'
 import {
   ActivityIndicator,
   Header,
@@ -42,7 +42,7 @@ export const ResultView = named2('Result')(
         }),
       ]),
       ScrollView({ contentContainerStyle: { flexGrow: 1 } })(
-        $(
+        pipe(
           result,
           O.match({
             onNone: () => [
@@ -89,7 +89,7 @@ const TeamItem = (props: {
       Txt()('Total de habilidade: '),
       Txt()(totalRating.toString()),
     ]),
-    ...$(
+    ...pipe(
       props.players,
       A.sortBy(
         Player.PositionOrd,

@@ -1,6 +1,6 @@
 import { clockWith } from '@effect/io/Effect'
 import { get } from '@fp-ts/optic'
-import { $, A, F, Match, O, Rec, constant, pipe } from 'fp'
+import { A, F, Match, O, Rec, constant, pipe } from 'fp'
 import { Player, TeamsGenerator } from 'src/datatypes'
 import { getResultRatingDeviance } from 'src/datatypes/TeamsGenerator'
 import { root } from 'src/model/optic'
@@ -13,12 +13,12 @@ export type GeneratedResult = Array<Array<Player>>
 
 export const eraseResult = State.on(root.at('result')).set(O.none())
 
-export const generateResult = $(
+export const generateResult = pipe(
   StateRef.query(State.get),
   F.map(s =>
     pipe(
       get(root.at('ui').at('selectedGroupId'))(s),
-      O.flatMap(id => $(get(root.at('groups'))(s), Rec.get(id))),
+      O.flatMap(id => pipe(get(root.at('groups'))(s), Rec.get(id))),
       O.match_({ onNone: constant([]), onSome: g => g.players }),
       A.filter(Player.isActive),
       players => ({ players, parameters: get(root.at('parameters'))(s) }),
@@ -29,7 +29,7 @@ export const generateResult = $(
     TeamsGenerator.generateRandomBalancedTeams({
       position: parameters.position,
       rating: parameters.rating,
-      distribution: $(
+      distribution: pipe(
         parameters.teamsCountMethod,
         Match.valueTags({
           count: () => ({
@@ -49,7 +49,7 @@ export const generateResult = $(
     pipe(result, O.some, State.on(root.at('result')).set, StateRef.execute),
   ),
   F.tap(({ parameters, players, start, end, result }) =>
-    $(
+    pipe(
       Metadata.get(),
       F.flatMap(meta =>
         Telemetry.log([

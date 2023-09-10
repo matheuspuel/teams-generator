@@ -1,4 +1,4 @@
-import { $, Duration, Effect, F, Stream, pipe } from 'fp'
+import { Duration, Effect, F, Stream, pipe } from 'fp'
 import { appEvents } from 'src/events'
 import { BackHandler } from 'src/services/BackHandler'
 import { StateRef } from 'src/services/StateRef'
@@ -13,7 +13,7 @@ export type AppEnv = Effect.Context<typeof startApp>
 
 const on = appEvents.core
 
-export const startApp = $(
+export const startApp = pipe(
   UI.start(),
   F.flatMap(() => on.preventSplashScreenAutoHide()),
   F.flatMap(() =>
@@ -37,7 +37,7 @@ export const startApp = $(
   ),
   F.tap(() => on.appLoaded()),
   F.tap(() =>
-    $(
+    pipe(
       F.all([Metadata.get(), Timestamp.getNow()]),
       F.flatMap(([m, t]) =>
         Telemetry.log([{ timestamp: t, event: 'start', data: m }]),

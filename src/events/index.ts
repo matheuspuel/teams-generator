@@ -1,6 +1,4 @@
 import {
-  $,
-  $f,
   D,
   Effect,
   F,
@@ -73,7 +71,7 @@ const closeParametersModal = State.on(root.at('ui').at('modalParameters')).set(
 export const appEvents = defineEvents({
   doNothing: ignore,
   back: () =>
-    $(
+    pipe(
       State.modify(goBack),
       exec,
       F.tap(({ shouldBubbleUpEvent }) =>
@@ -111,7 +109,7 @@ export const appEvents = defineEvents({
       upsert: {
         new: () => exec(setUpsertGroupModal(some({ id: O.none(), name: '' }))),
         edit: (id: Id) =>
-          $(
+          pipe(
             State.get,
             F.flatMap(getGroupById(id)),
             F.flatMap(g =>
@@ -125,9 +123,9 @@ export const appEvents = defineEvents({
         submit: () =>
           pipe(
             State.on(root.at('ui').at('modalUpsertGroup')).get,
-            F.flatMap(O.filter(m => $(m.name, not(Str.isEmpty)))),
+            F.flatMap(O.filter(m => pipe(m.name, not(Str.isEmpty)))),
             F.flatMap(m =>
-              $(
+              pipe(
                 m.id,
                 O.match({
                   onNone: () => createGroup({ name: m.name }),
@@ -144,7 +142,7 @@ export const appEvents = defineEvents({
         open: (id: Id) => exec(setDeleteGroupModal(some({ id }))),
         close: () => exec(setDeleteGroupModal(none())),
         submit: () =>
-          $(
+          pipe(
             State.on(root.at('ui').at('modalDeleteGroup')).get,
             F.flatten,
             F.flatMap(({ id }) => deleteGroup({ id })),
@@ -189,7 +187,7 @@ export const appEvents = defineEvents({
       position: { toggle: () => exec(togglePosition) },
       rating: { toggle: () => exec(toggleRating) },
       shuffle: () =>
-        $(
+        pipe(
           F.unit,
           F.flatMap(() => eraseResult),
           F.flatMap(() => navigate('Result')),
@@ -272,14 +270,14 @@ export const appEvents = defineEvents({
           form: pipe(
             State.on(root.at('playerForm')).get,
             F.flatMap(f =>
-              $(f, O.liftPredicate(not(() => Str.isEmpty(f.name)))),
+              pipe(f, O.liftPredicate(not(() => Str.isEmpty(f.name)))),
             ),
           ),
           groupId: F.flatten(State.on(root.at('ui').at('selectedGroupId')).get),
           playerId: State.on(root.at('ui').at('selectedPlayerId')).get,
         }),
         F.flatMap(({ form, groupId, playerId }) =>
-          $(
+          pipe(
             playerId,
             O.match({
               onNone: () => createPlayer({ groupId, player: form }),
@@ -299,7 +297,7 @@ export const appEvents = defineEvents({
         StateRef.query,
         F.flatten,
         F.flatMap(
-          $f(Player.TeamListShowSensitive.show, t =>
+          flow(Player.TeamListShowSensitive.show, t =>
             ShareService.shareMessage({ message: t, title: 'Times' }),
           ),
         ),

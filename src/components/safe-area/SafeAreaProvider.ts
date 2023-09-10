@@ -1,4 +1,4 @@
-import { $, A, F, O, Runtime, apply, pipe } from 'fp'
+import { A, F, O, Runtime, apply, pipe } from 'fp'
 import React from 'react'
 import { SafeAreaProvider as RawSafeAreaProvider_ } from 'react-native-safe-area-context'
 import {
@@ -53,5 +53,5 @@ export const SafeAreaProvider =
     React.createElement(
       SafeAreaProvider_,
       { x: props, env },
-      ...$(children, A.map(apply(env))),
+      ...pipe(children, A.map(apply(env))),
     )

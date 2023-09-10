@@ -1,4 +1,4 @@
-import { $, A, Runtime, apply } from 'fp'
+import { A, Runtime, apply, pipe } from 'fp'
 import React from 'react'
 import { Text as RNText_ } from 'react-native'
 import { Children, JSXElementsChildren, UIElement } from 'src/components/types'
@@ -58,5 +58,5 @@ export const TxtContext =
     React.createElement(
       TxtContext_,
       { x: props, env },
-      ...$(children, A.map(apply(env))),
+      ...pipe(children, A.map(apply(env))),
     )

@@ -1,5 +1,5 @@
 import { get } from '@fp-ts/optic'
-import { $, absurd, Apply, O, R } from 'fp'
+import { Apply, O, R, absurd, pipe } from 'fp'
 import { Nothing } from 'src/components'
 import { AlertToast } from 'src/components/derivative/AlertToast'
 import { StatusBar } from 'src/components/expo/StatusBar'
@@ -21,14 +21,14 @@ export const Router = named2('Router')(({ model }: { model: RootState }) =>
     StatusBar({ style: 'light' }),
     ScreenStack()([
       Screen()([Groups({ groups: model.groups, ui: model.ui })]),
-      ...$(model.route, route =>
+      ...pipe(model.route, route =>
         route === 'Groups'
           ? []
           : [
               Screen()([
                 GroupView(
                   Apply.sequenceS(R.Apply)({
-                    group: $(
+                    group: pipe(
                       get(root.at('ui').at('selectedGroupId')),
                       R.chain(
                         O.match({

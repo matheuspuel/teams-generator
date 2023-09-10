@@ -1,5 +1,4 @@
 import {
-  $,
   Clock,
   D,
   Duration,
@@ -9,9 +8,10 @@ import {
   Ord,
   Order as Order_,
   Predicate,
+  pipe,
 } from 'fp'
 
-export const Schema = $(D.number, D.brand('Timestamp'))
+export const Schema = pipe(D.number, D.brand('Timestamp'))
 
 export type Timestamp = D.To<typeof Schema>
 

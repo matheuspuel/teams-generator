@@ -2,7 +2,7 @@
 import * as Arb from '@effect/schema/Arbitrary'
 import * as Benchmark from 'benchmark'
 import * as fc from 'fast-check'
-import { $, A, Match, SG, constant } from 'fp'
+import { A, Match, SG, constant, pipe } from 'fp'
 import { Player } from 'src/datatypes'
 import {
   Criteria,
@@ -22,16 +22,16 @@ const getAllCombinationsOfSubListsWithEqualLength =
   <A>(as: Array<A>): Array<Array<Array<A>>> =>
     numOfLists <= 1
       ? [[as]]
-      : $(
+      : pipe(
           getCombinationsIndices(Math.floor(as.length / numOfLists))(
             A.length(as),
           ),
           A.map(is =>
-            $(
+            pipe(
               as,
               A.partition((_, i) => is.includes(i)),
               ([cs, bs]) =>
-                $(
+                pipe(
                   getAllCombinationsOfSubListsWithEqualLength(numOfLists - 1)(
                     cs,
                   ),
@@ -47,14 +47,14 @@ const getAllCombinationsOfSubListsWithFixedLength =
   <A>(as: Array<A>): Array<Array<Array<A>>> =>
     as.length <= listLength
       ? [[as]]
-      : $(
+      : pipe(
           getCombinationsIndices(listLength)(as.length),
           A.flatMap(is =>
-            $(
+            pipe(
               as,
               A.partition((_, i) => is.includes(i)),
               ([bs, as]) =>
-                $(
+                pipe(
                   getAllCombinationsOfSubListsWithFixedLength(listLength)(bs),
                   A.map(A.prepend(as)),
                 ),
@@ -64,7 +64,7 @@ const getAllCombinationsOfSubListsWithFixedLength =
 
 const distributeTeamsUsingCombinations: typeof distributeTeams =
   params => players =>
-    $(
+    pipe(
       params.distribution,
       Match.valueTags({
         numOfTeams: ({ numOfTeams }) =>

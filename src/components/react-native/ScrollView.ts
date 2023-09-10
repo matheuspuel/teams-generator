@@ -1,4 +1,4 @@
-import { $, A, apply } from 'fp'
+import { A, apply, pipe } from 'fp'
 import React from 'react'
 import { ScrollView as RNScrollView_ } from 'react-native'
 import {
@@ -62,5 +62,5 @@ export const ScrollView =
     React.createElement(
       ScrollView_,
       { x: props, env },
-      ...$(children, A.map(apply(env))),
+      ...pipe(children, A.map(apply(env))),
     )

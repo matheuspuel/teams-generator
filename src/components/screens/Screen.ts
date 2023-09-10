@@ -1,4 +1,4 @@
-import { $, A, Runtime, apply } from 'fp'
+import { A, Runtime, apply, pipe } from 'fp'
 import React from 'react'
 import { Screen as RNSScreen_ } from 'react-native-screens'
 import { Children, JSXElementsChildren, UIElement } from 'src/components/types'
@@ -41,5 +41,5 @@ export const Screen =
     React.createElement(
       Screen_,
       { x: props, env },
-      ...$(children, A.map(apply(env))),
+      ...pipe(children, A.map(apply(env))),
     )

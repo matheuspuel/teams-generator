@@ -1,4 +1,4 @@
-import { $, F, O, flow } from 'fp'
+import { F, O, flow, pipe } from 'fp'
 import { GroupOrder } from 'src/datatypes'
 import { GroupOrderType } from 'src/datatypes/GroupOrder'
 import { root } from 'src/model/optic'
@@ -8,10 +8,10 @@ import { A } from 'src/utils/fp'
 const selectGroupOrder =
   (option: GroupOrderType) =>
   (state: GroupOrder): GroupOrder =>
-    $(state, A.unprepend, ([a, as]) =>
+    pipe(state, A.unprepend, ([a, as]) =>
       a._tag === option
-        ? $(as, A.prepend({ _tag: a._tag, reverse: !a.reverse }))
-        : $(
+        ? pipe(as, A.prepend({ _tag: a._tag, reverse: !a.reverse }))
+        : pipe(
             as,
             A.filter(b => b._tag !== option),
             A.prepend(a),

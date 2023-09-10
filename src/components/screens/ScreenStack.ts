@@ -1,4 +1,4 @@
-import { $, A, apply } from 'fp'
+import { A, apply, pipe } from 'fp'
 import React from 'react'
 import { StyleSheet } from 'react-native'
 import { ScreenStack as RNSScreenStack_ } from 'react-native-screens'
@@ -35,5 +35,5 @@ export const ScreenStack =
     React.createElement(
       ScreenStack_,
       { x: props, env },
-      ...$(children, A.map(apply(env))),
+      ...pipe(children, A.map(apply(env))),
     )
