@@ -4,16 +4,14 @@ import {
   A,
   F,
   Match,
-  Num,
+  Number,
   O,
   Ord,
   Order,
-  Rec,
-  Tup,
+  Record,
+  Tuple,
   flow,
-  none,
   pipe,
-  some,
 } from 'fp'
 import * as Player from 'src/datatypes/Player'
 import * as Position from 'src/datatypes/Position'
@@ -28,7 +26,7 @@ const getFitOrdByDevianceFns = (
 ): Order<Array<Array<Player>>> =>
   pipe(
     fns,
-    A.map(f => Ord.mapInput(f)(Num.Order)),
+    A.map(f => Ord.mapInput(f)(Number.Order)),
     Ord.combineAll<Array<Array<Player>>>,
   )
 
@@ -36,8 +34,8 @@ const getResultPositionDeviance = (teams: Array<Array<Player>>): number =>
   pipe(teams, A.flatten, allPlayers =>
     pipe(
       Position.Dict,
-      Rec.toEntries,
-      A.map(Tup.getFirst),
+      Record.toEntries,
+      A.map(Tuple.getFirst),
       A.map(pos =>
         pipe(
           allPlayers,
@@ -87,14 +85,14 @@ const balanceTeams: (
                     findFirstMapWithIndex(l =>
                       pipe(changePlayers(i)(k)(j)(l)(teams), nextState =>
                         Ord.lt(fitOrd)(teams)(nextState)
-                          ? some(balanceTeams(fitOrd)(nextState))
-                          : none(),
+                          ? O.some(balanceTeams(fitOrd)(nextState))
+                          : O.none(),
                       ),
                     ),
                   ),
                 ),
               )
-            : none(),
+            : O.none(),
         ),
       ),
     ),

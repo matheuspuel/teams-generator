@@ -1,8 +1,9 @@
-export * from '@effect/data/Number'
 import { pipe } from '@effect/data/Function'
 import { sumAll } from '@effect/data/Number'
 import { Predicate } from '@effect/data/Predicate'
 import * as A from '@effect/data/ReadonlyArray'
+
+export * from '@effect/data/Number'
 
 export const isPositive: Predicate<number> = n => Math.sign(n) === 1
 

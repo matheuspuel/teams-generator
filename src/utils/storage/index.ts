@@ -1,4 +1,4 @@
-import { D, Effect, F, O, flow, identity, pipe } from 'fp'
+import { Effect, F, O, S, flow, identity, pipe } from 'fp'
 import { SimpleStorage } from './simpleStorage'
 
 export type Storage<A> = {
@@ -10,16 +10,16 @@ export type Storage<A> = {
 
 export const createStorage: <I, A>(args: {
   key: string
-  schema: D.Schema<I, A>
+  schema: S.Schema<I, A>
 }) => Storage<A> = ({ key, schema }) => ({
   __EncodedType: identity,
-  get: () => pipe(key, SimpleStorage.get, F.flatMap(D.parseEither(schema))),
-  set: flow(D.encodeEither(schema), F.flatMap(SimpleStorage.set(key))),
+  get: () => pipe(key, SimpleStorage.get, F.flatMap(S.parseEither(schema))),
+  set: flow(S.encodeEither(schema), F.flatMap(SimpleStorage.set(key))),
   remove: () => SimpleStorage.remove(key),
   setOrRemove: flow(
     O.match({
       onNone: () => SimpleStorage.remove(key),
-      onSome: flow(D.encodeEither(schema), F.flatMap(SimpleStorage.set(key))),
+      onSome: flow(S.encodeEither(schema), F.flatMap(SimpleStorage.set(key))),
     }),
   ),
 })

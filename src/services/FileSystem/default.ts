@@ -1,5 +1,5 @@
 import * as ExpoFileSystem from 'expo-file-system'
-import { A, F, Layer, Str, pipe } from 'fp'
+import { A, F, Layer, String, pipe } from 'fp'
 import { enforceErrorInstance } from 'src/utils/Error'
 import { FileSystemEnv, FileSystemError } from '.'
 
@@ -44,4 +44,4 @@ const makeDirectory = (args: { uri: string }) =>
   )
 
 const getParentDirectoryUri = (uri: string) =>
-  pipe(uri, Str.split('/'), A.dropRight(1), A.join('/'))
+  pipe(uri, String.split('/'), A.dropRight(1), A.join('/'))

@@ -1,4 +1,4 @@
-import { Data, E, Either, F, Json, identity, pipe } from 'fp'
+import { Data, F, S, pipe } from 'fp'
 
 export type HttpMethod =
   | 'POST'
@@ -12,11 +12,11 @@ export type HttpMethod =
   | 'TRACE'
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface StringifyJsonError extends Data.Case {
-  readonly _tag: 'StringifyJsonError'
+export interface EncodingError extends Data.Case {
+  readonly _tag: 'EncodingError'
   error: unknown
 }
-const StringifyJsonError = Data.tagged<StringifyJsonError>('StringifyJsonError')
+const EncodingError = Data.tagged<EncodingError>('EncodingError')
 
 export interface FetchingError extends Data.Case {
   readonly _tag: 'FetchingError'
@@ -29,12 +29,6 @@ export interface BodyParsingError extends Data.Case {
   error: unknown
 }
 const BodyParsingError = Data.tagged<BodyParsingError>('BodyParsingError')
-
-export interface ParseJsonError extends Data.Case {
-  readonly _tag: 'ParseJsonError'
-  error: unknown
-}
-const ParseJsonError = Data.tagged<ParseJsonError>('ParseJsonError')
 
 export const bare = (args: {
   method: HttpMethod
@@ -70,9 +64,11 @@ export const json = (args: {
   headers: Record<string, string>
 }) =>
   pipe(
-    args.body === undefined ? E.right(undefined) : Json.stringify(args.body),
-    identity<Either<unknown, undefined | string>>,
-    E.mapLeft(e => StringifyJsonError({ error: e })),
+    args.body === undefined
+      ? F.succeed(undefined)
+      : S.encode(S.ParseJson)(args.body),
+    F.unified,
+    F.mapError(e => EncodingError({ error: e })),
     F.flatMap(bodyString =>
       bare({
         method: args.method,
@@ -88,13 +84,7 @@ export const json = (args: {
     F.flatMap(({ getBodyString, ...r }) =>
       pipe(
         getBodyString(),
-        F.flatMap(bodyString =>
-          pipe(
-            Json.parse(bodyString),
-            identity<Either<unknown, Json.Json>>,
-            E.mapLeft(e => ParseJsonError({ error: e })),
-          ),
-        ),
+        F.flatMap(S.decode(S.ParseJson)),
         F.map(data => ({ ...r, data })),
       ),
     ),

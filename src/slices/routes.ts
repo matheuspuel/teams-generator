@@ -1,5 +1,5 @@
 import { get, replace } from '@fp-ts/optic'
-import { Tup, absurd, pipe } from 'fp'
+import { Tuple, absurd, pipe } from 'fp'
 import { RootState } from 'src/model'
 import { root } from 'src/model/optic'
 import { State } from 'src/services/StateRef'
@@ -26,5 +26,5 @@ export const goBack = (s: RootState) =>
               ? 'Group'
               : absurd<never>(r),
           ],
-    Tup.mapSecond(route => replace(root.at('route'))(route)(s)),
+    Tuple.mapSecond(route => replace(root.at('route'))(route)(s)),
   )

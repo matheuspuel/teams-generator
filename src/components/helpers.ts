@@ -1,4 +1,4 @@
-import { A, Endomorphism, Eq, Rec, flow } from 'fp'
+import { A, Endomorphism, Eq, Record, flow } from 'fp'
 import React from 'react'
 
 type Element = React.ReactElement
@@ -167,7 +167,7 @@ export const memoized =
       ),
     )
 
-export const shallowEq = Rec.getEquivalence(Eq.strict())
+export const shallowEq = Record.getEquivalence(Eq.strict())
 
 export const deepEq: Eq.Equivalence<unknown> = Eq.make((a, b) =>
   a === b
@@ -178,7 +178,7 @@ export const deepEq: Eq.Equivalence<unknown> = Eq.make((a, b) =>
       typeof b === 'object' &&
       a !== null &&
       b !== null &&
-      Rec.getEquivalence(deepEq)(
+      Record.getEquivalence(deepEq)(
         a as Record<string, unknown>,
         b as Record<string, unknown>,
       ),

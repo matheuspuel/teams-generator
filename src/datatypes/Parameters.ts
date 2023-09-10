@@ -1,4 +1,4 @@
-import { D, Endomorphism, Match, Optic, pipe } from 'fp'
+import { Endomorphism, Match, Optic, S, pipe } from 'fp'
 
 export type Parameters = {
   teamsCountMethod: { _tag: 'count' } | { _tag: 'playersRequired' }
@@ -8,21 +8,21 @@ export type Parameters = {
   rating: boolean
 }
 
-export const SchemaV1 = D.struct({
-  teamsCount: D.number,
-  position: D.boolean,
-  rating: D.boolean,
+export const SchemaV1 = S.struct({
+  teamsCount: S.number,
+  position: S.boolean,
+  rating: S.boolean,
 })
 
-export const Schema: D.Schema<Parameters> = D.struct({
-  teamsCountMethod: D.union(
-    D.struct({ _tag: D.literal('count') }),
-    D.struct({ _tag: D.literal('playersRequired') }),
+export const Schema: S.Schema<Parameters> = S.struct({
+  teamsCountMethod: S.union(
+    S.struct({ _tag: S.literal('count') }),
+    S.struct({ _tag: S.literal('playersRequired') }),
   ),
-  teamsCount: D.number,
-  playersRequired: D.number,
-  position: D.boolean,
-  rating: D.boolean,
+  teamsCount: S.number,
+  playersRequired: S.number,
+  position: S.boolean,
+  rating: S.boolean,
 })
 
 export const Parameters = Schema

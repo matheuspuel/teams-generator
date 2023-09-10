@@ -1,16 +1,14 @@
 import {
-  D,
   Effect,
   F,
   O,
-  Str,
+  S,
+  String,
   constant,
   flow,
   identity,
-  none,
   not,
   pipe,
-  some,
 } from 'fp'
 import { Parameters as Parameters_, Player, Rating } from 'src/datatypes'
 import { exportGroup, importGroupFromDocumentPicker } from 'src/export/group'
@@ -107,23 +105,24 @@ export const appEvents = defineEvents({
           exec,
         ),
       upsert: {
-        new: () => exec(setUpsertGroupModal(some({ id: O.none(), name: '' }))),
+        new: () =>
+          exec(setUpsertGroupModal(O.some({ id: O.none(), name: '' }))),
         edit: (id: Id) =>
           pipe(
             State.get,
             F.flatMap(getGroupById(id)),
             F.flatMap(g =>
-              setUpsertGroupModal(some({ id: O.some(id), name: g.name })),
+              setUpsertGroupModal(O.some({ id: O.some(id), name: g.name })),
             ),
             exec,
             F.ignore,
           ),
-        close: () => exec(setUpsertGroupModal(none())),
+        close: () => exec(setUpsertGroupModal(O.none())),
         form: { name: { change: flow(setUpsertGroupName, exec) } },
         submit: () =>
           pipe(
             State.on(root.at('ui').at('modalUpsertGroup')).get,
-            F.flatMap(O.filter(m => pipe(m.name, not(Str.isEmpty)))),
+            F.flatMap(O.filter(m => pipe(m.name, not(String.isEmpty)))),
             F.flatMap(m =>
               pipe(
                 m.id,
@@ -139,14 +138,14 @@ export const appEvents = defineEvents({
           ),
       },
       delete: {
-        open: (id: Id) => exec(setDeleteGroupModal(some({ id }))),
-        close: () => exec(setDeleteGroupModal(none())),
+        open: (id: Id) => exec(setDeleteGroupModal(O.some({ id }))),
+        close: () => exec(setDeleteGroupModal(O.none())),
         submit: () =>
           pipe(
             State.on(root.at('ui').at('modalDeleteGroup')).get,
             F.flatten,
             F.flatMap(({ id }) => deleteGroup({ id })),
-            F.tap(() => setDeleteGroupModal(none())),
+            F.tap(() => setDeleteGroupModal(O.none())),
             exec,
             F.ignore,
           ),
@@ -253,7 +252,7 @@ export const appEvents = defineEvents({
     rating: {
       change: flow(
         (v: number) => Math.round(v * 20) / 2,
-        D.parseOption(Rating.Schema),
+        S.parseOption(Rating.Schema),
         O.map(flow(State.on(root.at('playerForm').at('rating')).set, exec)),
         O.getOrElse(() => F.unit),
       ),
@@ -270,7 +269,7 @@ export const appEvents = defineEvents({
           form: pipe(
             State.on(root.at('playerForm')).get,
             F.flatMap(f =>
-              pipe(f, O.liftPredicate(not(() => Str.isEmpty(f.name)))),
+              pipe(f, O.liftPredicate(not(() => String.isEmpty(f.name)))),
             ),
           ),
           groupId: F.flatten(State.on(root.at('ui').at('selectedGroupId')).get),
@@ -297,7 +296,7 @@ export const appEvents = defineEvents({
         StateRef.query,
         F.flatten,
         F.flatMap(
-          flow(Player.TeamListShowSensitive.show, t =>
+          flow(Player.teamListToStringSensitive, t =>
             ShareService.shareMessage({ message: t, title: 'Times' }),
           ),
         ),

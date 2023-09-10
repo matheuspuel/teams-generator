@@ -1,9 +1,9 @@
-import { Match, Num, Optic, Ord, apply, flow, modify, pipe } from 'fp'
+import { Match, Number, Optic, Ord, apply, flow, modify, pipe } from 'fp'
 import { MINIMUM_NUMBER_OF_TEAMS, Parameters } from 'src/datatypes/Parameters'
 import { root } from 'src/model/optic'
 import { State } from 'src/services/StateRef'
-import { toggle } from 'src/utils/fp/boolean'
-import { decrement, increment } from 'src/utils/fp/number'
+import { toggle } from 'src/utils/fp/Boolean'
+import { decrement, increment } from 'src/utils/fp/Number'
 
 const params = root.at('parameters')
 
@@ -13,9 +13,9 @@ export const togglePosition = State.on(params.at('position')).update(toggle)
 
 export const toggleRating = State.on(params.at('rating')).update(toggle)
 
-const teamsCountClamp = Ord.clamp(Num.Order)(MINIMUM_NUMBER_OF_TEAMS, 9)
+const teamsCountClamp = Ord.clamp(Number.Order)(MINIMUM_NUMBER_OF_TEAMS, 9)
 
-const playersRequiredClamp = Ord.clamp(Num.Order)(2, 99)
+const playersRequiredClamp = Ord.clamp(Number.Order)(2, 99)
 
 export const incrementTeamsCount = State.on(params).update(p =>
   pipe(

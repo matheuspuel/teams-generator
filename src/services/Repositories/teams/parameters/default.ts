@@ -1,5 +1,5 @@
 import * as PR from '@effect/schema/ParseResult'
-import { D, Layer } from 'fp'
+import { Layer, S } from 'fp'
 import { Parameters } from 'src/datatypes'
 import { createStorage } from 'src/utils/storage'
 import { RepositoryEnvs } from '../..'
@@ -7,13 +7,13 @@ import { RepositoryEnvs } from '../..'
 export const ParametersRepositoryLive = RepositoryEnvs.teams.parameters
   .context(
     createStorage<
-      D.From<typeof Parameters.Schema | typeof Parameters.SchemaV1>,
+      S.From<typeof Parameters.Schema | typeof Parameters.SchemaV1>,
       Parameters
     >({
       key: 'core/parameters',
-      schema: D.union(
+      schema: S.union(
         Parameters.Schema,
-        D.transformResult(
+        S.transformResult(
           Parameters.SchemaV1,
           Parameters.Schema,
           v =>

@@ -1,4 +1,4 @@
-import { A, D, F, O, Optic, Rec, constant, flow, pipe } from 'fp'
+import { A, F, O, Optic, Record, S, constant, flow, pipe } from 'fp'
 import { Group, Player } from 'src/datatypes'
 import { RootState } from 'src/model'
 import { root } from 'src/model/optic'
@@ -8,9 +8,9 @@ import { Id } from 'src/utils/Entity'
 import { Timestamp } from 'src/utils/datatypes'
 
 export type GroupsState = { [groupId: Id]: Group }
-const GroupsState_ = D.record(Id.pipe(D.to), Group.Schema)
-export const GroupsState: D.Schema<
-  D.From<typeof GroupsState_>,
+const GroupsState_ = S.record(Id.pipe(S.to), Group.Schema)
+export const GroupsState: S.Schema<
+  S.From<typeof GroupsState_>,
   GroupsState
 > = GroupsState_
 
@@ -20,7 +20,7 @@ const refOnGroups = State.on(root.at('groups'))
 
 export const getGroupsRecord = Optic.get(root.at('groups'))
 
-export const getGroupById = (id: Id) => flow(getGroupsRecord, Rec.get(id))
+export const getGroupById = (id: Id) => flow(getGroupsRecord, Record.get(id))
 
 const getPlayer = (args: { groupId: Id; id: Id }) =>
   flow(
@@ -52,7 +52,7 @@ export const editGroup = (args: { id: Id; name: string }) =>
   refOnGroups.update(s =>
     pipe(
       s,
-      Rec.modifyOption(args.id, g => ({ ...g, name: args.name })),
+      Record.modifyOption(args.id, g => ({ ...g, name: args.name })),
       O.getOrElse(() => s),
     ),
   )
@@ -64,13 +64,13 @@ export const addImportedGroup = (group: Group) =>
   )
 
 export const deleteGroup = (args: { id: Id }) =>
-  refOnGroups.update(Rec.remove(args.id))
+  refOnGroups.update(Record.remove(args.id))
 
 const addPlayer = (args: { groupId: Id; player: Omit<Player, 'active'> }) =>
   refOnGroups.update(s =>
     pipe(
       s,
-      Rec.modifyOption(args.groupId, g => ({
+      Record.modifyOption(args.groupId, g => ({
         ...g,
         players: A.append({ ...args.player, active: true })(g.players),
       })),
@@ -99,7 +99,7 @@ export const editPlayer = (p: {
   refOnGroups.update(s =>
     pipe(
       s,
-      Rec.modifyOption(p.groupId, g => ({
+      Record.modifyOption(p.groupId, g => ({
         ...g,
         players: pipe(
           g.players,
@@ -148,7 +148,7 @@ export const togglePlayerActive = ({ playerId }: { playerId: Id }) =>
 export const toggleAllPlayersActive = (s: RootState) =>
   pipe(
     s.ui.selectedGroupId,
-    O.flatMap(id => pipe(s.groups, Rec.get(id))),
+    O.flatMap(id => pipe(s.groups, Record.get(id))),
     O.match({
       onNone: () => s,
       onSome: g =>

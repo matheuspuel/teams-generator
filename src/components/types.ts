@@ -1,4 +1,4 @@
-import { Effect, Reader } from 'fp'
+import { Effect } from 'fp'
 import React from 'react'
 import { AppTheme } from 'src/services/Theme'
 import { UIEnv } from 'src/services/UI'
@@ -76,7 +76,7 @@ export type AbsolutePositionProps = {
     | { left?: number; right?: number; top?: number; bottom?: number }
 }
 
-export type UIElement = Reader<UIEnv, Element>
+export type UIElement = (env: UIEnv) => Element
 
 export type Children = ReadonlyArray<UIElement>
 

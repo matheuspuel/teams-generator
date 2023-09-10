@@ -1,5 +1,5 @@
 import { NonEmptyReadonlyArray } from '@effect/data/ReadonlyArray'
-import { A, D, Ord, Order, Rec, Tup, absurd, identity, pipe } from 'fp'
+import { A, Ord, Order, Record, S, Tuple, absurd, identity, pipe } from 'fp'
 import { Player } from 'src/datatypes'
 import {
   ActiveOrd,
@@ -19,8 +19,8 @@ export const GroupOrderTypeDict = {
 
 export type GroupOrderType = keyof typeof GroupOrderTypeDict
 
-export const GroupOrderTypeSchema: D.Schema<GroupOrderType> = D.literal(
-  ...pipe(GroupOrderTypeDict, Rec.toEntries, A.map(Tup.getFirst)),
+export const GroupOrderTypeSchema: S.Schema<GroupOrderType> = S.literal(
+  ...pipe(GroupOrderTypeDict, Record.toEntries, A.map(Tuple.getFirst)),
 )
 
 export type GroupOrder = NonEmptyReadonlyArray<
@@ -30,10 +30,10 @@ export type GroupOrder = NonEmptyReadonlyArray<
   }>
 >
 
-export const Schema: D.Schema<GroupOrder> = D.nonEmptyArray(
-  D.struct({
+export const Schema: S.Schema<GroupOrder> = S.nonEmptyArray(
+  S.struct({
     _tag: GroupOrderTypeSchema,
-    reverse: D.boolean,
+    reverse: S.boolean,
   }),
 )
 

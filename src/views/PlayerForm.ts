@@ -1,4 +1,4 @@
-import { A, F, Rec, Str, Tup, pipe } from 'fp'
+import { A, F, Record, String, Tuple, pipe } from 'fp'
 import {
   Fragment,
   Header,
@@ -63,9 +63,9 @@ const PositionField = (position: Position) =>
     Row({ justify: 'space-evenly' })(
       pipe(
         Position.Dict,
-        Rec.toEntries,
-        A.map(Tup.getFirst),
-        A.sort(Position.Ord),
+        Record.toEntries,
+        A.map(Tuple.getFirst),
+        A.sort(Position.Order),
         A.map(p =>
           Pressable({
             key: p,
@@ -96,7 +96,7 @@ export const RatingField = (rating: Rating) =>
   View({ p: 4 })([
     FormLabel()('Habilidade'),
     Txt({ size: 24, weight: 700, color: Colors.primary.$5 })(
-      Rating.Show.show(rating),
+      Rating.toString(rating),
     ),
     RatingSlider({
       initialPercentage: rating / 10,
@@ -121,7 +121,7 @@ export const PlayerView = named2('PlayerForm')(
       ]),
       SolidButton({
         onPress: on.save(),
-        isEnabled: Str.isNonEmpty(name),
+        isEnabled: String.isNonEmpty(name),
         p: 16,
         round: 0,
       })([Txt()('Gravar')]),

@@ -185,7 +185,7 @@ const Item = memoized('GroupItem')(
         })(position),
       ]),
       Txt({ size: 18, weight: 600, color: Colors.text.dark })(
-        Rating.Show.show(rating),
+        Rating.toString(rating),
       ),
       Txt({ my: 8, color: Colors.text.dark, numberOfLines: 1 })(name),
     ]),

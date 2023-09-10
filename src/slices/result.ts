@@ -1,6 +1,6 @@
 import { clockWith } from '@effect/io/Effect'
 import { get } from '@fp-ts/optic'
-import { A, F, Match, O, Rec, constant, pipe } from 'fp'
+import { A, F, Match, O, Record, constant, pipe } from 'fp'
 import { Player, TeamsGenerator } from 'src/datatypes'
 import { getResultRatingDeviance } from 'src/datatypes/TeamsGenerator'
 import { root } from 'src/model/optic'
@@ -18,7 +18,7 @@ export const generateResult = pipe(
   F.map(s =>
     pipe(
       get(root.at('ui').at('selectedGroupId'))(s),
-      O.flatMap(id => pipe(get(root.at('groups'))(s), Rec.get(id))),
+      O.flatMap(id => pipe(get(root.at('groups'))(s), Record.get(id))),
       O.match_({ onNone: constant([]), onSome: g => g.players }),
       A.filter(Player.isActive),
       players => ({ players, parameters: get(root.at('parameters'))(s) }),

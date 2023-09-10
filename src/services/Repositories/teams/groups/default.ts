@@ -1,4 +1,4 @@
-import { A, D, Layer, Ord, Rec, Str, identity, pipe } from 'fp'
+import { A, Layer, Ord, Record, S, String, identity, pipe } from 'fp'
 import { Position, Rating } from 'src/datatypes'
 import { GroupsState } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
@@ -10,53 +10,53 @@ const key = 'core/groups'
 
 const targetSchema = GroupsState
 
-const version1 = D.record(
-  Id.pipe(D.to),
-  D.struct({
+const version1 = S.record(
+  Id.pipe(S.to),
+  S.struct({
     id: Id,
-    name: D.string,
-    players: D.array(
-      D.struct({
+    name: S.string,
+    players: S.array(
+      S.struct({
         id: Id,
-        name: D.string,
+        name: S.string,
         rating: Rating.Schema,
         position: Position.Schema,
-        active: D.boolean,
+        active: S.boolean,
       }),
     ),
   }),
-).pipe(D.from)
+).pipe(S.from)
 
-const version2 = D.record(
-  Id.pipe(D.to),
-  D.struct({
+const version2 = S.record(
+  Id.pipe(S.to),
+  S.struct({
     id: Id,
-    name: D.string,
-    players: D.array(
-      D.struct({
+    name: S.string,
+    players: S.array(
+      S.struct({
         id: Id,
-        name: D.string,
+        name: S.string,
         rating: Rating.Schema,
         position: Position.Schema,
-        active: D.boolean,
+        active: S.boolean,
         createdAt: Timestamp.Schema,
       }),
     ),
   }),
 )
 
-const schemaWithMigrations = D.compose(
-  D.union(
+const schemaWithMigrations = S.compose(
+  S.union(
     version2,
-    D.transform(
+    S.transform(
       version1,
       version2,
       gs =>
-        Rec.map(gs, g => ({
+        Record.map(gs, g => ({
           ...g,
           players: pipe(
             g.players,
-            A.sort(Ord.mapInput(Str.Order, (p: { id: string }) => p.id)),
+            A.sort(Ord.mapInput(String.Order, (p: { id: string }) => p.id)),
             A.map((p, i) => ({ ...p, createdAt: Timestamp.Schema(i) })),
           ),
         })),

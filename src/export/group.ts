@@ -1,4 +1,4 @@
-import { D, Data, F, Match, O, Str, Stream, flow, pipe } from 'fp'
+import { Data, F, Match, O, S, Stream, String, flow, pipe } from 'fp'
 import { Group } from 'src/datatypes'
 import { root } from 'src/model/optic'
 import { Alert } from 'src/services/Alert'
@@ -26,7 +26,7 @@ export const exportGroup = () =>
     F.tap(({ group, fileUri }) =>
       pipe(
         group,
-        D.encode(schema),
+        S.encode(schema),
         F.tap(s => FileSystem.write({ uri: fileUri, data: s })),
       ),
     ),
@@ -67,11 +67,11 @@ const importGroupFromFile = (args: { url: string }) =>
     F.flatMap(tempUri => FileSystem.read({ uri: tempUri })),
     F.flatMap(data =>
       pipe(
-        D.parse(schema)(data),
+        S.parse(schema)(data),
         F.catchTags({
           ParseError: e =>
             pipe(
-              D.parse(anyVersionSchema)(data),
+              S.parse(anyVersionSchema)(data),
               F.flatMap(d =>
                 F.fail(d.version > currentVersion ? NewerVersionError() : e),
               ),
@@ -108,17 +108,17 @@ const dataSchema = Group.Schema
 
 const currentVersion = 1 as const
 
-const schema = D.transform(
-  D.compose(
-    D.ParseJson,
-    D.struct({
-      application: D.literal('sorteio-times'),
-      type: D.literal('group'),
-      version: D.literal(currentVersion),
+const schema = S.transform(
+  S.compose(
+    S.ParseJson,
+    S.struct({
+      application: S.literal('sorteio-times'),
+      type: S.literal('group'),
+      version: S.literal(currentVersion),
       data: dataSchema,
     }),
   ),
-  dataSchema.pipe(D.to),
+  dataSchema.pipe(S.to),
   v => v.data,
   v => ({
     application: 'sorteio-times' as const,
@@ -128,10 +128,10 @@ const schema = D.transform(
   }),
 )
 
-const anyVersionSchema = D.struct({
-  application: D.literal('sorteio-times'),
-  type: D.literal('group'),
-  version: D.literal(currentVersion),
+const anyVersionSchema = S.struct({
+  application: S.literal('sorteio-times'),
+  type: S.literal('group'),
+  version: S.literal(currentVersion),
 })
 
 const temporaryImportUri = F.map(
@@ -148,8 +148,8 @@ const makeFileUri = (group: Group) =>
 
 const toUri = flow(
   normalize,
-  Str.replace(/ /g, '-'),
-  Str.replace(/[^a-z0-9-]/g, ''),
+  String.replace(/ /g, '-'),
+  String.replace(/[^a-z0-9-]/g, ''),
 )
 
 export interface NewerVersionError extends Data.Case {

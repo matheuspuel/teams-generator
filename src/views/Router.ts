@@ -1,5 +1,5 @@
 import { get } from '@fp-ts/optic'
-import { Apply, O, R, absurd, pipe } from 'fp'
+import { O, absurd, pipe } from 'fp'
 import { Nothing } from 'src/components'
 import { AlertToast } from 'src/components/derivative/AlertToast'
 import { StatusBar } from 'src/components/expo/StatusBar'
@@ -26,24 +26,17 @@ export const Router = named2('Router')(({ model }: { model: RootState }) =>
           ? []
           : [
               Screen()([
-                GroupView(
-                  Apply.sequenceS(R.Apply)({
-                    group: pipe(
-                      get(root.at('ui').at('selectedGroupId')),
-                      R.chain(
-                        O.match({
-                          onNone: () => R.of(O.none()),
-                          onSome: getGroupById,
-                        }),
-                      ),
-                    ),
-                    modalSortGroup: get(root.at('ui').at('modalSortGroup')),
-                    modalParameters: get(root.at('ui').at('modalParameters')),
-                    parameters: get(root.at('parameters')),
-                    groupOrder: get(root.at('groupOrder')),
-                    menu: get(root.at('ui').at('groupMenu')),
-                  })(model),
-                ),
+                GroupView({
+                  group: pipe(
+                    model.ui.selectedGroupId,
+                    O.flatMap(id => getGroupById(id)(model)),
+                  ),
+                  modalSortGroup: model.ui.modalSortGroup,
+                  modalParameters: model.ui.modalParameters,
+                  parameters: model.parameters,
+                  groupOrder: model.groupOrder,
+                  menu: model.ui.groupMenu,
+                }),
               ]),
               ...(route === 'Group'
                 ? []

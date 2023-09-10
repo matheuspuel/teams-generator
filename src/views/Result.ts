@@ -1,4 +1,4 @@
-import { A, Num, O, Option, Ord, pipe } from 'fp'
+import { A, Number, O, Option, Ord, pipe } from 'fp'
 import {
   ActivityIndicator,
   Header,
@@ -67,7 +67,7 @@ const TeamItem = (props: {
   const title = `Time ${props.index + 1}`
   const numPlayers = props.players.length
   const totalRating = Player.getRatingTotal(props.players)
-  const avgRating = toFixedLocale(2)(Num.div(numPlayers)(totalRating))
+  const avgRating = toFixedLocale(2)(Number.div(numPlayers)(totalRating))
   return View({
     key: props.key,
     bg: Colors.white,
@@ -109,7 +109,7 @@ const PlayerItem = ({
   data: Player
 }) =>
   Row({ key: key, p: 4 })([
-    Txt({ color: Colors.text.dark, weight: 600 })(Rating.Show.show(rating)),
+    Txt({ color: Colors.text.dark, weight: 600 })(Rating.toString(rating)),
     Txt({ color: Colors.text.dark, numberOfLines: 1 })(` - ${name}`),
     Txt({ color: Colors.text.dark })(` (${position})`),
   ])

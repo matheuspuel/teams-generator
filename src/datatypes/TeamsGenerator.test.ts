@@ -1,7 +1,18 @@
 /* eslint-disable functional/no-expression-statements */
 import * as Arb from '@effect/schema/Arbitrary'
 import * as fc from 'fast-check'
-import { A, Eq, Match, Ord, Rec, SG, Tup, constant, identity, pipe } from 'fp'
+import {
+  A,
+  Eq,
+  Match,
+  Ord,
+  Record,
+  Semigroup,
+  Tuple,
+  constant,
+  identity,
+  pipe,
+} from 'fp'
 import { playersMock } from 'src/mocks/Player'
 import { getCombinationsIndices } from 'src/utils/Combinations'
 import { Id } from 'src/utils/Entity'
@@ -68,8 +79,8 @@ const distributeTeamsUsingCombinations: typeof distributeTeams =
       }),
       A.match({
         onEmpty: constant([]),
-        onNonEmpty: SG.combineAllNonEmpty(
-          SG.min(getFitOrdFromCriteria(params)),
+        onNonEmpty: Semigroup.combineAllNonEmpty(
+          Semigroup.min(getFitOrdFromCriteria(params)),
         ),
       }),
     )
@@ -261,8 +272,8 @@ describe('Balance teams', () => {
                 ) ||
                 pipe(
                   Position.Dict,
-                  Rec.toEntries,
-                  A.map(Tup.getFirst),
+                  Record.toEntries,
+                  A.map(Tuple.getFirst),
                   A.every(
                     pos =>
                       Math.abs(

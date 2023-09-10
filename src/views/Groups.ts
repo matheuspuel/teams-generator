@@ -1,4 +1,4 @@
-import { A, Eq, O, Option, Rec, Str, Tup, pipe } from 'fp'
+import { A, Eq, O, Option, Record, String, Tuple, pipe } from 'fp'
 import {
   FlatList,
   Fragment,
@@ -38,7 +38,7 @@ export const Groups = memoized('Groups')(
       modalUpsertGroup: Eq.strict(),
       homeMenu: Eq.strict(),
     }),
-    groups: Eq.mapInput(Eq.number, (a: GroupsState) => Rec.size(a)),
+    groups: Eq.mapInput(Eq.number, (a: GroupsState) => Record.size(a)),
   }),
   ({
     ui: { modalDeleteGroup, modalUpsertGroup, homeMenu },
@@ -52,8 +52,8 @@ export const Groups = memoized('Groups')(
       FlatList({
         data: pipe(
           groups,
-          Rec.toEntries,
-          A.map(Tup.getSecond),
+          Record.toEntries,
+          A.map(Tuple.getSecond),
           A.sort(Group.NameOrd),
         ),
         renderItem: Item,
@@ -70,7 +70,7 @@ export const Groups = memoized('Groups')(
         group: pipe(
           modalDeleteGroup,
           O.map(({ id }) => id),
-          O.flatMap(id => pipe(groups, Rec.get(id))),
+          O.flatMap(id => pipe(groups, Record.get(id))),
         ),
       }),
     ]),
@@ -172,7 +172,7 @@ const GroupModal = ({
           GhostButton({ onPress: on.item.upsert.close() })([Txt()('Cancelar')]),
           SolidButton({
             onPress: on.item.upsert.submit(),
-            isEnabled: Str.isNonEmpty(form.name),
+            isEnabled: String.isNonEmpty(form.name),
           })([Txt()('Gravar')]),
         ]),
       ]),

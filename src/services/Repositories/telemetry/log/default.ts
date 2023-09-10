@@ -1,4 +1,4 @@
-import { A, D, E, F, Json, Layer, O, flow, pipe } from 'fp'
+import { A, F, Layer, O, S, pipe } from 'fp'
 import { AsyncStorage } from 'src/services/AsyncStorage'
 import { TelemetryLog, TelemetryLogSchema } from 'src/services/Telemetry'
 import { RepositoryEnvs } from '../..'
@@ -14,8 +14,8 @@ export const LogRepositoryLive = F.map(F.context<AsyncStorage>(), ctx =>
         AsyncStorage.getItem(key),
         F.flatMap(
           O.match({
-            onNone: () => E.right(A.empty<TelemetryLog>()),
-            onSome: flow(Json.parse, E.flatMap(D.parseEither(D.array(Schema)))),
+            onNone: () => F.succeed(A.empty<TelemetryLog>()),
+            onSome: S.decode(S.compose(S.ParseJson, S.array(Schema))),
           }),
         ),
         F.provideContext(ctx),
@@ -25,13 +25,12 @@ export const LogRepositoryLive = F.map(F.context<AsyncStorage>(), ctx =>
         AsyncStorage.getItem(key),
         F.flatMap(
           O.match({
-            onNone: () => E.right(A.empty<Readonly<TelemetryLog>>()),
-            onSome: flow(Json.parse, E.flatMap(D.parseEither(D.array(Schema)))),
+            onNone: () => F.succeed(A.empty<TelemetryLog>()),
+            onSome: S.decode(S.compose(S.ParseJson, S.array(Schema))),
           }),
         ),
         F.map(A.appendAll(vs)),
-        F.flatMap(D.encodeEither(D.array(Schema))),
-        F.flatMap(Json.stringify),
+        F.flatMap(S.encode(S.compose(S.ParseJson, S.array(Schema)))),
         F.flatMap(value => AsyncStorage.setItem({ key, value })),
         F.provideContext(ctx),
       ),

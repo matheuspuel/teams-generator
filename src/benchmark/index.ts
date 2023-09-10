@@ -2,7 +2,7 @@
 import * as Arb from '@effect/schema/Arbitrary'
 import * as Benchmark from 'benchmark'
 import * as fc from 'fast-check'
-import { A, Match, SG, constant, pipe } from 'fp'
+import { A, Match, Semigroup, String, constant, pipe } from 'fp'
 import { Player } from 'src/datatypes'
 import {
   Criteria,
@@ -76,8 +76,8 @@ const distributeTeamsUsingCombinations: typeof distributeTeams =
       }),
       A.match({
         onEmpty: constant([]),
-        onNonEmpty: SG.combineAllNonEmpty(
-          SG.min(getFitOrdFromCriteria(params)),
+        onNonEmpty: Semigroup.combineAllNonEmpty(
+          Semigroup.min(getFitOrdFromCriteria(params)),
         ),
       }),
     )
@@ -105,7 +105,7 @@ void (async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .on('cycle', function (event: any) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        console.log(String(event.target))
+        console.log(String.Class(event.target))
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .on('complete', function (this: any) {
@@ -127,7 +127,7 @@ void (async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .on('cycle', function (event: any) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        console.log(String(event.target))
+        console.log(String.Class(event.target))
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .on('complete', function (this: any) {

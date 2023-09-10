@@ -1,8 +1,8 @@
-import { D, pipe } from 'fp'
+import { S, pipe } from 'fp'
 
 export const NonEmptyString = pipe(
-  D.string,
-  D.nonEmpty(),
-  D.brand('NonEmptyString'),
+  S.string,
+  S.nonEmpty(),
+  S.brand('NonEmptyString'),
 )
-export type NonEmptyString = D.To<typeof NonEmptyString>
+export type NonEmptyString = S.To<typeof NonEmptyString>

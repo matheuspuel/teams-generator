@@ -1,5 +1,5 @@
 import { sumAll } from '@effect/data/Number'
-import { A, Bool, D, Num, Ord, Order, Show as Show_, Str, flow, pipe } from 'fp'
+import { A, Boolean, Number, Ord, Order, S, String, flow, pipe } from 'fp'
 import { Id } from 'src/utils/Entity'
 import { normalize } from 'src/utils/String'
 import { Timestamp } from 'src/utils/datatypes'
@@ -9,38 +9,38 @@ import * as Rating from './Rating'
 type Position = Position.Position
 type Rating = Rating.Rating
 
-export interface Player extends D.To<typeof Schema_> {}
-const Schema_ = D.struct({
+export interface Player extends S.To<typeof Schema_> {}
+const Schema_ = S.struct({
   id: Id,
-  name: D.string,
+  name: S.string,
   rating: Rating.Schema,
   position: Position.Schema,
-  active: D.boolean,
+  active: S.boolean,
   createdAt: Timestamp.Schema,
 })
-export const Schema: D.Schema<D.From<typeof Schema_>, Player> = Schema_
+export const Schema: S.Schema<S.From<typeof Schema_>, Player> = Schema_
 
 export const Player = Schema
 
 export const isActive = (p: Player) => p.active
 
 export const PositionOrd: Order<Player> = pipe(
-  Position.Ord,
+  Position.Order,
   Ord.mapInput(p => p.position),
 )
 
 export const NameOrd: Order<Player> = pipe(
-  Str.Order,
+  String.Order,
   Ord.mapInput(flow(p => p.name, normalize)),
 )
 
 export const RatingOrd: Order<Player> = pipe(
-  Num.Order,
+  Number.Order,
   Ord.mapInput(p => p.rating),
 )
 
 export const ActiveOrd: Order<Player> = pipe(
-  Bool.Order,
+  Boolean.Order,
   Ord.mapInput(p => p.active),
 )
 
@@ -50,57 +50,48 @@ export const CreatedAtOrder: Order<Player> = pipe(
 )
 
 export const IdOrd: Order<Player> = pipe(
-  Str.Order,
+  String.Order,
   Ord.mapInput(p => p.id),
 )
 
-export const Show: Show_.Show<Player> = {
-  show: p =>
-    `${Rating.Show.show(p.rating)} - ${
-      p.name
-    } (${Position.AbbreviationShow.show(p.position)})`,
-}
+export const toString: (player: Player) => string = p =>
+  `${Rating.toString(p.rating)} - ${p.name} (${Position.abbreviationToString(
+    p.position,
+  )})`
 
-export const ListShow: Show_.Show<Array<Player>> = {
-  show: flow(
-    A.sortBy(PositionOrd, Ord.reverse(RatingOrd), NameOrd),
-    A.map(Show.show),
-    A.join('\n'),
-  ),
-}
+export const listToString: (players: Array<Player>) => string = flow(
+  A.sortBy(PositionOrd, Ord.reverse(RatingOrd), NameOrd),
+  A.map(toString),
+  A.join('\n'),
+)
 
-export const TeamListShow: Show_.Show<Array<Array<Player>>> = {
-  show: flow(
-    A.map(ListShow.show),
-    A.map((t, i) => `Time ${i + 1}\n\n${t}`),
-    A.join('\n\n'),
-  ),
-}
+export const teamListToString: (teams: Array<Array<Player>>) => string = flow(
+  A.map(listToString),
+  A.map((t, i) => `Time ${i + 1}\n\n${t}`),
+  A.join('\n\n'),
+)
 
-export const ShowSensitive: Show_.Show<Player> = {
-  show: p => `${p.name} (${Position.AbbreviationShow.show(p.position)})`,
-}
+export const toStringSensitive: (player: Player) => string = p =>
+  `${p.name} (${Position.abbreviationToString(p.position)})`
 
-export const ListShowSensitive: Show_.Show<Array<Player>> = {
-  show: flow(
-    A.sortBy(PositionOrd, NameOrd),
-    A.map(ShowSensitive.show),
-    A.join('\n'),
-  ),
-}
+export const listToStringSensitive: (players: Array<Player>) => string = flow(
+  A.sortBy(PositionOrd, NameOrd),
+  A.map(toStringSensitive),
+  A.join('\n'),
+)
 
-export const TeamListShowSensitive: Show_.Show<Array<Array<Player>>> = {
-  show: flow(
-    A.map(ListShowSensitive.show),
-    A.map((t, i) => `Time ${i + 1}\n\n${t}`),
-    A.join('\n\n'),
-  ),
-}
+export const teamListToStringSensitive: (
+  teams: Array<Array<Player>>,
+) => string = flow(
+  A.map(listToStringSensitive),
+  A.map((t, i) => `Time ${i + 1}\n\n${t}`),
+  A.join('\n\n'),
+)
 
 export const getRatingTotal: (players: Array<Player>) => number = players =>
   sumAll(A.map(players, p => p.rating))
 
 export const getRatingAvg: (players: Array<Player>) => number = flow(
   A.map(p => p.rating),
-  Num.avg,
+  Number.avg,
 )
