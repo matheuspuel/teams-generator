@@ -57,7 +57,7 @@ const getRawProps =
     env,
   }: TextInputArgs): React.ComponentProps<typeof RNTextInput_> => ({
     value: props.value,
-    onChangeText: t => void Runtime.runPromise(env.runtime)(props.onChange(t)),
+    onChangeText: t => void Runtime.runSync(env.runtime)(props.onChange(t)),
     onFocus: () => {
       // eslint-disable-next-line functional/no-expression-statements
       state.setIsFocused(true)

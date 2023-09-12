@@ -2,7 +2,7 @@
 /* eslint-disable functional/no-expression-statements */
 /* eslint-disable functional/no-conditional-statements */
 import * as Fiber from '@effect/io/Fiber'
-import { Eq, F, O, Option, Runtime, Stream, pipe } from 'fp'
+import { Eq, F, O, Option, Runtime, pipe } from 'fp'
 import React from 'react'
 import { RootState } from 'src/model'
 import { StateRef } from '.'
@@ -32,31 +32,24 @@ export const useSelector = <A>({
   }
   React.useEffect(() => {
     const fiber = pipe(
-      StateRef.changes,
-      Stream.changes,
-      Stream.flatMap(() =>
-        pipe(
-          StateRef.get,
-          F.map(selector),
-          F.flatMap(s =>
-            F.sync(() => {
-              if (
-                O.isSome(ref.current) &&
-                Eq.equals(eq)(s)(ref.current.value.lastSentState)
-              ) {
-                ref.current = O.some({
-                  state: s,
-                  lastSentState: ref.current.value.lastSentState,
-                })
-              } else {
-                ref.current = O.some({ state: s, lastSentState: s })
-                refresh()
-              }
-            }),
-          ),
+      StateRef.react.subscribe(r =>
+        pipe(selector(r), s =>
+          F.sync(() => {
+            if (
+              O.isSome(ref.current) &&
+              Eq.equals(eq)(s)(ref.current.value.lastSentState)
+            ) {
+              ref.current = O.some({
+                state: s,
+                lastSentState: ref.current.value.lastSentState,
+              })
+            } else {
+              ref.current = O.some({ state: s, lastSentState: s })
+              refresh()
+            }
+          }),
         ),
       ),
-      Stream.runDrain,
       Runtime.runFork(env.runtime),
     )
     return () =>

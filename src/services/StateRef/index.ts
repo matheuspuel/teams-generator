@@ -74,42 +74,60 @@ export const State = {
   }),
 }
 
-const preparedSubscriptionRefFromService = <A>(
-  tag: Context.Tag<
-    SubscriptionRef.SubscriptionRef<A>,
-    SubscriptionRef.SubscriptionRef<A>
-  >,
-) => ({
+type Subscription = (state: RootState) => Effect<never, never, void>
+
+const subscriptions: Array<Subscription> = []
+
+const tag = AppStateRefEnv
+
+export const StateRef = {
+  react: {
+    subscribe: (f: Subscription) =>
+      F.sync(() => {
+        // eslint-disable-next-line functional/immutable-data, functional/no-expression-statements
+        subscriptions.push(f)
+      }),
+  },
   changes: Stream.flatMap(tag, env => env.changes),
   get: F.flatMap(tag, SubscriptionRef.get),
   execute: <R, E, B>(
-    effect: Effect<R | SynchronizedRef.SynchronizedRef<A>, E, B>,
+    effect: Effect<R | SynchronizedRef.SynchronizedRef<RootState>, E, B>,
   ) =>
-    F.flatMap(
+    pipe(
       tag,
-      SubscriptionRef.modifyEffect(s =>
-        SynchronizedRef.make(s).pipe(
-          F.flatMap(ref =>
-            pipe(
-              F.all([effect, SynchronizedRef.get(ref)]),
-              F.provideService(stateTag<A>(), ref),
+      F.flatMap(
+        SubscriptionRef.modifyEffect(s =>
+          SynchronizedRef.make(s).pipe(
+            F.flatMap(ref =>
+              pipe(
+                F.all([effect, SynchronizedRef.get(ref)]),
+                F.provideService(stateTag<RootState>(), ref),
+              ),
             ),
           ),
         ),
       ),
+      F.tap(() =>
+        pipe(
+          tag,
+          F.flatMap(SubscriptionRef.get),
+          F.flatMap(s => F.sync(() => subscriptions.map(f => f(s)))),
+          F.flatMap(F.all),
+        ),
+      ),
     ),
   query: <R, E, B>(
-    effect: Effect<R | SynchronizedRef.SynchronizedRef<A>, E, B>,
+    effect: Effect<R | SynchronizedRef.SynchronizedRef<RootState>, E, B>,
   ) =>
     pipe(
       tag,
       F.flatMap(SubscriptionRef.get),
       F.flatMap(s =>
         SynchronizedRef.make(s).pipe(
-          F.flatMap(ref => pipe(effect, F.provideService(stateTag<A>(), ref))),
+          F.flatMap(ref =>
+            pipe(effect, F.provideService(stateTag<RootState>(), ref)),
+          ),
         ),
       ),
     ),
-})
-
-export const StateRef = preparedSubscriptionRefFromService(AppStateRefEnv)
+}
