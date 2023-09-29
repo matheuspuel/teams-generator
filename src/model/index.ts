@@ -3,7 +3,7 @@ import { GroupOrder, Parameters } from 'src/datatypes'
 import { GroupsState, emptyGroups } from 'src/slices/groups'
 import { PlayerForm, blankPlayerForm } from 'src/slices/playerForm'
 import { GeneratedResult } from 'src/slices/result'
-import { Route, initialRoute } from 'src/slices/routes'
+import { Route } from 'src/slices/routes'
 import { Id } from 'src/utils/Entity'
 
 export type RootState = {
@@ -24,7 +24,7 @@ export type RootState = {
     homeMenu: boolean
     groupMenu: boolean
   }
-  route: Route
+  route: ReadonlyArray<Route>
 }
 
 export const initialAppState: RootState = {
@@ -45,5 +45,5 @@ export const initialAppState: RootState = {
     homeMenu: false,
     groupMenu: false,
   },
-  route: initialRoute,
+  route: [Route('Groups')()],
 }

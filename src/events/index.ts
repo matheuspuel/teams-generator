@@ -40,7 +40,7 @@ import {
 } from 'src/slices/parameters'
 import { blankPlayerForm, getPlayerFormFromData } from 'src/slices/playerForm'
 import { eraseResult, generateResult } from 'src/slices/result'
-import { goBack, navigate } from 'src/slices/routes'
+import { Route, goBack, navigate } from 'src/slices/routes'
 import {
   setDeleteGroupModal,
   setUpsertGroupModal,
@@ -70,7 +70,7 @@ export const appEvents = defineEvents({
   doNothing: ignore,
   back: () =>
     pipe(
-      State.modify(goBack),
+      goBack,
       exec,
       F.tap(({ shouldBubbleUpEvent }) =>
         shouldBubbleUpEvent ? BackHandler.exit() : F.unit,
@@ -98,7 +98,7 @@ export const appEvents = defineEvents({
     item: {
       open: (id: Id) =>
         pipe(
-          navigate('Group'),
+          navigate(Route('Group')()),
           F.tap(() =>
             State.on(root.at('ui').at('selectedGroupId')).set(O.some(id)),
           ),
@@ -189,7 +189,7 @@ export const appEvents = defineEvents({
         pipe(
           F.unit,
           F.flatMap(() => eraseResult),
-          F.flatMap(() => navigate('Result')),
+          F.flatMap(() => navigate(Route('Result')())),
           F.flatMap(() => closeParametersModal),
           exec,
           F.tap(() => F.sleep(0)),
@@ -206,7 +206,7 @@ export const appEvents = defineEvents({
     player: {
       new: () =>
         pipe(
-          navigate('Player'),
+          navigate(Route('Player')()),
           F.tap(() =>
             State.on(root.at('ui').at('selectedPlayerId')).set(O.none()),
           ),
@@ -215,7 +215,7 @@ export const appEvents = defineEvents({
         ),
       open: (playerId: Id) =>
         pipe(
-          navigate('Player'),
+          navigate(Route('Player')()),
           F.flatMap(() => getPlayerFromActiveGroup({ playerId })),
           F.flatten,
           F.flatMap(v =>
@@ -260,7 +260,7 @@ export const appEvents = defineEvents({
     delete: () =>
       pipe(
         State.update(deleteCurrentPlayer),
-        F.tap(() => State.modify(goBack)),
+        F.tap(() => goBack),
         exec,
       ),
     save: () =>
@@ -282,7 +282,7 @@ export const appEvents = defineEvents({
               onNone: () => createPlayer({ groupId, player: form }),
               onSome: id => editPlayer({ groupId, player: { ...form, id } }),
             }),
-            F.flatMap(() => State.modify(goBack)),
+            F.flatMap(() => goBack),
           ),
         ),
         exec,
