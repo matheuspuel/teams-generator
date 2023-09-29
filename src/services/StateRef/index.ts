@@ -76,17 +76,27 @@ export const State = {
 
 type Subscription = (state: RootState) => Effect<never, never, void>
 
-const subscriptions: Array<Subscription> = []
+// eslint-disable-next-line functional/no-let
+let subscriptions: Array<Subscription> = []
 
 const tag = AppStateRefEnv
 
 export const StateRef = {
   react: {
     subscribe: (f: Subscription) =>
-      F.sync(() => {
-        // eslint-disable-next-line functional/immutable-data, functional/no-expression-statements
-        subscriptions.push(f)
-      }),
+      pipe(
+        F.sync(() => {
+          // eslint-disable-next-line functional/immutable-data, functional/no-expression-statements
+          subscriptions.push(f)
+        }),
+        F.map(() => ({
+          unsubscribe: () =>
+            F.sync(() => {
+              // eslint-disable-next-line functional/no-expression-statements
+              subscriptions = subscriptions.filter(s => s !== f)
+            }),
+        })),
+      ),
   },
   changes: Stream.flatMap(tag, env => env.changes),
   get: F.flatMap(tag, SubscriptionRef.get),

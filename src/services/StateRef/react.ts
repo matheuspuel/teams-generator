@@ -1,8 +1,5 @@
-/* eslint-disable functional/immutable-data */
 /* eslint-disable functional/no-expression-statements */
-/* eslint-disable functional/no-conditional-statements */
-import * as Fiber from '@effect/io/Fiber'
-import { Eq, F, O, Option, Runtime, pipe } from 'fp'
+import { Eq, F, Runtime, pipe } from 'fp'
 import React from 'react'
 import { RootState } from 'src/model'
 import { StateRef } from '.'
@@ -17,43 +14,21 @@ export const useSelector = <A>({
   eq: Eq.Equivalence<A>
   env: UIEnv
 }): A => {
-  const ref = React.useRef<Option<{ state: A; lastSentState: A }>>(O.none())
-  const refresher = React.useState(0)
-  const refresh = () => refresher[1](n => (n === 9999 ? 0 : n + 1))
-  // eslint-disable-next-line functional/no-let
-  let returnValue: A
-  if (O.isNone(ref.current)) {
-    returnValue = Runtime.runSync(env.runtime)(
-      StateRef.get.pipe(F.map(selector)),
-    )
-    ref.current = O.some({ state: returnValue, lastSentState: returnValue })
-  } else {
-    returnValue = ref.current.value.lastSentState
-  }
+  const [state, setState] = React.useState<A>(() =>
+    StateRef.get.pipe(F.map(selector), Runtime.runSync(env.runtime)),
+  )
   React.useEffect(() => {
-    const fiber = pipe(
+    const subscription = pipe(
       StateRef.react.subscribe(r =>
         pipe(selector(r), s =>
           F.sync(() => {
-            if (
-              O.isSome(ref.current) &&
-              Eq.equals(eq)(s)(ref.current.value.lastSentState)
-            ) {
-              ref.current = O.some({
-                state: s,
-                lastSentState: ref.current.value.lastSentState,
-              })
-            } else {
-              ref.current = O.some({ state: s, lastSentState: s })
-              refresh()
-            }
+            setState(state => (eq(s, state) ? state : s))
           }),
         ),
       ),
-      Runtime.runFork(env.runtime),
+      Runtime.runSync(env.runtime),
     )
-    return () =>
-      void Runtime.runPromiseExit(env.runtime)(Fiber.interrupt(fiber))
-  }, [selector, env, eq])
-  return returnValue
+    return () => void Runtime.runSync(env.runtime)(subscription.unsubscribe())
+  }, [selector, eq, env.runtime])
+  return state
 }
