@@ -14,11 +14,11 @@ import { FormLabel } from 'src/components/derivative/FormLabel'
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { SolidButton } from 'src/components/derivative/SolidButton'
-import { memoizedConst, named2 } from 'src/components/helpers'
+import { memoizedConst } from 'src/components/helpers'
 import { Position, Rating } from 'src/datatypes'
 import { appEvents } from 'src/events'
+import { select } from 'src/services/StateRef/react'
 import { Colors } from 'src/services/Theme'
-import { PlayerForm } from 'src/slices/playerForm'
 import { withOpacity } from 'src/utils/datatypes/Color'
 import { RatingSlider } from './components/RatingSlider'
 
@@ -92,7 +92,7 @@ const PositionField = (position: Position) =>
     ),
   ])
 
-export const RatingField = (rating: Rating) =>
+const RatingField = (rating: Rating) =>
   View({ p: 4 })([
     FormLabel()('Habilidade'),
     Txt({ size: 24, weight: 700, color: Colors.primary.$5 })(
@@ -105,8 +105,8 @@ export const RatingField = (rating: Rating) =>
     }),
   ])
 
-export const PlayerView = named2('PlayerForm')(
-  ({ form: { name, position, rating } }: { form: PlayerForm }) =>
+export const PlayerView = memoizedConst('PlayerForm')(
+  select(s => s.playerForm)(({ name, position, rating }) =>
     Fragment([
       ScreenHeader,
       ScrollView({
@@ -126,4 +126,5 @@ export const PlayerView = named2('PlayerForm')(
         round: 0,
       })([Txt()('Gravar')]),
     ]),
+  ),
 )

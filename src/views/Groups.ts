@@ -1,4 +1,4 @@
-import { A, Eq, O, Option, Record, String, Tuple, pipe } from 'fp'
+import { A, Data, Eq, O, Option, Record, String, Tuple, pipe } from 'fp'
 import {
   FlatList,
   Fragment,
@@ -24,56 +24,43 @@ import { SolidButton } from 'src/components/derivative/SolidButton'
 import { memoized, memoizedConst } from 'src/components/helpers'
 import { Group } from 'src/datatypes'
 import { appEvents } from 'src/events'
-import { RootState } from 'src/model'
+import { select } from 'src/services/StateRef/react'
 import { Colors } from 'src/services/Theme'
-import { GroupsState } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
 
 const on = appEvents.groups
 
-export const Groups = memoized('Groups')(
-  Eq.struct({
-    ui: Eq.struct({
-      modalDeleteGroup: Eq.strict(),
-      modalUpsertGroup: Eq.strict(),
-      homeMenu: Eq.strict(),
-    }),
-    groups: Eq.mapInput(Eq.number, (a: GroupsState) => Record.size(a)),
-  }),
-  ({
-    ui: { modalDeleteGroup, modalUpsertGroup, homeMenu },
-    groups,
-  }: {
-    ui: RootState['ui']
-    groups: GroupsState
-  }) =>
-    View({ flex: 1, onLayout: appEvents.core.uiMount() })([
-      ScreenHeader,
-      FlatList({
-        data: pipe(
-          groups,
-          Record.toEntries,
-          A.map(Tuple.getSecond),
-          A.sort(Group.NameOrd),
-        ),
-        renderItem: Item,
-        ListEmptyComponent: View({ flex: 1, justify: 'center' })([
-          Txt({ size: 16, color: Colors.gray.$3 })('Nenhum grupo cadastrado'),
-        ]),
-        contentContainerStyle: { flexGrow: 1, p: 8, gap: 8 },
-        initialNumToRender: 16,
-      }),
-      homeMenu ? Menu : Nothing,
-      GroupModal({ state: modalUpsertGroup }),
-      DeleteGroupModal({
-        state: modalDeleteGroup,
-        group: pipe(
-          modalDeleteGroup,
-          O.map(({ id }) => id),
-          O.flatMap(id => pipe(groups, Record.get(id))),
-        ),
-      }),
-    ]),
+export const Groups = memoizedConst('Groups')(
+  select(s => Data.struct({ groups: s.groups, ui: s.ui }))(
+    ({ ui: { modalDeleteGroup, modalUpsertGroup, homeMenu }, groups }) =>
+      View({ flex: 1, onLayout: appEvents.core.uiMount() })([
+        ScreenHeader,
+        FlatList({
+          data: pipe(
+            groups,
+            Record.toEntries,
+            A.map(Tuple.getSecond),
+            A.sort(Group.NameOrd),
+          ),
+          renderItem: Item,
+          ListEmptyComponent: View({ flex: 1, justify: 'center' })([
+            Txt({ size: 16, color: Colors.gray.$3 })('Nenhum grupo cadastrado'),
+          ]),
+          contentContainerStyle: { flexGrow: 1, p: 8, gap: 8 },
+          initialNumToRender: 16,
+        }),
+        homeMenu ? Menu : Nothing,
+        GroupModal({ state: modalUpsertGroup }),
+        DeleteGroupModal({
+          state: modalDeleteGroup,
+          group: pipe(
+            modalDeleteGroup,
+            O.map(({ id }) => id),
+            O.flatMap(id => pipe(groups, Record.get(id))),
+          ),
+        }),
+      ]),
+  ),
 )
 
 const ScreenHeader = memoizedConst('Header')(

@@ -1,4 +1,4 @@
-import { A, Number, O, Option, Ord, pipe } from 'fp'
+import { A, Number, O, Ord, pipe } from 'fp'
 import {
   ActivityIndicator,
   Header,
@@ -11,16 +11,17 @@ import {
 } from 'src/components'
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
-import { named2 } from 'src/components/helpers'
+import { memoizedConst } from 'src/components/helpers'
 import { Player, Rating } from 'src/datatypes'
 import { appEvents } from 'src/events'
+import { select } from 'src/services/StateRef/react'
 import { Colors } from 'src/services/Theme'
 import { toFixedLocale } from 'src/utils/Number'
 
 const on = appEvents.result
 
-export const ResultView = named2('Result')(
-  ({ result }: { result: Option<Array<Array<Player>>> }) =>
+export const ResultView = memoizedConst('Result')(
+  select(s => s.result)(result =>
     View({ flex: 1 })([
       View({ bg: Colors.white })([
         Header({
@@ -57,6 +58,7 @@ export const ResultView = named2('Result')(
         ),
       ),
     ]),
+  ),
 )
 
 const TeamItem = (props: {

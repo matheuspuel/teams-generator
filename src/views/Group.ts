@@ -25,85 +25,96 @@ import {
   memoizedConst,
   shallowEq,
 } from 'src/components/helpers'
-import { Group, GroupOrder, Parameters, Player, Rating } from 'src/datatypes'
+import { GroupOrder, Parameters, Player, Rating } from 'src/datatypes'
 import { GroupOrderType } from 'src/datatypes/GroupOrder'
 import { AppEvent, appEvents } from 'src/events'
+import { select } from 'src/services/StateRef/react'
 import { Colors } from 'src/services/Theme'
+import { getGroupById } from 'src/slices/groups'
 import { withOpacity } from 'src/utils/datatypes/Color'
 
 const on = appEvents.group
 
-export const GroupView = memoized('GroupScreen')(
-  Eq.struct({
-    parameters: deepEq,
-    group: O.getEquivalence(shallowEq),
-    modalParameters: Eq.strict(),
-    modalSortGroup: Eq.strict(),
-    groupOrder: deepEq,
-    menu: Eq.strict(),
-  }),
-  ({
-    parameters,
-    group,
-    modalParameters,
-    modalSortGroup,
-    groupOrder,
-    menu,
-  }: {
-    parameters: Parameters
-    group: Option<Group>
-    modalParameters: boolean
-    modalSortGroup: Option<null>
-    groupOrder: GroupOrder
-    menu: boolean
-  }) =>
-    View({ flex: 1 })([
-      GroupHeader,
-      FlatList({
-        data: pipe(
-          group,
-          O.map(g => g.players),
-          O.getOrElse(() => []),
-          A.sort(GroupOrder.toOrder(groupOrder)),
-        ),
-        keyExtractor: ({ id }) => id,
-        renderItem: Item,
-        ListEmptyComponent: View({ flex: 1, justify: 'center' })([
-          Txt({ size: 16, color: Colors.gray.$3 })('Nenhum jogador cadastrado'),
-        ]),
-        contentContainerStyle: { flexGrow: 1, p: 8, gap: 8 },
-        initialNumToRender: 16,
-      }),
-      SolidButton({ onPress: on.parameters.open(), p: 16, round: 0 })([
-        Txt()('Sortear'),
-        Txt({ size: 12 })(
-          pipe(
+export const GroupView = memoizedConst('GroupScreen')(
+  select(
+    s => ({
+      group: pipe(
+        s.ui.selectedGroupId,
+        O.flatMap(id => getGroupById(id)(s)),
+      ),
+      modalSortGroup: s.ui.modalSortGroup,
+      modalParameters: s.ui.modalParameters,
+      parameters: s.parameters,
+      groupOrder: s.groupOrder,
+      menu: s.ui.groupMenu,
+    }),
+    Eq.struct({
+      parameters: deepEq,
+      group: O.getEquivalence(shallowEq),
+      modalParameters: Eq.strict(),
+      modalSortGroup: Eq.strict(),
+      groupOrder: deepEq,
+      menu: Eq.strict(),
+    }),
+  )(
+    ({
+      parameters,
+      group,
+      modalParameters,
+      modalSortGroup,
+      groupOrder,
+      menu,
+    }) =>
+      View({ flex: 1 })([
+        GroupHeader,
+        FlatList({
+          data: pipe(
             group,
-            O.match({
-              onNone: constant<Array<Player>>([]),
-              onSome: g => g.players,
-            }),
-            A.filter(p => p.active),
-            A.length,
-            n =>
-              n === 0
-                ? '(Nenhum jogador selecionado)'
-                : n === 1
-                ? '(1 jogador selecionado)'
-                : '(' + n.toString() + ' jogadores selecionados)',
+            O.map(g => g.players),
+            O.getOrElse(() => []),
+            A.sort(GroupOrder.toOrder(groupOrder)),
           ),
+          keyExtractor: ({ id }) => id,
+          renderItem: Item,
+          ListEmptyComponent: View({ flex: 1, justify: 'center' })([
+            Txt({ size: 16, color: Colors.gray.$3 })(
+              'Nenhum jogador cadastrado',
+            ),
+          ]),
+          contentContainerStyle: { flexGrow: 1, p: 8, gap: 8 },
+          initialNumToRender: 16,
+        }),
+        SolidButton({ onPress: on.parameters.open(), p: 16, round: 0 })([
+          Txt()('Sortear'),
+          Txt({ size: 12 })(
+            pipe(
+              group,
+              O.match({
+                onNone: constant<Array<Player>>([]),
+                onSome: g => g.players,
+              }),
+              A.filter(p => p.active),
+              A.length,
+              n =>
+                n === 0
+                  ? '(Nenhum jogador selecionado)'
+                  : n === 1
+                  ? '(1 jogador selecionado)'
+                  : '(' + n.toString() + ' jogadores selecionados)',
+            ),
+          ),
+        ]),
+        menu ? Menu : Nothing,
+        ...(modalParameters ? [ParametersModal({ parameters })] : []),
+        pipe(
+          modalSortGroup,
+          O.match({
+            onNone: () => Nothing,
+            onSome: () => SortModal({ mainSort: groupOrder[0] }),
+          }),
         ),
       ]),
-      menu ? Menu : Nothing,
-      ...(modalParameters ? [ParametersModal({ parameters })] : []),
-      pipe(
-        modalSortGroup,
-        O.match({
-          onNone: () => Nothing,
-          onSome: () => SortModal({ mainSort: groupOrder[0] }),
-        }),
-      ),
-    ]),
+  ),
 )
 
 const GroupHeader = memoizedConst('GroupHeader')(
