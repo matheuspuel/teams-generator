@@ -1,4 +1,16 @@
-import { A, Boolean, Data, F, Match, O, Option, constant, flow, pipe } from 'fp'
+import {
+  A,
+  Boolean,
+  Data,
+  Equal,
+  F,
+  Match,
+  O,
+  Option,
+  constant,
+  flow,
+  pipe,
+} from 'fp'
 import {
   FlatList,
   Header,
@@ -18,11 +30,12 @@ import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { HeaderMenu } from 'src/components/derivative/HeaderMenu'
 import { HeaderMenuButton } from 'src/components/derivative/HeaderMenuButton'
+import { PreRender } from 'src/components/derivative/PreRender2'
 import { SolidButton } from 'src/components/derivative/SolidButton'
 import {
   deepEq,
+  memoized,
   memoizedConst,
-  named,
   namedConst,
 } from 'src/components/helpers'
 import { GroupOrder, Player, Rating } from 'src/datatypes'
@@ -55,16 +68,24 @@ export const GroupView = memoizedConst('GroupView')(() => {
   )
   return View({ flex: 1 })([
     GroupHeader,
-    FlatList({
-      data: playersIds,
-      keyExtractor: id => id,
-      renderItem: Item,
-      ListEmptyComponent: View({ flex: 1, justify: 'center' })([
-        Txt({ size: 16, color: Colors.gray.$3 })('Nenhum jogador cadastrado'),
-      ]),
-      contentContainerStyle: { flexGrow: 1, p: 8, gap: 8 },
-      initialNumToRender: 16,
-    }),
+    PreRender(
+      View({ flex: 1, p: 8, gap: 8 })(
+        A.replicate(3)(
+          View({ round: 8, shadow: 1, bg: Colors.gray.$1, h: 40 })([]),
+        ),
+      ),
+    )(
+      FlatList({
+        data: playersIds,
+        keyExtractor: id => id,
+        renderItem: Item,
+        ListEmptyComponent: View({ flex: 1, justify: 'center' })([
+          Txt({ size: 16, color: Colors.gray.$3 })('Nenhum jogador cadastrado'),
+        ]),
+        contentContainerStyle: { flexGrow: 1, p: 8, gap: 8 },
+        initialNumToRender: 16,
+      }),
+    ),
     ShuffleButton,
     ParametersModal,
     SortModal,
@@ -123,7 +144,7 @@ const Menu = namedConst('GroupMenu')(() => {
   })
 })
 
-const Item = named('Player')((id: Id) => {
+const Item = memoized('Player')(Equal.equivalence(), (id: Id) => {
   const player = useSelector(
     flow(
       getSelectedGroup,
