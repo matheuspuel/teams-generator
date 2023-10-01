@@ -12,10 +12,10 @@ import {
 import { AppEvent, appEvents } from 'src/events'
 import { Colors } from 'src/services/Theme'
 import { withOpacity } from 'src/utils/datatypes/Color'
-import { named3 } from '../helpers'
+import { named2 } from '../helpers'
 import { Children } from '../types'
 
-export const CenterModal = named3('CenterModal')(
+export const CenterModal = named2('CenterModal')(
   (props: {
     onClose: AppEvent
     visible?: boolean

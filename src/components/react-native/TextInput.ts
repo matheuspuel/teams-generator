@@ -10,9 +10,11 @@ import {
   UIColor,
   UIElement,
 } from 'src/components/types'
+import { useRuntime } from 'src/contexts/Runtime'
 import { AppEvent } from 'src/events'
-import { UIEnv } from 'src/services/UI'
+import { AppRuntime } from 'src/runtime'
 import { Color } from 'src/utils/datatypes'
+import { named } from '../helpers'
 
 export type TextInputStyleProps = PaddingProps &
   MarginProps &
@@ -32,6 +34,7 @@ export type TextInputProps = TextInputStyleProps & {
   onChange: (value: string) => AppEvent
   onFocus?: AppEvent
   onBlur?: AppEvent
+  ref?: React.RefObject<RNTextInput_>
   autoFocus?: boolean
   placeholder?: string
   placeholderTextColor?: UIColor
@@ -44,7 +47,7 @@ export type TextInputProps = TextInputStyleProps & {
 
 export type TextInputArgs = {
   x: TextInputProps
-  env: UIEnv
+  runtime: AppRuntime
 }
 
 const getRawProps =
@@ -54,33 +57,32 @@ const getRawProps =
   }) =>
   ({
     x: props,
-    env,
+    runtime,
   }: TextInputArgs): React.ComponentProps<typeof RNTextInput_> => ({
     value: props.value,
-    onChangeText: t => void Runtime.runSync(env.runtime)(props.onChange(t)),
+    onChangeText: t => void Runtime.runSync(runtime)(props.onChange(t)),
     onFocus: () => {
       // eslint-disable-next-line functional/no-expression-statements
       state.setIsFocused(true)
       // eslint-disable-next-line functional/no-expression-statements
       props.onFocus
-        ? void Runtime.runPromise(env.runtime)(props.onFocus)
+        ? void Runtime.runPromise(runtime)(props.onFocus)
         : undefined
     },
     onBlur: () => {
       // eslint-disable-next-line functional/no-expression-statements
       state.setIsFocused(false)
       // eslint-disable-next-line functional/no-expression-statements
-      props.onBlur
-        ? void Runtime.runPromise(env.runtime)(props.onBlur)
-        : undefined
+      props.onBlur ? void Runtime.runPromise(runtime)(props.onBlur) : undefined
     },
+    ref: props.ref,
     autoFocus: props.autoFocus,
     placeholder: props.placeholder,
     placeholderTextColor: props.placeholderTextColor
-      ? Color.toHex(Runtime.runSync(env.runtime)(props.placeholderTextColor))
+      ? Color.toHex(Runtime.runSync(runtime)(props.placeholderTextColor))
       : undefined,
     cursorColor: props.cursorColor
-      ? Color.toHex(Runtime.runSync(env.runtime)(props.cursorColor))
+      ? Color.toHex(Runtime.runSync(runtime)(props.cursorColor))
       : undefined,
     style: {
       padding: props?.p,
@@ -112,13 +114,11 @@ const getRawProps =
       flex: props?.flex,
       backgroundColor: pipe(
         (state.isFocused && props.focused?.bg) || props.bg,
-        getColor =>
-          getColor && Color.toHex(Runtime.runSync(env.runtime)(getColor)),
+        getColor => getColor && Color.toHex(Runtime.runSync(runtime)(getColor)),
       ),
       borderColor: pipe(
         (state.isFocused && props.focused?.borderColor) || props.borderColor,
-        getColor =>
-          getColor && Color.toHex(Runtime.runSync(env.runtime)(getColor)),
+        getColor => getColor && Color.toHex(Runtime.runSync(runtime)(getColor)),
       ),
       alignSelf:
         props?.alignSelf === 'start'
@@ -137,8 +137,9 @@ const TextInput_ = (args: TextInputArgs) => {
   )
 }
 
-export const TextInput =
-  (props: TextInputProps): UIElement =>
-  // eslint-disable-next-line react/display-name
-  env =>
-    React.createElement(TextInput_, { x: props, env })
+export const TextInput = named('TextInput')((
+  props: TextInputProps,
+): UIElement => {
+  const runtime = useRuntime()
+  return React.createElement(TextInput_, { x: props, runtime })
+})

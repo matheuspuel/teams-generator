@@ -1,19 +1,18 @@
+import { TextStyleContextProvider } from 'src/contexts/TextStyle'
 import { AppEvent } from 'src/events'
 import { Colors } from 'src/services/Theme'
-import { named2 } from '../helpers'
+import { named } from '../helpers'
 import { Pressable } from '../react-native/Pressable'
 import { UIElement } from '../types'
 
-export const HeaderButton = named2('HeaderButton')(
+export const HeaderButton = named('HeaderButton')(
   (props: { onPress: AppEvent; icon: UIElement }): UIElement =>
-    env =>
-      Pressable({
-        onPress: props.onPress,
-        p: 8,
-        borderless: true,
-        foreground: true,
-      })([props.icon])({
-        ...env,
-        context: { ...env.context, textColor: Colors.text.light },
-      }),
+    Pressable({
+      onPress: props.onPress,
+      p: 8,
+      borderless: true,
+      foreground: true,
+    })([
+      TextStyleContextProvider({ textColor: Colors.text.light })([props.icon]),
+    ]),
 )

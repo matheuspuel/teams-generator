@@ -1,4 +1,4 @@
-import { A, Runtime, apply, pipe } from 'fp'
+import { Runtime, pipe } from 'fp'
 import React from 'react'
 import { RectButton } from 'react-native-gesture-handler'
 import {
@@ -13,9 +13,11 @@ import {
   UIColor,
   UIElement,
 } from 'src/components/types'
+import { useRuntime } from 'src/contexts/Runtime'
 import { AppEvent } from 'src/events'
-import { UIEnv } from 'src/services/UI'
+import { AppRuntime } from 'src/runtime'
 import { Color } from 'src/utils/datatypes'
+import { named2 } from '../helpers'
 
 export type PressableStyleProps = PaddingProps &
   MarginProps &
@@ -47,24 +49,24 @@ export type PressableProps = PressableStyleProps & {
 export type PressableArgs = {
   x: PressableProps
   children?: JSXElementsChildren
-  env: UIEnv
+  runtime: AppRuntime
 }
 
 const getRawProps = ({
   x: props,
   children,
-  env,
+  runtime,
 }: PressableArgs): React.ComponentProps<typeof RectButton> => ({
   children: children,
   onPress:
     props.isEnabled !== false
-      ? () => Runtime.runPromise(env.runtime)(props.onPress)
+      ? () => Runtime.runPromise(runtime)(props.onPress)
       : undefined,
   rippleColor:
     props.isEnabled !== false
       ? props.rippleColor
         ? pipe(
-            Runtime.runSync(env.runtime)(props.rippleColor),
+            Runtime.runSync(runtime)(props.rippleColor),
             Color.withOpacity(Math.round((props.rippleOpacity ?? 1) * 255)),
             Color.toHex,
           )
@@ -99,10 +101,10 @@ const getRawProps = ({
     flex: props?.flex,
     flexDirection: props?.direction,
     backgroundColor: props?.bg
-      ? Color.toHex(Runtime.runSync(env.runtime)(props.bg))
+      ? Color.toHex(Runtime.runSync(runtime)(props.bg))
       : undefined,
     borderColor: props?.borderColor
-      ? Color.toHex(Runtime.runSync(env.runtime)(props.borderColor))
+      ? Color.toHex(Runtime.runSync(runtime)(props.borderColor))
       : undefined,
     justifyContent:
       props?.justify === 'start'
@@ -136,13 +138,10 @@ const getRawProps = ({
 const Pressable_ = (args: PressableArgs) =>
   React.createElement(RectButton, getRawProps(args))
 
-export const Pressable =
-  (props: PressableProps) =>
-  (children: Children): UIElement =>
+export const Pressable = named2('Pressable')((props: PressableProps) =>
   // eslint-disable-next-line react/display-name
-  env =>
-    React.createElement(
-      Pressable_,
-      { x: props, env },
-      ...pipe(children, A.map(apply(env))),
-    )
+  (children: Children): UIElement => {
+    const runtime = useRuntime()
+    return React.createElement(Pressable_, { x: props, runtime }, ...children)
+  },
+)

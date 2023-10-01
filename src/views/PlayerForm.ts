@@ -17,14 +17,14 @@ import { SolidButton } from 'src/components/derivative/SolidButton'
 import { memoizedConst } from 'src/components/helpers'
 import { Position, Rating } from 'src/datatypes'
 import { appEvents } from 'src/events'
-import { select } from 'src/services/StateRef/react'
+import { useSelector } from 'src/hooks/useSelector'
 import { Colors } from 'src/services/Theme'
 import { withOpacity } from 'src/utils/datatypes/Color'
 import { RatingSlider } from './components/RatingSlider'
 
 const on = appEvents.player
 
-const ScreenHeader = memoizedConst('Header')(
+const ScreenHeader = memoizedConst('Header')(() =>
   View({ bg: Colors.white })([
     Header({
       title: 'Jogador',
@@ -105,26 +105,25 @@ const RatingField = (rating: Rating) =>
     }),
   ])
 
-export const PlayerView = memoizedConst('PlayerForm')(
-  select(s => s.playerForm)(({ name, position, rating }) =>
-    Fragment([
-      ScreenHeader,
-      ScrollView({
-        keyboardShouldPersistTaps: 'always',
-        contentContainerStyle: { flexGrow: 1 },
-      })([
-        View({ flex: 1, p: 4 })([
-          NameField(name),
-          PositionField(position),
-          RatingField(rating),
-        ]),
+export const PlayerView = memoizedConst('PlayerView')(() => {
+  const { name, position, rating } = useSelector(s => s.playerForm)
+  return Fragment([
+    ScreenHeader,
+    ScrollView({
+      keyboardShouldPersistTaps: 'always',
+      contentContainerStyle: { flexGrow: 1 },
+    })([
+      View({ flex: 1, p: 4 })([
+        NameField(name),
+        PositionField(position),
+        RatingField(rating),
       ]),
-      SolidButton({
-        onPress: on.save(),
-        isEnabled: String.isNonEmpty(name),
-        p: 16,
-        round: 0,
-      })([Txt()('Gravar')]),
     ]),
-  ),
-)
+    SolidButton({
+      onPress: on.save(),
+      isEnabled: String.isNonEmpty(name),
+      p: 16,
+      round: 0,
+    })([Txt()('Gravar')]),
+  ])
+})

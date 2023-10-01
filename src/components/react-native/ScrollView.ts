@@ -1,4 +1,3 @@
-import { A, apply, pipe } from 'fp'
 import React from 'react'
 import { ScrollView as RNScrollView_ } from 'react-native'
 import {
@@ -8,7 +7,9 @@ import {
   PaddingProps,
   UIElement,
 } from 'src/components/types'
-import { UIEnv } from 'src/services/UI'
+import { useRuntime } from 'src/contexts/Runtime'
+import { AppRuntime } from 'src/runtime'
+import { named2 } from '../helpers'
 
 export type ScrollViewStyleProps = object
 
@@ -24,13 +25,13 @@ export type ScrollViewProps = ScrollViewStyleProps & {
 export type ScrollViewArgs = {
   x: ScrollViewProps
   children?: JSXElementsChildren
-  env: UIEnv
+  runtime: AppRuntime
 }
 
 const getRawProps = ({
   x: props,
   children,
-  env: _env,
+  runtime: _runtime,
 }: ScrollViewArgs): React.ComponentProps<typeof RNScrollView_> => ({
   children: children,
   removeClippedSubviews: props.removeClippedSubviews,
@@ -54,13 +55,10 @@ const getRawProps = ({
 const ScrollView_ = (args: ScrollViewArgs) =>
   React.createElement(RNScrollView_, getRawProps(args))
 
-export const ScrollView =
-  (props: ScrollViewProps = {}) =>
-  (children: Children): UIElement =>
+export const ScrollView = named2('ScrollView')((props: ScrollViewProps = {}) =>
   // eslint-disable-next-line react/display-name
-  env =>
-    React.createElement(
-      ScrollView_,
-      { x: props, env },
-      ...pipe(children, A.map(apply(env))),
-    )
+  (children: Children): UIElement => {
+    const runtime = useRuntime()
+    return React.createElement(ScrollView_, { x: props, runtime }, ...children)
+  },
+)

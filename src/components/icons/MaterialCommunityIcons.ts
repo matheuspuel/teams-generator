@@ -1,8 +1,11 @@
 import RawIcons_ from '@expo/vector-icons/MaterialCommunityIcons'
 import React from 'react'
-import { UIEnv } from 'src/services/UI'
+import { useRuntime } from 'src/contexts/Runtime'
+import { TextStyleContext, useTextStyle } from 'src/contexts/TextStyle'
+import { AppRuntime } from 'src/runtime'
 import { Color } from 'src/utils/datatypes'
 import { Runtime } from 'src/utils/fp'
+import { named } from '../helpers'
 import { UIColor, UIElement } from '../types'
 
 export type IconProps = {
@@ -14,17 +17,19 @@ export type IconProps = {
 
 export type IconArgs = {
   x: IconProps
-  env: UIEnv
+  runtime: AppRuntime
+  textStyle: TextStyleContext
 }
 
 const getRawProps = ({
   x: props,
-  env,
+  runtime,
+  textStyle,
 }: IconArgs): React.ComponentProps<typeof RawIcons_> => ({
   name: props.name,
   size: props.size ?? 24,
   color: Color.toHex(
-    Runtime.runSync(env.runtime)(props.color ?? env.context.textColor),
+    Runtime.runSync(runtime)(props.color ?? textStyle.textColor),
   ),
   style: { textAlign: props.align },
 })
@@ -32,8 +37,14 @@ const getRawProps = ({
 const MaterialCommunityIcons_ = (args: IconArgs) =>
   React.createElement(RawIcons_, getRawProps(args))
 
-export const MaterialCommunityIcons =
-  (props: IconProps): UIElement =>
-  // eslint-disable-next-line react/display-name
-  env =>
-    React.createElement(MaterialCommunityIcons_, { x: props, env })
+export const MaterialCommunityIcons = named('MaterialCommunityIcons')((
+  props: IconProps,
+): UIElement => {
+  const runtime = useRuntime()
+  const textStyle = useTextStyle()
+  return React.createElement(MaterialCommunityIcons_, {
+    x: props,
+    runtime,
+    textStyle,
+  })
+})

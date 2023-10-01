@@ -1,5 +1,4 @@
 {
-  "react-native.packager.port": 8081,
   "task.allowAutomaticTasks": "on",
   "files.exclude": { ".expo": true },
   "typescript.tsdk": "node_modules\\typescript\\lib",

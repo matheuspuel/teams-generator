@@ -1,11 +1,11 @@
 import { MaterialIcons, Pressable, View } from 'src/components'
 import { AppEvent } from 'src/events'
 import { Colors } from 'src/services/Theme'
-import { named2 } from '../helpers'
+import { named } from '../helpers'
 import { PressableProps } from '../react-native/Pressable'
 import { UIColor } from '../types'
 
-export const Checkbox = named2('Checkbox')(
+export const Checkbox = named('Checkbox')(
   (
     props: Omit<PressableProps, 'onPress'> & {
       onToggle: AppEvent

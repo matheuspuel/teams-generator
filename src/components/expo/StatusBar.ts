@@ -4,9 +4,11 @@ import {
   StatusBarStyle,
 } from 'expo-status-bar'
 import React from 'react'
-import { UIEnv } from 'src/services/UI'
+import { useRuntime } from 'src/contexts/Runtime'
+import { AppRuntime } from 'src/runtime'
 import { Color } from 'src/utils/datatypes'
 import { Runtime } from 'src/utils/fp'
+import { named } from '../helpers'
 import { UIColor, UIElement } from '../types'
 
 export type StatusBarProps = {
@@ -21,16 +23,16 @@ export type StatusBarProps = {
 
 export type StatusBarArgs = {
   x: StatusBarProps
-  env: UIEnv
+  runtime: AppRuntime
 }
 
 const getRawProps = ({
   x: props,
-  env,
+  runtime,
 }: StatusBarArgs): React.ComponentProps<typeof RawStatusBar_> => ({
   animated: props.animated,
   backgroundColor: props.backgroundColor
-    ? Color.toHex(Runtime.runSync(env.runtime)(props.backgroundColor))
+    ? Color.toHex(Runtime.runSync(runtime)(props.backgroundColor))
     : undefined,
   hidden: props.hidden,
   hideTransitionAnimation: props.hideTransitionAnimation,
@@ -42,8 +44,9 @@ const getRawProps = ({
 const StatusBar_ = (args: StatusBarArgs) =>
   React.createElement(RawStatusBar_, getRawProps(args))
 
-export const StatusBar =
-  (props: StatusBarProps): UIElement =>
-  // eslint-disable-next-line react/display-name
-  env =>
-    React.createElement(StatusBar_, { x: props, env })
+export const StatusBar = named('StatusBar')((
+  props: StatusBarProps,
+): UIElement => {
+  const runtime = useRuntime()
+  return React.createElement(StatusBar_, { x: props, runtime })
+})

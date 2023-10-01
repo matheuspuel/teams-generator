@@ -1,7 +1,6 @@
 import { Effect } from 'fp'
 import React from 'react'
 import { AppTheme } from 'src/services/Theme'
-import { UIEnv } from 'src/services/UI'
 import { Color } from 'src/utils/datatypes'
 
 export type Element = React.ReactElement
@@ -76,7 +75,7 @@ export type AbsolutePositionProps = {
     | { left?: number; right?: number; top?: number; bottom?: number }
 }
 
-export type UIElement = (env: UIEnv) => Element
+export type UIElement = Element
 
 export type Children = ReadonlyArray<UIElement>
 

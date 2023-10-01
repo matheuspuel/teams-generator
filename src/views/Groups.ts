@@ -1,4 +1,19 @@
-import { A, Data, Eq, O, Option, Record, String, Tuple, pipe } from 'fp'
+import {
+  A,
+  Boolean,
+  Data,
+  Equal,
+  F,
+  O,
+  Record,
+  Runtime,
+  String,
+  Tuple,
+  flow,
+  pipe,
+} from 'fp'
+import React from 'react'
+import { TextInput as RNGHTextInput } from 'react-native-gesture-handler'
 import {
   FlatList,
   Fragment,
@@ -21,49 +36,46 @@ import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { HeaderMenu } from 'src/components/derivative/HeaderMenu'
 import { HeaderMenuButton } from 'src/components/derivative/HeaderMenuButton'
 import { SolidButton } from 'src/components/derivative/SolidButton'
-import { memoized, memoizedConst } from 'src/components/helpers'
+import { memoized, memoizedConst, namedConst } from 'src/components/helpers'
+import { useRuntime } from 'src/contexts/Runtime'
 import { Group } from 'src/datatypes'
 import { appEvents } from 'src/events'
-import { select } from 'src/services/StateRef/react'
+import { useSelector } from 'src/hooks/useSelector'
 import { Colors } from 'src/services/Theme'
+import { getGroupById } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
 
 const on = appEvents.groups
 
-export const Groups = memoizedConst('Groups')(
-  select(s => Data.struct({ groups: s.groups, ui: s.ui }))(
-    ({ ui: { modalDeleteGroup, modalUpsertGroup, homeMenu }, groups }) =>
-      View({ flex: 1, onLayout: appEvents.core.uiMount() })([
-        ScreenHeader,
-        FlatList({
-          data: pipe(
-            groups,
-            Record.toEntries,
-            A.map(Tuple.getSecond),
-            A.sort(Group.NameOrd),
-          ),
-          renderItem: Item,
-          ListEmptyComponent: View({ flex: 1, justify: 'center' })([
-            Txt({ size: 16, color: Colors.gray.$3 })('Nenhum grupo cadastrado'),
-          ]),
-          contentContainerStyle: { flexGrow: 1, p: 8, gap: 8 },
-          initialNumToRender: 16,
-        }),
-        homeMenu ? Menu : Nothing,
-        GroupModal({ state: modalUpsertGroup }),
-        DeleteGroupModal({
-          state: modalDeleteGroup,
-          group: pipe(
-            modalDeleteGroup,
-            O.map(({ id }) => id),
-            O.flatMap(id => pipe(groups, Record.get(id))),
-          ),
-        }),
+export const Groups = memoizedConst('GroupsView')(() => {
+  const groupsIds = useSelector(
+    flow(
+      s => s.groups,
+      Record.toEntries,
+      A.map(Tuple.getSecond),
+      A.sort(Group.NameOrd),
+      A.map(_ => _.id),
+      Data.array,
+    ),
+  )
+  return View({ flex: 1, onLayout: appEvents.core.uiMount() })([
+    ScreenHeader,
+    FlatList({
+      data: groupsIds,
+      keyExtractor: id => id,
+      renderItem: Item,
+      ListEmptyComponent: View({ flex: 1, justify: 'center' })([
+        Txt({ size: 16, color: Colors.gray.$3 })('Nenhum grupo cadastrado'),
       ]),
-  ),
-)
+      contentContainerStyle: { flexGrow: 1, p: 8, gap: 8 },
+      initialNumToRender: 16,
+    }),
+    GroupModal,
+    DeleteGroupModal,
+  ])
+})
 
-const ScreenHeader = memoizedConst('Header')(
+const ScreenHeader = memoizedConst('Header')(() =>
   View({ bg: Colors.white })([
     Header({
       title: 'Grupos',
@@ -80,58 +92,84 @@ const ScreenHeader = memoizedConst('Header')(
         }),
       ]),
     }),
+    Menu,
   ]),
 )
 
-const Menu = HeaderMenu({ onClose: on.menu.close() })([
-  HeaderMenuButton({
-    onPress: on.import(),
-    label: 'Importar grupo',
-    icon: MaterialCommunityIcons({ name: 'import' }),
-  }),
-])
+const Menu = namedConst('Menu')(() => {
+  const homeMenu = useSelector(s => s.ui.homeMenu)
+  return Boolean.match(homeMenu, {
+    onFalse: () => Nothing,
+    onTrue: () =>
+      HeaderMenu({ onClose: on.menu.close() })([
+        HeaderMenuButton({
+          onPress: on.import(),
+          label: 'Importar grupo',
+          icon: MaterialCommunityIcons({ name: 'import' }),
+        }),
+      ]),
+  })
+})
 
-const Item = memoized('GroupItem')(
-  Eq.struct({ name: Eq.strict(), id: Eq.strict() }),
-  ({ name, id }: Group) =>
-    Pressable({
-      onPress: on.item.open(id),
-      direction: 'row',
-      align: 'center',
-      p: 4,
-      round: 8,
-      shadow: 1,
-      bg: Colors.white,
-    })([
-      Txt({
-        numberOfLines: 1,
-        flex: 1,
-        align: 'left',
-        p: 8,
-        weight: 600,
-        color: Colors.text.dark,
-      })(name),
+const Item = memoized('Group')(Equal.equivalence(), (id: Id) => {
+  const group = useSelector(
+    flow(
+      getGroupById(id),
+      O.map(({ name }) => Data.struct({ name })),
+    ),
+  )
+  return O.match(group, {
+    onNone: () => Nothing,
+    onSome: ({ name }) =>
       Pressable({
-        onPress: on.item.upsert.edit(id),
-        borderless: true,
-        py: 8,
-        px: 4,
-      })([MaterialIcons({ name: 'edit', color: Colors.gray.$4 })]),
-      Pressable({
-        onPress: on.item.delete.open(id),
-        borderless: true,
-        py: 8,
-        px: 4,
-      })([MaterialIcons({ name: 'delete', color: Colors.gray.$4 })]),
-    ]),
-)
+        onPress: on.item.open(id),
+        direction: 'row',
+        align: 'center',
+        p: 4,
+        round: 8,
+        shadow: 1,
+        bg: Colors.white,
+      })([
+        Txt({
+          numberOfLines: 1,
+          flex: 1,
+          align: 'left',
+          p: 8,
+          weight: 600,
+          color: Colors.text.dark,
+        })(name),
+        Pressable({
+          onPress: on.item.upsert.edit(id),
+          borderless: true,
+          py: 8,
+          px: 4,
+        })([MaterialIcons({ name: 'edit', color: Colors.gray.$4 })]),
+        Pressable({
+          onPress: on.item.delete.open(id),
+          borderless: true,
+          py: 8,
+          px: 4,
+        })([MaterialIcons({ name: 'delete', color: Colors.gray.$4 })]),
+      ]),
+  })
+})
 
-const GroupModal = ({
-  state,
-}: {
-  state: Option<{ id: Option<Id>; name: string }>
-}) =>
-  pipe(
+const GroupModal = namedConst('GroupModal')(() => {
+  const runtime = useRuntime()
+  const state = useSelector(s => s.ui.modalUpsertGroup)
+  const nameInputRef = React.useRef<RNGHTextInput>(null)
+  // eslint-disable-next-line functional/no-expression-statements
+  React.useEffect(() => {
+    // eslint-disable-next-line functional/no-expression-statements
+    void pipe(
+      state,
+      F.flatMap(() => F.sync(() => nameInputRef.current?.focus())),
+      F.delay('100 millis'),
+      F.ignore,
+      Runtime.runPromise(runtime),
+    )
+  }, [O.isSome(state)])
+  return pipe(
     state,
     O.map(form =>
       CenterModal({
@@ -151,7 +189,7 @@ const GroupModal = ({
             placeholder: 'Ex: Futebol de quinta',
             value: form.name,
             onChange: on.item.upsert.form.name.change,
-            autoFocus: true,
+            ref: nameInputRef,
           }),
         ]),
         View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
@@ -166,17 +204,19 @@ const GroupModal = ({
     ),
     O.getOrElse(() => Fragment([])),
   )
+})
 
-const DeleteGroupModal = ({
-  group,
-  state,
-}: {
-  state: Option<{ id: Id }>
-  group: Option<Group>
-}) =>
-  CenterModal({
+const DeleteGroupModal = namedConst('DeleteGroupModal')(() => {
+  const group = useSelector(s =>
+    pipe(
+      s.ui.modalDeleteGroup,
+      O.map(({ id }) => id),
+      O.flatMap(id => getGroupById(id)(s)),
+    ),
+  )
+  return CenterModal({
     onClose: on.item.delete.close(),
-    visible: O.isSome(state),
+    visible: O.isSome(group),
     title: 'Excluir grupo',
   })([
     View({ p: 16 })(
@@ -203,3 +243,4 @@ const DeleteGroupModal = ({
       })([Txt()('Excluir')]),
     ]),
   ])
+})

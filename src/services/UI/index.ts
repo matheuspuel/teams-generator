@@ -1,11 +1,6 @@
 import * as Context from '@effect/data/Context'
 import { Effect } from '@effect/io/Effect'
-import { AppEvent } from 'src/events'
-import { F, Runtime } from 'src/utils/fp'
-import { SafeAreaService } from '../SafeArea'
-import { AppStateRef } from '../StateRef'
-import { AppTheme } from '../Theme'
-import { UIContext } from './context'
+import { F } from 'src/utils/fp'
 
 export type UI = {
   start: () => Effect<never, never, void>
@@ -14,10 +9,3 @@ export type UI = {
 export const UIEnv = Context.Tag<UI>()
 
 export const UI = F.serviceFunctions(UIEnv)
-
-export type UIEnv = {
-  context: UIContext
-  runtime: Runtime.Runtime<
-    Effect.Context<AppEvent> | AppTheme | SafeAreaService | AppStateRef
-  >
-}

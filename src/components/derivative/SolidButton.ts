@@ -1,12 +1,13 @@
 import { F, pipe } from 'fp'
 import { Pressable } from 'src/components'
+import { TextStyleContextProvider } from 'src/contexts/TextStyle'
 import { Colors } from 'src/services/Theme'
 import { withOpacity } from 'src/utils/datatypes/Color'
-import { named3 } from '../helpers'
+import { named2 } from '../helpers'
 import { PressableProps } from '../react-native/Pressable'
 import { Children, UIColor, UIElement } from '../types'
 
-export const SolidButton = named3('SolidButton')(
+export const SolidButton = named2('SolidButton')(
   (
     props: PressableProps & {
       color?: UIColor
@@ -25,19 +26,11 @@ export const SolidButton = named3('SolidButton')(
           ),
         rippleColor: props.rippleColor ?? Colors.black,
         rippleOpacity: props.rippleOpacity ?? 0.5,
-      })(
-        children.map(
-          (c): UIElement =>
-            env =>
-              c({
-                ...env,
-                context: {
-                  ...env.context,
-                  textColor: pipe(props.textColor ?? Colors.text.light, c =>
-                    props.isEnabled === false ? F.map(c, withOpacity(95)) : c,
-                  ),
-                },
-              }),
-        ),
-      ),
+      })([
+        TextStyleContextProvider({
+          textColor: pipe(props.textColor ?? Colors.text.light, c =>
+            props.isEnabled === false ? F.map(c, withOpacity(95)) : c,
+          ),
+        })(children),
+      ]),
 )

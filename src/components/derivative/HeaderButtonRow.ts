@@ -1,4 +1,4 @@
-import { named2 } from '../helpers'
+import { named } from '../helpers'
 import { Row } from './Row'
 
-export const HeaderButtonRow = named2('HeaderButtonRow')(Row({ px: 8, gap: 8 }))
+export const HeaderButtonRow = named('HeaderButtonRow')(Row({ px: 8, gap: 8 }))

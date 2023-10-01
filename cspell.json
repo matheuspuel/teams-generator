@@ -9,6 +9,7 @@
     "millis",
     "Nanos",
     "cuid",
-    "paralleldrive"
+    "paralleldrive",
+    "RNGH"
   ]
 }

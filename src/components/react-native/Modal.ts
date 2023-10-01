@@ -1,10 +1,12 @@
-import { A, Runtime, apply, pipe } from 'fp'
+import { A, Runtime } from 'fp'
 import React from 'react'
 import { Modal as RNModal_ } from 'react-native'
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler'
 import { Children, JSXElementsChildren, UIElement } from 'src/components/types'
+import { useRuntime } from 'src/contexts/Runtime'
 import { AppEvent } from 'src/events'
-import { UIEnv } from 'src/services/UI'
+import { AppRuntime } from 'src/runtime'
+import { named2 } from '../helpers'
 
 export type ModalStyleProps = { flex?: number }
 
@@ -19,7 +21,7 @@ export type ModalProps = ModalStyleProps & {
 export type ModalArgs = {
   x: ModalProps
   children?: JSXElementsChildren
-  env: UIEnv
+  runtime: AppRuntime
 }
 
 const GestureHandlerInModal = gestureHandlerRootHOC(
@@ -30,7 +32,7 @@ const GestureHandlerInModal = gestureHandlerRootHOC(
 const getRawProps = ({
   x: props,
   children,
-  env,
+  runtime,
 }: ModalArgs): React.ComponentProps<typeof RNModal_> => ({
   children: React.createElement(
     GestureHandlerInModal,
@@ -45,7 +47,7 @@ const getRawProps = ({
     props.onRequestClose &&
     (() =>
       props.onRequestClose &&
-      Runtime.runPromise(env.runtime)(props.onRequestClose)),
+      Runtime.runPromise(runtime)(props.onRequestClose)),
   style: {
     flex: props?.flex,
   },
@@ -54,13 +56,10 @@ const getRawProps = ({
 const Modal_ = (args: ModalArgs) =>
   React.createElement(RNModal_, getRawProps(args))
 
-export const Modal =
-  (props: ModalProps = {}) =>
-  (children: Children): UIElement =>
+export const Modal = named2('Modal')((props: ModalProps = {}) =>
   // eslint-disable-next-line react/display-name
-  env =>
-    React.createElement(
-      Modal_,
-      { x: props, env },
-      ...pipe(children, A.map(apply(env))),
-    )
+  (children: Children): UIElement => {
+    const runtime = useRuntime()
+    return React.createElement(Modal_, { x: props, runtime }, ...children)
+  },
+)

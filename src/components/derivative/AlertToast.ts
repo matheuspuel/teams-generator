@@ -1,20 +1,23 @@
-import { absurd } from 'fp'
+import { O, absurd } from 'fp'
 import * as React from 'react'
 import Animated, { SlideInRight, SlideOutRight } from 'react-native-reanimated'
-import { MaterialIcons, Pressable, Txt, View } from 'src/components'
+import { MaterialIcons, Nothing, Pressable, Txt, View } from 'src/components'
 import { appEvents } from 'src/events'
+import { useSelector } from 'src/hooks/useSelector'
 import { Colors } from 'src/services/Theme'
-import { named2 } from '../helpers'
+import { memoizedConst } from '../helpers'
 
 const ANIMATION_DURATION = 200
 
-export const AlertToast = named2('AlertToast')(
-  (props: { title: string; message: string; type: 'error' | 'success' }) =>
-    View({
-      absolute: { top: 0, bottom: 0, left: 0, right: 0 },
-      justify: 'end',
-    })([
-      env =>
+export const AlertToast = memoizedConst('AlertToast')(() => {
+  const alert = useSelector(s => s.alert)
+  return O.match(alert, {
+    onNone: () => Nothing,
+    onSome: alert =>
+      View({
+        absolute: { top: 0, bottom: 0, left: 0, right: 0 },
+        justify: 'end',
+      })([
         React.createElement(
           Animated.View,
           {
@@ -32,34 +35,35 @@ export const AlertToast = named2('AlertToast')(
           })([
             View({
               bg:
-                props.type === 'error'
+                alert.type === 'error'
                   ? Colors.danger.$1
-                  : props.type === 'success'
+                  : alert.type === 'success'
                   ? Colors.primary.$1
-                  : absurd<never>(props.type),
+                  : absurd<never>(alert.type),
               p: 8,
               roundL: 8,
               justify: 'center',
             })([
-              props.type === 'error'
+              alert.type === 'error'
                 ? MaterialIcons({
                     name: 'error-outline',
                     color: Colors.danger.$7,
                     size: 36,
                   })
-                : props.type === 'success'
+                : alert.type === 'success'
                 ? MaterialIcons({
                     name: 'check-circle-outline',
                     color: Colors.primary.$7,
                     size: 36,
                   })
-                : absurd<never>(props.type),
+                : absurd<never>(alert.type),
             ]),
             View({ gap: 4, flex: 1, p: 8 })([
-              Txt({ align: 'left', weight: 700, size: 16 })(props.title),
-              Txt({ align: 'left' })(props.message),
+              Txt({ align: 'left', weight: 700, size: 16 })(alert.title),
+              Txt({ align: 'left' })(alert.message),
             ]),
-          ])(env),
+          ]),
         ),
-    ]),
-)
+      ]),
+  })
+})

@@ -2,7 +2,7 @@ import { F } from 'fp'
 import { Platform } from 'react-native'
 import { Colors } from 'src/services/Theme'
 import { withOpacity } from 'src/utils/datatypes/Color'
-import { named2 } from '../helpers'
+import { named } from '../helpers'
 import { TextInput, TextInputProps } from '../react-native/TextInput'
 import { UIColor } from '../types'
 
@@ -11,7 +11,7 @@ export type InputProps = TextInputProps & {
   isEnabled?: boolean
 }
 
-export const Input = named2('Input')((props: InputProps) =>
+export const Input = named('Input')((props: InputProps) =>
   TextInput({
     cursorColor: Colors.text.dark,
     placeholderTextColor: Colors.gray.$3,

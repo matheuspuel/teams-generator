@@ -1,4 +1,4 @@
-import { A, Runtime, apply, pipe } from 'fp'
+import { Runtime, pipe } from 'fp'
 import React from 'react'
 import { View as RawView } from 'react-native'
 import {
@@ -14,9 +14,11 @@ import {
   UIColor,
   UIElement,
 } from 'src/components/types'
+import { useRuntime } from 'src/contexts/Runtime'
 import { AppEvent } from 'src/events'
-import { UIEnv } from 'src/services/UI'
+import { AppRuntime } from 'src/runtime'
 import { Color } from 'src/utils/datatypes'
+import { named2 } from '../helpers'
 
 export type ViewStyleProps = PaddingProps &
   MarginProps &
@@ -41,19 +43,16 @@ export type ViewProps = ViewStyleProps & {
   onLayout?: AppEvent
 }
 
-const getRawProps = ({
-  props,
-  env,
-}: {
-  props: ViewProps
-  env: UIEnv
-}): React.ComponentProps<typeof RawView> & {
+const getRawProps = (
+  props: ViewProps,
+  runtime: AppRuntime,
+): React.ComponentProps<typeof RawView> & {
   key?: string
 } => ({
   key: props.key,
   onLayout:
     props.onLayout &&
-    (() => props.onLayout && Runtime.runPromise(env.runtime)(props.onLayout)),
+    (() => props.onLayout && Runtime.runPromise(runtime)(props.onLayout)),
   style: {
     padding: props?.p,
     paddingHorizontal: props?.px,
@@ -88,10 +87,10 @@ const getRawProps = ({
     flex: props?.flex,
     flexDirection: props?.direction,
     backgroundColor: props?.bg
-      ? Color.toHex(Runtime.runSync(env.runtime)(props.bg))
+      ? Color.toHex(Runtime.runSync(runtime)(props.bg))
       : undefined,
     borderColor: props?.borderColor
-      ? Color.toHex(Runtime.runSync(env.runtime)(props.borderColor))
+      ? Color.toHex(Runtime.runSync(runtime)(props.borderColor))
       : undefined,
     justifyContent:
       props?.justify === 'start'
@@ -124,13 +123,14 @@ const getRawProps = ({
   },
 })
 
-export const View =
-  (props: ViewProps = {}) =>
-  (children: Children): UIElement =>
+export const View = named2('View')((props: ViewProps = {}) =>
   // eslint-disable-next-line react/display-name
-  env =>
-    React.createElement(
+  (children: Children): UIElement => {
+    const runtime = useRuntime()
+    return React.createElement(
       RawView,
-      getRawProps({ props, env }),
-      ...pipe(children, A.map(apply(env))),
+      getRawProps(props, runtime),
+      ...children,
     )
+  },
+)

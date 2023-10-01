@@ -1,14 +1,13 @@
-import { A, apply, pipe } from 'fp'
 import React from 'react'
 import { GestureHandlerRootView as GestureHandlerRootView_ } from 'react-native-gesture-handler'
 import { Children, UIElement } from 'src/components/types'
+import { named } from '../helpers'
 
-export const GestureHandlerRootView =
+export const GestureHandlerRootView = named('GestureHandlerRootView')(
   (children: Children): UIElement =>
-  // eslint-disable-next-line react/display-name
-  env =>
     React.createElement(
       GestureHandlerRootView_,
       { style: { flex: 1 } },
-      ...pipe(children, A.map(apply(env))),
-    )
+      ...children,
+    ),
+)

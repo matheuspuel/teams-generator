@@ -1,7 +1,7 @@
-import { named3 } from '../helpers'
+import { named2 } from '../helpers'
 import { GhostButton } from './GhostButton'
 
-export const BorderlessButton: typeof GhostButton = named3('BorderlessButton')(
+export const BorderlessButton: typeof GhostButton = named2('BorderlessButton')(
   props =>
     GhostButton({
       ...props,

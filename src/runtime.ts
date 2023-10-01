@@ -53,6 +53,8 @@ const appLayer = pipe(
   ),
 )
 
+export type AppRuntime = typeof runtime
+
 export const runtime = pipe(
   Layer.toRuntime(appLayer),
   F.scoped,

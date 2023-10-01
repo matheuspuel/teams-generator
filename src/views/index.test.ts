@@ -12,27 +12,14 @@ import { FileSystemEnv } from 'src/services/FileSystem'
 import { IdGeneratorEnv } from 'src/services/IdGenerator'
 import { MetadataServiceEnv } from 'src/services/Metadata'
 import { RepositoryEnvs } from 'src/services/Repositories'
-import { SafeAreaService } from 'src/services/SafeArea'
 import { SafeAreaServiceTest } from 'src/services/SafeArea/testing'
 import { ShareServiceEnv } from 'src/services/Share'
 import { SplashScreenEnv } from 'src/services/SplashScreen'
-import { AppStateRef } from 'src/services/StateRef'
 import { StateRefLive } from 'src/services/StateRef/default'
 import { TelemetryEnv } from 'src/services/Telemetry'
-import { AppTheme } from 'src/services/Theme'
 import { AppThemeLive } from 'src/services/Theme/default'
-import { initialUIContext } from 'src/services/UI/context'
 import { Id } from 'src/utils/Entity'
-import {
-  Clock,
-  Effect,
-  F,
-  Layer,
-  Number,
-  Ref,
-  Stream,
-  pipe,
-} from 'src/utils/fp'
+import { Clock, F, Layer, Number, Ref, Stream, pipe } from 'src/utils/fp'
 import { UIRoot } from '.'
 
 const testLayer = pipe(
@@ -122,15 +109,7 @@ const dispatch = (e: AppEvent) =>
 it('renders', async () => {
   await dispatch(on.core.appLoaded())
 
-  const UI = F.map(
-    F.all({
-      context: F.succeed(initialUIContext),
-      runtime: F.runtime<
-        Effect.Context<AppEvent> | AppTheme | SafeAreaService | AppStateRef
-      >(),
-    }),
-    env => UIRoot(env),
-  ).pipe(F.provideLayer(testLayer), F.runSync)
+  const UI = UIRoot
 
   const ui = create(UI)
   expect(ui.toJSON()).toMatchSnapshot()

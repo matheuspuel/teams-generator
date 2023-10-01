@@ -2,33 +2,41 @@
 import { Eq, Equal, F, Runtime, pipe } from 'fp'
 import React from 'react'
 import { UIElement } from 'src/components/types'
+import { useRuntime } from 'src/contexts/Runtime'
 import { RootState } from 'src/model'
-import { StateRef } from '.'
-import { UIEnv } from '../UI'
+import { AppRuntime } from 'src/runtime'
+import { StateRef } from '../services/StateRef'
 
 export const select =
   <A>(selector: (state: RootState) => A, equivalence?: Eq.Equivalence<A>) =>
-  (uiComponent: (selected: A) => UIElement): UIElement =>
-  env => {
-    const selected = useSelectorComplete({
-      selector,
-      equivalence: equivalence ?? Equal.equivalence(),
-      env,
-    })
-    return uiComponent(selected)(env)
+  (uiComponent: (selected: A) => UIElement): UIElement => {
+    const selected = useSelector(selector, equivalence)
+    return uiComponent(selected)
   }
+
+export const useSelector = <A>(
+  selector: (state: RootState) => A,
+  equivalence?: Eq.Equivalence<A>,
+) => {
+  const runtime = useRuntime()
+  return useSelectorComplete({
+    selector,
+    equivalence: equivalence ?? Equal.equivalence(),
+    runtime,
+  })
+}
 
 export const useSelectorComplete = <A>({
   selector,
   equivalence,
-  env,
+  runtime,
 }: {
   selector: (state: RootState) => A
   equivalence: Eq.Equivalence<A>
-  env: UIEnv
+  runtime: AppRuntime
 }): A => {
   const [state, setState] = React.useState<A>(() =>
-    StateRef.get.pipe(F.map(selector), Runtime.runSync(env.runtime)),
+    StateRef.get.pipe(F.map(selector), Runtime.runSync(runtime)),
   )
   React.useEffect(() => {
     const subscription = pipe(
@@ -39,9 +47,9 @@ export const useSelectorComplete = <A>({
           }),
         ),
       ),
-      Runtime.runSync(env.runtime),
+      Runtime.runSync(runtime),
     )
-    return () => void Runtime.runSync(env.runtime)(subscription.unsubscribe())
-  }, [selector, equivalence, env.runtime])
+    return () => void Runtime.runSync(runtime)(subscription.unsubscribe())
+  }, [selector, equivalence, runtime])
   return state
 }

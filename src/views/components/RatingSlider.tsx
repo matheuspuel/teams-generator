@@ -17,10 +17,10 @@ import Animated, {
 } from 'react-native-reanimated'
 import { Fragment, Txt, View } from 'src/components'
 import { UIElement } from 'src/components/types'
+import { useRuntime } from 'src/contexts/Runtime'
 import { Rating } from 'src/datatypes'
 import { AppEvent } from 'src/events'
 import { Colors } from 'src/services/Theme'
-import { UIEnv } from 'src/services/UI'
 import { Color } from 'src/utils/datatypes'
 
 export type RatingSliderProps = {
@@ -29,15 +29,11 @@ export type RatingSliderProps = {
   onChange: (percentage: number) => AppEvent
 }
 
-export type RatingSliderArgs = {
-  x: RatingSliderProps
-  env: UIEnv
-}
-
 const RatingSlider_ = ({
-  x: { initialPercentage, step, onChange: onChange_ },
-  env,
-}: RatingSliderArgs) => {
+  initialPercentage,
+  step,
+  onChange: onChange_,
+}: RatingSliderProps) => {
   const paddingHorizontal = 16
   const paddingVertical = 40
   const trackWidth = 10
@@ -47,6 +43,7 @@ const RatingSlider_ = ({
   const thumbColor = Colors.primary.$5
   const [width, setWidth] = React.useState(0)
   const position = useSharedValue(0)
+  const runtime = useRuntime()
 
   const getPosition = (
     e: GestureUpdateEvent<PanGestureHandlerEventPayload>,
@@ -67,7 +64,7 @@ const RatingSlider_ = ({
     return Math.round(v / step) * step
   }
 
-  const onChange = (n: number) => Runtime.runPromise(env.runtime)(onChange_(n))
+  const onChange = (n: number) => Runtime.runPromise(runtime)(onChange_(n))
 
   const gesture = Gesture.Pan()
     .onBegin(e => {
@@ -103,9 +100,7 @@ const RatingSlider_ = ({
           style={{
             height: trackWidth,
             borderRadius: trackWidth / 2,
-            backgroundColor: Color.toHex(
-              Runtime.runSync(env.runtime)(trackColor),
-            ),
+            backgroundColor: Color.toHex(Runtime.runSync(runtime)(trackColor)),
           }}
         >
           {pipe(
@@ -142,7 +137,7 @@ const RatingSlider_ = ({
               ]),
             ),
             Fragment,
-          )(env)}
+          )}
           <Animated.View
             style={[
               {
@@ -152,7 +147,7 @@ const RatingSlider_ = ({
                 height: thumbSize,
                 borderRadius: thumbSize / 2,
                 backgroundColor: Color.toHex(
-                  Runtime.runSync(env.runtime)(thumbColor),
+                  Runtime.runSync(runtime)(thumbColor),
                 ),
               },
               animatedStyles,
@@ -164,8 +159,6 @@ const RatingSlider_ = ({
   )
 }
 
-export const RatingSlider =
-  (props: RatingSliderProps): UIElement =>
+export const RatingSlider = (props: RatingSliderProps): UIElement =>
   // eslint-disable-next-line react/display-name
-  env =>
-    React.createElement(RatingSlider_, { x: props, env })
+  React.createElement(RatingSlider_, props)

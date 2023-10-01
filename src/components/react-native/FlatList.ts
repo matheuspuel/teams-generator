@@ -2,7 +2,9 @@ import { A, constUndefined, pipe } from 'fp'
 import React from 'react'
 import { FlatList as RNFlatList_ } from 'react-native'
 import { GapProps, PaddingProps, UIElement } from 'src/components/types'
-import { UIEnv } from 'src/services/UI'
+import { useRuntime } from 'src/contexts/Runtime'
+import { AppRuntime } from 'src/runtime'
+import { named } from '../helpers'
 
 export type FlatListStyleProps = object
 
@@ -32,19 +34,19 @@ export type FlatListProps<A> = FlatListStyleProps & {
 
 export type FlatListArgs<A> = {
   x: FlatListProps<A>
-  env: UIEnv
+  runtime: AppRuntime
 }
 
 const getRawProps = <A>({
   x: props,
-  env,
+  runtime: _runtime,
 }: FlatListArgs<A>): React.ComponentProps<typeof RNFlatList_<A>> => ({
   data: props.data,
-  renderItem: ({ item, index }) => props.renderItem(item, index)(env),
+  renderItem: ({ item, index }) => props.renderItem(item, index),
   ListEmptyComponent: pipe(
     props.data,
     A.match({
-      onEmpty: () => props.ListEmptyComponent(env),
+      onEmpty: () => props.ListEmptyComponent,
       onNonEmpty: constUndefined,
     }),
   ),
@@ -76,8 +78,9 @@ const getRawProps = <A>({
 const FlatList_ = <A>(args: FlatListArgs<A>) =>
   React.createElement(RNFlatList_<A>, getRawProps(args))
 
-export const FlatList =
-  <A>(props: FlatListProps<A>): UIElement =>
-  // eslint-disable-next-line react/display-name
-  env =>
-    React.createElement(FlatList_<A>, { x: props, env })
+export const FlatList = named('FlatList')(<A>(
+  props: FlatListProps<A>,
+): UIElement => {
+  const runtime = useRuntime()
+  return React.createElement(FlatList_<A>, { x: props, runtime })
+})

@@ -14,52 +14,51 @@ import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { memoizedConst } from 'src/components/helpers'
 import { Player, Rating } from 'src/datatypes'
 import { appEvents } from 'src/events'
-import { select } from 'src/services/StateRef/react'
+import { useSelector } from 'src/hooks/useSelector'
 import { Colors } from 'src/services/Theme'
 import { toFixedLocale } from 'src/utils/Number'
 
 const on = appEvents.result
 
-export const ResultView = memoizedConst('Result')(
-  select(s => s.result)(result =>
-    View({ flex: 1 })([
-      View({ bg: Colors.white })([
-        Header({
-          title: 'Resultado',
-          headerStyle: { backgroundColor: Colors.primary.$5 },
-          headerTitleStyle: { color: Colors.text.light },
-          headerLeft: HeaderButtonRow([
-            HeaderButton({
-              onPress: appEvents.back(),
-              icon: MaterialIcons({ name: 'arrow-back' }),
-            }),
-          ]),
-          headerRight: HeaderButtonRow([
-            HeaderButton({
-              onPress: on.share(),
-              icon: MaterialIcons({ name: 'share' }),
-            }),
-          ]),
-        }),
-      ]),
-      ScrollView({ contentContainerStyle: { flexGrow: 1 } })(
-        pipe(
-          result,
-          O.match({
-            onNone: () => [
-              View({ flex: 1, justify: 'center' })([
-                ActivityIndicator({ color: Colors.primary.$5 }),
-              ]),
-            ],
-            onSome: A.map((t, i) =>
-              TeamItem({ key: i.toString(), index: i, players: t }),
-            ),
+export const ResultView = memoizedConst('ResultView')(() => {
+  const result = useSelector(s => s.result)
+  return View({ flex: 1 })([
+    View({ bg: Colors.white })([
+      Header({
+        title: 'Resultado',
+        headerStyle: { backgroundColor: Colors.primary.$5 },
+        headerTitleStyle: { color: Colors.text.light },
+        headerLeft: HeaderButtonRow([
+          HeaderButton({
+            onPress: appEvents.back(),
+            icon: MaterialIcons({ name: 'arrow-back' }),
           }),
-        ),
-      ),
+        ]),
+        headerRight: HeaderButtonRow([
+          HeaderButton({
+            onPress: on.share(),
+            icon: MaterialIcons({ name: 'share' }),
+          }),
+        ]),
+      }),
     ]),
-  ),
-)
+    ScrollView({ contentContainerStyle: { flexGrow: 1 } })(
+      pipe(
+        result,
+        O.match({
+          onNone: () => [
+            View({ flex: 1, justify: 'center' })([
+              ActivityIndicator({ color: Colors.primary.$5 }),
+            ]),
+          ],
+          onSome: A.map((t, i) =>
+            TeamItem({ key: i.toString(), index: i, players: t }),
+          ),
+        }),
+      ),
+    ),
+  ])
+})
 
 const TeamItem = (props: {
   key: string

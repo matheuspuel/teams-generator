@@ -1,21 +1,23 @@
-import { A, Runtime, apply, pipe } from 'fp'
+import { Runtime } from 'fp'
 import React from 'react'
 import { Text as RNText_ } from 'react-native'
 import { Children, JSXElementsChildren, UIElement } from 'src/components/types'
-import { UIEnv } from 'src/services/UI'
+import { useRuntime } from 'src/contexts/Runtime'
+import { AppRuntime } from 'src/runtime'
 import { Color } from 'src/utils/datatypes'
+import { named2 } from '../helpers'
 import { TextProps } from './Txt'
 
 export type TxtContextArgs = {
   x?: TextProps
   children?: JSXElementsChildren
-  env: UIEnv
+  runtime: AppRuntime
 }
 
 const getRawProps = ({
   x: props,
   children,
-  env,
+  runtime,
 }: TxtContextArgs): React.ComponentProps<typeof RNText_> => ({
   children: children,
   numberOfLines: props?.numberOfLines,
@@ -38,7 +40,7 @@ const getRawProps = ({
     height: props?.h,
     flex: props?.flex,
     color: props?.color
-      ? Color.toHex(Runtime.runSync(env.runtime)(props.color))
+      ? Color.toHex(Runtime.runSync(runtime)(props.color))
       : undefined,
     textAlign: props?.align ?? 'center',
     fontSize: props?.size,
@@ -50,13 +52,10 @@ const getRawProps = ({
 const TxtContext_ = (args: TxtContextArgs) =>
   React.createElement(RNText_, getRawProps(args))
 
-export const TxtContext =
-  (props: TextProps = {}) =>
-  (children: Children): UIElement =>
+export const TxtContext = named2('TxtContext')((props: TextProps = {}) =>
   // eslint-disable-next-line react/display-name
-  env =>
-    React.createElement(
-      TxtContext_,
-      { x: props, env },
-      ...pipe(children, A.map(apply(env))),
-    )
+  (children: Children): UIElement => {
+    const runtime = useRuntime()
+    return React.createElement(TxtContext_, { x: props, runtime }, ...children)
+  },
+)

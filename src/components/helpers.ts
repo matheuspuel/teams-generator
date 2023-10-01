@@ -5,6 +5,9 @@ type Element = React.ReactElement
 
 export type UIComponent1<Args extends [unknown]> = (a0: Args[0]) => Element
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyUIComponent2 = (a0: any) => (a1: any) => Element
+
 export type UIComponent2<Args extends [unknown, unknown]> = (
   a0: Args[0],
 ) => (a1: Args[1]) => Element
@@ -12,6 +15,10 @@ export type UIComponent2<Args extends [unknown, unknown]> = (
 export type UIComponent3<Args extends [unknown, unknown, unknown]> = (
   a0: Args[0],
 ) => (a1: Args[1]) => (a2: Args[2]) => Element
+
+type UIUnderlyingComponent2<C extends AnyUIComponent2> = (
+  args: [Parameters<C>[0], Parameters<ReturnType<C>>[0]],
+) => Element
 
 type UIUnderlyingComponent<Args extends [...Array<unknown>]> = (
   args: UIBundledProps<Args>,
@@ -43,13 +50,12 @@ const fromUnderlying1 =
   a1 =>
     component([a1])
 
-const fromUnderlying2 =
-  <A1, A2>(
-    component: UIUnderlyingComponent<[A1, A2]>,
-  ): UIComponent2<[A1, A2]> =>
-  a1 =>
-  a2 =>
-    component([a1, a2])
+const fromUnderlying2 = <C extends AnyUIComponent2>(
+  component: UIUnderlyingComponent2<C>,
+): C =>
+  (a1 => a2 =>
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    component([a1, a2])) as C
 
 const fromUnderlying3 =
   <A1, A2, A3>(
@@ -76,10 +82,8 @@ export const transformUnderlyingComponent1 =
     fromUnderlying1(toElementCreator(transformation(toUnderlying1(component))))
 
 export const transformUnderlyingComponent2 =
-  <A1, A2>(component: UIComponent2<[A1, A2]>) =>
-  (
-    transformation: Endomorphism<UIUnderlyingComponent<[A1, A2]>>,
-  ): UIComponent2<[A1, A2]> =>
+  <C extends AnyUIComponent2>(component: C) =>
+  (transformation: Endomorphism<UIUnderlyingComponent2<C>>): C =>
     fromUnderlying2(toElementCreator(transformation(toUnderlying2(component))))
 
 export const transformUnderlyingComponent3 =
@@ -96,14 +100,19 @@ export const nameFunction =
     // eslint-disable-next-line functional/immutable-data
     Object.defineProperty(f, 'name', { value: name, writable: false })
 
-export const named1 =
+export const namedConst =
+  (name: string) =>
+  (component: () => Element): Element =>
+    transformUnderlyingComponent1<void>(component)(nameFunction(name))()
+
+export const named =
   (name: string) =>
   <A1>(component: UIComponent1<[A1]>): UIComponent1<[A1]> =>
     transformUnderlyingComponent1(component)(nameFunction(name))
 
 export const named2 =
   (name: string) =>
-  <A1, A2>(component: UIComponent2<[A1, A2]>): UIComponent2<[A1, A2]> =>
+  <C extends AnyUIComponent2>(component: C): C =>
     transformUnderlyingComponent2(component)(nameFunction(name))
 
 export const named3 =
@@ -113,57 +122,42 @@ export const named3 =
   ): UIComponent3<[A1, A2, A3]> =>
     transformUnderlyingComponent3(component)(nameFunction(name))
 
-export const memoized1 =
+export const memoizedConst =
+  (name: string) =>
+  (component: () => Element): Element =>
+    transformUnderlyingComponent1<void>(component)(
+      flow(
+        nameFunction(name),
+        c => React.memo(c, () => true) as (_: [void]) => Element,
+      ),
+    )()
+
+export const memoized =
   (name: string) =>
   <A1>(
-    propsAreEqual: Eq.Equivalence<Readonly<UIBundledProps<[A1]>>>,
+    propsEquivalence: Eq.Equivalence<Readonly<A1>>,
     component: UIComponent1<[A1]>,
   ): UIComponent1<[A1]> =>
     transformUnderlyingComponent1(component)(
       flow(
         nameFunction(name),
-        c => React.memo(c, propsAreEqual) as UIUnderlyingComponent<[A1]>,
+        c =>
+          React.memo(c, Eq.tuple(propsEquivalence)) as UIUnderlyingComponent<
+            [A1]
+          >,
       ),
     )
 
 export const memoized2 =
   (name: string) =>
   <A1, A2>(
-    propsAreEqual: Eq.Equivalence<Readonly<UIBundledProps<[A1, A2]>>>,
+    propsEquivalence: Eq.Equivalence<Readonly<UIBundledProps<[A1, A2]>>>,
     component: UIComponent2<[A1, A2]>,
   ): UIComponent2<[A1, A2]> =>
     transformUnderlyingComponent2(component)(
       flow(
         nameFunction(name),
-        c => React.memo(c, propsAreEqual) as UIUnderlyingComponent<[A1, A2]>,
-      ),
-    )
-
-export const memoizedConst =
-  (name: string) =>
-  <A1>(component: UIComponent1<[A1]>): UIComponent1<[A1]> =>
-    transformUnderlyingComponent1(component)(
-      flow(
-        nameFunction(name),
-        c =>
-          React.memo(c, Eq.tuple(Eq.strict())) as UIUnderlyingComponent<[A1]>,
-      ),
-    )
-
-export const memoized =
-  (name: string) =>
-  <A1, A2>(
-    propsEq: Eq.Equivalence<Readonly<A1>>,
-    component: UIComponent2<[A1, A2]>,
-  ): UIComponent2<[A1, A2]> =>
-    transformUnderlyingComponent2(component)(
-      flow(
-        nameFunction(name),
-        c =>
-          React.memo(
-            c,
-            Eq.tuple(propsEq, Eq.strict()),
-          ) as UIUnderlyingComponent<[A1, A2]>,
+        c => React.memo(c, propsEquivalence) as UIUnderlyingComponent<[A1, A2]>,
       ),
     )
 
