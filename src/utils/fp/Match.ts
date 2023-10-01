@@ -1,5 +1,5 @@
-import { pipe } from '@effect/data/Function'
 import * as Match_ from '@effect/match'
+import { pipe } from 'effect/Function'
 
 export * from '@effect/match'
 

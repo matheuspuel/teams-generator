@@ -7,13 +7,13 @@ import { RepositoryEnvs } from '../..'
 export const ParametersRepositoryLive = RepositoryEnvs.teams.parameters
   .context(
     createStorage<
-      S.From<typeof Parameters.Schema | typeof Parameters.SchemaV1>,
+      S.Schema.From<typeof Parameters.Schema | typeof Parameters.SchemaV1>,
       Parameters
     >({
       key: 'core/parameters',
       schema: S.union(
         Parameters.Schema,
-        S.transformResult(
+        S.transformOrFail(
           Parameters.SchemaV1,
           Parameters.Schema,
           v =>

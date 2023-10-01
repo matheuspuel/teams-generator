@@ -1,5 +1,5 @@
-import { Effect } from '@effect/io/Effect'
-import * as Random from '@effect/io/Random'
+import { Effect } from 'effect/Effect'
+import * as Random from 'effect/Random'
 import { A, F, O, Option, pipe } from 'fp'
 
 export const randomizeArray = <A>(

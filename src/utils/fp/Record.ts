@@ -1,7 +1,7 @@
-import * as Eq from '@effect/data/Equivalence'
-import { ReadonlyRecord } from '@effect/data/ReadonlyRecord'
+import * as Eq from 'effect/Equivalence'
+import { ReadonlyRecord } from 'effect/ReadonlyRecord'
 
-export * from '@effect/data/ReadonlyRecord'
+export * from 'effect/ReadonlyRecord'
 
 export function isSubrecord<A>(E: Eq.Equivalence<A>): {
   (that: ReadonlyRecord<A>): (me: ReadonlyRecord<A>) => boolean

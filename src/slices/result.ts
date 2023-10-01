@@ -1,5 +1,5 @@
-import { clockWith } from '@effect/io/Effect'
 import { get } from '@fp-ts/optic'
+import { clockWith } from 'effect/Effect'
 import { A, F, Match, O, Record, constant, pipe } from 'fp'
 import { Player, TeamsGenerator } from 'src/datatypes'
 import { getResultRatingDeviance } from 'src/datatypes/TeamsGenerator'

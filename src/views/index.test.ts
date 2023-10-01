@@ -103,8 +103,7 @@ const testLayer = pipe(
   Layer.provideMerge(AlertLive),
 )
 
-const dispatch = (e: AppEvent) =>
-  e.pipe(F.provideLayer(testLayer), F.runPromise)
+const dispatch = (e: AppEvent) => e.pipe(F.provide(testLayer), F.runPromise)
 
 it('renders', async () => {
   await dispatch(on.core.appLoaded())

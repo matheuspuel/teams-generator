@@ -3,13 +3,13 @@ import { Id } from 'src/utils/Entity'
 import { normalize } from 'src/utils/String'
 import { Player } from './Player'
 
-export interface Group extends S.To<typeof Schema_> {}
+export interface Group extends S.Schema.To<typeof Schema_> {}
 const Schema_ = S.struct({
   id: Id,
   name: S.string,
   players: S.array(Player),
 })
-export const Schema: S.Schema<S.From<typeof Schema_>, Group> = Schema_
+export const Schema: S.Schema<S.Schema.From<typeof Schema_>, Group> = Schema_
 
 export const Group = Schema
 

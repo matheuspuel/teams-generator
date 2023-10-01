@@ -10,7 +10,7 @@ import { Timestamp } from 'src/utils/datatypes'
 export type GroupsState = { [groupId: Id]: Group }
 const GroupsState_ = S.record(Id.pipe(S.to), Group.Schema)
 export const GroupsState: S.Schema<
-  S.From<typeof GroupsState_>,
+  S.Schema.From<typeof GroupsState_>,
   GroupsState
 > = GroupsState_
 

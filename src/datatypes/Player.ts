@@ -1,4 +1,4 @@
-import { sumAll } from '@effect/data/Number'
+import { sumAll } from 'effect/Number'
 import { A, Boolean, Number, Ord, Order, S, String, flow, pipe } from 'fp'
 import { Id } from 'src/utils/Entity'
 import { normalize } from 'src/utils/String'
@@ -9,7 +9,7 @@ import * as Rating from './Rating'
 type Position = Position.Position
 type Rating = Rating.Rating
 
-export interface Player extends S.To<typeof Schema_> {}
+export interface Player extends S.Schema.To<typeof Schema_> {}
 const Schema_ = S.struct({
   id: Id,
   name: S.string,
@@ -18,7 +18,7 @@ const Schema_ = S.struct({
   active: S.boolean,
   createdAt: Timestamp.Schema,
 })
-export const Schema: S.Schema<S.From<typeof Schema_>, Player> = Schema_
+export const Schema: S.Schema<S.Schema.From<typeof Schema_>, Player> = Schema_
 
 export const Player = Schema
 

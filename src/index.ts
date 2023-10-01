@@ -1,3 +1,5 @@
+import 'fast-text-encoding'
+
 import { F, Layer, Runtime, pipe } from 'fp'
 import { startApp } from 'src/app'
 import { runtime } from './runtime'

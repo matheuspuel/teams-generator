@@ -1,3 +1,3 @@
-export * from '@effect/data/String'
+export * from 'effect/String'
 
 export const Class = String

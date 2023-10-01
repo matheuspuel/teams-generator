@@ -1,4 +1,4 @@
-import { Effect } from '@effect/io/Effect'
+import { Effect } from 'effect/Effect'
 import { F } from 'fp'
 import * as React from 'react'
 

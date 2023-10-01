@@ -64,8 +64,6 @@ export const MetadataServiceLive = MetadataServiceEnv.context({
           F.tap(v => pipe(O.some(v), x => Ref.set(metadataRef, x))),
         ),
       ),
-      F.provideLayer(
-        Layer.mergeAll(InstallationRepositoryLive, IdGeneratorLive),
-      ),
+      F.provide(Layer.mergeAll(InstallationRepositoryLive, IdGeneratorLive)),
     ),
 }).pipe(Layer.succeedContext)

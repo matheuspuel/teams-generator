@@ -1,9 +1,9 @@
-import { LazyArg } from '@effect/data/Function'
-import * as O from '@effect/data/Option'
-import { Option, match } from '@effect/data/Option'
+import { LazyArg } from 'effect/Function'
+import * as O from 'effect/Option'
+import { Option, match } from 'effect/Option'
 import * as O_ from 'fp-ts/Option'
 
-export * from '@effect/data/Option'
+export * from 'effect/Option'
 
 export const match_: {
   <B, A>(options: {

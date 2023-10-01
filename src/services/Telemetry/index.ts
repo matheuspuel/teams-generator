@@ -1,6 +1,6 @@
 /* eslint-disable functional/functional-parameters */
-import * as Context from '@effect/data/Context'
-import { Effect } from '@effect/io/Effect'
+import * as Context from 'effect/Context'
+import { Effect } from 'effect/Effect'
 import { Timestamp } from 'src/utils/datatypes'
 import { F, S } from 'src/utils/fp'
 
@@ -10,7 +10,7 @@ export const TelemetryLogSchema = S.struct({
   data: S.unknown,
 })
 
-export type TelemetryLog = S.To<typeof TelemetryLogSchema>
+export type TelemetryLog = S.Schema.To<typeof TelemetryLogSchema>
 
 export type Telemetry = {
   log: (logs: Array<TelemetryLog>) => Effect<never, unknown, void>

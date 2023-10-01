@@ -15,7 +15,7 @@ export const TelemetryLive = F.map(
   F.context<Repositories.telemetry.log>(),
   ctx =>
     TelemetryEnv.context({
-      log: flow(Repository.telemetry.log.concat, F.provideContext(ctx)),
+      log: flow(Repository.telemetry.log.concat, F.provide(ctx)),
       send: () =>
         pipe(
           Repository.telemetry.log.get(),
@@ -28,7 +28,7 @@ export const TelemetryLive = F.map(
             }),
           ),
           F.flatMap(() => Repository.telemetry.log.clear()),
-          F.provideContext(ctx),
+          F.provide(ctx),
         ),
     }),
 ).pipe(Layer.effectContext)

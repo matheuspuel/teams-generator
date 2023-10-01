@@ -18,7 +18,7 @@ export const LogRepositoryLive = F.map(F.context<AsyncStorage>(), ctx =>
             onSome: S.decode(S.compose(S.ParseJson, S.array(Schema))),
           }),
         ),
-        F.provideContext(ctx),
+        F.provide(ctx),
       ),
     concat: vs =>
       pipe(
@@ -32,8 +32,8 @@ export const LogRepositoryLive = F.map(F.context<AsyncStorage>(), ctx =>
         F.map(A.appendAll(vs)),
         F.flatMap(S.encode(S.compose(S.ParseJson, S.array(Schema)))),
         F.flatMap(value => AsyncStorage.setItem({ key, value })),
-        F.provideContext(ctx),
+        F.provide(ctx),
       ),
-    clear: () => pipe(AsyncStorage.removeItem(key), F.provideContext(ctx)),
+    clear: () => pipe(AsyncStorage.removeItem(key), F.provide(ctx)),
   }),
 ).pipe(Layer.effectContext)

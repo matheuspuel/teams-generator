@@ -1,20 +1,20 @@
-export * as Chunk from '@effect/data/Chunk'
-export * as Context from '@effect/data/Context'
-export * as Data from '@effect/data/Data'
-export * as Duration from '@effect/data/Duration'
-export * as Equal from '@effect/data/Equal'
-export * as Predicate from '@effect/data/Predicate'
-export * as Tuple from '@effect/data/Tuple'
-export * as Clock from '@effect/io/Clock'
-export * as F from '@effect/io/Effect'
-export * as Layer from '@effect/io/Layer'
-export * as LogLevel from '@effect/io/LogLevel'
-export * as Logger from '@effect/io/Logger'
-export * as Ref from '@effect/io/Ref'
-export * as Runtime from '@effect/io/Runtime'
-export * as SynchronizedRef from '@effect/io/SynchronizedRef'
-export * as Stream from '@effect/stream/Stream'
-export * as SubscriptionRef from '@effect/stream/SubscriptionRef'
+export * as Chunk from 'effect/Chunk'
+export * as Clock from 'effect/Clock'
+export * as Context from 'effect/Context'
+export * as Data from 'effect/Data'
+export * as Duration from 'effect/Duration'
+export * as F from 'effect/Effect'
+export * as Equal from 'effect/Equal'
+export * as Layer from 'effect/Layer'
+export * as LogLevel from 'effect/LogLevel'
+export * as Logger from 'effect/Logger'
+export * as Predicate from 'effect/Predicate'
+export * as Ref from 'effect/Ref'
+export * as Runtime from 'effect/Runtime'
+export * as Stream from 'effect/Stream'
+export * as SubscriptionRef from 'effect/SubscriptionRef'
+export * as SynchronizedRef from 'effect/SynchronizedRef'
+export * as Tuple from 'effect/Tuple'
 export * as Console from 'fp-ts/Console'
 export * as A from './Array'
 export * as Boolean from './Boolean'
@@ -32,23 +32,23 @@ export * as S from './Schema'
 export * as Semigroup from './Semigroup'
 export * as String from './String'
 
+export { Effect } from 'effect/Effect'
 export {
-  LazyArg,
-  absurd,
-  apply,
-  constFalse,
-  constNull,
-  constTrue,
-  constUndefined,
-  constVoid,
-  constant,
-  flip,
-  flow,
-  identity,
-  pipe,
-} from '@effect/data/Function'
-export { and, not, or } from '@effect/data/Predicate'
-export { Effect } from '@effect/io/Effect'
+    LazyArg,
+    absurd,
+    apply,
+    constFalse,
+    constNull,
+    constTrue,
+    constUndefined,
+    constVoid,
+    constant,
+    flip,
+    flow,
+    identity,
+    pipe
+} from 'effect/Function'
+export { and, not, or } from 'effect/Predicate'
 export { Endomorphism } from 'fp-ts/Endomorphism'
 export { NonEmptyArray } from 'fp-ts/NonEmptyArray'
 export { State } from 'fp-ts/State'
@@ -56,3 +56,4 @@ export { Either } from './Either'
 export { get, modify, replace } from './Optic'
 export { Option } from './Option'
 export { Order } from './Order'
+

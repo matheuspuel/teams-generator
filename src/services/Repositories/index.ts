@@ -1,5 +1,5 @@
 /* eslint-disable functional/functional-parameters */
-import * as Context from '@effect/data/Context'
+import * as Context from 'effect/Context'
 import { F } from 'src/utils/fp'
 import * as Repositories from './repositories'
 

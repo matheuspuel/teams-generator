@@ -1,15 +1,15 @@
-import * as Context from '@effect/data/Context'
+import * as Context from 'effect/Context'
 import {
-  Effect,
-  F,
-  O,
-  Optic,
-  Option,
-  Stream,
-  SubscriptionRef,
-  SynchronizedRef,
-  flow,
-  pipe,
+    Effect,
+    F,
+    O,
+    Optic,
+    Option,
+    Stream,
+    SubscriptionRef,
+    SynchronizedRef,
+    flow,
+    pipe,
 } from 'fp'
 import { RootState } from 'src/model'
 

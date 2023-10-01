@@ -1,6 +1,6 @@
-import * as O from '@effect/data/Option'
+import * as E_ from '@effect/data/Either'
 import { prism, Prism } from '@fp-ts/optic'
-import * as E_ from '@fp-ts/optic/node_modules/@effect/data/Either'
+import * as O from 'effect/Option'
 import { Option } from '.'
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import * as Optic_ from '@fp-ts/optic'

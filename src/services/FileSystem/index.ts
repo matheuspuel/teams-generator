@@ -1,4 +1,4 @@
-import * as Context from '@effect/data/Context'
+import * as Context from 'effect/Context'
 import { Data, Effect, F } from 'src/utils/fp'
 
 export type FileSystem = {

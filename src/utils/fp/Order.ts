@@ -1,6 +1,6 @@
-import * as Ord from '@effect/data/Order'
+import * as Ord from 'effect/Order'
 
-export * from '@effect/data/Order'
+export * from 'effect/Order'
 
 export const equals =
   <A>(ord: Ord.Order<A>) =>

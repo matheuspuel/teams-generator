@@ -1,5 +1,5 @@
-import * as Context from '@effect/data/Context'
-import { NonEmptyReadonlyArray } from '@effect/data/ReadonlyArray'
+import * as Context from 'effect/Context'
+import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
 import { Data, Effect, F } from 'src/utils/fp'
 
 export type DocumentPicker = {

@@ -1,5 +1,5 @@
-export * from '@effect/data/Either'
-import { Either, Left, Right, left, right } from '@effect/data/Either'
+export * from 'effect/Either'
+import { Either, Left, Right, left, right } from 'effect/Either'
 import * as E_ from 'fp-ts/Either'
 
 export type LeftType<A extends Either<unknown, unknown>> = A extends Left<

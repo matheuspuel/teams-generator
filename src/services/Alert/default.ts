@@ -27,13 +27,13 @@ export const AlertLive = pipe(
           State.on(root.at('alert')).set(O.some(args)),
           StateRef.execute,
           F.tap(() => SubscriptionRef.set(ref, undefined)),
-          F.provideContext(ctx),
+          F.provide(ctx),
         ),
       dismiss: () =>
         pipe(
           State.on(root.at('alert')).set(O.none()),
           StateRef.execute,
-          F.provideContext(ctx),
+          F.provide(ctx),
         ),
     }),
   ),

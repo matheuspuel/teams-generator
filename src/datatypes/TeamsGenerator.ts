@@ -1,17 +1,17 @@
-import { sumAll } from '@effect/data/Number'
-import { Effect } from '@effect/io/Effect'
+import { Effect } from 'effect/Effect'
+import { sumAll } from 'effect/Number'
 import {
-  A,
-  F,
-  Match,
-  Number,
-  O,
-  Ord,
-  Order,
-  Record,
-  Tuple,
-  flow,
-  pipe,
+    A,
+    F,
+    Match,
+    Number,
+    O,
+    Ord,
+    Order,
+    Record,
+    Tuple,
+    flow,
+    pipe,
 } from 'fp'
 import * as Player from 'src/datatypes/Player'
 import * as Position from 'src/datatypes/Position'

@@ -1,4 +1,4 @@
-import { Effect } from '@effect/io/Effect'
+import { Effect } from 'effect/Effect'
 import { GroupsState } from 'src/slices/groups'
 
 export type groups = {

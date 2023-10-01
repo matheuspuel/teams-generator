@@ -1,9 +1,9 @@
-import { constant, pipe } from '@effect/data/Function'
-import * as O from '@effect/data/Option'
-import * as A from '@effect/data/ReadonlyArray'
+import { constant, pipe } from 'effect/Function'
+import * as O from 'effect/Option'
+import * as A from 'effect/ReadonlyArray'
 import * as Eq from './Eq'
 
-export * from '@effect/data/ReadonlyArray'
+export * from 'effect/ReadonlyArray'
 
 export const isArray = <A>(a: A): a is Extract<A, ReadonlyArray<unknown>> =>
   Array.isArray(a)

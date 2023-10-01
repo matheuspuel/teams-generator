@@ -1,6 +1,6 @@
 /* eslint-disable functional/functional-parameters */
-import * as Context from '@effect/data/Context'
-import { Effect } from '@effect/io/Effect'
+import * as Context from 'effect/Context'
+import { Effect } from 'effect/Effect'
 import { F } from 'src/utils/fp'
 
 export type Metadata = {

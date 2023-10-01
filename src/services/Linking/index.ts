@@ -1,4 +1,4 @@
-import { serviceFunctions } from '@effect/io/Effect'
+import { serviceFunctions } from 'effect/Effect'
 import { Context, Effect, Option, Stream } from 'fp'
 
 export type Linking = {

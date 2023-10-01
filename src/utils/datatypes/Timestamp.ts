@@ -13,7 +13,7 @@ import {
 
 export const Schema = pipe(S.number, S.brand('Timestamp'))
 
-export type Timestamp = S.To<typeof Schema>
+export type Timestamp = S.Schema.To<typeof Schema>
 
 export const Order: Order_<Timestamp> = Number.Order
 

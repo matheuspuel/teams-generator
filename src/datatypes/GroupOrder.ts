@@ -1,12 +1,12 @@
-import { NonEmptyReadonlyArray } from '@effect/data/ReadonlyArray'
+import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
 import { A, Ord, Order, Record, S, Tuple, absurd, identity, pipe } from 'fp'
 import { Player } from 'src/datatypes'
 import {
-  ActiveOrd,
-  CreatedAtOrder,
-  NameOrd,
-  PositionOrd,
-  RatingOrd,
+    ActiveOrd,
+    CreatedAtOrder,
+    NameOrd,
+    PositionOrd,
+    RatingOrd,
 } from 'src/datatypes/Player'
 
 export const GroupOrderTypeDict = {
