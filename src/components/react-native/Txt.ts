@@ -11,7 +11,7 @@ import { TextStyleContext, useTextStyle } from 'src/contexts/TextStyle'
 import { AppRuntime } from 'src/runtime'
 import { Color } from 'src/utils/datatypes'
 import { Runtime } from 'src/utils/fp'
-import { named2 } from '../helpers'
+import { named2 } from '../hyperscript'
 
 export type TextStyleProps = PaddingProps &
   MarginProps & {

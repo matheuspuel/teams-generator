@@ -1,7 +1,7 @@
 import { F } from 'fp'
 import { Colors } from 'src/services/Theme'
 import { withOpacity } from 'src/utils/datatypes/Color'
-import { named2 } from '../helpers'
+import { named2 } from '../hyperscript'
 import { SolidButton } from './SolidButton'
 
 export const GhostButton: typeof SolidButton = named2('GhostButton')(props =>

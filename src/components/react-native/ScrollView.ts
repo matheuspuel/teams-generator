@@ -9,7 +9,7 @@ import {
 } from 'src/components/types'
 import { useRuntime } from 'src/contexts/Runtime'
 import { AppRuntime } from 'src/runtime'
-import { named2 } from '../helpers'
+import { named2 } from '../hyperscript'
 
 export type ScrollViewStyleProps = object
 

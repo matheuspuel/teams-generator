@@ -5,7 +5,7 @@ import { MaterialIcons, Nothing, Pressable, Txt, View } from 'src/components'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
 import { Colors } from 'src/services/Theme'
-import { memoizedConst } from '../helpers'
+import { memoizedConst } from '../hyperscript'
 
 const ANIMATION_DURATION = 200
 

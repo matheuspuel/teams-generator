@@ -11,7 +11,7 @@ import { useRuntime } from 'src/contexts/Runtime'
 import { AppRuntime } from 'src/runtime'
 import { SafeAreaService } from 'src/services/SafeArea'
 import { Color } from 'src/utils/datatypes'
-import { named2 } from '../helpers'
+import { named2 } from '../hyperscript'
 
 export type SafeAreaProviderProps = {
   flex?: number

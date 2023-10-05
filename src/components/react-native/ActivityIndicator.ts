@@ -4,7 +4,7 @@ import { useRuntime } from 'src/contexts/Runtime'
 import { AppRuntime } from 'src/runtime'
 import { Color } from 'src/utils/datatypes'
 import { Runtime } from 'src/utils/fp'
-import { named } from '../helpers'
+import { named } from '../hyperscript'
 import { UIColor, UIElement } from '../types'
 
 export type ActivityIndicatorProps = {

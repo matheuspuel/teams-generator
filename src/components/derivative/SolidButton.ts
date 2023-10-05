@@ -3,7 +3,7 @@ import { Pressable } from 'src/components'
 import { TextStyleContextProvider } from 'src/contexts/TextStyle'
 import { Colors } from 'src/services/Theme'
 import { withOpacity } from 'src/utils/datatypes/Color'
-import { named2 } from '../helpers'
+import { named2 } from '../hyperscript'
 import { PressableProps } from '../react-native/Pressable'
 import { Children, UIColor, UIElement } from '../types'
 

@@ -1,7 +1,7 @@
 import { TextStyleContextProvider } from 'src/contexts/TextStyle'
 import { AppEvent } from 'src/events'
 import { Colors } from 'src/services/Theme'
-import { named } from '../helpers'
+import { named } from '../hyperscript'
 import { Pressable } from '../react-native/Pressable'
 import { UIElement } from '../types'
 

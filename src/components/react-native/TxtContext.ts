@@ -5,7 +5,7 @@ import { Children, JSXElementsChildren, UIElement } from 'src/components/types'
 import { useRuntime } from 'src/contexts/Runtime'
 import { AppRuntime } from 'src/runtime'
 import { Color } from 'src/utils/datatypes'
-import { named2 } from '../helpers'
+import { named2 } from '../hyperscript'
 import { TextProps } from './Txt'
 
 export type TxtContextArgs = {

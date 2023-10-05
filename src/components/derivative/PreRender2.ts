@@ -2,7 +2,7 @@ import React from 'react'
 import { useRuntime } from 'src/contexts/Runtime'
 import { useState } from 'src/hooks/useState'
 import { Runtime } from 'src/utils/fp'
-import { named2 } from '../helpers'
+import { named2 } from '../hyperscript'
 import { UIElement } from '../types'
 
 export const PreRender = named2('PreRender')(

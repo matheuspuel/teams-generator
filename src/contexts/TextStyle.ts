@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { named2 } from 'src/components/helpers'
+import { named2 } from 'src/components/hyperscript'
 import { Children, UIColor } from 'src/components/types'
 import { Colors } from 'src/services/Theme'
 

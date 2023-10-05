@@ -17,7 +17,7 @@ import { useRuntime } from 'src/contexts/Runtime'
 import { AppEvent } from 'src/events'
 import { AppRuntime } from 'src/runtime'
 import { Color } from 'src/utils/datatypes'
-import { named2 } from '../helpers'
+import { named2 } from '../hyperscript'
 
 export type PressableStyleProps = PaddingProps &
   MarginProps &

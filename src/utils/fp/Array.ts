@@ -1,7 +1,7 @@
 import { constant, pipe } from 'effect/Function'
 import * as O from 'effect/Option'
 import * as A from 'effect/ReadonlyArray'
-import * as Eq from './Eq'
+import * as Eq from './Equivalence'
 
 export * from 'effect/ReadonlyArray'
 

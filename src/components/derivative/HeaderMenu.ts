@@ -2,7 +2,7 @@ import { getDefaultHeaderHeight } from '@react-navigation/elements'
 import { Modal, Pressable, View } from 'src/components'
 import { AppEvent, appEvents } from 'src/events'
 import { Colors } from 'src/services/Theme'
-import { named2 } from '../helpers'
+import { named2 } from '../hyperscript'
 import { Children } from '../types'
 
 export const HeaderMenu = named2('HeaderMenu')(

@@ -12,7 +12,7 @@ import {
 import { AppEvent, appEvents } from 'src/events'
 import { Colors } from 'src/services/Theme'
 import { withOpacity } from 'src/utils/datatypes/Color'
-import { named2 } from '../helpers'
+import { named2 } from '../hyperscript'
 import { Children } from '../types'
 
 export const CenterModal = named2('CenterModal')(

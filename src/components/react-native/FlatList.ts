@@ -4,7 +4,7 @@ import { FlatList as RNFlatList_ } from 'react-native'
 import { GapProps, PaddingProps, UIElement } from 'src/components/types'
 import { useRuntime } from 'src/contexts/Runtime'
 import { AppRuntime } from 'src/runtime'
-import { named } from '../helpers'
+import { named } from '../hyperscript'
 
 export type FlatListStyleProps = object
 

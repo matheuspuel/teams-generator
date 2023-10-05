@@ -1,6 +1,6 @@
 import { A, Match, pipe } from 'fp'
 import { StatusBar } from 'src/components/expo/StatusBar'
-import { memoizedConst } from 'src/components/helpers'
+import { memoizedConst } from 'src/components/hyperscript'
 import { SafeAreaProvider } from 'src/components/safe-area/SafeAreaProvider'
 import { Screen } from 'src/components/screens/Screen'
 import { ScreenStack } from 'src/components/screens/ScreenStack'

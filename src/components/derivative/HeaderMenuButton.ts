@@ -2,7 +2,7 @@ import { Pressable, Txt } from 'src/components'
 import { TextStyleContextProvider } from 'src/contexts/TextStyle'
 import { AppEvent } from 'src/events'
 import { Colors } from 'src/services/Theme'
-import { named } from '../helpers'
+import { named } from '../hyperscript'
 import { UIElement } from '../types'
 
 export const HeaderMenuButton = named('HeaderMenuButton')(

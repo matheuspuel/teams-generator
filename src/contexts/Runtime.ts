@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { named } from 'src/components/helpers'
+import { named } from 'src/components/hyperscript'
 import { Children } from 'src/components/types'
 import { runtime } from 'src/runtime'
 

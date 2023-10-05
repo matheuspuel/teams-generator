@@ -11,7 +11,7 @@ import {
 } from 'src/components'
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
-import { memoizedConst } from 'src/components/helpers'
+import { memoizedConst } from 'src/components/hyperscript'
 import { Player, Rating } from 'src/datatypes'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'

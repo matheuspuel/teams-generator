@@ -2,6 +2,7 @@ import {
   A,
   Boolean,
   Data,
+  Eq,
   Equal,
   F,
   Match,
@@ -32,12 +33,7 @@ import { HeaderMenu } from 'src/components/derivative/HeaderMenu'
 import { HeaderMenuButton } from 'src/components/derivative/HeaderMenuButton'
 import { PreRender } from 'src/components/derivative/PreRender2'
 import { SolidButton } from 'src/components/derivative/SolidButton'
-import {
-  deepEq,
-  memoized,
-  memoizedConst,
-  namedConst,
-} from 'src/components/helpers'
+import { memoized, memoizedConst, namedConst } from 'src/components/hyperscript'
 import { GroupOrder, Player, Rating } from 'src/datatypes'
 import { AppEvent, appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
@@ -306,7 +302,7 @@ const FilterButton = (props: {
 
 const ParametersModal = namedConst('ParametersModal')(() => {
   const modalParameters = useSelector(s => s.ui.modalParameters)
-  const parameters = useSelector(s => s.parameters, deepEq)
+  const parameters = useSelector(s => s.parameters, Eq.deep())
   return Boolean.match(modalParameters, {
     onFalse: () => Nothing,
     onTrue: () =>

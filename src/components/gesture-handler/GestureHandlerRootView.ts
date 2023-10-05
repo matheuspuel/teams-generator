@@ -1,7 +1,7 @@
 import React from 'react'
 import { GestureHandlerRootView as GestureHandlerRootView_ } from 'react-native-gesture-handler'
 import { Children, UIElement } from 'src/components/types'
-import { named } from '../helpers'
+import { named } from '../hyperscript'
 
 export const GestureHandlerRootView = named('GestureHandlerRootView')(
   (children: Children): UIElement =>

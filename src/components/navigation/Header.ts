@@ -5,7 +5,7 @@ import { UIColor, UIElement } from 'src/components/types'
 import { useRuntime } from 'src/contexts/Runtime'
 import { AppRuntime } from 'src/runtime'
 import { Color } from 'src/utils/datatypes'
-import { named } from '../helpers'
+import { named } from '../hyperscript'
 
 export type HeaderProps = {
   title: string

@@ -14,7 +14,7 @@ import { useRuntime } from 'src/contexts/Runtime'
 import { AppEvent } from 'src/events'
 import { AppRuntime } from 'src/runtime'
 import { Color } from 'src/utils/datatypes'
-import { named } from '../helpers'
+import { named } from '../hyperscript'
 
 export type TextInputStyleProps = PaddingProps &
   MarginProps &

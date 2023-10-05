@@ -2,7 +2,7 @@ import { F } from 'fp'
 import { Platform } from 'react-native'
 import { Colors } from 'src/services/Theme'
 import { withOpacity } from 'src/utils/datatypes/Color'
-import { named } from '../helpers'
+import { named } from '../hyperscript'
 import { TextInput, TextInputProps } from '../react-native/TextInput'
 import { UIColor } from '../types'
 

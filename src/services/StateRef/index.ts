@@ -1,40 +1,38 @@
 import * as Context from 'effect/Context'
 import {
-    Effect,
-    F,
-    O,
-    Optic,
-    Option,
-    Stream,
-    SubscriptionRef,
-    SynchronizedRef,
-    flow,
-    pipe,
+  Chunk,
+  Effect,
+  Exit,
+  F,
+  O,
+  Optic,
+  Option,
+  Ref,
+  Runtime,
+  Stream,
+  flow,
+  pipe,
 } from 'fp'
 import { RootState } from 'src/model'
 
-export type AppStateRef = SubscriptionRef.SubscriptionRef<RootState>
+export type AppStateRef = Ref.Ref<RootState> & { _StateRef: true }
 
 export const AppStateRefEnv = Context.Tag<AppStateRef>()
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const anyStateTag = Context.Tag<SynchronizedRef.SynchronizedRef<any>>()
-const stateTag = <A = never>(): Context.Tag<
-  SynchronizedRef.SynchronizedRef<A>,
-  SynchronizedRef.SynchronizedRef<A>
-> =>
+const anyStateTag = Context.Tag<Ref.Ref<any>>()
+const stateTag = <A = never>(): Context.Tag<Ref.Ref<A>, Ref.Ref<A>> =>
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   anyStateTag
 
 const preparedStateOperations = <A>() => ({
-  get: F.flatMap(stateTag<A>(), SynchronizedRef.get),
-  set: (a: A) => F.flatMap(stateTag<A>(), SynchronizedRef.set(a)),
-  update: (f: (a: A) => A) =>
-    F.flatMap(stateTag<A>(), SynchronizedRef.update(f)),
+  get: F.flatMap(stateTag<A>(), Ref.get),
+  set: (a: A) => F.flatMap(stateTag<A>(), Ref.set(a)),
+  update: (f: (a: A) => A) => F.flatMap(stateTag<A>(), Ref.update(f)),
   modify: <B>(f: (a: A) => readonly [B, A]) =>
-    F.flatMap(stateTag<A>(), SynchronizedRef.modify(f)),
-  modifyEffect: <R, E, B>(f: (a: A) => Effect<R, E, readonly [B, A]>) =>
-    F.flatMap(stateTag<A>(), SynchronizedRef.modifyEffect(f)),
+    F.flatMap(stateTag<A>(), Ref.modify(f)),
+  // modifyEffect: <R, E, B>(f: (a: A) => Effect<R, E, readonly [B, A]>) =>
+  //   F.flatMap(stateTag<A>(), Ref.modifyEffect(f)),
 })
 
 const State_ = preparedStateOperations<RootState>()
@@ -81,59 +79,70 @@ let subscriptions: Array<Subscription> = []
 
 const tag = AppStateRefEnv
 
-export const StateRef = {
-  react: {
-    subscribe: (f: Subscription) =>
-      pipe(
+const subscribe = (f: Subscription) =>
+  pipe(
+    F.sync(() => {
+      // eslint-disable-next-line functional/immutable-data, functional/no-expression-statements
+      subscriptions.push(f)
+    }),
+    F.map(() => ({
+      unsubscribe: () =>
         F.sync(() => {
-          // eslint-disable-next-line functional/immutable-data, functional/no-expression-statements
-          subscriptions.push(f)
+          // eslint-disable-next-line functional/no-expression-statements
+          subscriptions = subscriptions.filter(s => s !== f)
         }),
-        F.map(() => ({
-          unsubscribe: () =>
-            F.sync(() => {
-              // eslint-disable-next-line functional/no-expression-statements
-              subscriptions = subscriptions.filter(s => s !== f)
-            }),
-        })),
-      ),
-  },
-  changes: Stream.flatMap(tag, env => env.changes),
-  get: F.flatMap(tag, SubscriptionRef.get),
+    })),
+  )
+
+export const StateRef = {
+  react: { subscribe: subscribe },
+  changes: Stream.asyncEffect<never, never, RootState>(emit =>
+    subscribe(s => F.sync(() => emit(F.succeed(Chunk.of(s))))),
+  ),
+  get: F.flatMap(tag, Ref.get),
   execute: <R, E, B>(
-    effect: Effect<R | SynchronizedRef.SynchronizedRef<RootState>, E, B>,
-  ) =>
+    effect: Effect<R | Ref.Ref<RootState>, E, B>,
+  ): Effect<Exclude<R, Ref.Ref<RootState>> | AppStateRef, E, B> =>
     pipe(
-      tag,
-      F.flatMap(
-        SubscriptionRef.modifyEffect(s =>
-          SynchronizedRef.make(s).pipe(
+      F.all({ stateRef: tag, runtime: F.runtime<R | Ref.Ref<RootState>>() }),
+      F.flatMap(({ runtime, stateRef }) =>
+        Ref.modify(stateRef, s =>
+          pipe(
+            Ref.make(s),
             F.flatMap(ref =>
               pipe(
-                F.all([effect, SynchronizedRef.get(ref)]),
+                F.all([effect, Ref.get(ref)]),
                 F.provideService(stateTag<RootState>(), ref),
               ),
             ),
+            F.exit,
+            Runtime.runSync(runtime),
+            Exit.match({
+              onFailure: (
+                e,
+              ): readonly [Exit.Exit<E, readonly [B, RootState]>, RootState] =>
+                [Exit.failCause(e), s] as const,
+              onSuccess: v => [Exit.succeed(v), v[1]] as const,
+            }),
           ),
         ),
       ),
-      F.tap(() =>
-        pipe(
-          tag,
-          F.flatMap(SubscriptionRef.get),
-          F.flatMap(s => F.sync(() => subscriptions.map(f => f(s)))),
-          F.flatMap(F.all),
-        ),
-      ),
+      F.flatten,
+      F.tap(([, s]) => F.all(subscriptions.map(f => f(s)))),
+      F.map(([_]) => _),
+      f =>
+        f as Effect<
+          Exclude<Effect.Context<typeof f>, Ref.Ref<RootState>> | AppStateRef,
+          Effect.Error<typeof f>,
+          Effect.Success<typeof f>
+        >,
     ),
-  query: <R, E, B>(
-    effect: Effect<R | SynchronizedRef.SynchronizedRef<RootState>, E, B>,
-  ) =>
+  query: <R, E, B>(effect: Effect<R | Ref.Ref<RootState>, E, B>) =>
     pipe(
       tag,
-      F.flatMap(SubscriptionRef.get),
+      F.flatMap(Ref.get),
       F.flatMap(s =>
-        SynchronizedRef.make(s).pipe(
+        Ref.make(s).pipe(
           F.flatMap(ref =>
             pipe(effect, F.provideService(stateTag<RootState>(), ref)),
           ),
