@@ -6,7 +6,6 @@ import { DocumentPicker } from 'src/services/DocumentPicker'
 import { FileSystem } from 'src/services/FileSystem'
 import { IdGenerator } from 'src/services/IdGenerator'
 import { MetadataService } from 'src/services/Metadata'
-import { Repositories } from 'src/services/Repositories'
 import { ShareService } from 'src/services/Share'
 import { SplashScreen } from 'src/services/SplashScreen'
 import { SplashScreenLive } from 'src/services/SplashScreen/default'
@@ -21,11 +20,8 @@ import { IdGeneratorLive } from './services/IdGenerator/default'
 import { Linking } from './services/Linking'
 import { LinkingLive } from './services/Linking/default'
 import { MetadataServiceLive } from './services/Metadata/default'
-import { InstallationRepositoryLive } from './services/Repositories/metadata/installation/default'
-import { GroupOrderRepositoryLive } from './services/Repositories/teams/groupOrder/default'
-import { GroupsRepositoryLive } from './services/Repositories/teams/groups/default'
-import { ParametersRepositoryLive } from './services/Repositories/teams/parameters/default'
-import { LogRepositoryLive } from './services/Repositories/telemetry/log/default'
+import { Repository } from './services/Repositories'
+import { RepositoryLive } from './services/Repositories/live'
 import { SafeAreaService } from './services/SafeArea'
 import { SafeAreaServiceLive } from './services/SafeArea/default'
 import { ShareServiceLive } from './services/Share/default'
@@ -40,11 +36,7 @@ export type AppRequirements =
   | AppStateRef
   | SplashScreen
   | BackHandler
-  | Repositories.metadata.installation
-  | Repositories.teams.groupOrder
-  | Repositories.teams.groups
-  | Repositories.teams.parameters
-  | Repositories.telemetry.log
+  | Repository
   | Alert
   | DocumentPicker
   | FileSystem
@@ -61,16 +53,7 @@ const appLayer = pipe(
     envName === 'development' ? DEV_MINIMUM_LOG_LEVEL : LogLevel.Info,
   ),
   Layer.provideMerge(AsyncStorageLive),
-  Layer.provideMerge(
-    Layer.mergeAll(
-      LogRepositoryLive,
-      GroupsRepositoryLive,
-      GroupOrderRepositoryLive,
-      ParametersRepositoryLive,
-      InstallationRepositoryLive,
-      StateRefLive,
-    ),
-  ),
+  Layer.provideMerge(Layer.mergeAll(RepositoryLive, StateRefLive)),
   Layer.provideMerge(
     Layer.mergeAll(
       FileSystemLive,

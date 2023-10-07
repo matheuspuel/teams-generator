@@ -1,14 +1,15 @@
-import { A, F, Layer, O, S, pipe } from 'fp'
+import { A, F, O, S, pipe } from 'fp'
 import { AsyncStorage } from 'src/services/AsyncStorage'
 import { TelemetryLog, TelemetryLogSchema } from 'src/services/Telemetry'
-import { RepositoryEnvs } from '../..'
+import { Repository } from '../..'
 
 const key = 'log'
 
 const Schema = TelemetryLogSchema
 
-export const LogRepositoryLive = F.map(F.context<AsyncStorage>(), ctx =>
-  RepositoryEnvs.telemetry.log.context({
+export const LogRepositoryLive = F.map(
+  F.context<AsyncStorage>(),
+  (ctx): Repository['telemetry']['Log'] => ({
     get: () =>
       pipe(
         AsyncStorage.getItem(key),
@@ -36,4 +37,4 @@ export const LogRepositoryLive = F.map(F.context<AsyncStorage>(), ctx =>
       ),
     clear: () => pipe(AsyncStorage.removeItem(key), F.provide(ctx)),
   }),
-).pipe(Layer.effectContext)
+)

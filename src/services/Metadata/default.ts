@@ -6,7 +6,8 @@ import { IdGenerator } from 'src/services/IdGenerator'
 import { IdGeneratorLive } from 'src/services/IdGenerator/default'
 import { Metadata, MetadataServiceEnv } from 'src/services/Metadata'
 import { Repository } from 'src/services/Repositories'
-import { InstallationRepositoryLive } from 'src/services/Repositories/metadata/installation/default'
+import { AsyncStorageLive } from '../AsyncStorage/live'
+import { RepositoryLive } from '../Repositories/live'
 
 const metadataRef = Ref.make<Option<Metadata>>(O.none()).pipe(F.runSync)
 
@@ -34,7 +35,7 @@ export const MetadataServiceLive = MetadataServiceEnv.context({
         pipe(
           F.all({
             installation: pipe(
-              Repository.metadata.installation.get(),
+              Repository.metadata.Installation.get(),
               F.map(_ => ({ ..._, isFirstLaunch: false })),
               F.orElse(() =>
                 pipe(
@@ -42,7 +43,7 @@ export const MetadataServiceLive = MetadataServiceEnv.context({
                   F.map(id => ({ id })),
                   F.tap(
                     flow(
-                      Repository.metadata.installation.set,
+                      Repository.metadata.Installation.set,
                       F.catchAll(() => F.unit),
                     ),
                   ),
@@ -64,6 +65,11 @@ export const MetadataServiceLive = MetadataServiceEnv.context({
           F.tap(v => pipe(O.some(v), x => Ref.set(metadataRef, x))),
         ),
       ),
-      F.provide(Layer.mergeAll(InstallationRepositoryLive, IdGeneratorLive)),
+      F.provide(
+        Layer.provideMerge(
+          AsyncStorageLive,
+          Layer.mergeAll(RepositoryLive, IdGeneratorLive),
+        ),
+      ),
     ),
 }).pipe(Layer.succeedContext)

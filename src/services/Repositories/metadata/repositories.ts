@@ -1,1 +1,0 @@
-export { installation } from './installation'

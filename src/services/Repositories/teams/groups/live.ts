@@ -1,10 +1,10 @@
-import { A, Layer, Ord, Record, S, String, identity, pipe } from 'fp'
+import { A, Ord, Record, S, String, identity, pipe } from 'fp'
 import { Position, Rating } from 'src/datatypes'
 import { GroupsState } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
 import { Timestamp } from 'src/utils/datatypes'
 import { createStorage } from 'src/utils/storage'
-import { RepositoryEnvs } from '../..'
+import { Repository } from '../..'
 
 const key = 'core/groups'
 
@@ -66,6 +66,5 @@ const schemaWithMigrations = S.compose(
   targetSchema,
 )
 
-export const GroupsRepositoryLive = RepositoryEnvs.teams.groups
-  .context(createStorage({ key: key, schema: schemaWithMigrations }))
-  .pipe(Layer.succeedContext)
+export const GroupsRepositoryLive: Repository['teams']['Groups'] =
+  createStorage({ key: key, schema: schemaWithMigrations })

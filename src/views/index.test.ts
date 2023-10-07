@@ -12,7 +12,7 @@ import { FileSystemEnv } from 'src/services/FileSystem'
 import { IdGeneratorEnv } from 'src/services/IdGenerator'
 import { LinkingEnv } from 'src/services/Linking'
 import { MetadataServiceEnv } from 'src/services/Metadata'
-import { RepositoryEnvs } from 'src/services/Repositories'
+import { RepositoryEnv } from 'src/services/Repositories/tag'
 import { SafeAreaServiceTest } from 'src/services/SafeArea/testing'
 import { ShareServiceEnv } from 'src/services/Share'
 import { SplashScreenEnv } from 'src/services/SplashScreen'
@@ -89,25 +89,29 @@ const testLayer = pipe(
           isFirstLaunch: false,
         }),
     }).pipe(Layer.succeedContext),
-    RepositoryEnvs.teams.groups
-      .context({ get: () => F.succeed({}), set: () => F.unit })
-      .pipe(Layer.succeedContext),
-    RepositoryEnvs.teams.parameters
-      .context({ get: () => F.succeed(Parameters.initial), set: () => F.unit })
-      .pipe(Layer.succeedContext),
-    RepositoryEnvs.teams.groupOrder
-      .context({ get: () => F.succeed(GroupOrder.initial), set: () => F.unit })
-      .pipe(Layer.succeedContext),
-    RepositoryEnvs.metadata.installation
-      .context({ get: () => F.never, set: () => F.unit })
-      .pipe(Layer.succeedContext),
-    RepositoryEnvs.telemetry.log
-      .context({
-        get: () => F.never,
-        concat: () => F.unit,
-        clear: () => F.unit,
-      })
-      .pipe(Layer.succeedContext),
+    RepositoryEnv.context({
+      teams: {
+        Groups: { get: () => F.succeed({}), set: () => F.unit },
+        Parameters: {
+          get: () => F.succeed(Parameters.initial),
+          set: () => F.unit,
+        },
+        GroupOrder: {
+          get: () => F.succeed(GroupOrder.initial),
+          set: () => F.unit,
+        },
+      },
+      metadata: {
+        Installation: { get: () => F.never, set: () => F.unit },
+      },
+      telemetry: {
+        Log: {
+          get: () => F.never,
+          concat: () => F.unit,
+          clear: () => F.unit,
+        },
+      },
+    }).pipe(Layer.succeedContext),
     AppThemeLive,
     LinkingEnv.context({
       getInitialURL: () => F.never,
