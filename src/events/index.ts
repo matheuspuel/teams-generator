@@ -1,18 +1,8 @@
-import {
-  Effect,
-  F,
-  O,
-  S,
-  String,
-  constant,
-  flow,
-  identity,
-  not,
-  pipe,
-} from 'fp'
+import { Effect, F, O, S, String, constant, flow, not, pipe } from 'fp'
 import { Parameters as Parameters_, Player, Rating } from 'src/datatypes'
 import { exportGroup, importGroupFromDocumentPicker } from 'src/export/group'
 import { root } from 'src/model/optic'
+import { AppRequirements } from 'src/runtime'
 import { Alert } from 'src/services/Alert'
 import { BackHandler } from 'src/services/BackHandler'
 import { ShareService } from 'src/services/Share'
@@ -47,17 +37,18 @@ import {
   setUpsertGroupName,
 } from 'src/slices/ui'
 import { Id } from 'src/utils/Entity'
-import { AnyEventTree, EventEnvFromTree } from './helpers'
 
-export type AppEvent = Effect<
-  EventEnvFromTree<typeof appEvents>,
-  never,
-  unknown
->
+type EventLeaf<R, A> = (payload: A) => Effect<R, never, void>
+
+export type EventTree<R> = {
+  [k: string]: EventLeaf<R, never> | EventTree<R>
+}
+
+export type AppEventTree = EventTree<AppRequirements>
+
+export type AppEvent = Effect<AppRequirements, never, unknown>
 
 const exec = StateRef.execute
-
-const defineEvents: <T extends AnyEventTree>(tree: T) => T = identity
 
 const noArg: <A>(a: A) => () => A = constant
 const ignore = noArg(F.unit)
@@ -66,7 +57,7 @@ const closeParametersModal = State.on(root.at('ui').at('modalParameters')).set(
   false,
 )
 
-export const appEvents = defineEvents({
+export const appEvents = {
   doNothing: ignore,
   back: () =>
     pipe(
@@ -303,4 +294,4 @@ export const appEvents = defineEvents({
         F.ignore,
       ),
   },
-})
+} satisfies AppEventTree

@@ -10,6 +10,7 @@ import { BackHandlerEnv } from 'src/services/BackHandler'
 import { DocumentPickerEnv } from 'src/services/DocumentPicker'
 import { FileSystemEnv } from 'src/services/FileSystem'
 import { IdGeneratorEnv } from 'src/services/IdGenerator'
+import { LinkingEnv } from 'src/services/Linking'
 import { MetadataServiceEnv } from 'src/services/Metadata'
 import { RepositoryEnvs } from 'src/services/Repositories'
 import { SafeAreaServiceTest } from 'src/services/SafeArea/testing'
@@ -97,7 +98,21 @@ const testLayer = pipe(
     RepositoryEnvs.teams.groupOrder
       .context({ get: () => F.succeed(GroupOrder.initial), set: () => F.unit })
       .pipe(Layer.succeedContext),
+    RepositoryEnvs.metadata.installation
+      .context({ get: () => F.never, set: () => F.unit })
+      .pipe(Layer.succeedContext),
+    RepositoryEnvs.telemetry.log
+      .context({
+        get: () => F.never,
+        concat: () => F.unit,
+        clear: () => F.unit,
+      })
+      .pipe(Layer.succeedContext),
     AppThemeLive,
+    LinkingEnv.context({
+      getInitialURL: () => F.never,
+      startLinkingStream: () => Stream.never,
+    }).pipe(Layer.succeedContext),
     SafeAreaServiceTest,
   ),
   Layer.provideMerge(AlertLive),

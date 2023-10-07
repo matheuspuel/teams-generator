@@ -1,5 +1,6 @@
 import * as Context from 'effect/Context'
 import {
+  A,
   Chunk,
   Effect,
   Exit,
@@ -15,7 +16,10 @@ import {
 } from 'fp'
 import { RootState } from 'src/model'
 
-export type AppStateRef = Ref.Ref<RootState> & { _StateRef: true }
+export type AppStateRef = {
+  ref: Ref.Ref<RootState>
+  subscriptionsRef: Ref.Ref<Array<Subscription>>
+}
 
 export const AppStateRefEnv = Context.Tag<AppStateRef>()
 
@@ -74,23 +78,22 @@ export const State = {
 
 type Subscription = (state: RootState) => Effect<never, never, void>
 
-// eslint-disable-next-line functional/no-let
-let subscriptions: Array<Subscription> = []
+const subscriptionsRef = Ref.unsafeMake<Array<Subscription>>([])
 
 const tag = AppStateRefEnv
 
 const subscribe = (f: Subscription) =>
   pipe(
-    F.sync(() => {
-      // eslint-disable-next-line functional/immutable-data, functional/no-expression-statements
-      subscriptions.push(f)
-    }),
+    Ref.update(subscriptionsRef, A.append(f)),
     F.map(() => ({
       unsubscribe: () =>
-        F.sync(() => {
-          // eslint-disable-next-line functional/no-expression-statements
-          subscriptions = subscriptions.filter(s => s !== f)
-        }),
+        Ref.update(subscriptionsRef, ss =>
+          pipe(
+            A.findFirstIndex(ss, s => s === f),
+            O.map(i => A.remove(ss, i)),
+            O.getOrElse(() => ss),
+          ),
+        ),
     })),
   )
 
@@ -99,14 +102,14 @@ export const StateRef = {
   changes: Stream.asyncEffect<never, never, RootState>(emit =>
     subscribe(s => F.sync(() => emit(F.succeed(Chunk.of(s))))),
   ),
-  get: F.flatMap(tag, Ref.get),
+  get: F.flatMap(tag, _ => Ref.get(_.ref)),
   execute: <R, E, B>(
     effect: Effect<R | Ref.Ref<RootState>, E, B>,
   ): Effect<Exclude<R, Ref.Ref<RootState>> | AppStateRef, E, B> =>
     pipe(
-      F.all({ stateRef: tag, runtime: F.runtime<R | Ref.Ref<RootState>>() }),
+      F.all({ stateRef: tag, runtime: F.runtime<R>() }),
       F.flatMap(({ runtime, stateRef }) =>
-        Ref.modify(stateRef, s =>
+        Ref.modify(stateRef.ref, s =>
           pipe(
             Ref.make(s),
             F.flatMap(ref =>
@@ -127,20 +130,25 @@ export const StateRef = {
           ),
         ),
       ),
-      F.flatten,
-      F.tap(([, s]) => F.all(subscriptions.map(f => f(s)))),
-      F.map(([_]) => _),
       f =>
         f as Effect<
-          Exclude<Effect.Context<typeof f>, Ref.Ref<RootState>> | AppStateRef,
+          Exclude<Effect.Context<typeof f>, Ref.Ref<RootState>>,
           Effect.Error<typeof f>,
           Effect.Success<typeof f>
         >,
+      F.flatten,
+      F.tap(([, s]) =>
+        pipe(
+          Ref.get(subscriptionsRef),
+          F.tap(ss => F.all(ss.map(f => f(s)))),
+        ),
+      ),
+      F.map(([_]) => _),
     ),
   query: <R, E, B>(effect: Effect<R | Ref.Ref<RootState>, E, B>) =>
     pipe(
       tag,
-      F.flatMap(Ref.get),
+      F.flatMap(_ => Ref.get(_.ref)),
       F.flatMap(s =>
         Ref.make(s).pipe(
           F.flatMap(ref =>

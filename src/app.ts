@@ -1,4 +1,4 @@
-import { Duration, Effect, F, Stream, pipe } from 'fp'
+import { Duration, F, Stream, pipe } from 'fp'
 import { appEvents } from 'src/events'
 import { BackHandler } from 'src/services/BackHandler'
 import { StateRef } from 'src/services/StateRef'
@@ -8,8 +8,6 @@ import { setupReceiveURLHandler } from './export/group'
 import { Metadata } from './services/Metadata'
 import { Telemetry } from './services/Telemetry'
 import { Timestamp } from './utils/datatypes'
-
-export type AppEnv = Effect.Context<typeof startApp>
 
 const on = appEvents.core
 
