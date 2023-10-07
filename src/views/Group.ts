@@ -3,7 +3,6 @@ import {
   Boolean,
   Data,
   Eq,
-  Equal,
   F,
   Match,
   O,
@@ -140,12 +139,13 @@ const Menu = namedConst('GroupMenu')(() => {
   })
 })
 
-const Item = memoized('Player')(Equal.equivalence(), (id: Id) => {
+const Item = memoized('Player')((id: Id) => {
   const player = useSelector(
     flow(
       getSelectedGroup,
       O.map(g => g.players),
       O.flatMap(A.findFirst(p => p.id === id)),
+      O.map(Data.struct),
     ),
   )
   return O.match(player, {
