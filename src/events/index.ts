@@ -4,11 +4,9 @@ import { exportGroup, importGroupFromDocumentPicker } from 'src/export/group'
 import { root } from 'src/model/optic'
 import { AppRequirements } from 'src/runtime'
 import { Alert } from 'src/services/Alert'
-import { BackHandler } from 'src/services/BackHandler'
 import { ShareService } from 'src/services/Share'
 import { SplashScreen } from 'src/services/SplashScreen'
 import { State, StateRef } from 'src/services/StateRef'
-import { saveState } from 'src/slices/core/hydration'
 import { onSelectGroupOrder } from 'src/slices/groupOrder'
 import {
   createGroup,
@@ -37,6 +35,7 @@ import {
   setUpsertGroupName,
 } from 'src/slices/ui'
 import { Id } from 'src/utils/Entity'
+import { appLoaded, back } from './core'
 
 type EventLeaf<R, A> = (payload: A) => Effect<R, never, void>
 
@@ -59,19 +58,10 @@ const closeParametersModal = State.on(root.at('ui').at('modalParameters')).set(
 
 export const appEvents = {
   doNothing: ignore,
-  back: () =>
-    pipe(
-      goBack,
-      exec,
-      F.tap(({ shouldBubbleUpEvent }) =>
-        shouldBubbleUpEvent ? BackHandler.exit() : F.unit,
-      ),
-    ),
+  back: back,
   core: {
-    preventSplashScreenAutoHide: () => SplashScreen.preventAutoHide(),
     uiMount: () => SplashScreen.hide(),
-    appLoaded: () => exec(State.on(root.at('core').at('isLoaded')).set(true)),
-    saveState: () => saveState,
+    appLoaded: appLoaded,
   },
   alert: { dismiss: () => Alert.dismiss() },
   groups: {

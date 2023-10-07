@@ -6,13 +6,14 @@ import { Repository } from 'src/services/Repositories'
 import { State, StateRef } from 'src/services/StateRef'
 import { emptyGroups } from '../groups'
 
-export const saveState = pipe(
-  StateRef.query(State.get),
-  F.tap(flow(get(root.at('groups')), Repository.teams.Groups.set)),
-  F.tap(flow(get(root.at('parameters')), Repository.teams.Parameters.set)),
-  F.tap(flow(get(root.at('groupOrder')), Repository.teams.GroupOrder.set)),
-  F.catchAll(() => F.unit),
-)
+export const saveState = () =>
+  pipe(
+    StateRef.query(State.get),
+    F.tap(flow(get(root.at('groups')), Repository.teams.Groups.set)),
+    F.tap(flow(get(root.at('parameters')), Repository.teams.Parameters.set)),
+    F.tap(flow(get(root.at('groupOrder')), Repository.teams.GroupOrder.set)),
+    F.catchAll(() => F.unit),
+  )
 
 export const hydrate = pipe(
   F.Do,

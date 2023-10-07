@@ -1,23 +1,22 @@
 import { Duration, F, Stream, pipe } from 'fp'
-import { appEvents } from 'src/events'
 import { BackHandler } from 'src/services/BackHandler'
 import { StateRef } from 'src/services/StateRef'
 import { UI } from 'src/services/UI'
-import { hydrate } from 'src/slices/core/hydration'
+import { hydrate, saveState } from 'src/slices/core/hydration'
+import { appLoaded, back } from './events/core'
 import { setupReceiveURLHandler } from './export/group'
 import { Metadata } from './services/Metadata'
+import { SplashScreen } from './services/SplashScreen'
 import { Telemetry } from './services/Telemetry'
 import { Timestamp } from './utils/datatypes'
 
-const on = appEvents.core
-
 export const startApp = pipe(
   UI.start(),
-  F.flatMap(() => on.preventSplashScreenAutoHide()),
+  F.flatMap(() => SplashScreen.preventAutoHide()),
   F.flatMap(() =>
     pipe(
       BackHandler.stream,
-      Stream.tap(() => appEvents.back()),
+      Stream.tap(() => back()),
       Stream.runDrain,
       F.forkDaemon,
     ),
@@ -28,12 +27,12 @@ export const startApp = pipe(
       StateRef.changes,
       Stream.debounce(Duration.decode('1000 millis')),
       Stream.changes,
-      Stream.flatMap(() => on.saveState()),
+      Stream.flatMap(() => saveState()),
       Stream.runDrain,
       F.forkDaemon,
     ),
   ),
-  F.tap(() => on.appLoaded()),
+  F.tap(() => appLoaded()),
   F.tap(() =>
     pipe(
       F.all([Metadata.get(), Timestamp.getNow()]),
