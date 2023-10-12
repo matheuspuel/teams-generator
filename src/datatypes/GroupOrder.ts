@@ -2,12 +2,13 @@ import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
 import { A, Ord, Order, Record, S, Tuple, absurd, identity, pipe } from 'fp'
 import { Player } from 'src/datatypes'
 import {
-    ActiveOrd,
-    CreatedAtOrder,
-    NameOrd,
-    PositionOrd,
-    RatingOrd,
+  ActiveOrd,
+  CreatedAtOrder,
+  NameOrd,
+  PositionOrd,
+  RatingOrd,
 } from 'src/datatypes/Player'
+import { Modality } from './Modality'
 
 export const GroupOrderTypeDict = {
   name: null,
@@ -41,22 +42,28 @@ export const GroupOrder = Schema
 
 export const initial: GroupOrder = [{ _tag: 'date', reverse: false }]
 
-const typeToOrder = (type: GroupOrderType): Order<Player> =>
+const typeToOrder = (
+  type: GroupOrderType,
+): ((args: { modality: Modality }) => Order<Player>) =>
   type === 'name'
-    ? NameOrd
+    ? () => NameOrd
     : type === 'position'
     ? PositionOrd
     : type === 'rating'
-    ? RatingOrd
+    ? () => RatingOrd
     : type === 'active'
-    ? ActiveOrd
+    ? () => ActiveOrd
     : type === 'date'
-    ? CreatedAtOrder
+    ? () => CreatedAtOrder
     : absurd<never>(type)
 
-export const toOrder = (order: GroupOrder): Order<Player> =>
-  pipe(
-    order,
-    A.map(v => pipe(typeToOrder(v._tag), v.reverse ? Ord.reverse : identity)),
-    Ord.combineAll,
-  )
+export const toOrder =
+  (order: GroupOrder): ((args: { modality: Modality }) => Order<Player>) =>
+  args =>
+    pipe(
+      order,
+      A.map(v =>
+        pipe(typeToOrder(v._tag)(args), v.reverse ? Ord.reverse : identity),
+      ),
+      Ord.combineAll,
+    )

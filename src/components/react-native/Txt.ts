@@ -17,7 +17,7 @@ export type TextStyleProps = PaddingProps &
   MarginProps & {
     flex?: number
     color?: UIColor
-    align?: 'center' | 'left' | 'right' | 'justify'
+    align?: 'left' | 'center' | 'right' | 'justify'
     size?: number
     lineHeight?: number
     includeFontPadding?: boolean
@@ -58,7 +58,7 @@ const getRawProps = ({
     height: props?.h,
     flex: props?.flex,
     color: Color.toHex(
-      Runtime.runSync(runtime)(props?.color ?? textStyle.textColor),
+      Runtime.runSync(runtime)(props?.color ?? textStyle.color),
     ),
     textAlign: props?.align ?? 'center',
     fontSize: props?.size,

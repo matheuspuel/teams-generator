@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   Header,
   MaterialIcons,
+  Nothing,
   Row,
   ScrollView,
   Txt,
@@ -12,58 +13,65 @@ import {
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { memoizedConst } from 'src/components/hyperscript'
-import { Player, Rating } from 'src/datatypes'
+import { Modality, Player, Position, Rating } from 'src/datatypes'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
 import { Colors } from 'src/services/Theme'
+import { getActiveModality } from 'src/slices/groups'
 import { toFixedLocale } from 'src/utils/Number'
 
 const on = appEvents.result
 
 export const ResultView = memoizedConst('ResultView')(() => {
   const result = useSelector(s => s.result)
-  return View({ flex: 1 })([
-    View({ bg: Colors.white })([
-      Header({
-        title: 'Resultado',
-        headerStyle: { backgroundColor: Colors.primary.$5 },
-        headerTitleStyle: { color: Colors.text.light },
-        headerLeft: HeaderButtonRow([
-          HeaderButton({
-            onPress: appEvents.back(),
-            icon: MaterialIcons({ name: 'arrow-back' }),
-          }),
-        ]),
-        headerRight: HeaderButtonRow([
-          HeaderButton({
-            onPress: on.share(),
-            icon: MaterialIcons({ name: 'share' }),
-          }),
-        ]),
-      }),
-    ]),
-    ScrollView({ contentContainerStyle: { flexGrow: 1 } })(
-      pipe(
-        result,
-        O.match({
-          onNone: () => [
-            View({ flex: 1, justify: 'center' })([
-              ActivityIndicator({ color: Colors.primary.$5 }),
+  const modality = useSelector(s => getActiveModality(s))
+  return O.match(modality, {
+    onNone: () => Nothing,
+    onSome: modality =>
+      View({ flex: 1 })([
+        View({ bg: Colors.white })([
+          Header({
+            title: 'Resultado',
+            headerStyle: { backgroundColor: Colors.primary.$5 },
+            headerTitleStyle: { color: Colors.text.light },
+            headerLeft: HeaderButtonRow([
+              HeaderButton({
+                onPress: appEvents.back(),
+                icon: MaterialIcons({ name: 'arrow-back' }),
+              }),
             ]),
-          ],
-          onSome: A.map((t, i) =>
-            TeamItem({ key: i.toString(), index: i, players: t }),
+            headerRight: HeaderButtonRow([
+              HeaderButton({
+                onPress: on.share(),
+                icon: MaterialIcons({ name: 'share' }),
+              }),
+            ]),
+          }),
+        ]),
+        ScrollView({ contentContainerStyle: { flexGrow: 1 } })(
+          pipe(
+            result,
+            O.match({
+              onNone: () => [
+                View({ flex: 1, justify: 'center' })([
+                  ActivityIndicator({ color: Colors.primary.$5 }),
+                ]),
+              ],
+              onSome: A.map((t, i) =>
+                TeamItem({ key: i.toString(), index: i, players: t, modality }),
+              ),
+            }),
           ),
-        }),
-      ),
-    ),
-  ])
+        ),
+      ]),
+  })
 })
 
 const TeamItem = (props: {
   key: string
   index: number
   players: Array<Player>
+  modality: Modality
 }) => {
   const title = `Time ${props.index + 1}`
   const numPlayers = props.players.length
@@ -93,24 +101,35 @@ const TeamItem = (props: {
     ...pipe(
       props.players,
       A.sortBy(
-        Player.PositionOrd,
+        Player.PositionOrd({ modality: props.modality }),
         Ord.reverse(Player.RatingOrd),
         Player.NameOrd,
       ),
-      A.map(p => PlayerItem({ key: p.id, data: p })),
+      A.map(p =>
+        PlayerItem({ key: p.id, player: p, modality: props.modality }),
+      ),
     ),
   ])
 }
 
 const PlayerItem = ({
   key,
-  data: { name, position, rating },
+  player: { name, positionId, rating },
+  modality,
 }: {
   key: string
-  data: Player
+  player: Player
+  modality: Modality
 }) =>
   Row({ key: key, p: 4 })([
     Txt({ color: Colors.text.dark, weight: 600 })(Rating.toString(rating)),
     Txt({ color: Colors.text.dark, numberOfLines: 1 })(` - ${name}`),
-    Txt({ color: Colors.text.dark })(` (${position})`),
+    Txt({ color: Colors.text.dark })(
+      ` (${pipe(
+        modality.positions,
+        A.findFirst(_ => _.id === positionId),
+        O.map(Position.toAbbreviationString),
+        O.getOrElse(() => '-'),
+      )})`,
+    ),
   ])

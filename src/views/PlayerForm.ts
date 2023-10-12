@@ -1,11 +1,11 @@
-import { A, F, Record, String, Tuple, pipe } from 'fp'
+import { A, F, O, String, pipe } from 'fp'
 import {
   Fragment,
   Header,
   Input,
   MaterialIcons,
+  Nothing,
   Pressable,
-  Row,
   ScrollView,
   Txt,
   View,
@@ -14,15 +14,36 @@ import { FormLabel } from 'src/components/derivative/FormLabel'
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { SolidButton } from 'src/components/derivative/SolidButton'
-import { memoizedConst } from 'src/components/hyperscript'
+import { memoized, memoizedConst } from 'src/components/hyperscript'
 import { Position, Rating } from 'src/datatypes'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
 import { Colors } from 'src/services/Theme'
+import { getActiveModality } from 'src/slices/groups'
+import { Id } from 'src/utils/Entity'
 import { withOpacity } from 'src/utils/datatypes/Color'
 import { RatingSlider } from './components/RatingSlider'
 
 const on = appEvents.player
+
+export const PlayerView = memoizedConst('PlayerView')(() => {
+  const name = useSelector(s => s.playerForm.name)
+  return Fragment([
+    ScreenHeader,
+    ScrollView({
+      keyboardShouldPersistTaps: 'always',
+      contentContainerStyle: { flexGrow: 1 },
+    })([
+      View({ flex: 1, p: 4 })([NameField(name), RatingField, PositionField]),
+    ]),
+    SolidButton({
+      onPress: on.save(),
+      isEnabled: String.isNonEmpty(name),
+      p: 16,
+      round: 0,
+    })([Txt()('Gravar')]),
+  ])
+})
 
 const ScreenHeader = memoizedConst('Header')(() =>
   View({ bg: Colors.white })([
@@ -57,43 +78,9 @@ const NameField = (name: string) =>
     }),
   ])
 
-const PositionField = (position: Position) =>
-  View({ p: 4 })([
-    FormLabel()('Posição'),
-    Row({ justify: 'space-evenly' })(
-      pipe(
-        Position.Dict,
-        Record.toEntries,
-        A.map(Tuple.getFirst),
-        A.sort(Position.Order),
-        A.map(p =>
-          Pressable({
-            key: p,
-            onPress: on.position.change(p),
-            p: 12,
-            align: 'center',
-            borderless: true,
-            rippleColor: Colors.primary.$5,
-            rippleOpacity: 0.15,
-          })([
-            View({
-              aspectRatio: 1,
-              justify: 'center',
-              p: 4,
-              round: 9999,
-              bg:
-                position === p
-                  ? Colors.primary.$5
-                  : F.map(Colors.primary.$5, withOpacity(63)),
-            })([Txt({ size: 18, color: Colors.text.light })(p)]),
-          ]),
-        ),
-      ),
-    ),
-  ])
-
-const RatingField = (rating: Rating) =>
-  View({ p: 4 })([
+const RatingField = memoizedConst('RatingField')(() => {
+  const rating = useSelector(s => s.playerForm.rating)
+  return View({ p: 4 })([
     FormLabel()('Habilidade'),
     Txt({ size: 24, weight: 700, color: Colors.primary.$5 })(
       Rating.toString(rating),
@@ -104,26 +91,59 @@ const RatingField = (rating: Rating) =>
       onChange: on.rating.change,
     }),
   ])
+})
 
-export const PlayerView = memoizedConst('PlayerView')(() => {
-  const { name, position, rating } = useSelector(s => s.playerForm)
-  return Fragment([
-    ScreenHeader,
-    ScrollView({
-      keyboardShouldPersistTaps: 'always',
-      contentContainerStyle: { flexGrow: 1 },
-    })([
-      View({ flex: 1, p: 4 })([
-        NameField(name),
-        PositionField(position),
-        RatingField(rating),
-      ]),
-    ]),
-    SolidButton({
-      onPress: on.save(),
-      isEnabled: String.isNonEmpty(name),
-      p: 16,
-      round: 0,
-    })([Txt()('Gravar')]),
+const PositionField = memoizedConst('PositionField')(() => {
+  const positions = useSelector(s =>
+    pipe(
+      getActiveModality(s),
+      O.map(m => m.positions),
+      O.getOrElse(() => A.empty()),
+    ),
+  )
+  return View({ p: 4 })([
+    FormLabel()('Posição'),
+    View()(A.map(positions, p => PositionItem(p.id))),
   ])
+})
+
+const PositionItem = memoized('PositionItem')((id: Id) => {
+  const position = useSelector(s =>
+    pipe(
+      getActiveModality(s),
+      O.map(m => m.positions),
+      O.flatMap(A.findFirst(_ => _.id === id)),
+    ),
+  )
+  const isActive = useSelector(s => s.playerForm.positionId === id)
+  return O.match(position, {
+    onNone: () => Nothing,
+    onSome: position =>
+      Pressable({
+        key: position.id,
+        onPress: on.position.change(position.id),
+        py: 4,
+        px: 12,
+        round: 8,
+        align: 'center',
+        direction: 'row',
+        bg: isActive ? F.map(Colors.primary.$5, withOpacity(31)) : undefined,
+        rippleColor: F.map(Colors.primary.$5, withOpacity(31)),
+        rippleOpacity: 0.1,
+      })([
+        View({ w: 50 })([
+          isActive
+            ? MaterialIcons({ name: 'check', color: Colors.primary.$5 })
+            : Nothing,
+        ]),
+        Txt({
+          w: 50,
+          align: 'center',
+          size: 20,
+          weight: 700,
+          color: Colors.primary.$5,
+        })(Position.toAbbreviationString(position)),
+        Txt({ flex: 1, align: 'center', weight: 500 })(position.name),
+      ]),
+  })
 })

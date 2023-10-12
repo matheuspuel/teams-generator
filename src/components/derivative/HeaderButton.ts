@@ -12,7 +12,5 @@ export const HeaderButton = named('HeaderButton')(
       p: 8,
       borderless: true,
       foreground: true,
-    })([
-      TextStyleContextProvider({ textColor: Colors.text.light })([props.icon]),
-    ]),
+    })([TextStyleContextProvider({ color: Colors.text.light })([props.icon])]),
 )

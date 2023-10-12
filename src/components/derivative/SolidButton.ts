@@ -28,7 +28,7 @@ export const SolidButton = named2('SolidButton')(
         rippleOpacity: props.rippleOpacity ?? 0.5,
       })([
         TextStyleContextProvider({
-          textColor: pipe(props.textColor ?? Colors.text.light, c =>
+          color: pipe(props.textColor ?? Colors.text.light, c =>
             props.isEnabled === false ? F.map(c, withOpacity(95)) : c,
           ),
         })(children),

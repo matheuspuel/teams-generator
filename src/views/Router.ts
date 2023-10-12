@@ -10,6 +10,9 @@ import { GroupView } from 'src/views/Group'
 import { Groups } from 'src/views/Groups'
 import { PlayerView } from 'src/views/PlayerForm'
 import { ResultView } from 'src/views/Result'
+import { GroupForm } from './GroupForm'
+import { ModalitiesView } from './Modalities'
+import { ModalityForm } from './ModalityForm'
 
 export const Router = memoizedConst('Router')(() => {
   const route = useSelector(s => s.route)
@@ -20,7 +23,10 @@ export const Router = memoizedConst('Router')(() => {
         route,
         Match.valueTags({
           Groups: () => Groups,
+          Modalities: () => ModalitiesView,
           Group: () => GroupView,
+          GroupForm: () => GroupForm,
+          ModalityForm: () => ModalityForm,
           Player: () => PlayerView,
           Result: () => ResultView,
         }),

@@ -3,10 +3,10 @@ import { named2 } from 'src/components/hyperscript'
 import { Children, UIColor } from 'src/components/types'
 import { Colors } from 'src/services/Theme'
 
-export type TextStyleContext = { textColor: UIColor }
+export type TextStyleContext = { color: UIColor }
 
 export const TextStyleContext = React.createContext<TextStyleContext>({
-  textColor: Colors.text.dark,
+  color: Colors.text.dark,
 })
 
 export const useTextStyle = () => React.useContext(TextStyleContext)

@@ -1,12 +1,10 @@
 import { root } from 'src/model/optic'
 import { State } from 'src/services/StateRef'
 
-export const setUpsertGroupModal = State.on(
-  root.at('ui').at('modalUpsertGroup'),
-).set
+export const setGroupName = State.on(root.at('groupForm').at('name')).set
 
-export const setUpsertGroupName = State.onOption(
-  root.at('ui').at('modalUpsertGroup').some_().at('name'),
+export const setGroupModality = State.on(
+  root.at('groupForm').at('modalityId'),
 ).set
 
 export const setDeleteGroupModal = State.on(

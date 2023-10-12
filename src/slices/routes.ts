@@ -6,9 +6,12 @@ import { A, Data, flow } from 'src/utils/fp'
 
 export type Route = Data.TaggedEnum<{
   Groups: object
+  Modalities: object
   Group: object
   Player: object
   Result: object
+  GroupForm: object
+  ModalityForm: object
 }>
 
 export const Route = Data.taggedEnum<Route>()

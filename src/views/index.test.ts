@@ -100,9 +100,11 @@ const testLayer = pipe(
           get: () => F.succeed(GroupOrder.initial),
           set: () => F.unit,
         },
+        Modality: { get: () => F.never, set: () => F.never },
       },
       metadata: {
         Installation: { get: () => F.never, set: () => F.unit },
+        StorageVersion: { get: () => F.never, set: () => F.never },
       },
       telemetry: {
         Log: {
@@ -147,7 +149,7 @@ it('renders', async () => {
   expect(ui.toJSON()).toMatchSnapshot()
   await act(async () => {
     await dispatch(on.player.name.change('player 1'))
-    await dispatch(on.player.position.change('G'))
+    await dispatch(on.player.position.change(Id('G')))
     await dispatch(on.player.rating.change(1.5))
     await dispatch(on.player.save())
     await dispatch(on.group.parameters.open())

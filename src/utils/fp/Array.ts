@@ -1,12 +1,19 @@
 import { constant, pipe } from 'effect/Function'
 import * as O from 'effect/Option'
+import { Option } from 'effect/Option'
 import * as A from 'effect/ReadonlyArray'
+import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
 import * as Eq from './Equivalence'
 
 export * from 'effect/ReadonlyArray'
 
 export const isArray = <A>(a: A): a is Extract<A, ReadonlyArray<unknown>> =>
   Array.isArray(a)
+
+export const toNonEmpty = <A>(
+  array: ReadonlyArray<A>,
+): Option<NonEmptyReadonlyArray<A>> =>
+  A.match(array, { onEmpty: () => O.none(), onNonEmpty: O.some })
 
 export const getUnorderedEquivalence = <A>(
   E: Eq.Equivalence<A>,

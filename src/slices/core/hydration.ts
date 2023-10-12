@@ -12,36 +12,35 @@ export const saveState = () =>
     F.tap(flow(get(root.at('groups')), Repository.teams.Groups.set)),
     F.tap(flow(get(root.at('parameters')), Repository.teams.Parameters.set)),
     F.tap(flow(get(root.at('groupOrder')), Repository.teams.GroupOrder.set)),
+    F.tap(flow(get(root.at('modalities')), Repository.teams.Modality.set)),
     F.catchAll(() => F.unit),
   )
 
-export const hydrate = pipe(
-  F.Do,
-  F.bind('groups', () =>
-    pipe(
-      Repository.teams.Groups.get(),
-      F.catchAll(() => F.succeed(emptyGroups)),
+export const hydrate = F.all([
+  pipe(
+    Repository.teams.Groups.get(),
+    F.catchAll(() => F.succeed(emptyGroups)),
+    F.flatMap(data => StateRef.execute(State.on(root.at('groups')).set(data))),
+  ),
+  pipe(
+    Repository.teams.Parameters.get(),
+    F.catchAll(() => F.succeed(Parameters.initial)),
+    F.flatMap(data =>
+      StateRef.execute(State.on(root.at('parameters')).set(data)),
     ),
   ),
-  F.bind('parameters', () =>
-    pipe(
-      Repository.teams.Parameters.get(),
-      F.catchAll(() => F.succeed(Parameters.initial)),
+  pipe(
+    Repository.teams.GroupOrder.get(),
+    F.catchAll(() => F.succeed(GroupOrder.initial)),
+    F.flatMap(data =>
+      StateRef.execute(State.on(root.at('groupOrder')).set(data)),
     ),
   ),
-  F.bind('groupOrder', () =>
-    pipe(
-      Repository.teams.GroupOrder.get(),
-      F.catchAll(() => F.succeed(GroupOrder.initial)),
+  pipe(
+    Repository.teams.Modality.get(),
+    F.catchAll(() => F.succeed([])),
+    F.flatMap(data =>
+      StateRef.execute(State.on(root.at('modalities')).set(data)),
     ),
   ),
-  F.tap(p =>
-    pipe(
-      State.on(root.at('groups')).set(p.groups),
-      F.tap(() => State.on(root.at('parameters')).set(p.parameters)),
-      F.tap(() => State.on(root.at('groupOrder')).set(p.groupOrder)),
-      StateRef.execute,
-    ),
-  ),
-  F.asUnit,
-)
+]).pipe(F.asUnit)

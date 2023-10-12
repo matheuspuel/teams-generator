@@ -1,34 +1,25 @@
-import { A, Number, Ord, Record, S, Tuple, identity, pipe } from 'fp'
+import { S, pipe } from 'fp'
+import { Id } from 'src/utils/Entity'
+import { NonEmptyString } from 'src/utils/datatypes/NonEmptyString'
 
-export const Dict = {
-  G: null,
-  Z: null,
-  LE: null,
-  LD: null,
-  M: null,
-  A: null,
-}
-
-export type Position = keyof typeof Dict
-
-export const Schema: S.Schema<Position> = S.literal(
-  ...pipe(Dict, Record.toEntries, A.map(Tuple.getFirst)),
+export const Abbreviation = pipe(
+  NonEmptyString,
+  S.maxLength(2),
+  S.lowercased(),
+  S.brand('Abbreviation'),
 )
+export type Abbreviation = S.Schema.To<typeof Abbreviation>
 
-export const Position = Schema
+export interface Position extends S.Schema.To<typeof Position_> {}
+const Position_ = S.struct({
+  id: Id,
+  abbreviation: Abbreviation,
+  name: NonEmptyString,
+})
+export const Position: S.Schema<
+  S.Schema.From<typeof Position_>,
+  Position
+> = Position_
 
-const order: Record<Position, number> = {
-  G: 1,
-  Z: 2,
-  LE: 3,
-  LD: 4,
-  M: 5,
-  A: 6,
-}
-
-export const Order: Ord.Order<Position> = pipe(
-  Number.Order,
-  Ord.mapInput(a => order[a]),
-)
-
-export const abbreviationToString: (position: Position) => string = identity
+export const toAbbreviationString = (position: Position): string =>
+  position.abbreviation.toUpperCase()

@@ -1,43 +1,19 @@
-import {
-  A,
-  Boolean,
-  Data,
-  Equal,
-  F,
-  O,
-  Record,
-  Runtime,
-  String,
-  Tuple,
-  flow,
-  pipe,
-} from 'fp'
-import React from 'react'
-import { TextInput as RNGHTextInput } from 'react-native-gesture-handler'
+import { A, Boolean, Data, Equal, O, Record, Tuple, flow, pipe } from 'fp'
 import {
   FlatList,
-  Fragment,
   Header,
-  Input,
   MaterialCommunityIcons,
   MaterialIcons,
   Nothing,
   Pressable,
-  Row,
   Txt,
-  TxtContext,
   View,
 } from 'src/components'
-import { CenterModal } from 'src/components/derivative/CenterModal'
-import { FormLabel } from 'src/components/derivative/FormLabel'
-import { GhostButton } from 'src/components/derivative/GhostButton'
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { HeaderMenu } from 'src/components/derivative/HeaderMenu'
 import { HeaderMenuButton } from 'src/components/derivative/HeaderMenuButton'
-import { SolidButton } from 'src/components/derivative/SolidButton'
 import { memoized, memoizedConst, namedConst } from 'src/components/hyperscript'
-import { useRuntime } from 'src/contexts/Runtime'
 import { Group } from 'src/datatypes'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
@@ -70,8 +46,6 @@ export const Groups = memoizedConst('GroupsView')(() => {
       contentContainerStyle: { flexGrow: 1, p: 8, gap: 8 },
       initialNumToRender: 16,
     }),
-    GroupModal,
-    DeleteGroupModal,
   ])
 })
 
@@ -107,25 +81,37 @@ const Menu = namedConst('Menu')(() => {
           label: 'Importar grupo',
           icon: MaterialCommunityIcons({ name: 'import' }),
         }),
+        HeaderMenuButton({
+          onPress: appEvents.modality.go(),
+          label: 'Editar modalidades',
+          icon: MaterialIcons({ name: 'sports-soccer' }),
+        }),
       ]),
   })
 })
 
 const Item = memoized('Group')(Equal.equivalence(), (id: Id) => {
-  const group = useSelector(
-    flow(
-      getGroupById(id),
-      O.map(({ name }) => Data.struct({ name })),
+  const group = useSelector(s =>
+    pipe(
+      getGroupById(id)(s),
+      O.map(({ name, modalityId }) =>
+        Data.struct({
+          name,
+          modality: pipe(
+            s.modalities,
+            A.findFirst(_ => _.id === modalityId),
+            O.map(_ => _.name),
+          ),
+        }),
+      ),
     ),
   )
   return O.match(group, {
     onNone: () => Nothing,
-    onSome: ({ name }) =>
+    onSome: ({ name, modality }) =>
       Pressable({
         onPress: on.item.open(id),
-        direction: 'row',
-        align: 'center',
-        p: 4,
+        p: 12,
         round: 8,
         shadow: 1,
         bg: Colors.white,
@@ -134,113 +120,18 @@ const Item = memoized('Group')(Equal.equivalence(), (id: Id) => {
           numberOfLines: 1,
           flex: 1,
           align: 'left',
-          p: 8,
+          weight: 600,
+          color: Colors.text.gray,
+          size: 10,
+        })(O.getOrElse(modality, () => '-')),
+        Txt({
+          numberOfLines: 1,
+          flex: 1,
+          align: 'left',
           weight: 600,
           color: Colors.text.dark,
+          size: 16,
         })(name),
-        Pressable({
-          onPress: on.item.upsert.edit(id),
-          borderless: true,
-          py: 8,
-          px: 4,
-        })([MaterialIcons({ name: 'edit', color: Colors.gray.$4 })]),
-        Pressable({
-          onPress: on.item.delete.open(id),
-          borderless: true,
-          py: 8,
-          px: 4,
-        })([MaterialIcons({ name: 'delete', color: Colors.gray.$4 })]),
       ]),
   })
-})
-
-const GroupModal = namedConst('GroupModal')(() => {
-  const runtime = useRuntime()
-  const state = useSelector(s => s.ui.modalUpsertGroup)
-  const nameInputRef = React.useRef<RNGHTextInput>(null)
-  // eslint-disable-next-line functional/no-expression-statements
-  React.useEffect(() => {
-    // eslint-disable-next-line functional/no-expression-statements
-    void pipe(
-      state,
-      F.flatMap(() => F.sync(() => nameInputRef.current?.focus())),
-      F.delay('100 millis'),
-      F.ignore,
-      Runtime.runPromise(runtime),
-    )
-  }, [O.isSome(state)])
-  return pipe(
-    state,
-    O.map(form =>
-      CenterModal({
-        onClose: on.item.upsert.close(),
-        title: pipe(
-          state,
-          O.flatMap(s => s.id),
-          O.match({
-            onNone: () => 'Novo grupo',
-            onSome: () => 'Editar grupo',
-          }),
-        ),
-      })([
-        View({ p: 16 })([
-          FormLabel()('Nome do grupo'),
-          Input({
-            placeholder: 'Ex: Futebol de quinta',
-            value: form.name,
-            onChange: on.item.upsert.form.name.change,
-            ref: nameInputRef,
-          }),
-        ]),
-        View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
-        Row({ justify: 'end', gap: 8, p: 16 })([
-          GhostButton({ onPress: on.item.upsert.close() })([Txt()('Cancelar')]),
-          SolidButton({
-            onPress: on.item.upsert.submit(),
-            isEnabled: String.isNonEmpty(form.name),
-          })([Txt()('Gravar')]),
-        ]),
-      ]),
-    ),
-    O.getOrElse(() => Fragment([])),
-  )
-})
-
-const DeleteGroupModal = namedConst('DeleteGroupModal')(() => {
-  const group = useSelector(s =>
-    pipe(
-      s.ui.modalDeleteGroup,
-      O.map(({ id }) => id),
-      O.flatMap(id => getGroupById(id)(s)),
-    ),
-  )
-  return CenterModal({
-    onClose: on.item.delete.close(),
-    visible: O.isSome(group),
-    title: 'Excluir grupo',
-  })([
-    View({ p: 16 })(
-      pipe(
-        group,
-        O.map(g =>
-          TxtContext({ align: 'left', color: Colors.text.dark })([
-            Txt()('Deseja excluir o grupo '),
-            Txt({ weight: 600, color: Colors.text.dark })(g.name),
-            Txt()(' e todos os jogadores?'),
-          ]),
-        ),
-        A.fromOption,
-      ),
-    ),
-    View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
-    Row({ p: 16, gap: 8, justify: 'end' })([
-      GhostButton({ onPress: on.item.delete.close(), color: Colors.danger.$5 })(
-        [Txt()('Cancelar')],
-      ),
-      SolidButton({
-        onPress: on.item.delete.submit(),
-        color: Colors.danger.$5,
-      })([Txt()('Excluir')]),
-    ]),
-  ])
 })

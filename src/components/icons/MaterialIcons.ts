@@ -28,9 +28,7 @@ const getRawProps = ({
 }: IconArgs): React.ComponentProps<typeof RawIcons_> => ({
   name: props.name,
   size: props.size ?? 24,
-  color: Color.toHex(
-    Runtime.runSync(runtime)(props.color ?? textStyle.textColor),
-  ),
+  color: Color.toHex(Runtime.runSync(runtime)(props.color ?? textStyle.color)),
   style: { textAlign: props.align },
 })
 

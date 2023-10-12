@@ -1,19 +1,21 @@
-import { Player, Position, Rating } from 'src/datatypes'
+import { Player, Rating } from 'src/datatypes'
+import { Modality } from 'src/datatypes/Modality'
+import { Id } from 'src/utils/Entity'
 
-export type PlayerForm = { name: string; position: Position; rating: Rating }
+export type PlayerForm = { name: string; positionId: Id; rating: Rating }
 
-export const blankPlayerForm: PlayerForm = {
+export const blankPlayerForm = (args: { modality: Modality }): PlayerForm => ({
   name: '',
-  position: 'A',
+  positionId: args.modality.positions[0].id,
   rating: 5,
-}
+})
 
 export const getPlayerFormFromData = ({
   name,
-  position,
+  positionId,
   rating,
 }: Player): PlayerForm => ({
   name,
-  position,
+  positionId,
   rating,
 })

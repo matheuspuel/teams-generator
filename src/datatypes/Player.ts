@@ -1,8 +1,21 @@
 import { sumAll } from 'effect/Number'
-import { A, Boolean, Number, Ord, Order, S, String, flow, pipe } from 'fp'
+import {
+  A,
+  Boolean,
+  Number,
+  O,
+  Option,
+  Ord,
+  Order,
+  S,
+  String,
+  flow,
+  pipe,
+} from 'fp'
 import { Id } from 'src/utils/Entity'
 import { normalize } from 'src/utils/String'
 import { Timestamp } from 'src/utils/datatypes'
+import { Modality } from './Modality'
 import * as Position from './Position'
 import * as Rating from './Rating'
 
@@ -14,7 +27,7 @@ const Schema_ = S.struct({
   id: Id,
   name: S.string,
   rating: Rating.Schema,
-  position: Position.Schema,
+  positionId: Id,
   active: S.boolean,
   createdAt: Timestamp.Schema,
 })
@@ -24,10 +37,14 @@ export const Player = Schema
 
 export const isActive = (p: Player) => p.active
 
-export const PositionOrd: Order<Player> = pipe(
-  Position.Order,
-  Ord.mapInput(p => p.position),
-)
+export const PositionOrd = (args: { modality: Modality }): Order<Player> =>
+  Ord.mapInput(Number.Order, p =>
+    pipe(
+      args.modality.positions,
+      A.findFirstIndex(po => po.id === p.positionId),
+      O.getOrElse(() => -1),
+    ),
+  )
 
 export const NameOrd: Order<Player> = pipe(
   String.Order,
@@ -54,39 +71,71 @@ export const IdOrd: Order<Player> = pipe(
   Ord.mapInput(p => p.id),
 )
 
-export const toString: (player: Player) => string = p =>
-  `${Rating.toString(p.rating)} - ${p.name} (${Position.abbreviationToString(
-    p.position,
-  )})`
+export const position =
+  (args: { modality: Modality }) =>
+  (player: Player): Option<Position> =>
+    pipe(
+      args.modality.positions,
+      A.findFirst(po => po.id === player.positionId),
+    )
 
-export const listToString: (players: Array<Player>) => string = flow(
-  A.sortBy(PositionOrd, Ord.reverse(RatingOrd), NameOrd),
-  A.map(toString),
-  A.join('\n'),
-)
+export const toString =
+  (args: { modality: Modality }): ((player: Player) => string) =>
+  p =>
+    `${Rating.toString(p.rating)} - ${p.name} (${pipe(
+      position(args)(p),
+      O.map(Position.toAbbreviationString),
+      O.getOrElse(() => '-'),
+    )})`
 
-export const teamListToString: (teams: Array<Array<Player>>) => string = flow(
-  A.map(listToString),
-  A.map((t, i) => `Time ${i + 1}\n\n${t}`),
-  A.join('\n\n'),
-)
+export const listToString =
+  (args: { modality: Modality }) =>
+  (players: Array<Player>): string =>
+    pipe(
+      players,
+      A.sortBy(PositionOrd(args), Ord.reverse(RatingOrd), NameOrd),
+      A.map(toString(args)),
+      A.join('\n'),
+    )
 
-export const toStringSensitive: (player: Player) => string = p =>
-  `${p.name} (${Position.abbreviationToString(p.position)})`
+export const teamListToString =
+  (args: { modality: Modality }) =>
+  (teams: Array<Array<Player>>): string =>
+    pipe(
+      teams,
+      A.map(listToString(args)),
+      A.map((t, i) => `Time ${i + 1}\n\n${t}`),
+      A.join('\n\n'),
+    )
 
-export const listToStringSensitive: (players: Array<Player>) => string = flow(
-  A.sortBy(PositionOrd, NameOrd),
-  A.map(toStringSensitive),
-  A.join('\n'),
-)
+export const toStringSensitive =
+  (args: { modality: Modality }) =>
+  (player: Player): string =>
+    `${player.name} (${pipe(
+      position(args)(player),
+      O.map(Position.toAbbreviationString),
+      O.getOrElse(() => '-'),
+    )})`
 
-export const teamListToStringSensitive: (
-  teams: Array<Array<Player>>,
-) => string = flow(
-  A.map(listToStringSensitive),
-  A.map((t, i) => `Time ${i + 1}\n\n${t}`),
-  A.join('\n\n'),
-)
+export const listToStringSensitive =
+  (args: { modality: Modality }) =>
+  (players: Array<Player>): string =>
+    pipe(
+      players,
+      A.sortBy(PositionOrd(args), NameOrd),
+      A.map(toStringSensitive(args)),
+      A.join('\n'),
+    )
+
+export const teamListToStringSensitive =
+  (args: { modality: Modality }) =>
+  (teams: Array<Array<Player>>): string =>
+    pipe(
+      teams,
+      A.map(listToStringSensitive(args)),
+      A.map((t, i) => `Time ${i + 1}\n\n${t}`),
+      A.join('\n\n'),
+    )
 
 export const getRatingTotal: (players: Array<Player>) => number = players =>
   sumAll(A.map(players, p => p.rating))

@@ -6,6 +6,7 @@ import { hydrate, saveState } from 'src/slices/core/hydration'
 import { appLoaded, back } from './events/core'
 import { setupReceiveURLHandler } from './export/group'
 import { Metadata } from './services/Metadata'
+import { runMigrations } from './services/Repositories/migrations'
 import { SplashScreen } from './services/SplashScreen'
 import { Telemetry } from './services/Telemetry'
 import { Timestamp } from './utils/datatypes'
@@ -21,6 +22,7 @@ export const startApp = pipe(
       F.forkDaemon,
     ),
   ),
+  F.tap(() => runMigrations.pipe(F.ignore)),
   F.flatMap(() => hydrate),
   F.tap(() =>
     pipe(

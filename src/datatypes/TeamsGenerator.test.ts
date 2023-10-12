@@ -1,23 +1,13 @@
 /* eslint-disable functional/no-expression-statements */
 import * as Arb from '@effect/schema/Arbitrary'
 import * as fc from 'fast-check'
-import {
-  A,
-  Eq,
-  Match,
-  Ord,
-  Record,
-  Semigroup,
-  Tuple,
-  constant,
-  identity,
-  pipe,
-} from 'fp'
+import { A, Eq, Match, Ord, Semigroup, constant, identity, pipe } from 'fp'
+import { soccerMock as modality } from 'src/mocks/Modality'
 import { playersMock } from 'src/mocks/Player'
 import { getCombinationsIndices } from 'src/utils/Combinations'
 import { Id } from 'src/utils/Entity'
 import { Timestamp } from 'src/utils/datatypes'
-import { Player, Position } from '.'
+import { Player } from '.'
 import { distributeTeams, getFitOrdFromCriteria } from './TeamsGenerator'
 
 const getAllCombinationsOfSubListsWithEqualLength =
@@ -66,7 +56,7 @@ const getAllCombinationsOfSubListsWithFixedLength =
         )
 
 const distributeTeamsUsingCombinations: typeof distributeTeams =
-  params => players =>
+  args => params => players =>
     pipe(
       params.distribution,
       Match.valueTags({
@@ -80,7 +70,7 @@ const distributeTeamsUsingCombinations: typeof distributeTeams =
       A.match({
         onEmpty: constant([]),
         onNonEmpty: Semigroup.combineAllNonEmpty(
-          Semigroup.min(getFitOrdFromCriteria(params)),
+          Semigroup.min(getFitOrdFromCriteria(args)(params)),
         ),
       }),
     )
@@ -138,7 +128,7 @@ describe('Balance teams', () => {
         id: Id(''),
         name: '',
         rating: 6.5,
-        position: 'M',
+        positionId: Id('M'),
         createdAt: Timestamp.Schema(0),
       },
       {
@@ -146,7 +136,7 @@ describe('Balance teams', () => {
         id: Id(''),
         name: '',
         rating: 3.5,
-        position: 'M',
+        positionId: Id('M'),
         createdAt: Timestamp.Schema(0),
       },
       {
@@ -154,7 +144,7 @@ describe('Balance teams', () => {
         id: Id(''),
         name: '',
         rating: 2.5,
-        position: 'LE',
+        positionId: Id('LE'),
         createdAt: Timestamp.Schema(0),
       },
       {
@@ -162,7 +152,7 @@ describe('Balance teams', () => {
         id: Id(''),
         name: '',
         rating: 3,
-        position: 'M',
+        positionId: Id('M'),
         createdAt: Timestamp.Schema(0),
       },
       {
@@ -170,7 +160,7 @@ describe('Balance teams', () => {
         id: Id(''),
         name: '',
         rating: 5,
-        position: 'Z',
+        positionId: Id('Z'),
         createdAt: Timestamp.Schema(0),
       },
     ]
@@ -179,9 +169,9 @@ describe('Balance teams', () => {
         paramsArb,
         fc.array(Arb.to(Player.Schema)(fc), { minLength: 1, maxLength: 8 }),
         (params, players) =>
-          pipe(getFitOrdFromCriteria(params), fitOrd =>
-            Ord.equals(fitOrd)(distributeTeams(params)(players))(
-              distributeTeamsUsingCombinations(params)(players),
+          pipe(getFitOrdFromCriteria({ modality })(params), fitOrd =>
+            Ord.equals(fitOrd)(distributeTeams({ modality })(params)(players))(
+              distributeTeamsUsingCombinations({ modality })(params)(players),
             ),
           ),
       ),
@@ -204,7 +194,7 @@ describe('Balance teams', () => {
     fc.assert(
       fc.property(balanceTeamsArb, ({ params, players }) =>
         pipe(
-          distributeTeams(params)(players),
+          distributeTeams({ modality })(params)(players),
           A.flatten,
           Eq.equals(A.getUnorderedEquivalence(Eq.strict()))(players),
         ),
@@ -217,7 +207,7 @@ describe('Balance teams', () => {
       fc.property(
         balanceTeamsArb,
         ({ params, players }) =>
-          distributeTeams(params)(players).length ===
+          distributeTeams({ modality })(params)(players).length ===
           pipe(
             params.distribution,
             Match.valueTags({
@@ -233,7 +223,7 @@ describe('Balance teams', () => {
   it('should return the correct number of players each team', () => {
     fc.assert(
       fc.property(balanceTeamsArb, ({ params, players }) =>
-        distributeTeams(params)(players).every(
+        distributeTeams({ modality })(params)(players).every(
           (t, i, ts) =>
             t.length ===
             pipe(
@@ -257,33 +247,33 @@ describe('Balance teams', () => {
   it('should not have teams with player count difference higher than one in any position', () => {
     fc.assert(
       fc.property(balanceTeamsArb, ({ params, players }) =>
-        pipe(distributeTeams({ ...params, position: true })(players), teams =>
-          teams.every(a =>
-            teams.every(
-              b =>
-                pipe(
-                  params.distribution,
-                  Match.valueTags({
-                    fixedNumberOfPlayers: ({ fixedNumberOfPlayers }) =>
-                      a.length !== fixedNumberOfPlayers ||
-                      b.length !== fixedNumberOfPlayers,
-                    numOfTeams: () => false,
-                  }),
-                ) ||
-                pipe(
-                  Position.Dict,
-                  Record.toEntries,
-                  A.map(Tuple.getFirst),
-                  A.every(
-                    pos =>
-                      Math.abs(
-                        a.filter(p => p.position === pos).length -
-                          b.filter(p => p.position === pos).length,
-                      ) <= 1,
+        pipe(
+          distributeTeams({ modality })({ ...params, position: true })(players),
+          teams =>
+            teams.every(a =>
+              teams.every(
+                b =>
+                  pipe(
+                    params.distribution,
+                    Match.valueTags({
+                      fixedNumberOfPlayers: ({ fixedNumberOfPlayers }) =>
+                        a.length !== fixedNumberOfPlayers ||
+                        b.length !== fixedNumberOfPlayers,
+                      numOfTeams: () => false,
+                    }),
+                  ) ||
+                  pipe(
+                    modality.positions,
+                    A.every(
+                      pos =>
+                        Math.abs(
+                          a.filter(p => p.positionId === pos.id).length -
+                            b.filter(p => p.positionId === pos.id).length,
+                        ) <= 1,
+                    ),
                   ),
-                ),
+              ),
             ),
-          ),
         ),
       ),
     )
@@ -291,14 +281,14 @@ describe('Balance teams', () => {
 
   it('should return a balanced team', () => {
     expect(
-      distributeTeams({
+      distributeTeams({ modality })({
         position: true,
         rating: true,
         distribution: { _tag: 'numOfTeams', numOfTeams: 3 },
       })(playersMock),
     ).toMatchSnapshot()
     expect(
-      distributeTeams({
+      distributeTeams({ modality })({
         position: true,
         rating: true,
         distribution: { _tag: 'fixedNumberOfPlayers', fixedNumberOfPlayers: 7 },

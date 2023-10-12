@@ -7,7 +7,7 @@ export const defaultTheme = {
     background: color(242, 242, 242),
     text: {
       light: color(255, 255, 255),
-      dark: color(30, 30, 30),
+      dark: color(47, 47, 47),
       gray: color(96, 96, 96),
     },
     white: color(255, 255, 255),

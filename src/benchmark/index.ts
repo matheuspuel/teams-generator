@@ -9,6 +9,7 @@ import {
   distributeTeams,
   getFitOrdFromCriteria,
 } from 'src/datatypes/TeamsGenerator'
+import { soccerMock as modality } from 'src/mocks/Modality'
 import { getCombinationsIndices } from 'src/utils/Combinations'
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -63,7 +64,7 @@ const getAllCombinationsOfSubListsWithFixedLength =
         )
 
 const distributeTeamsUsingCombinations: typeof distributeTeams =
-  params => players =>
+  args => params => players =>
     pipe(
       params.distribution,
       Match.valueTags({
@@ -77,7 +78,7 @@ const distributeTeamsUsingCombinations: typeof distributeTeams =
       A.match({
         onEmpty: constant([]),
         onNonEmpty: Semigroup.combineAllNonEmpty(
-          Semigroup.min(getFitOrdFromCriteria(params)),
+          Semigroup.min(getFitOrdFromCriteria(args)(params)),
         ),
       }),
     )
@@ -97,10 +98,10 @@ void (async () => {
   await new Promise(resolve => {
     new Benchmark.Suite()
       .add('balanceTeamsBySwappingPlayers1', function (this: unknown) {
-        distributeTeams(criteria1)(sample1)
+        distributeTeams({ modality })(criteria1)(sample1)
       })
       .add('balanceTeamsUsingCombinations1', function (this: unknown) {
-        distributeTeamsUsingCombinations(criteria1)(sample1)
+        distributeTeamsUsingCombinations({ modality })(criteria1)(sample1)
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .on('cycle', function (event: any) {
@@ -119,10 +120,10 @@ void (async () => {
   await new Promise(resolve => {
     new Benchmark.Suite()
       .add('balanceTeamsBySwappingPlayers2', function (this: unknown) {
-        distributeTeams(criteria2)(sample1)
+        distributeTeams({ modality })(criteria2)(sample1)
       })
       .add('balanceTeamsUsingCombinations2', function (this: unknown) {
-        distributeTeamsUsingCombinations(criteria2)(sample1)
+        distributeTeamsUsingCombinations({ modality })(criteria2)(sample1)
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .on('cycle', function (event: any) {

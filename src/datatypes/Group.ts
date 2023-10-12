@@ -8,6 +8,7 @@ const Schema_ = S.struct({
   id: Id,
   name: S.string,
   players: S.array(Player),
+  modalityId: Id,
 })
 export const Schema: S.Schema<S.Schema.From<typeof Schema_>, Group> = Schema_
 

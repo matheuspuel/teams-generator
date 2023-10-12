@@ -20,6 +20,7 @@ import {
   Pressable,
   Row,
   Txt,
+  TxtContext,
   View,
 } from 'src/components'
 import { BorderlessButton } from 'src/components/derivative/BorderlessButton'
@@ -33,31 +34,34 @@ import { HeaderMenuButton } from 'src/components/derivative/HeaderMenuButton'
 import { PreRender } from 'src/components/derivative/PreRender2'
 import { SolidButton } from 'src/components/derivative/SolidButton'
 import { memoized, memoizedConst, namedConst } from 'src/components/hyperscript'
-import { GroupOrder, Player, Rating } from 'src/datatypes'
+import { GroupOrder, Player, Position, Rating } from 'src/datatypes'
 import { AppEvent, appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
-import { RootState } from 'src/model'
 import { Colors } from 'src/services/Theme'
-import { getGroupById } from 'src/slices/groups'
+import {
+  getActiveModality,
+  getPlayerFromSelectedGroup,
+  getSelectedGroup,
+} from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
 import { withOpacity } from 'src/utils/datatypes/Color'
 
 const on = appEvents.group
 
-const getSelectedGroup = (s: RootState) =>
-  pipe(
-    s.ui.selectedGroupId,
-    O.flatMap(id => getGroupById(id)(s)),
-  )
-
 export const GroupView = memoizedConst('GroupView')(() => {
   const playersIds = useSelector(s =>
     pipe(
-      getSelectedGroup(s),
-      O.map(g => g.players),
+      O.all({
+        group: getSelectedGroup(s),
+        modality: getActiveModality(s),
+      }),
+      O.map(({ group, modality }) =>
+        pipe(
+          A.sort(group.players, GroupOrder.toOrder(s.groupOrder)({ modality })),
+          A.map(_ => _.id),
+        ),
+      ),
       O.getOrElse(() => []),
-      A.sort(GroupOrder.toOrder(s.groupOrder)),
-      A.map(p => p.id),
       Data.array,
     ),
   )
@@ -111,6 +115,7 @@ const GroupHeader = memoizedConst('GroupHeader')(() =>
       ]),
     }),
     Menu,
+    DeleteGroupModal,
   ]),
 )
 
@@ -135,16 +140,33 @@ const Menu = namedConst('GroupMenu')(() => {
           label: 'Exportar grupo',
           icon: MaterialCommunityIcons({ name: 'export' }),
         }),
+        HeaderMenuButton({
+          onPress: appEvents.groups.item.upsert.edit(),
+          label: 'Editar grupo',
+          icon: MaterialIcons({ name: 'edit' }),
+        }),
+        HeaderMenuButton({
+          onPress: on.delete.open(),
+          label: 'Remover grupo',
+          icon: MaterialIcons({ name: 'delete-outline' }),
+        }),
       ]),
   })
 })
 
 const Item = memoized('Player')((id: Id) => {
-  const player = useSelector(
-    flow(
-      getSelectedGroup,
-      O.map(g => g.players),
-      O.flatMap(A.findFirst(p => p.id === id)),
+  const player = useSelector(s =>
+    pipe(
+      getPlayerFromSelectedGroup({ playerId: id })(s),
+      O.map(player => ({
+        ...player,
+        position: pipe(
+          getActiveModality(s),
+          O.flatMap(m =>
+            A.findFirst(m.positions, p => p.id === player.positionId),
+          ),
+        ),
+      })),
       O.map(Data.struct),
     ),
   )
@@ -180,7 +202,12 @@ const Item = memoized('Player')((id: Id) => {
             size: 18,
             weight: 600,
             color: Colors.text.dark,
-          })(position),
+          })(
+            O.match(position, {
+              onNone: () => '-',
+              onSome: Position.toAbbreviationString,
+            }),
+          ),
         ]),
         Txt({ size: 18, weight: 600, color: Colors.text.dark })(
           Rating.toString(rating),
@@ -223,57 +250,54 @@ const ShuffleButton = namedConst('ShuffleButton')(() => {
 const SortModal = namedConst('SortModal')(() => {
   const modalSortGroup = useSelector(s => s.ui.modalSortGroup)
   const mainSort = useSelector(s => s.groupOrder[0])
-  return pipe(
-    modalSortGroup,
-    O.match({
-      onNone: () => Nothing,
-      onSome: () =>
-        CenterModal({ onClose: on.sort.close(), title: 'Ordenação' })([
-          View({ roundB: 8, overflow: 'hidden' })([
-            FilterButton({
-              name: 'Nome',
-              onPress: on.sort.by.name(),
-              state:
-                mainSort._tag === 'name'
-                  ? O.some({ reverse: mainSort.reverse })
-                  : O.none(),
-            }),
-            FilterButton({
-              name: 'Posição',
-              onPress: on.sort.by.position(),
-              state:
-                mainSort._tag === 'position'
-                  ? O.some({ reverse: mainSort.reverse })
-                  : O.none(),
-            }),
-            FilterButton({
-              name: 'Habilidade',
-              onPress: on.sort.by.rating(),
-              state:
-                mainSort._tag === 'rating'
-                  ? O.some({ reverse: mainSort.reverse })
-                  : O.none(),
-            }),
-            FilterButton({
-              name: 'Ativo',
-              onPress: on.sort.by.active(),
-              state:
-                mainSort._tag === 'active'
-                  ? O.some({ reverse: mainSort.reverse })
-                  : O.none(),
-            }),
-            FilterButton({
-              name: 'Data',
-              onPress: on.sort.by.date(),
-              state:
-                mainSort._tag === 'date'
-                  ? O.some({ reverse: mainSort.reverse })
-                  : O.none(),
-            }),
-          ]),
+  return Boolean.match(modalSortGroup, {
+    onFalse: () => Nothing,
+    onTrue: () =>
+      CenterModal({ onClose: on.sort.close(), title: 'Ordenação' })([
+        View({ roundB: 8, overflow: 'hidden' })([
+          FilterButton({
+            name: 'Nome',
+            onPress: on.sort.by.name(),
+            state:
+              mainSort._tag === 'name'
+                ? O.some({ reverse: mainSort.reverse })
+                : O.none(),
+          }),
+          FilterButton({
+            name: 'Posição',
+            onPress: on.sort.by.position(),
+            state:
+              mainSort._tag === 'position'
+                ? O.some({ reverse: mainSort.reverse })
+                : O.none(),
+          }),
+          FilterButton({
+            name: 'Habilidade',
+            onPress: on.sort.by.rating(),
+            state:
+              mainSort._tag === 'rating'
+                ? O.some({ reverse: mainSort.reverse })
+                : O.none(),
+          }),
+          FilterButton({
+            name: 'Ativo',
+            onPress: on.sort.by.active(),
+            state:
+              mainSort._tag === 'active'
+                ? O.some({ reverse: mainSort.reverse })
+                : O.none(),
+          }),
+          FilterButton({
+            name: 'Data',
+            onPress: on.sort.by.date(),
+            state:
+              mainSort._tag === 'date'
+                ? O.some({ reverse: mainSort.reverse })
+                : O.none(),
+          }),
         ]),
-    }),
-  )
+      ]),
+  })
 })
 
 const FilterButton = (props: {
@@ -390,6 +414,40 @@ const ParametersModal = namedConst('ParametersModal')(() => {
         ]),
       ]),
   })
+})
+
+const DeleteGroupModal = namedConst('DeleteGroupModal')(() => {
+  const group = useSelector(getSelectedGroup)
+  const isOpen = useSelector(s => s.ui.modalDeleteGroup)
+  return CenterModal({
+    onClose: on.delete.close(),
+    visible: isOpen && O.isSome(group),
+    title: 'Excluir grupo',
+  })([
+    View({ p: 16 })(
+      pipe(
+        group,
+        O.map(g =>
+          TxtContext({ align: 'left', color: Colors.text.dark })([
+            Txt()('Deseja excluir o grupo '),
+            Txt({ weight: 600, color: Colors.text.dark })(g.name),
+            Txt()(' e todos os jogadores?'),
+          ]),
+        ),
+        A.fromOption,
+      ),
+    ),
+    View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
+    Row({ p: 16, gap: 8, justify: 'end' })([
+      GhostButton({ onPress: on.delete.close(), color: Colors.danger.$5 })([
+        Txt()('Cancelar'),
+      ]),
+      SolidButton({
+        onPress: on.delete.submit(),
+        color: Colors.danger.$5,
+      })([Txt()('Excluir')]),
+    ]),
+  ])
 })
 
 // spell-checker:words horiz

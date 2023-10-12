@@ -36,6 +36,8 @@ export type TextInputProps = TextInputStyleProps & {
   onBlur?: AppEvent
   ref?: React.RefObject<RNTextInput_>
   autoFocus?: boolean
+  autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters'
+  align?: 'left' | 'center' | 'right' | 'justify' | 'auto'
   placeholder?: string
   placeholderTextColor?: UIColor
   cursorColor?: UIColor
@@ -77,6 +79,7 @@ const getRawProps =
     },
     ref: props.ref,
     autoFocus: props.autoFocus,
+    autoCapitalize: props.autoCapitalize,
     placeholder: props.placeholder,
     placeholderTextColor: props.placeholderTextColor
       ? Color.toHex(Runtime.runSync(runtime)(props.placeholderTextColor))
@@ -85,6 +88,7 @@ const getRawProps =
       ? Color.toHex(Runtime.runSync(runtime)(props.cursorColor))
       : undefined,
     style: {
+      textAlign: props.align,
       padding: props?.p,
       paddingHorizontal: props?.px,
       paddingVertical: props?.py,

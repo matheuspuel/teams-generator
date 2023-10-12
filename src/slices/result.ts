@@ -1,6 +1,5 @@
-import { get } from '@fp-ts/optic'
 import { clockWith } from 'effect/Effect'
-import { A, F, Match, O, Record, constant, pipe } from 'fp'
+import { A, F, Match, O, Record, pipe } from 'fp'
 import { Player, TeamsGenerator } from 'src/datatypes'
 import { getResultRatingDeviance } from 'src/datatypes/TeamsGenerator'
 import { root } from 'src/model/optic'
@@ -14,19 +13,26 @@ export type GeneratedResult = Array<Array<Player>>
 export const eraseResult = State.on(root.at('result')).set(O.none())
 
 export const generateResult = pipe(
-  StateRef.query(State.get),
-  F.map(s =>
-    pipe(
-      get(root.at('ui').at('selectedGroupId'))(s),
-      O.flatMap(id => pipe(get(root.at('groups'))(s), Record.get(id))),
-      O.match_({ onNone: constant([]), onSome: g => g.players }),
-      A.filter(Player.isActive),
-      players => ({ players, parameters: get(root.at('parameters'))(s) }),
+  State.get.pipe(
+    F.flatMap(s =>
+      O.flatMap(s.ui.selectedGroupId, id => Record.get(s.groups, id)),
     ),
   ),
-  F.bind('start', () => clockWith(c => c.currentTimeMillis)),
-  F.bind('result', ({ players, parameters }) =>
-    TeamsGenerator.generateRandomBalancedTeams({
+  F.flatMap(group =>
+    F.all({
+      players: F.succeed(A.filter(group.players, Player.isActive)),
+      modality: State.get.pipe(
+        F.flatMap(s =>
+          A.findFirst(s.modalities, m => m.id === group.modalityId),
+        ),
+      ),
+      parameters: State.get.pipe(F.map(s => s.parameters)),
+      start: clockWith(c => c.currentTimeMillis),
+    }),
+  ),
+  StateRef.execute,
+  F.bind('result', ({ players, parameters, modality }) =>
+    TeamsGenerator.generateRandomBalancedTeams({ modality })({
       position: parameters.position,
       rating: parameters.rating,
       distribution: pipe(

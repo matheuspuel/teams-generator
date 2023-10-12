@@ -1,22 +1,11 @@
 import { Effect } from 'effect/Effect'
 import { sumAll } from 'effect/Number'
-import {
-    A,
-    F,
-    Match,
-    Number,
-    O,
-    Ord,
-    Order,
-    Record,
-    Tuple,
-    flow,
-    pipe,
-} from 'fp'
+import { A, F, Match, Number, O, Ord, Order, flow, pipe } from 'fp'
 import * as Player from 'src/datatypes/Player'
 import * as Position from 'src/datatypes/Position'
 import { findFirstMapWithIndex } from 'src/utils/Array'
 import { randomizeArray } from 'src/utils/Random'
+import { Modality } from './Modality'
 
 type Player = Player.Player
 type Position = Position.Position
@@ -30,28 +19,28 @@ const getFitOrdByDevianceFns = (
     Ord.combineAll<Array<Array<Player>>>,
   )
 
-const getResultPositionDeviance = (teams: Array<Array<Player>>): number =>
-  pipe(teams, A.flatten, allPlayers =>
-    pipe(
-      Position.Dict,
-      Record.toEntries,
-      A.map(Tuple.getFirst),
-      A.map(pos =>
-        pipe(
-          allPlayers,
-          positionCount(pos),
-          n => n / teams.length,
-          positionAvg =>
-            pipe(
-              teams,
-              A.map(flow(positionCount(pos), deviance(positionAvg))),
-              sumAll,
-            ),
+const getResultPositionDeviance =
+  (args: { modality: Modality }) =>
+  (teams: Array<Array<Player>>): number =>
+    pipe(teams, A.flatten, allPlayers =>
+      pipe(
+        args.modality.positions,
+        A.map(pos =>
+          pipe(
+            allPlayers,
+            positionCount(pos),
+            n => n / teams.length,
+            positionAvg =>
+              pipe(
+                teams,
+                A.map(flow(positionCount(pos), deviance(positionAvg))),
+                sumAll,
+              ),
+          ),
         ),
+        sumAll,
       ),
-      sumAll,
-    ),
-  )
+    )
 
 const fixFloatFactor = 1000000000000
 
@@ -106,7 +95,7 @@ const positionCount =
   (players: Array<Player>): number =>
     pipe(
       players,
-      A.filter(p => p.position === position),
+      A.filter(p => p.positionId === position.id),
       A.length,
     )
 
@@ -188,24 +177,27 @@ export type Criteria = {
     | { _tag: 'fixedNumberOfPlayers'; fixedNumberOfPlayers: number }
 }
 
-export const getFitOrdFromCriteria = (
-  criteria: Criteria,
-): Order<Array<Array<Player>>> =>
-  pipe(
-    [
-      criteria.position ? O.some(getResultPositionDeviance) : O.none(),
-      criteria.rating ? O.some(getResultRatingDeviance) : O.none(),
-    ],
-    A.compact,
-    getFitOrdByDevianceFns,
-  )
+export const getFitOrdFromCriteria =
+  (args: { modality: Modality }) =>
+  (criteria: Criteria): Order<Array<Array<Player>>> =>
+    pipe(
+      [
+        criteria.position ? O.some(getResultPositionDeviance(args)) : O.none(),
+        criteria.rating ? O.some(getResultRatingDeviance) : O.none(),
+      ],
+      A.compact,
+      getFitOrdByDevianceFns,
+    )
 
-export const balanceTeamsByCriteria = flow(getFitOrdFromCriteria, balanceTeams)
+export const balanceTeamsByCriteria = (args: { modality: Modality }) =>
+  flow(getFitOrdFromCriteria(args), balanceTeams)
 
-export const distributeTeams = (criteria: Criteria) =>
-  flow(divideTeams(criteria), balanceTeamsByCriteria(criteria))
+export const distributeTeams =
+  (args: { modality: Modality }) => (criteria: Criteria) =>
+    flow(divideTeams(criteria), balanceTeamsByCriteria(args)(criteria))
 
 export const generateRandomBalancedTeams =
+  (args: { modality: Modality }) =>
   (criteria: Criteria) =>
   (players: Array<Player>): Effect<never, never, Array<Array<Player>>> =>
-    pipe(randomizeArray(players), F.map(distributeTeams(criteria)))
+    pipe(randomizeArray(players), F.map(distributeTeams(args)(criteria)))

@@ -43,6 +43,9 @@ const State_ = preparedStateOperations<RootState>()
 
 export const State = {
   ...State_,
+  with: <B>(
+    selector: (rootState: RootState) => B,
+  ): Effect<Ref.Ref<RootState>, never, B> => State_.get.pipe(F.map(selector)),
   on: <B>(optic: Optic.PolyReversedPrism<RootState, RootState, B, B>) => ({
     get: State_.get.pipe(F.map(r => Optic.get(optic)(r))),
     set: (b: B) => State_.update(Optic.replace(optic)(b)),
