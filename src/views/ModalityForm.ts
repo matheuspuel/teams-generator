@@ -22,6 +22,7 @@ import { memoized, memoizedConst, namedConst } from 'src/components/hyperscript'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
 import { Colors } from 'src/services/Theme'
+import { getModality } from 'src/slices/groups'
 import { validateModalityForm } from 'src/slices/modalityForm'
 
 const on = appEvents.modality
@@ -74,7 +75,7 @@ const DeleteModal = namedConst('DeleteModal')(() => {
     s.ui.modalDeleteModality
       ? pipe(
           s.modalityForm.id,
-          O.flatMap(id => A.findFirst(s.modalities, m => m.id === id)),
+          O.flatMap(id => getModality(id)(s)),
         )
       : O.none(),
   )

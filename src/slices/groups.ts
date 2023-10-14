@@ -28,10 +28,13 @@ export const getSelectedGroup = (s: RootState) =>
     O.flatMap(id => getGroupById(id)(s)),
   )
 
+export const getModality = (id: Id) => (state: RootState) =>
+  A.findFirst(state.modalities, _ => _.id === id)
+
 export const getActiveModality = (s: RootState) =>
   pipe(
     getSelectedGroup(s),
-    O.flatMap(g => A.findFirst(s.modalities, m => m.id === g.modalityId)),
+    O.flatMap(g => getModality(g.modalityId)(s)),
   )
 
 export const getPlayerFromSelectedGroup =
@@ -65,16 +68,12 @@ export const editGroup = (args: { id: Id; name: string; modalityId: Id }) =>
       State.with(s =>
         pipe(
           Record.get(s.groups, args.id),
-          O.flatMap(prevGroup =>
-            A.findFirst(s.modalities, _ => _.id === prevGroup.modalityId),
-          ),
+          O.flatMap(prevGroup => getModality(prevGroup.modalityId)(s)),
         ),
       ),
     ),
     F.bind('nextModality', () =>
-      State.with(s =>
-        A.findFirst(s.modalities, _ => _.id === args.modalityId),
-      ).pipe(F.flatten),
+      State.with(getModality(args.modalityId)).pipe(F.flatten),
     ),
     F.flatMap(({ prevModality, nextModality }) =>
       refOnGroups.update(s =>

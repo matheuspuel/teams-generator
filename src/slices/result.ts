@@ -7,6 +7,7 @@ import { Metadata } from 'src/services/Metadata'
 import { State, StateRef } from 'src/services/StateRef'
 import { Telemetry } from 'src/services/Telemetry'
 import { Timestamp } from 'src/utils/datatypes'
+import { getModality } from './groups'
 
 export type GeneratedResult = Array<Array<Player>>
 
@@ -21,12 +22,8 @@ export const generateResult = pipe(
   F.flatMap(group =>
     F.all({
       players: F.succeed(A.filter(group.players, Player.isActive)),
-      modality: State.get.pipe(
-        F.flatMap(s =>
-          A.findFirst(s.modalities, m => m.id === group.modalityId),
-        ),
-      ),
-      parameters: State.get.pipe(F.map(s => s.parameters)),
+      modality: State.with(getModality(group.modalityId)).pipe(F.flatten),
+      parameters: State.with(s => s.parameters),
       start: clockWith(c => c.currentTimeMillis),
     }),
   ),

@@ -66,11 +66,6 @@ export const CreatedAtOrder: Order<Player> = pipe(
   Ord.mapInput(p => p.createdAt),
 )
 
-export const IdOrd: Order<Player> = pipe(
-  String.Order,
-  Ord.mapInput(p => p.id),
-)
-
 export const position =
   (args: { modality: Modality }) =>
   (player: Player): Option<Position> =>

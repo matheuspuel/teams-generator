@@ -18,7 +18,7 @@ import { Group } from 'src/datatypes'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
 import { Colors } from 'src/services/Theme'
-import { getGroupById } from 'src/slices/groups'
+import { getGroupById, getModality } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
 
 const on = appEvents.groups
@@ -98,8 +98,7 @@ const Item = memoized('Group')(Equal.equivalence(), (id: Id) => {
         Data.struct({
           name,
           modality: pipe(
-            s.modalities,
-            A.findFirst(_ => _.id === modalityId),
+            getModality(modalityId)(s),
             O.map(_ => _.name),
           ),
         }),

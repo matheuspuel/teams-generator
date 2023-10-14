@@ -14,6 +14,7 @@ import { memoized, memoizedConst } from 'src/components/hyperscript'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
 import { Colors } from 'src/services/Theme'
+import { getModality } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
 
 const on = appEvents.modality
@@ -66,9 +67,7 @@ const ScreenHeader = memoizedConst('ScreenHeader')(() =>
 )
 
 const Item = memoized('Modality')((id: Id) => {
-  const name = useSelector(s =>
-    A.findFirst(s.modalities, _ => _.id === id).pipe(O.map(m => m.name)),
-  )
+  const name = useSelector(s => getModality(id)(s).pipe(O.map(m => m.name)))
   return O.match(name, {
     onNone: () => Nothing,
     onSome: name =>

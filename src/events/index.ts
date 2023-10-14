@@ -31,6 +31,7 @@ import {
   editGroup,
   editPlayer,
   getActiveModality,
+  getModality,
   getPlayerFromSelectedGroup,
   getSelectedGroup,
   toggleAllPlayersActive,
@@ -101,7 +102,7 @@ export const appEvents = {
       ),
     open: (id: Id) =>
       pipe(
-        State.with(s => A.findFirst(s.modalities, _ => _.id === id)),
+        State.with(getModality(id)),
         F.flatten,
         F.tap(m =>
           State.on(root.at('modalityForm')).set({
@@ -137,9 +138,7 @@ export const appEvents = {
         ),
         F.bindTo('nextModality'),
         F.bind('prevModality', ({ nextModality }) =>
-          State.with(s =>
-            A.findFirst(s.modalities, m => m.id === nextModality.id),
-          ),
+          State.with(getModality(nextModality.id)),
         ),
         F.tap(({ nextModality }) =>
           State.on(root.at('modalities')).update(ms =>
@@ -196,9 +195,7 @@ export const appEvents = {
         pipe(
           State.with(s => s.modalityForm.id),
           F.flatten,
-          F.flatMap(id =>
-            State.with(s => A.findFirst(s.modalities, m => m.id === id)),
-          ),
+          F.flatMap(id => State.with(getModality(id))),
           F.flatten,
           F.bindTo('prevModality'),
           F.tap(({ prevModality }) =>

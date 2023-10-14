@@ -111,8 +111,7 @@ const PositionItem = memoized('PositionItem')((id: Id) => {
   const position = useSelector(s =>
     pipe(
       getActiveModality(s),
-      O.map(m => m.positions),
-      O.flatMap(A.findFirst(_ => _.id === id)),
+      O.flatMap(m => A.findFirst(m.positions, _ => _.id === id)),
     ),
   )
   const isActive = useSelector(s => s.playerForm.positionId === id)
