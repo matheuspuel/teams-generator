@@ -135,7 +135,7 @@ const PositionsField = memoizedConst('PositionsField')(() => {
   return View({ p: 4 })([
     FormLabel()('Posições'),
     Row({ p: 4 })([
-      View({ w: 80 })([FormLabel()('Sigla')]),
+      View({ w: 90 })([FormLabel()('Sigla')]),
       View()([FormLabel()('Nome')]),
     ]),
     View()(A.map(A.replicate(positionCount)(null), (_, i) => PositionItem(i))),
@@ -170,7 +170,7 @@ const PositionAbbreviationField = memoized('PositionAbbreviationField')((
   )
   return View({ p: 4 })([
     Input({
-      placeholder: 'Ex: LD',
+      placeholder: '  Ex: LD  ',
       value: abbreviation.pipe(O.getOrElse(() => '')),
       onChange: t => on.position.abbreviation.change({ index, value: t }),
       autoCapitalize: 'characters',

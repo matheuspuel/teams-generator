@@ -35,7 +35,7 @@ const RatingSlider_ = ({
   onChange: onChange_,
 }: RatingSliderProps) => {
   const paddingHorizontal = 16
-  const paddingVertical = 40
+  const paddingVertical = 25
   const trackWidth = 10
   const thumbSize = 30
   const tickWidth = 4
@@ -88,7 +88,7 @@ const RatingSlider_ = ({
         style={{
           paddingHorizontal: paddingHorizontal,
           paddingVertical: paddingVertical,
-          marginTop: -20,
+          marginTop: -10,
         }}
       >
         <Animated.View

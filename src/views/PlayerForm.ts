@@ -130,18 +130,26 @@ const PositionItem = memoized('PositionItem')((id: Id) => {
         rippleColor: F.map(Colors.primary.$5, withOpacity(31)),
         rippleOpacity: 0.1,
       })([
-        View({ w: 50 })([
+        View({ w: 30 })([
           isActive
             ? MaterialIcons({ name: 'check', color: Colors.primary.$5 })
             : Nothing,
         ]),
-        Txt({
-          w: 50,
-          align: 'center',
-          size: 20,
-          weight: 700,
-          color: Colors.primary.$5,
-        })(Position.toAbbreviationString(position)),
+        View({ minW: 70, align: 'center' })([
+          View({
+            p: 4,
+            round: 12,
+            bg: F.map(Colors.primary.$5, withOpacity(127)),
+            minW: 35,
+          })([
+            Txt({
+              align: 'center',
+              size: 18,
+              weight: 600,
+              includeFontPadding: false,
+            })(Position.toAbbreviationString(position)),
+          ]),
+        ]),
         Txt({ flex: 1, align: 'center', weight: 500 })(position.name),
       ]),
   })

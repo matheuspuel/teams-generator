@@ -31,6 +31,8 @@ export type ViewStyleProps = PaddingProps &
     key?: string
     w?: number
     h?: number
+    minW?: number
+    minH?: number
     aspectRatio?: number
     overflow?: 'visible' | 'hidden'
     shadow?: number
@@ -83,6 +85,8 @@ const getRawProps = (
     columnGap: props?.gapY,
     width: props?.w,
     height: props?.h,
+    minWidth: props?.minW,
+    minHeight: props?.minH,
     aspectRatio: props?.aspectRatio,
     flex: props?.flex,
     flexDirection: props?.direction,

@@ -274,7 +274,7 @@ export const appEvents = {
                 .at('positions')
                 .compose(Optic.nonEmptyIndex(args.index))
                 .at('abbreviation'),
-            ).set(args.value.slice(0, 2).toUpperCase()),
+            ).set(args.value.slice(0, 3).toUpperCase()),
           ),
       },
       name: {

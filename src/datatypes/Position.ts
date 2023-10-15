@@ -4,7 +4,7 @@ import { NonEmptyString } from 'src/utils/datatypes/NonEmptyString'
 
 export const Abbreviation = pipe(
   NonEmptyString,
-  S.maxLength(2),
+  S.maxLength(3),
   S.lowercased(),
   S.brand('Abbreviation'),
 )

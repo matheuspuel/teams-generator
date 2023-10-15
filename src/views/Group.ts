@@ -189,19 +189,16 @@ const Item = memoized('Player')((id: Id) => {
           mr: -8,
         }),
         View({
-          aspectRatio: 1,
-          alignSelf: 'stretch',
-          justify: 'center',
           p: 4,
-          my: 4,
-          round: 9999,
-          bg: Colors.yellow.$3,
+          round: 12,
+          bg: F.map(Colors.primary.$5, withOpacity(127)),
+          minW: 35,
         })([
           Txt({
-            includeFontPadding: false,
+            align: 'center',
             size: 18,
             weight: 600,
-            color: Colors.text.dark,
+            includeFontPadding: false,
           })(
             O.match(position, {
               onNone: () => '-',
