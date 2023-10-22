@@ -12,7 +12,13 @@ import {
   not,
   pipe,
 } from 'fp'
-import { Parameters as Parameters_, Player, Rating } from 'src/datatypes'
+import {
+  Modality,
+  Parameters as Parameters_,
+  Player,
+  Rating,
+} from 'src/datatypes'
+import { soccer } from 'src/datatypes/Modality'
 import { exportGroup, importGroupFromDocumentPicker } from 'src/export/group'
 import { root } from 'src/model/optic'
 import { AppRequirements } from 'src/runtime'
@@ -100,18 +106,19 @@ export const appEvents = {
           navigate(Route('ModalityForm')()),
         ]),
       ),
-    open: (id: Id) =>
+    open: (modality: Modality.Reference) =>
       pipe(
-        State.with(getModality(id)),
+        State.with(getModality(modality)),
         F.flatten,
+        F.flatMap(m => (m._tag === 'StaticModality' ? O.none() : O.some(m))),
         F.tap(m =>
           State.on(root.at('modalityForm')).set({
-            id: O.some(id),
+            id: O.some(m.id),
             name: m.name,
             positions: A.mapNonEmpty(m.positions, p => ({
               abbreviation: p.abbreviation.toUpperCase(),
               name: p.name,
-              id: O.some(p.id),
+              oldAbbreviation: O.some(p.abbreviation),
             })),
           }),
         ),
@@ -125,23 +132,20 @@ export const appEvents = {
         F.flatMap(validateModalityForm),
         F.flatMap(f =>
           F.all({
+            _tag: F.succeed('CustomModality' as const),
             id: F.orElse(f.id, () => IdGenerator.generate()),
             name: F.succeed(f.name),
-            positions: F.all(
-              A.mapNonEmpty(f.positions, p =>
-                F.orElse(p.id, () => IdGenerator.generate()).pipe(
-                  F.map(id => ({ ...p, id })),
-                ),
-              ),
-            ),
+            positions: F.succeed(f.positions),
           }),
         ),
         F.bindTo('nextModality'),
         F.bind('prevModality', ({ nextModality }) =>
-          State.with(getModality(nextModality.id)),
+          State.with(
+            getModality({ _tag: 'CustomModality', id: nextModality.id }),
+          ),
         ),
         F.tap(({ nextModality }) =>
-          State.on(root.at('modalities')).update(ms =>
+          State.on(root.at('customModalities')).update(ms =>
             pipe(
               A.filter(ms, m => m.id !== nextModality.id),
               A.prepend(nextModality),
@@ -154,14 +158,17 @@ export const appEvents = {
             F.tap(prevModality =>
               State.on(root.at('groups')).update(
                 Record.map(g =>
-                  g.modalityId === prevModality.id
+                  g.modality.id === prevModality.id
                     ? {
                         ...g,
                         players: A.map(
                           g.players,
                           adjustPlayerPosition({
                             prevModality: O.some(prevModality),
-                            nextModality,
+                            nextModality: {
+                              _tag: 'edited',
+                              modality: nextModality,
+                            },
                           }),
                         ),
                       }
@@ -195,29 +202,39 @@ export const appEvents = {
         pipe(
           State.with(s => s.modalityForm.id),
           F.flatten,
-          F.flatMap(id => State.with(getModality(id))),
+          F.flatMap(id =>
+            State.with(getModality({ _tag: 'CustomModality', id })),
+          ),
           F.flatten,
           F.bindTo('prevModality'),
           F.tap(({ prevModality }) =>
-            State.on(root.at('modalities')).update(
+            State.on(root.at('customModalities')).update(
               A.filter(m => m.id !== prevModality.id),
             ),
           ),
           F.bind('nextModality', () =>
-            State.with(s => A.head(s.modalities)).pipe(F.flatten),
+            State.with(s =>
+              A.head(s.customModalities).pipe(O.getOrElse(() => soccer)),
+            ),
           ),
           F.tap(({ nextModality, prevModality }) =>
             State.on(root.at('groups')).update(
               Record.map(g =>
-                g.modalityId === prevModality.id
+                g.modality.id === prevModality.id
                   ? {
                       ...g,
-                      modalityId: nextModality.id,
+                      modality:
+                        nextModality._tag === 'CustomModality'
+                          ? { _tag: nextModality._tag, id: nextModality.id }
+                          : { _tag: nextModality._tag, id: nextModality.id },
                       players: A.map(
                         g.players,
                         adjustPlayerPosition({
                           prevModality: O.some(prevModality),
-                          nextModality,
+                          nextModality: {
+                            _tag: 'unchanged',
+                            modality: nextModality,
+                          },
                         }),
                       ),
                     }
@@ -316,12 +333,14 @@ export const appEvents = {
       upsert: {
         new: () =>
           pipe(
-            State.with(s => A.head(s.modalities)),
+            State.with(s =>
+              A.head(s.customModalities).pipe(O.getOrElse(() => soccer)),
+            ),
             F.flatMap(m =>
               State.on(root.at('groupForm')).set({
                 id: O.none(),
                 name: '',
-                modalityId: O.map(m, _ => _.id),
+                modality: m,
               }),
             ),
             F.tap(() => navigate(Route('GroupForm')())),
@@ -335,7 +354,7 @@ export const appEvents = {
               State.on(root.at('groupForm')).set({
                 id: O.some(g.id),
                 name: g.name,
-                modalityId: O.some(g.modalityId),
+                modality: g.modality,
               }),
             ),
             F.tap(() => navigate(Route('GroupForm')())),
@@ -354,13 +373,10 @@ export const appEvents = {
               f => not(String.isEmpty)(f.name),
               () => O.none(),
             ),
-            F.flatMap(f =>
-              O.map(f.modalityId, mId => ({ ...f, modalityId: mId })),
-            ),
-            F.flatMap(m =>
-              O.match(m.id, {
-                onNone: () => createGroup(m),
-                onSome: id => editGroup({ ...m, id }),
+            F.flatMap(g =>
+              O.match(g.id, {
+                onNone: () => createGroup(g),
+                onSome: id => editGroup({ ...g, id }),
               }),
             ),
             F.tap(() => goBack),
@@ -488,7 +504,10 @@ export const appEvents = {
       change: flow(State.on(root.at('playerForm').at('name')).set, exec),
     },
     position: {
-      change: flow(State.on(root.at('playerForm').at('positionId')).set, exec),
+      change: flow(
+        State.on(root.at('playerForm').at('positionAbbreviation')).set,
+        exec,
+      ),
     },
     rating: {
       change: flow(

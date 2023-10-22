@@ -75,44 +75,36 @@ const DeleteModal = namedConst('DeleteModal')(() => {
     s.ui.modalDeleteModality
       ? pipe(
           s.modalityForm.id,
-          O.flatMap(id => getModality(id)(s)),
+          O.flatMap(id => getModality({ _tag: 'CustomModality', id })(s)),
         )
       : O.none(),
   )
-  const canDelete = useSelector(s => s.modalities.length > 1)
   return CenterModal({
     onClose: on.remove.close(),
     visible: O.isSome(modality),
     title: 'Excluir modalidade',
   })([
     View({ p: 16 })([
-      canDelete
-        ? O.match(modality, {
-            onNone: () => Nothing,
-            onSome: m =>
-              TxtContext({ align: 'left', color: Colors.text.dark })([
-                Txt()('Deseja excluir a modalidade '),
-                Txt({ weight: 600, color: Colors.text.dark })(m.name),
-                Txt()(
-                  '? As posições dos jogadores desta modalidade serão perdidas.',
-                ),
-              ]),
-          })
-        : Txt({ align: 'left', color: Colors.text.dark })(
-            'Não é possível excluir a modalidade. É necessário existir ao menos uma modalidade cadastrada.',
-          ),
+      O.match(modality, {
+        onNone: () => Nothing,
+        onSome: m =>
+          TxtContext({ align: 'left', color: Colors.text.dark })([
+            Txt()('Deseja excluir a modalidade '),
+            Txt({ weight: 600, color: Colors.text.dark })(m.name),
+            Txt()(
+              '? As posições dos jogadores desta modalidade serão perdidas.',
+            ),
+          ]),
+      }),
     ]),
     View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
     Row({ p: 16, gap: 8, justify: 'end' })([
       GhostButton({ onPress: on.remove.close(), color: Colors.danger.$5 })([
         Txt()('Cancelar'),
       ]),
-      canDelete
-        ? SolidButton({
-            onPress: on.remove.submit(),
-            color: Colors.danger.$5,
-          })([Txt()('Excluir')])
-        : Nothing,
+      SolidButton({ onPress: on.remove.submit(), color: Colors.danger.$5 })([
+        Txt()('Excluir'),
+      ]),
     ]),
   ])
 })

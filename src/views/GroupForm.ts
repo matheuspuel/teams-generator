@@ -18,6 +18,7 @@ import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { SolidButton } from 'src/components/derivative/SolidButton'
 import { memoizedConst, named } from 'src/components/hyperscript'
 import { Modality } from 'src/datatypes'
+import { staticModalities } from 'src/datatypes/Modality'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
 import { Colors } from 'src/services/Theme'
@@ -26,10 +27,7 @@ import { withOpacity } from 'src/utils/datatypes/Color'
 const on = appEvents.groups.item
 
 export const GroupForm = memoizedConst('GroupForm')(() => {
-  const isEnabled = useSelector(
-    s =>
-      String.isNonEmpty(s.groupForm.name) && O.isSome(s.groupForm.modalityId),
-  )
+  const isEnabled = useSelector(s => String.isNonEmpty(s.groupForm.name))
   return Fragment([
     ScreenHeader,
     ScrollView({
@@ -76,7 +74,8 @@ const NameField = memoizedConst('NameField')(() => {
 })
 
 const ModalityField = memoizedConst('ModalityField')(() => {
-  const modalities = useSelector(s => s.modalities)
+  const customModalities = useSelector(s => s.customModalities)
+  const modalities = [...customModalities, ...staticModalities]
   return View({ p: 4 })([
     Row({ justify: 'space-between', align: 'center' })([
       FormLabel()('Modalidade/Esporte'),
@@ -92,15 +91,10 @@ const ModalityField = memoizedConst('ModalityField')(() => {
 })
 
 const ModalityItem = named('ModalityItem')((props: Modality) => {
-  const isActive = useSelector(s =>
-    s.groupForm.modalityId.pipe(
-      O.map(_ => _ === props.id),
-      O.getOrElse(() => false),
-    ),
-  )
+  const isActive = useSelector(s => s.groupForm.modality.id === props.id)
   return Pressable({
     key: props.id,
-    onPress: on.upsert.form.modality.change(O.some(props.id)),
+    onPress: on.upsert.form.modality.change(props),
     py: 4,
     px: 12,
     round: 8,

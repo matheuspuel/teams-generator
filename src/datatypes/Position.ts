@@ -1,5 +1,4 @@
 import { S, pipe } from 'fp'
-import { Id } from 'src/utils/Entity'
 import { NonEmptyString } from 'src/utils/datatypes/NonEmptyString'
 
 export const Abbreviation = pipe(
@@ -12,7 +11,6 @@ export type Abbreviation = S.Schema.To<typeof Abbreviation>
 
 export interface Position extends S.Schema.To<typeof Position_> {}
 const Position_ = S.struct({
-  id: Id,
   abbreviation: Abbreviation,
   name: NonEmptyString,
 })

@@ -2,13 +2,16 @@
 import * as Arb from '@effect/schema/Arbitrary'
 import * as fc from 'fast-check'
 import { A, Eq, Match, Ord, Semigroup, constant, identity, pipe } from 'fp'
-import { soccerMock as modality } from 'src/mocks/Modality'
 import { playersMock } from 'src/mocks/Player'
 import { getCombinationsIndices } from 'src/utils/Combinations'
 import { Id } from 'src/utils/Entity'
 import { Timestamp } from 'src/utils/datatypes'
 import { Player } from '.'
+import { soccer } from './Modality'
+import { Abbreviation } from './Position'
 import { distributeTeams, getFitOrdFromCriteria } from './TeamsGenerator'
+
+const modality = soccer
 
 const getAllCombinationsOfSubListsWithEqualLength =
   (numOfLists: number) =>
@@ -128,7 +131,7 @@ describe('Balance teams', () => {
         id: Id(''),
         name: '',
         rating: 6.5,
-        positionId: Id('M'),
+        positionAbbreviation: Abbreviation('m'),
         createdAt: Timestamp.Schema(0),
       },
       {
@@ -136,7 +139,7 @@ describe('Balance teams', () => {
         id: Id(''),
         name: '',
         rating: 3.5,
-        positionId: Id('M'),
+        positionAbbreviation: Abbreviation('m'),
         createdAt: Timestamp.Schema(0),
       },
       {
@@ -144,7 +147,7 @@ describe('Balance teams', () => {
         id: Id(''),
         name: '',
         rating: 2.5,
-        positionId: Id('LE'),
+        positionAbbreviation: Abbreviation('le'),
         createdAt: Timestamp.Schema(0),
       },
       {
@@ -152,7 +155,7 @@ describe('Balance teams', () => {
         id: Id(''),
         name: '',
         rating: 3,
-        positionId: Id('M'),
+        positionAbbreviation: Abbreviation('m'),
         createdAt: Timestamp.Schema(0),
       },
       {
@@ -160,7 +163,7 @@ describe('Balance teams', () => {
         id: Id(''),
         name: '',
         rating: 5,
-        positionId: Id('Z'),
+        positionAbbreviation: Abbreviation('z'),
         createdAt: Timestamp.Schema(0),
       },
     ]
@@ -267,8 +270,12 @@ describe('Balance teams', () => {
                     A.every(
                       pos =>
                         Math.abs(
-                          a.filter(p => p.positionId === pos.id).length -
-                            b.filter(p => p.positionId === pos.id).length,
+                          a.filter(
+                            p => p.positionAbbreviation === pos.abbreviation,
+                          ).length -
+                            b.filter(
+                              p => p.positionAbbreviation === pos.abbreviation,
+                            ).length,
                         ) <= 1,
                     ),
                   ),

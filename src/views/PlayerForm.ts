@@ -16,11 +16,11 @@ import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { SolidButton } from 'src/components/derivative/SolidButton'
 import { memoized, memoizedConst } from 'src/components/hyperscript'
 import { Position, Rating } from 'src/datatypes'
+import { Abbreviation } from 'src/datatypes/Position'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
 import { Colors } from 'src/services/Theme'
 import { getActiveModality } from 'src/slices/groups'
-import { Id } from 'src/utils/Entity'
 import { withOpacity } from 'src/utils/datatypes/Color'
 import { RatingSlider } from './components/RatingSlider'
 
@@ -103,24 +103,28 @@ const PositionField = memoizedConst('PositionField')(() => {
   )
   return View({ p: 4 })([
     FormLabel()('Posição'),
-    View()(A.map(positions, p => PositionItem(p.id))),
+    View()(A.map(positions, p => PositionItem(p.abbreviation))),
   ])
 })
 
-const PositionItem = memoized('PositionItem')((id: Id) => {
+const PositionItem = memoized('PositionItem')((abbreviation: Abbreviation) => {
   const position = useSelector(s =>
     pipe(
       getActiveModality(s),
-      O.flatMap(m => A.findFirst(m.positions, _ => _.id === id)),
+      O.flatMap(m =>
+        A.findFirst(m.positions, _ => _.abbreviation === abbreviation),
+      ),
     ),
   )
-  const isActive = useSelector(s => s.playerForm.positionId === id)
+  const isActive = useSelector(
+    s => s.playerForm.positionAbbreviation === abbreviation,
+  )
   return O.match(position, {
     onNone: () => Nothing,
     onSome: position =>
       Pressable({
-        key: position.id,
-        onPress: on.position.change(position.id),
+        key: position.abbreviation,
+        onPress: on.position.change(position.abbreviation),
         py: 4,
         px: 12,
         round: 8,

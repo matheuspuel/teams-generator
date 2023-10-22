@@ -94,11 +94,11 @@ const Item = memoized('Group')(Equal.equivalence(), (id: Id) => {
   const group = useSelector(s =>
     pipe(
       getGroupById(id)(s),
-      O.map(({ name, modalityId }) =>
+      O.map(({ name, modality }) =>
         Data.struct({
           name,
           modality: pipe(
-            getModality(modalityId)(s),
+            getModality(modality)(s),
             O.map(_ => _.name),
           ),
         }),

@@ -8,6 +8,7 @@
     "android": "SET APP_VARIANT=development&& expo run:android",
     "ios": "SET APP_VARIANT=development&& expo run:ios",
     "web": "SET APP_VARIANT=development&& expo start --web",
+    "test:watch": "jest --watch",
     "lint": "eslint .",
     "eas-build-pre-install": "npm i -g pnpm@8.9.0",
     "build:development": "eas build --platform android --profile development",

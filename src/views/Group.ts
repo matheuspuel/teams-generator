@@ -163,7 +163,10 @@ const Item = memoized('Player')((id: Id) => {
         position: pipe(
           getActiveModality(s),
           O.flatMap(m =>
-            A.findFirst(m.positions, p => p.id === player.positionId),
+            A.findFirst(
+              m.positions,
+              p => p.abbreviation === player.positionAbbreviation,
+            ),
           ),
         ),
       })),

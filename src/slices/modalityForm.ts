@@ -8,14 +8,14 @@ export type ModalityForm = {
   id: Option<Id>
   name: string
   positions: NonEmptyReadonlyArray<{
-    id: Option<Id>
+    oldAbbreviation: Option<Abbreviation>
     abbreviation: string
     name: string
   }>
 }
 
 export const blankPositionForm: ModalityForm['positions'][number] = {
-  id: O.none(),
+  oldAbbreviation: O.none(),
   abbreviation: '',
   name: '',
 }
@@ -33,12 +33,21 @@ export const validateModalityForm = (f: ModalityForm) =>
     positions: E.all(
       A.mapNonEmpty(f.positions, p =>
         E.all({
-          id: E.right(p.id),
+          oldAbbreviation: E.right(p.oldAbbreviation),
           abbreviation: S.decodeEither(
             S.Lowercase.pipe(S.compose(Abbreviation)),
           )(p.abbreviation),
           name: S.decodeEither(NonEmptyString)(p.name),
         }),
+      ),
+    ).pipe(
+      E.flatMap(ps =>
+        ps.every(
+          (a, ai) =>
+            !ps.some((b, bi) => a.abbreviation === b.abbreviation && ai !== bi),
+        )
+          ? E.right(ps)
+          : E.left('duplicatePositions' as const),
       ),
     ),
   })

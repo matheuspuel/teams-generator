@@ -12,7 +12,9 @@ export const saveState = () =>
     F.tap(flow(get(root.at('groups')), Repository.teams.Groups.set)),
     F.tap(flow(get(root.at('parameters')), Repository.teams.Parameters.set)),
     F.tap(flow(get(root.at('groupOrder')), Repository.teams.GroupOrder.set)),
-    F.tap(flow(get(root.at('modalities')), Repository.teams.Modality.set)),
+    F.tap(
+      flow(get(root.at('customModalities')), Repository.teams.Modality.set),
+    ),
     F.catchAll(() => F.unit),
   )
 
@@ -40,7 +42,7 @@ export const hydrate = F.all([
     Repository.teams.Modality.get(),
     F.catchAll(() => F.succeed([])),
     F.flatMap(data =>
-      StateRef.execute(State.on(root.at('modalities')).set(data)),
+      StateRef.execute(State.on(root.at('customModalities')).set(data)),
     ),
   ),
 ]).pipe(F.asUnit)

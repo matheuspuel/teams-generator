@@ -114,7 +114,7 @@ const TeamItem = (props: {
 
 const PlayerItem = ({
   key,
-  player: { name, positionId, rating },
+  player: { name, positionAbbreviation, rating },
   modality,
 }: {
   key: string
@@ -127,7 +127,7 @@ const PlayerItem = ({
     Txt({ color: Colors.text.dark })(
       ` (${pipe(
         modality.positions,
-        A.findFirst(_ => _.id === positionId),
+        A.findFirst(_ => _.abbreviation === positionAbbreviation),
         O.map(Position.toAbbreviationString),
         O.getOrElse(() => '-'),
       )})`,

@@ -19,15 +19,12 @@ import { Modality } from './Modality'
 import * as Position from './Position'
 import * as Rating from './Rating'
 
-type Position = Position.Position
-type Rating = Rating.Rating
-
 export interface Player extends S.Schema.To<typeof Schema_> {}
 const Schema_ = S.struct({
   id: Id,
   name: S.string,
   rating: Rating.Schema,
-  positionId: Id,
+  positionAbbreviation: Position.Abbreviation,
   active: S.boolean,
   createdAt: Timestamp.Schema,
 })
@@ -41,7 +38,7 @@ export const PositionOrd = (args: { modality: Modality }): Order<Player> =>
   Ord.mapInput(Number.Order, p =>
     pipe(
       args.modality.positions,
-      A.findFirstIndex(po => po.id === p.positionId),
+      A.findFirstIndex(po => po.abbreviation === p.positionAbbreviation),
       O.getOrElse(() => -1),
     ),
   )
@@ -68,10 +65,10 @@ export const CreatedAtOrder: Order<Player> = pipe(
 
 export const position =
   (args: { modality: Modality }) =>
-  (player: Player): Option<Position> =>
+  (player: Player): Option<Position.Position> =>
     pipe(
       args.modality.positions,
-      A.findFirst(po => po.id === player.positionId),
+      A.findFirst(po => po.abbreviation === player.positionAbbreviation),
     )
 
 export const toString =

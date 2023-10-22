@@ -95,7 +95,7 @@ const positionCount =
   (players: Array<Player>): number =>
     pipe(
       players,
-      A.filter(p => p.positionId === position.id),
+      A.filter(p => p.positionAbbreviation === position.abbreviation),
       A.length,
     )
 

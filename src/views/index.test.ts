@@ -4,6 +4,7 @@
 
 import { act, create } from 'react-test-renderer'
 import { GroupOrder, Parameters } from 'src/datatypes'
+import { Abbreviation } from 'src/datatypes/Position'
 import { AppEvent, appEvents as on } from 'src/events'
 import { AlertLive } from 'src/services/Alert/default'
 import { BackHandlerEnv } from 'src/services/BackHandler'
@@ -149,7 +150,7 @@ it('renders', async () => {
   expect(ui.toJSON()).toMatchSnapshot()
   await act(async () => {
     await dispatch(on.player.name.change('player 1'))
-    await dispatch(on.player.position.change(Id('G')))
+    await dispatch(on.player.position.change(Abbreviation('g')))
     await dispatch(on.player.rating.change(1.5))
     await dispatch(on.player.save())
     await dispatch(on.group.parameters.open())

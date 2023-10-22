@@ -1,4 +1,4 @@
-import { A, Data, O, pipe } from 'fp'
+import { Data, O } from 'fp'
 import {
   FlatList,
   Header,
@@ -11,27 +11,24 @@ import {
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { memoized, memoizedConst } from 'src/components/hyperscript'
+import { Modality } from 'src/datatypes'
+import { staticModalities } from 'src/datatypes/Modality'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
 import { Colors } from 'src/services/Theme'
 import { getModality } from 'src/slices/groups'
-import { Id } from 'src/utils/Entity'
 
 const on = appEvents.modality
 
 export const ModalitiesView = memoizedConst('ModalitiesView')(() => {
-  const modalitiesIds = useSelector(s =>
-    pipe(
-      s.modalities,
-      A.map(_ => _.id),
-      Data.array,
-    ),
+  const modalities = useSelector(s =>
+    Data.array([...s.customModalities, ...staticModalities]),
   )
   return View({ flex: 1 })([
     ScreenHeader,
     FlatList({
-      data: modalitiesIds,
-      keyExtractor: id => id,
+      data: modalities,
+      keyExtractor: m => m.id,
       renderItem: Item,
       ListEmptyComponent: View({ flex: 1, justify: 'center' })([
         Txt({ size: 16, color: Colors.gray.$3 })(
@@ -66,26 +63,36 @@ const ScreenHeader = memoizedConst('ScreenHeader')(() =>
   ]),
 )
 
-const Item = memoized('Modality')((id: Id) => {
-  const name = useSelector(s => getModality(id)(s).pipe(O.map(m => m.name)))
+const Item = memoized('Modality')((modality: Modality.Reference) => {
+  const name = useSelector(s =>
+    getModality(modality)(s).pipe(O.map(m => m.name)),
+  )
   return O.match(name, {
     onNone: () => Nothing,
     onSome: name =>
       Pressable({
-        onPress: on.open(id),
+        onPress: on.open(modality),
         direction: 'row',
         align: 'center',
         p: 12,
         round: 8,
         shadow: 1,
         bg: Colors.white,
+        isEnabled: modality._tag === 'CustomModality',
       })([
+        View({ minW: 30 })([]),
         Txt({
+          flex: 1,
           color: Colors.text.dark,
           numberOfLines: 1,
           size: 16,
           weight: 500,
         })(name),
+        View({ minW: 30, h: 24, align: 'end' })([
+          modality._tag === 'CustomModality'
+            ? Nothing
+            : MaterialIcons({ name: 'lock', color: Colors.gray.$2 }),
+        ]),
       ]),
   })
 })

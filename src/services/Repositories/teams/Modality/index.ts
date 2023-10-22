@@ -1,7 +1,7 @@
 import { Effect } from 'fp'
-import { Modality } from 'src/datatypes'
+import { CustomModality } from 'src/datatypes/Modality'
 
 export type ModalityRepository = {
-  get: () => Effect<never, unknown, ReadonlyArray<Modality>>
-  set: (value: ReadonlyArray<Modality>) => Effect<never, unknown, void>
+  get: () => Effect<never, unknown, ReadonlyArray<CustomModality>>
+  set: (value: ReadonlyArray<CustomModality>) => Effect<never, unknown, void>
 }

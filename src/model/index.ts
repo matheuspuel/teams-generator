@@ -1,6 +1,7 @@
 import { A, O, Option } from 'fp'
-import { GroupOrder, Parameters } from 'src/datatypes'
-import { Modality } from 'src/datatypes/Modality'
+import { GroupOrder, Modality, Parameters } from 'src/datatypes'
+import { CustomModality, soccer } from 'src/datatypes/Modality'
+import { Abbreviation } from 'src/datatypes/Position'
 import { GroupsState, emptyGroups } from 'src/slices/groups'
 import { ModalityForm, initialModalityForm } from 'src/slices/modalityForm'
 import { PlayerForm } from 'src/slices/playerForm'
@@ -14,10 +15,14 @@ export type RootState = {
   parameters: Parameters
   groupOrder: GroupOrder
   groups: GroupsState
-  modalities: ReadonlyArray<Modality>
+  customModalities: ReadonlyArray<CustomModality>
   result: Option<GeneratedResult>
   playerForm: PlayerForm
-  groupForm: { id: Option<Id>; name: string; modalityId: Option<Id> }
+  groupForm: {
+    id: Option<Id>
+    name: string
+    modality: Modality.Reference
+  }
   modalityForm: ModalityForm
   ui: {
     selectedGroupId: Option<Id>
@@ -36,10 +41,10 @@ export const initialAppState: RootState = {
   core: { isLoaded: false },
   alert: O.none(),
   groups: emptyGroups,
-  modalities: A.empty(),
+  customModalities: A.empty(),
   parameters: Parameters.initial,
-  playerForm: { name: '', positionId: Id('0'), rating: 5 },
-  groupForm: { id: O.none(), name: '', modalityId: O.none() },
+  playerForm: { name: '', positionAbbreviation: Abbreviation('a'), rating: 5 },
+  groupForm: { id: O.none(), name: '', modality: soccer },
   modalityForm: initialModalityForm,
   result: O.none(),
   groupOrder: GroupOrder.initial,

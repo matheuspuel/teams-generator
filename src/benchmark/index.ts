@@ -4,12 +4,12 @@ import * as Benchmark from 'benchmark'
 import * as fc from 'fast-check'
 import { A, Match, Semigroup, String, constant, pipe } from 'fp'
 import { Player } from 'src/datatypes'
+import { soccer } from 'src/datatypes/Modality'
 import {
   Criteria,
   distributeTeams,
   getFitOrdFromCriteria,
 } from 'src/datatypes/TeamsGenerator'
-import { soccerMock as modality } from 'src/mocks/Modality'
 import { getCombinationsIndices } from 'src/utils/Combinations'
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -93,6 +93,8 @@ const criteria2: Criteria = {
   rating: true,
   distribution: { _tag: 'fixedNumberOfPlayers', fixedNumberOfPlayers: 4 },
 }
+
+const modality = soccer
 
 void (async () => {
   await new Promise(resolve => {

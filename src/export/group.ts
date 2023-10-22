@@ -1,17 +1,10 @@
-import {
-  A,
-  Data,
-  F,
-  HashMap,
-  Match,
-  O,
-  S,
-  Stream,
-  String,
-  flow,
-  pipe,
-} from 'fp'
+import { A, Data, F, Match, O, S, Stream, String, flow, pipe } from 'fp'
 import { Group, Modality } from 'src/datatypes'
+import {
+  CustomModality,
+  soccer,
+  staticModalities,
+} from 'src/datatypes/Modality'
 import { root } from 'src/model/optic'
 import { Alert } from 'src/services/Alert'
 import { DocumentPicker } from 'src/services/DocumentPicker'
@@ -22,6 +15,7 @@ import { ShareService } from 'src/services/Share'
 import { State, StateRef } from 'src/services/StateRef'
 import { addImportedGroup, getGroupById, getModality } from 'src/slices/groups'
 import { normalize } from 'src/utils/String'
+import { NonEmptyString } from 'src/utils/datatypes/NonEmptyString'
 
 export const exportGroup = () =>
   pipe(
@@ -35,13 +29,13 @@ export const exportGroup = () =>
     F.flatten,
     F.bindTo('group'),
     F.bind('modality', ({ group }) =>
-      State.with(getModality(group.modalityId)).pipe(F.flatten),
+      State.with(getModality(group.modality)).pipe(F.flatten),
     ),
     StateRef.query,
     F.bind('fileUri', ({ group }) => makeFileUri(group)),
     F.tap(({ group, modality, fileUri }) =>
       pipe(
-        S.encode(schema)({ group, modality }),
+        S.encode(schema)({ ...group, modality }),
         F.tap(s => FileSystem.write({ uri: fileUri, data: s })),
       ),
     ),
@@ -74,100 +68,93 @@ export const setupReceiveURLHandler = () =>
   )
 
 export const _importGroup = (
-  data: Readonly<{
-    group: Group
-    modality: Modality
-  }>,
+  data: Omit<Group, 'modality'> & {
+    modality: { _tag: 'StaticModality'; id: NonEmptyString } | CustomModality
+  },
 ) =>
-  pipe(
-    F.succeed(data),
-    F.bind('existingModality', ({ modality }) =>
-      State.with(s =>
-        A.findFirst(
-          s.modalities,
-          m =>
-            m.name === modality.name &&
-            modality.positions.every(a =>
-              m.positions.some(b => a.abbreviation === b.abbreviation),
-            ),
-        ),
-      ),
-    ),
-    F.bind('positions', ({ modality, existingModality }) =>
-      pipe(
-        modality.positions,
-        A.map(p => [p.id, p] as const),
-        F.forEach(([oldId, p]) =>
-          existingModality.pipe(
-            O.flatMap(m =>
-              A.findFirst(
-                m.positions,
-                p2 => p2.abbreviation === p.abbreviation,
-              ),
-            ),
-            O.map(_ => _.id),
-            F.orElse(() => IdGenerator.generate()),
-            F.map(id => [oldId, { ...p, id }] as const),
-          ),
-        ),
-        F.map(HashMap.fromIterable),
-      ),
-    ),
-    F.bind('nextModalityId', ({ existingModality }) =>
-      existingModality.pipe(
-        O.map(_ => _.id),
-        F.orElse(() => IdGenerator.generate()),
-      ),
-    ),
-    F.tap(({ existingModality, positions, modality, nextModalityId }) =>
-      O.match(existingModality, {
-        onNone: () =>
+  data.modality._tag === 'StaticModality'
+    ? pipe(
+        A.findFirst(staticModalities, m => m.id === data.modality.id),
+        O.getOrElse(() => soccer),
+        modality =>
           pipe(
             F.all({
-              id: F.succeed(nextModalityId),
-              name: F.succeed(modality.name),
-              positions: F.all(
-                A.mapNonEmpty(modality.positions, p =>
-                  HashMap.get(positions, p.id).pipe(
-                    F.orElse(() =>
-                      IdGenerator.generate().pipe(F.map(id => ({ ...p, id }))),
+              modality: F.succeed({ _tag: modality._tag, id: modality.id }),
+              name: F.succeed(data.name),
+              players: F.forEach(data.players, p =>
+                pipe(
+                  F.all({
+                    id: IdGenerator.generate(),
+                    positionAbbreviation: A.findFirst(
+                      modality.positions,
+                      pos => pos.abbreviation === p.positionAbbreviation,
+                    ).pipe(
+                      O.getOrElse(() => modality.positions[0]),
+                      _ => _.abbreviation,
+                      F.succeed,
                     ),
-                  ),
+                  }),
+                  F.map(({ id, positionAbbreviation }) => ({
+                    ...p,
+                    id,
+                    positionAbbreviation,
+                  })),
                 ),
               ),
             }),
-            F.tap(m => State.on(root.at('modalities')).update(A.append(m))),
+            F.flatMap(addImportedGroup),
           ),
-        onSome: () => F.unit,
-      }),
-    ),
-    F.tap(({ group, positions, nextModalityId }) =>
-      pipe(
-        F.all({
-          id: IdGenerator.generate(),
-          modalityId: F.succeed(nextModalityId),
-          name: F.succeed(group.name),
-          players: F.forEach(group.players, p =>
-            pipe(
-              F.all({
-                id: IdGenerator.generate(),
-                positionId: HashMap.get(positions, p.positionId).pipe(
-                  O.map(_ => _.id),
-                  F.orElse(() => IdGenerator.generate()),
+      )
+    : pipe(
+        F.succeed({ modality: data.modality }),
+        F.bind('existingModality', ({ modality }) =>
+          State.with(s =>
+            A.findFirst(
+              s.customModalities,
+              m =>
+                m.name === modality.name &&
+                modality.positions.every(a =>
+                  m.positions.some(b => a.abbreviation === b.abbreviation),
                 ),
-              }),
-              F.map(({ id, positionId }) => ({
-                ...p,
-                id,
-                positionId,
-              })),
             ),
           ),
-        }),
-        F.flatMap(addImportedGroup),
-      ),
-    ),
-  )
+        ),
+        F.bind('nextModalityId', ({ existingModality }) =>
+          existingModality.pipe(
+            O.map(_ => _.id),
+            F.orElse(() => IdGenerator.generate()),
+          ),
+        ),
+        F.tap(({ existingModality, modality, nextModalityId }) =>
+          O.match(existingModality, {
+            onNone: () =>
+              State.on(root.at('customModalities')).update(
+                A.append({
+                  _tag: 'CustomModality' as const,
+                  id: nextModalityId,
+                  name: modality.name,
+                  positions: modality.positions,
+                }),
+              ),
+            onSome: () => F.unit,
+          }),
+        ),
+        F.tap(({ nextModalityId }) =>
+          pipe(
+            F.all({
+              modality: F.succeed({
+                _tag: 'CustomModality' as const,
+                id: nextModalityId,
+              }),
+              name: F.succeed(data.name),
+              players: F.forEach(data.players, p =>
+                F.map(IdGenerator.generate(), id => ({ ...p, id })),
+              ),
+            }),
+            F.flatMap(addImportedGroup),
+          ),
+        ),
+      )
 
 const importGroupFromFile = (args: { url: string }) =>
   pipe(
@@ -217,16 +204,25 @@ const importGroupFromFile = (args: { url: string }) =>
               'O arquivo foi criado com uma versão antiga do aplicativo. Atualize o aplicativo antes de exportar e tente novamente.',
             FileSystemError: () => 'Não foi possível acessar o arquivo.',
             ParseError: () => 'O arquivo não é válido ou está corrompido',
+            NoSuchElementException: () =>
+              'O arquivo não é válido ou está corrompido',
           }),
         ),
       }),
     ),
   )
 
-const dataSchema = S.struct({
-  group: Group.Group,
-  modality: Modality.Modality,
-})
+const dataSchema = Group.Group.pipe(
+  S.omit('modality'),
+  S.extend(
+    S.struct({
+      modality: S.union(
+        S.struct({ _tag: S.literal('StaticModality'), id: NonEmptyString }),
+        Modality.CustomModality,
+      ),
+    }),
+  ),
+)
 
 const lastSupportedVersion = 2 as const
 const currentVersion = 2 as const
