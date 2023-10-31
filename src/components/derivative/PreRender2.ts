@@ -12,7 +12,7 @@ export const PreRender = named2('PreRender')(
     // eslint-disable-next-line functional/no-expression-statements
     React.useEffect(() => {
       // eslint-disable-next-line functional/no-expression-statements
-      prerender.set(false).pipe(Runtime.runSync(runtime))
+      setTimeout(() => prerender.set(false).pipe(Runtime.runSync(runtime)), 1)
     }, [])
     return prerender.value ? prerenderComponent : actualComponent
   },
