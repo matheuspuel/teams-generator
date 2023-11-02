@@ -14,9 +14,10 @@ import {
   UIElement,
 } from 'src/components/types'
 import { useRuntime } from 'src/contexts/Runtime'
+import { useThemeGetRawColor } from 'src/contexts/Theme'
 import { AppEvent } from 'src/events'
 import { AppRuntime } from 'src/runtime'
-import { Color } from 'src/utils/datatypes'
+import { Colors } from 'src/services/Theme'
 import { named2 } from '../hyperscript'
 
 export type PressableStyleProps = PaddingProps &
@@ -50,12 +51,14 @@ export type PressableArgs = {
   x: PressableProps
   children?: JSXElementsChildren
   runtime: AppRuntime
+  getRawColor: (color: UIColor) => string
 }
 
 const getRawProps = ({
   x: props,
   children,
   runtime,
+  getRawColor,
 }: PressableArgs): React.ComponentProps<typeof RectButton> => ({
   children: children,
   onPress:
@@ -65,10 +68,8 @@ const getRawProps = ({
   rippleColor:
     props.isEnabled !== false
       ? props.rippleColor
-        ? pipe(
-            Runtime.runSync(runtime)(props.rippleColor),
-            Color.withOpacity(Math.round((props.rippleOpacity ?? 1) * 255)),
-            Color.toHex,
+        ? getRawColor(
+            Colors.opacity(props.rippleOpacity ?? 1)(props.rippleColor),
           )
         : undefined
       : 'transparent',
@@ -100,11 +101,9 @@ const getRawProps = ({
     aspectRatio: props?.aspectRatio,
     flex: props?.flex,
     flexDirection: props?.direction,
-    backgroundColor: props?.bg
-      ? Color.toHex(Runtime.runSync(runtime)(props.bg))
-      : undefined,
+    backgroundColor: props?.bg ? getRawColor(props.bg) : undefined,
     borderColor: props?.borderColor
-      ? Color.toHex(Runtime.runSync(runtime)(props.borderColor))
+      ? getRawColor(props.borderColor)
       : undefined,
     justifyContent:
       props?.justify === 'start'
@@ -142,6 +141,11 @@ export const Pressable = named2('Pressable')((props: PressableProps) =>
   // eslint-disable-next-line react/display-name
   (children: Children): UIElement => {
     const runtime = useRuntime()
-    return React.createElement(Pressable_, { x: props, runtime }, ...children)
+    const getRawColor = useThemeGetRawColor()
+    return React.createElement(
+      Pressable_,
+      { x: props, runtime, getRawColor },
+      ...children,
+    )
   },
 )

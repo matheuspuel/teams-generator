@@ -18,10 +18,10 @@ import Animated, {
 import { Fragment, Txt, View } from 'src/components'
 import { UIElement } from 'src/components/types'
 import { useRuntime } from 'src/contexts/Runtime'
+import { useThemeGetRawColor } from 'src/contexts/Theme'
 import { Rating } from 'src/datatypes'
 import { AppEvent } from 'src/events'
 import { Colors } from 'src/services/Theme'
-import { Color } from 'src/utils/datatypes'
 
 export type RatingSliderProps = {
   initialPercentage: number
@@ -39,11 +39,12 @@ const RatingSlider_ = ({
   const trackWidth = 10
   const thumbSize = 30
   const tickWidth = 4
-  const trackColor = Colors.primary.$2
-  const thumbColor = Colors.primary.$5
+  const trackColor = Colors.tone(-0.67)(Colors.primary)
+  const thumbColor = Colors.primary
   const [width, setWidth] = React.useState(0)
   const position = useSharedValue(0)
   const runtime = useRuntime()
+  const getRawColor = useThemeGetRawColor()
 
   const getPosition = (
     e: GestureUpdateEvent<PanGestureHandlerEventPayload>,
@@ -100,7 +101,7 @@ const RatingSlider_ = ({
           style={{
             height: trackWidth,
             borderRadius: trackWidth / 2,
-            backgroundColor: Color.toHex(Runtime.runSync(runtime)(trackColor)),
+            backgroundColor: getRawColor(trackColor),
           }}
         >
           {pipe(
@@ -146,9 +147,7 @@ const RatingSlider_ = ({
                 width: thumbSize,
                 height: thumbSize,
                 borderRadius: thumbSize / 2,
-                backgroundColor: Color.toHex(
-                  Runtime.runSync(runtime)(thumbColor),
-                ),
+                backgroundColor: getRawColor(thumbColor),
               },
               animatedStyles,
             ]}

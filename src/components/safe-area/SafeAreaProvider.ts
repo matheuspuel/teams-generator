@@ -8,9 +8,9 @@ import {
   UIElement,
 } from 'src/components/types'
 import { useRuntime } from 'src/contexts/Runtime'
+import { useThemeGetRawColor } from 'src/contexts/Theme'
 import { AppRuntime } from 'src/runtime'
 import { SafeAreaService } from 'src/services/SafeArea'
-import { Color } from 'src/utils/datatypes'
 import { named2 } from '../hyperscript'
 
 export type SafeAreaProviderProps = {
@@ -22,12 +22,14 @@ export type SafeAreaProviderArgs = {
   x: SafeAreaProviderProps
   children?: JSXElementsChildren
   runtime: AppRuntime
+  getRawColor: (color: UIColor) => string
 }
 
 const getRawProps = ({
   x: props,
   children,
   runtime,
+  getRawColor,
 }: SafeAreaProviderArgs): React.ComponentProps<typeof RawSafeAreaProvider_> & {
   key?: string
 } => ({
@@ -38,9 +40,7 @@ const getRawProps = ({
     Runtime.runSync(runtime),
   ),
   style: {
-    backgroundColor: props?.bg
-      ? Color.toHex(Runtime.runSync(runtime)(props.bg))
-      : undefined,
+    backgroundColor: props?.bg ? getRawColor(props.bg) : undefined,
   },
 })
 
@@ -52,9 +52,10 @@ export const SafeAreaProvider = named2('SafeAreaProvider')(
     // eslint-disable-next-line react/display-name
     (children: Children): UIElement => {
       const runtime = useRuntime()
+      const getRawColor = useThemeGetRawColor()
       return React.createElement(
         SafeAreaProvider_,
-        { x: props, runtime },
+        { x: props, runtime, getRawColor },
         ...children,
       )
     },

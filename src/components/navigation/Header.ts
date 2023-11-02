@@ -1,10 +1,9 @@
 import RawHeader_ from '@react-navigation/elements/src/Header/Header'
-import { Runtime, constant, pipe } from 'fp'
+import { constant, pipe } from 'fp'
 import React from 'react'
 import { UIColor, UIElement } from 'src/components/types'
-import { useRuntime } from 'src/contexts/Runtime'
-import { AppRuntime } from 'src/runtime'
-import { Color } from 'src/utils/datatypes'
+import { TextStyleContext, useTextStyle } from 'src/contexts/TextStyle'
+import { useThemeGetRawColor } from 'src/contexts/Theme'
 import { named } from '../hyperscript'
 
 export type HeaderProps = {
@@ -17,28 +16,26 @@ export type HeaderProps = {
 
 export type HeaderArgs = {
   x: HeaderProps
-  runtime: AppRuntime
+  getRawColor: (color: UIColor) => string
+  textStyle: TextStyleContext
 }
 
 const getRawProps = ({
   x: props,
-  runtime,
+  getRawColor,
+  textStyle,
 }: HeaderArgs): React.ComponentProps<typeof RawHeader_> => ({
   title: props.title,
   headerStyle: props.headerStyle
     ? {
         backgroundColor: pipe(props.headerStyle.backgroundColor, c =>
-          c ? Color.toHex(Runtime.runSync(runtime)(c)) : undefined,
+          c ? getRawColor(c) : undefined,
         ),
       }
     : undefined,
-  headerTitleStyle: props.headerTitleStyle
-    ? {
-        color: pipe(props.headerTitleStyle.color, c =>
-          c ? Color.toHex(Runtime.runSync(runtime)(c)) : undefined,
-        ),
-      }
-    : undefined,
+  headerTitleStyle: {
+    color: pipe(props.headerTitleStyle?.color ?? textStyle.color, getRawColor),
+  },
   headerLeft: props.headerLeft ? constant(props.headerLeft) : undefined,
   headerRight: props.headerRight ? constant(props.headerRight) : undefined,
 })
@@ -46,7 +43,10 @@ const getRawProps = ({
 const Header_ = (args: HeaderArgs) =>
   React.createElement(RawHeader_, getRawProps(args))
 
-export const Header = named('Header')((props: HeaderProps): UIElement => {
-  const runtime = useRuntime()
-  return React.createElement(Header_, { x: props, runtime })
+export const HeaderComponent = named('HeaderComponent')((
+  props: HeaderProps,
+): UIElement => {
+  const getRawColor = useThemeGetRawColor()
+  const textStyle = useTextStyle()
+  return React.createElement(Header_, { x: props, getRawColor, textStyle })
 })

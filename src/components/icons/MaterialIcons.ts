@@ -1,10 +1,7 @@
 import RawIcons_ from '@expo/vector-icons/MaterialIcons'
 import React from 'react'
-import { useRuntime } from 'src/contexts/Runtime'
 import { TextStyleContext, useTextStyle } from 'src/contexts/TextStyle'
-import { AppRuntime } from 'src/runtime'
-import { Color } from 'src/utils/datatypes'
-import { Runtime } from 'src/utils/fp'
+import { useThemeGetRawColor } from 'src/contexts/Theme'
 import { named } from '../hyperscript'
 import { UIColor, UIElement } from '../types'
 
@@ -17,18 +14,18 @@ export type IconProps = {
 
 export type IconArgs = {
   x: IconProps
-  runtime: AppRuntime
   textStyle: TextStyleContext
+  getRawColor: (color: UIColor) => string
 }
 
 const getRawProps = ({
   x: props,
-  runtime,
   textStyle,
+  getRawColor,
 }: IconArgs): React.ComponentProps<typeof RawIcons_> => ({
   name: props.name,
   size: props.size ?? 24,
-  color: Color.toHex(Runtime.runSync(runtime)(props.color ?? textStyle.color)),
+  color: getRawColor(props.color ?? textStyle.color),
   style: { textAlign: props.align },
 })
 
@@ -38,7 +35,11 @@ const MaterialIcons_ = (args: IconArgs) =>
 export const MaterialIcons = named('MaterialIcons')((
   props: IconProps,
 ): UIElement => {
-  const runtime = useRuntime()
   const textStyle = useTextStyle()
-  return React.createElement(MaterialIcons_, { x: props, runtime, textStyle })
+  const getRawColor = useThemeGetRawColor()
+  return React.createElement(MaterialIcons_, {
+    x: props,
+    textStyle,
+    getRawColor,
+  })
 })

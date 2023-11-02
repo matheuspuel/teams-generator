@@ -6,11 +6,8 @@ import {
   UIColor,
   UIElement,
 } from 'src/components/types'
-import { useRuntime } from 'src/contexts/Runtime'
 import { TextStyleContext, useTextStyle } from 'src/contexts/TextStyle'
-import { AppRuntime } from 'src/runtime'
-import { Color } from 'src/utils/datatypes'
-import { Runtime } from 'src/utils/fp'
+import { useThemeGetRawColor } from 'src/contexts/Theme'
 import { named2 } from '../hyperscript'
 
 export type TextStyleProps = PaddingProps &
@@ -31,12 +28,12 @@ export type TextProps = TextStyleProps
 
 const getRawProps = ({
   props,
-  runtime,
   textStyle,
+  getRawColor,
 }: {
   props?: TextProps
-  runtime: AppRuntime
   textStyle: TextStyleContext
+  getRawColor: (color: UIColor) => string
 }): React.ComponentProps<typeof RawText> => ({
   numberOfLines: props?.numberOfLines,
   style: {
@@ -57,9 +54,7 @@ const getRawProps = ({
     width: props?.w,
     height: props?.h,
     flex: props?.flex,
-    color: Color.toHex(
-      Runtime.runSync(runtime)(props?.color ?? textStyle.color),
-    ),
+    color: getRawColor(props?.color ?? textStyle.color),
     textAlign: props?.align ?? 'center',
     fontSize: props?.size,
     fontWeight: props?.weight ? `${props.weight}` : undefined,
@@ -71,11 +66,11 @@ const getRawProps = ({
 export const Txt = named2('Txt')((props?: TextProps) =>
   // eslint-disable-next-line react/display-name
   (children: string): UIElement => {
-    const runtime = useRuntime()
     const textStyle = useTextStyle()
+    const getRawColor = useThemeGetRawColor()
     return React.createElement(
       RawText,
-      getRawProps({ props, runtime, textStyle }),
+      getRawProps({ props, textStyle, getRawColor }),
       children,
     )
   },

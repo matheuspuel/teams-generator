@@ -14,9 +14,7 @@ export const HeaderMenuButton = named('HeaderMenuButton')(
       p: 12,
       gap: 8,
     })([
-      TextStyleContextProvider({ color: Colors.primary.$5 })([props.icon]),
-      TextStyleContextProvider({ color: Colors.text.dark })([
-        Txt()(props.label),
-      ]),
+      TextStyleContextProvider({ color: Colors.primary })([props.icon]),
+      Txt()(props.label),
     ]),
 )

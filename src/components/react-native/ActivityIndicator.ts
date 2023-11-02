@@ -1,9 +1,6 @@
 import React from 'react'
 import { ActivityIndicator as RNActivityIndicator_ } from 'react-native'
-import { useRuntime } from 'src/contexts/Runtime'
-import { AppRuntime } from 'src/runtime'
-import { Color } from 'src/utils/datatypes'
-import { Runtime } from 'src/utils/fp'
+import { useThemeGetRawColor } from 'src/contexts/Theme'
 import { named } from '../hyperscript'
 import { UIColor, UIElement } from '../types'
 
@@ -14,19 +11,17 @@ export type ActivityIndicatorProps = {
 
 export type ActivityIndicatorArgs = {
   x: ActivityIndicatorProps
-  runtime: AppRuntime
+  getRawColor: (color: UIColor) => string
 }
 
 const getRawProps = ({
   x: props,
-  runtime,
+  getRawColor,
 }: ActivityIndicatorArgs): React.ComponentProps<
   typeof RNActivityIndicator_
 > => ({
   size: props?.size ?? 'large',
-  color: props?.color
-    ? Color.toHex(Runtime.runSync(runtime)(props.color))
-    : undefined,
+  color: props?.color ? getRawColor(props.color) : undefined,
 })
 
 const ActivityIndicator_ = (args: ActivityIndicatorArgs) =>
@@ -35,6 +30,6 @@ const ActivityIndicator_ = (args: ActivityIndicatorArgs) =>
 export const ActivityIndicator = named('ActivityIndicator')((
   props: ActivityIndicatorProps,
 ): UIElement => {
-  const runtime = useRuntime()
-  return React.createElement(ActivityIndicator_, { x: props, runtime })
+  const getRawColor = useThemeGetRawColor()
+  return React.createElement(ActivityIndicator_, { x: props, getRawColor })
 })

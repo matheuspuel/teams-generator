@@ -15,9 +15,9 @@ import {
   UIElement,
 } from 'src/components/types'
 import { useRuntime } from 'src/contexts/Runtime'
+import { useThemeGetRawColor } from 'src/contexts/Theme'
 import { AppEvent } from 'src/events'
 import { AppRuntime } from 'src/runtime'
-import { Color } from 'src/utils/datatypes'
 import { named2 } from '../hyperscript'
 
 export type ViewStyleProps = PaddingProps &
@@ -48,6 +48,7 @@ export type ViewProps = ViewStyleProps & {
 const getRawProps = (
   props: ViewProps,
   runtime: AppRuntime,
+  getRawColor: (color: UIColor) => string,
 ): React.ComponentProps<typeof RawView> & {
   key?: string
 } => ({
@@ -90,11 +91,9 @@ const getRawProps = (
     aspectRatio: props?.aspectRatio,
     flex: props?.flex,
     flexDirection: props?.direction,
-    backgroundColor: props?.bg
-      ? Color.toHex(Runtime.runSync(runtime)(props.bg))
-      : undefined,
+    backgroundColor: props?.bg ? getRawColor(props.bg) : undefined,
     borderColor: props?.borderColor
-      ? Color.toHex(Runtime.runSync(runtime)(props.borderColor))
+      ? getRawColor(props.borderColor)
       : undefined,
     justifyContent:
       props?.justify === 'start'
@@ -131,9 +130,10 @@ export const View = named2('View')((props: ViewProps = {}) =>
   // eslint-disable-next-line react/display-name
   (children: Children): UIElement => {
     const runtime = useRuntime()
+    const getRawColor = useThemeGetRawColor()
     return React.createElement(
       RawView,
-      getRawProps(props, runtime),
+      getRawProps(props, runtime, getRawColor),
       ...children,
     )
   },

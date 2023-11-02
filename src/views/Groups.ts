@@ -41,7 +41,9 @@ export const Groups = memoizedConst('GroupsView')(() => {
       keyExtractor: id => id,
       renderItem: Item,
       ListEmptyComponent: View({ flex: 1, justify: 'center' })([
-        Txt({ size: 16, color: Colors.gray.$3 })('Nenhum grupo cadastrado'),
+        Txt({ size: 16, color: Colors.opacity(0.625)(Colors.gray) })(
+          'Nenhum grupo cadastrado',
+        ),
       ]),
       contentContainerStyle: { flexGrow: 1, p: 8, gap: 8 },
       initialNumToRender: 16,
@@ -50,11 +52,9 @@ export const Groups = memoizedConst('GroupsView')(() => {
 })
 
 const ScreenHeader = memoizedConst('Header')(() =>
-  View({ bg: Colors.white })([
+  View({ bg: Colors.card })([
     Header({
       title: 'Grupos',
-      headerStyle: { backgroundColor: Colors.primary.$5 },
-      headerTitleStyle: { color: Colors.text.light },
       headerRight: HeaderButtonRow([
         HeaderButton({
           onPress: on.item.upsert.new(),
@@ -113,14 +113,14 @@ const Item = memoized('Group')(Equal.equivalence(), (id: Id) => {
         p: 12,
         round: 8,
         shadow: 1,
-        bg: Colors.white,
+        bg: Colors.card,
       })([
         Txt({
           numberOfLines: 1,
           flex: 1,
           align: 'left',
           weight: 600,
-          color: Colors.text.gray,
+          color: Colors.text.secondary,
           size: 10,
         })(O.getOrElse(modality, () => '-')),
         Txt({
@@ -128,7 +128,6 @@ const Item = memoized('Group')(Equal.equivalence(), (id: Id) => {
           flex: 1,
           align: 'left',
           weight: 600,
-          color: Colors.text.dark,
           size: 16,
         })(name),
       ]),

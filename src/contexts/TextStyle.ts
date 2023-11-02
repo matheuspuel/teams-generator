@@ -6,7 +6,7 @@ import { Colors } from 'src/services/Theme'
 export type TextStyleContext = { color: UIColor }
 
 export const TextStyleContext = React.createContext<TextStyleContext>({
-  color: Colors.text.dark,
+  color: Colors.text.normal,
 })
 
 export const useTextStyle = () => React.useContext(TextStyleContext)

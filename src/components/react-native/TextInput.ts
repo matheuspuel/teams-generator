@@ -11,9 +11,9 @@ import {
   UIElement,
 } from 'src/components/types'
 import { useRuntime } from 'src/contexts/Runtime'
+import { useThemeGetRawColor } from 'src/contexts/Theme'
 import { AppEvent } from 'src/events'
 import { AppRuntime } from 'src/runtime'
-import { Color } from 'src/utils/datatypes'
 import { named } from '../hyperscript'
 
 export type TextInputStyleProps = PaddingProps &
@@ -50,6 +50,7 @@ export type TextInputProps = TextInputStyleProps & {
 export type TextInputArgs = {
   x: TextInputProps
   runtime: AppRuntime
+  getRawColor: (color: UIColor) => string
 }
 
 const getRawProps =
@@ -60,6 +61,7 @@ const getRawProps =
   ({
     x: props,
     runtime,
+    getRawColor,
   }: TextInputArgs): React.ComponentProps<typeof RNTextInput_> => ({
     value: props.value,
     onChangeText: t => void Runtime.runSync(runtime)(props.onChange(t)),
@@ -82,12 +84,11 @@ const getRawProps =
     autoCapitalize: props.autoCapitalize,
     placeholder: props.placeholder,
     placeholderTextColor: props.placeholderTextColor
-      ? Color.toHex(Runtime.runSync(runtime)(props.placeholderTextColor))
+      ? getRawColor(props.placeholderTextColor)
       : undefined,
-    cursorColor: props.cursorColor
-      ? Color.toHex(Runtime.runSync(runtime)(props.cursorColor))
-      : undefined,
+    cursorColor: props.cursorColor ? getRawColor(props.cursorColor) : undefined,
     style: {
+      color: props.fontColor ? getRawColor(props.fontColor) : undefined,
       textAlign: props.align,
       padding: props?.p,
       paddingHorizontal: props?.px,
@@ -118,11 +119,11 @@ const getRawProps =
       flex: props?.flex,
       backgroundColor: pipe(
         (state.isFocused && props.focused?.bg) || props.bg,
-        getColor => getColor && Color.toHex(Runtime.runSync(runtime)(getColor)),
+        c => c && getRawColor(c),
       ),
       borderColor: pipe(
         (state.isFocused && props.focused?.borderColor) || props.borderColor,
-        getColor => getColor && Color.toHex(Runtime.runSync(runtime)(getColor)),
+        c => c && getRawColor(c),
       ),
       alignSelf:
         props?.alignSelf === 'start'
@@ -145,5 +146,6 @@ export const TextInput = named('TextInput')((
   props: TextInputProps,
 ): UIElement => {
   const runtime = useRuntime()
-  return React.createElement(TextInput_, { x: props, runtime })
+  const getRawColor = useThemeGetRawColor()
+  return React.createElement(TextInput_, { x: props, runtime, getRawColor })
 })

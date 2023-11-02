@@ -1,4 +1,4 @@
-import { A, F, O, String } from 'fp'
+import { A, O, String } from 'fp'
 import {
   Fragment,
   Header,
@@ -22,7 +22,6 @@ import { staticModalities } from 'src/datatypes/Modality'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
 import { Colors } from 'src/services/Theme'
-import { withOpacity } from 'src/utils/datatypes/Color'
 
 const on = appEvents.groups.item
 
@@ -45,11 +44,9 @@ export const GroupForm = memoizedConst('GroupForm')(() => {
 
 const ScreenHeader = memoizedConst('Header')(() => {
   const isEdit = useSelector(s => O.isSome(s.groupForm.id))
-  return View({ bg: Colors.white })([
+  return View({ bg: Colors.card })([
     Header({
       title: isEdit ? 'Editar grupo' : 'Novo grupo',
-      headerStyle: { backgroundColor: Colors.primary.$5 },
-      headerTitleStyle: { color: Colors.text.light },
       headerLeft: HeaderButtonRow([
         HeaderButton({
           onPress: appEvents.back(),
@@ -100,13 +97,13 @@ const ModalityItem = named('ModalityItem')((props: Modality) => {
     round: 8,
     align: 'center',
     direction: 'row',
-    bg: isActive ? F.map(Colors.primary.$5, withOpacity(31)) : undefined,
-    rippleColor: F.map(Colors.primary.$5, withOpacity(31)),
+    bg: isActive ? Colors.opacity(0.125)(Colors.primary) : undefined,
+    rippleColor: Colors.opacity(0.125)(Colors.primary),
     rippleOpacity: 0.1,
   })([
     View({ w: 50 })([
       isActive
-        ? MaterialIcons({ name: 'check', color: Colors.primary.$5 })
+        ? MaterialIcons({ name: 'check', color: Colors.primary })
         : Nothing,
     ]),
     Txt({ flex: 1, align: 'center', p: 8, size: 16, weight: 500 })(props.name),

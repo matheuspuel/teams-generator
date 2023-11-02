@@ -1,4 +1,4 @@
-import { A, F, O, String, pipe } from 'fp'
+import { A, O, String, pipe } from 'fp'
 import {
   Fragment,
   Header,
@@ -21,7 +21,6 @@ import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
 import { Colors } from 'src/services/Theme'
 import { getActiveModality } from 'src/slices/groups'
-import { withOpacity } from 'src/utils/datatypes/Color'
 import { RatingSlider } from './components/RatingSlider'
 
 const on = appEvents.player
@@ -46,11 +45,9 @@ export const PlayerView = memoizedConst('PlayerView')(() => {
 })
 
 const ScreenHeader = memoizedConst('Header')(() =>
-  View({ bg: Colors.white })([
+  View({ bg: Colors.card })([
     Header({
       title: 'Jogador',
-      headerStyle: { backgroundColor: Colors.primary.$5 },
-      headerTitleStyle: { color: Colors.text.light },
       headerLeft: HeaderButtonRow([
         HeaderButton({
           onPress: appEvents.back(),
@@ -82,7 +79,7 @@ const RatingField = memoizedConst('RatingField')(() => {
   const rating = useSelector(s => s.playerForm.rating)
   return View({ p: 4 })([
     FormLabel()('Habilidade'),
-    Txt({ size: 24, weight: 700, color: Colors.primary.$5 })(
+    Txt({ size: 24, weight: 700, color: Colors.primary })(
       Rating.toString(rating),
     ),
     RatingSlider({
@@ -130,20 +127,20 @@ const PositionItem = memoized('PositionItem')((abbreviation: Abbreviation) => {
         round: 8,
         align: 'center',
         direction: 'row',
-        bg: isActive ? F.map(Colors.primary.$5, withOpacity(31)) : undefined,
-        rippleColor: F.map(Colors.primary.$5, withOpacity(31)),
+        bg: isActive ? Colors.opacity(0.125)(Colors.primary) : undefined,
+        rippleColor: Colors.opacity(0.125)(Colors.primary),
         rippleOpacity: 0.1,
       })([
         View({ w: 30 })([
           isActive
-            ? MaterialIcons({ name: 'check', color: Colors.primary.$5 })
+            ? MaterialIcons({ name: 'check', color: Colors.primary })
             : Nothing,
         ]),
         View({ minW: 70, align: 'center' })([
           View({
             p: 4,
             round: 12,
-            bg: F.map(Colors.primary.$5, withOpacity(127)),
+            bg: Colors.opacity(0.5)(Colors.primary),
             minW: 35,
           })([
             Txt({

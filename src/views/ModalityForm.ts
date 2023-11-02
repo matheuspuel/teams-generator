@@ -48,11 +48,9 @@ export const ModalityForm = memoizedConst('ModalityForm')(() => {
 
 const ScreenHeader = memoizedConst('Header')(() => {
   const isEdit = useSelector(s => O.isSome(s.modalityForm.id))
-  return View({ bg: Colors.white })([
+  return View({ bg: Colors.card })([
     Header({
       title: isEdit ? 'Editar modalidade' : 'Nova modalidade',
-      headerStyle: { backgroundColor: Colors.primary.$5 },
-      headerTitleStyle: { color: Colors.text.light },
       headerLeft: HeaderButtonRow([
         HeaderButton({
           onPress: appEvents.back(),
@@ -88,21 +86,23 @@ const DeleteModal = namedConst('DeleteModal')(() => {
       O.match(modality, {
         onNone: () => Nothing,
         onSome: m =>
-          TxtContext({ align: 'left', color: Colors.text.dark })([
+          TxtContext({ align: 'left' })([
             Txt()('Deseja excluir a modalidade '),
-            Txt({ weight: 600, color: Colors.text.dark })(m.name),
+            Txt({ weight: 600 })(m.name),
             Txt()(
               '? As posições dos jogadores desta modalidade serão perdidas.',
             ),
           ]),
       }),
     ]),
-    View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
+    View({ borderWidthT: 1, borderColor: Colors.opacity(0.375)(Colors.gray) })(
+      [],
+    ),
     Row({ p: 16, gap: 8, justify: 'end' })([
-      GhostButton({ onPress: on.remove.close(), color: Colors.danger.$5 })([
+      GhostButton({ onPress: on.remove.close(), color: Colors.error })([
         Txt()('Cancelar'),
       ]),
-      SolidButton({ onPress: on.remove.submit(), color: Colors.danger.$5 })([
+      SolidButton({ onPress: on.remove.submit(), color: Colors.error })([
         Txt()('Excluir'),
       ]),
     ]),
@@ -149,7 +149,7 @@ const PositionItem = memoized('PositionItem')((index: number) =>
     ]),
     BorderlessButton({
       onPress: on.position.remove(index),
-      color: Colors.danger.$5,
+      color: Colors.error,
     })([MaterialIcons({ name: 'delete' })]),
   ]),
 )

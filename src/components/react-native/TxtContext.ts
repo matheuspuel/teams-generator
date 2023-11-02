@@ -1,23 +1,26 @@
-import { Runtime } from 'fp'
 import React from 'react'
 import { Text as RNText_ } from 'react-native'
-import { Children, JSXElementsChildren, UIElement } from 'src/components/types'
-import { useRuntime } from 'src/contexts/Runtime'
-import { AppRuntime } from 'src/runtime'
-import { Color } from 'src/utils/datatypes'
+import {
+  Children,
+  JSXElementsChildren,
+  UIColor,
+  UIElement,
+} from 'src/components/types'
+import { TextStyleContextProvider } from 'src/contexts/TextStyle'
+import { useThemeGetRawColor } from 'src/contexts/Theme'
 import { named2 } from '../hyperscript'
 import { TextProps } from './Txt'
 
 export type TxtContextArgs = {
   x?: TextProps
   children?: JSXElementsChildren
-  runtime: AppRuntime
+  getRawColor: (color: UIColor) => string
 }
 
 const getRawProps = ({
   x: props,
   children,
-  runtime,
+  getRawColor,
 }: TxtContextArgs): React.ComponentProps<typeof RNText_> => ({
   children: children,
   numberOfLines: props?.numberOfLines,
@@ -39,9 +42,7 @@ const getRawProps = ({
     width: props?.w,
     height: props?.h,
     flex: props?.flex,
-    color: props?.color
-      ? Color.toHex(Runtime.runSync(runtime)(props.color))
-      : undefined,
+    color: props?.color ? getRawColor(props.color) : undefined,
     textAlign: props?.align ?? 'center',
     fontSize: props?.size,
     fontWeight: props?.weight ? `${props.weight}` : undefined,
@@ -55,7 +56,14 @@ const TxtContext_ = (args: TxtContextArgs) =>
 export const TxtContext = named2('TxtContext')((props: TextProps = {}) =>
   // eslint-disable-next-line react/display-name
   (children: Children): UIElement => {
-    const runtime = useRuntime()
-    return React.createElement(TxtContext_, { x: props, runtime }, ...children)
+    const getRawColor = useThemeGetRawColor()
+    const element = React.createElement(
+      TxtContext_,
+      { x: props, getRawColor },
+      ...children,
+    )
+    return props.color
+      ? TextStyleContextProvider({ color: props.color })([element])
+      : element
   },
 )

@@ -4,10 +4,7 @@ import {
   StatusBarStyle,
 } from 'expo-status-bar'
 import React from 'react'
-import { useRuntime } from 'src/contexts/Runtime'
-import { AppRuntime } from 'src/runtime'
-import { Color } from 'src/utils/datatypes'
-import { Runtime } from 'src/utils/fp'
+import { useThemeGetRawColor } from 'src/contexts/Theme'
 import { named } from '../hyperscript'
 import { UIColor, UIElement } from '../types'
 
@@ -23,16 +20,16 @@ export type StatusBarProps = {
 
 export type StatusBarArgs = {
   x: StatusBarProps
-  runtime: AppRuntime
+  getRawColor: (color: UIColor) => string
 }
 
 const getRawProps = ({
   x: props,
-  runtime,
+  getRawColor,
 }: StatusBarArgs): React.ComponentProps<typeof RawStatusBar_> => ({
   animated: props.animated,
   backgroundColor: props.backgroundColor
-    ? Color.toHex(Runtime.runSync(runtime)(props.backgroundColor))
+    ? getRawColor(props.backgroundColor)
     : undefined,
   hidden: props.hidden,
   hideTransitionAnimation: props.hideTransitionAnimation,
@@ -47,6 +44,6 @@ const StatusBar_ = (args: StatusBarArgs) =>
 export const StatusBar = named('StatusBar')((
   props: StatusBarProps,
 ): UIElement => {
-  const runtime = useRuntime()
-  return React.createElement(StatusBar_, { x: props, runtime })
+  const getRawColor = useThemeGetRawColor()
+  return React.createElement(StatusBar_, { x: props, getRawColor })
 })

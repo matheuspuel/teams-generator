@@ -1,15 +1,13 @@
-import { F } from 'fp'
 import { Colors } from 'src/services/Theme'
-import { withOpacity } from 'src/utils/datatypes/Color'
 import { named2 } from '../hyperscript'
 import { SolidButton } from './SolidButton'
 
 export const GhostButton: typeof SolidButton = named2('GhostButton')(props =>
   SolidButton({
     ...props,
-    rippleColor: props.rippleColor ?? props.color ?? Colors.primary.$5,
+    rippleColor: props.rippleColor ?? props.color ?? Colors.primary,
     rippleOpacity: props.rippleOpacity ?? 0.15,
-    textColor: props.textColor ?? props.color ?? Colors.primary.$5,
-    bg: props.bg ?? F.map(Colors.black, withOpacity(0)),
+    textColor: props.textColor ?? props.color ?? Colors.primary,
+    bg: props.bg ?? Colors.opacity(0)(Colors.black),
   }),
 )

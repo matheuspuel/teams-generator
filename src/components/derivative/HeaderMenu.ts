@@ -1,7 +1,8 @@
 import { getDefaultHeaderHeight } from '@react-navigation/elements'
 import { Modal, Pressable, View } from 'src/components'
-import { AppEvent, appEvents } from 'src/events'
+import { AppEvent } from 'src/events'
 import { Colors } from 'src/services/Theme'
+import { F } from 'src/utils/fp'
 import { named2 } from '../hyperscript'
 import { Children } from '../types'
 
@@ -21,8 +22,8 @@ export const HeaderMenu = named2('HeaderMenu')(
         rippleOpacity: 0,
       })([
         Pressable({
-          onPress: appEvents.doNothing(),
-          bg: Colors.white,
+          onPress: F.unit,
+          bg: Colors.card,
           m: 8,
           round: 8,
           shadow: 2,

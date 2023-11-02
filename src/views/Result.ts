@@ -29,11 +29,9 @@ export const ResultView = memoizedConst('ResultView')(() => {
     onNone: () => Nothing,
     onSome: modality =>
       View({ flex: 1 })([
-        View({ bg: Colors.white })([
+        View({ bg: Colors.card })([
           Header({
             title: 'Resultado',
-            headerStyle: { backgroundColor: Colors.primary.$5 },
-            headerTitleStyle: { color: Colors.text.light },
             headerLeft: HeaderButtonRow([
               HeaderButton({
                 onPress: appEvents.back(),
@@ -54,7 +52,7 @@ export const ResultView = memoizedConst('ResultView')(() => {
             O.match({
               onNone: () => [
                 View({ flex: 1, justify: 'center' })([
-                  ActivityIndicator({ color: Colors.primary.$5 }),
+                  ActivityIndicator({ color: Colors.primary }),
                 ]),
               ],
               onSome: A.map((t, i) =>
@@ -79,22 +77,22 @@ const TeamItem = (props: {
   const avgRating = toFixedLocale(2)(Number.div(numPlayers)(totalRating))
   return View({
     key: props.key,
-    bg: Colors.white,
+    bg: Colors.card,
     m: 4,
     p: 4,
     round: 8,
     shadow: 1,
   })([
-    Txt({ color: Colors.text.dark, size: 16, weight: 600 })(title),
-    TxtContext({ align: 'left', color: Colors.text.gray, size: 12 })([
+    Txt({ size: 16, weight: 600 })(title),
+    TxtContext({ align: 'left', color: Colors.text.secondary, size: 12 })([
       Txt()('Número de jogadores: '),
       Txt()(numPlayers.toString()),
     ]),
-    TxtContext({ align: 'left', color: Colors.text.gray, size: 12 })([
+    TxtContext({ align: 'left', color: Colors.text.secondary, size: 12 })([
       Txt()('Média de habilidade: '),
       Txt()(avgRating),
     ]),
-    TxtContext({ align: 'left', color: Colors.text.gray, size: 12 })([
+    TxtContext({ align: 'left', color: Colors.text.secondary, size: 12 })([
       Txt()('Total de habilidade: '),
       Txt()(totalRating.toString()),
     ]),
@@ -122,9 +120,9 @@ const PlayerItem = ({
   modality: Modality
 }) =>
   Row({ key: key, p: 4 })([
-    Txt({ color: Colors.text.dark, weight: 600 })(Rating.toString(rating)),
-    Txt({ color: Colors.text.dark, numberOfLines: 1 })(` - ${name}`),
-    Txt({ color: Colors.text.dark })(
+    Txt({ weight: 600 })(Rating.toString(rating)),
+    Txt({ numberOfLines: 1 })(` - ${name}`),
+    Txt()(
       ` (${pipe(
         modality.positions,
         A.findFirst(_ => _.abbreviation === positionAbbreviation),

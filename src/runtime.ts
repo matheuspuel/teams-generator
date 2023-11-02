@@ -26,8 +26,6 @@ import { SafeAreaService } from './services/SafeArea'
 import { SafeAreaServiceLive } from './services/SafeArea/default'
 import { ShareServiceLive } from './services/Share/default'
 import { TelemetryLive } from './services/Telemetry/default'
-import { AppTheme } from './services/Theme'
-import { AppThemeLive } from './services/Theme/default'
 import { envName } from './utils/Metadata'
 
 const DEV_MINIMUM_LOG_LEVEL = LogLevel.Debug
@@ -44,7 +42,6 @@ export type AppRequirements =
   | MetadataService
   | Telemetry
   | ShareService
-  | AppTheme
   | SafeAreaService
   | Linking
 
@@ -67,7 +64,6 @@ const appLayer = pipe(
       BackHandlerLive,
       SplashScreenLive,
       SafeAreaServiceLive,
-      AppThemeLive,
     ),
   ),
 )

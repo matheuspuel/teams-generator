@@ -19,7 +19,7 @@ export const Checkbox = named('Checkbox')(
       borderless: true,
       rippleOpacity: 0.15,
       ...props,
-      rippleColor: props.color ?? Colors.primary.$5,
+      rippleColor: props.color ?? Colors.primary,
       p: (props.pressPadding ?? 8) + (props.p ?? 0),
       m: (props.pressPadding ?? -8) + (props.m ?? 0),
     })([
@@ -29,13 +29,13 @@ export const Checkbox = named('Checkbox')(
             round: 4,
             h: 28,
             w: 28,
-            bg: props.color ?? Colors.primary.$5,
-            borderColor: props.color ?? Colors.primary.$5,
+            bg: props.color ?? Colors.primary,
+            borderColor: props.color ?? Colors.primary,
           })([MaterialIcons({ name: 'check', color: Colors.white })])
         : View({
             borderWidth: 2,
             round: 4,
-            borderColor: Colors.gray.$3,
+            borderColor: Colors.opacity(0.5)(Colors.gray),
             h: 28,
             w: 28,
           })([]),

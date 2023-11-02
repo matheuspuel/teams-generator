@@ -1,4 +1,15 @@
-import { Endomorphism } from 'fp'
+import * as PR from '@effect/schema/ParseResult'
+import {
+  Endomorphism,
+  O,
+  Option,
+  S,
+  String,
+  apply,
+  flow,
+  identity,
+  pipe,
+} from 'fp'
 
 export type Byte = number
 
@@ -8,6 +19,13 @@ export type Color = {
   blue: Byte
   opacity: Byte
 }
+
+export const Schema = S.struct({
+  red: S.number,
+  green: S.number,
+  blue: S.number,
+  opacity: S.number,
+})
 
 export type SolidColor = Color & { opacity: 255 }
 
@@ -47,6 +65,54 @@ export const toHex = (color: Color): string =>
   byteToHex(color.blue) +
   byteToHex(color.opacity)
 
+const parseChar = (v: string): Option<number> =>
+  pipe(
+    v.charCodeAt(0),
+    n => (n >= 97 ? n - 97 + 10 : n >= 65 ? n - 65 + 10 : n - 48),
+    O.liftPredicate(n => 0 <= n && n <= 15),
+  )
+
+const parseByte = (v: string): Option<Byte> =>
+  pipe(
+    O.fromNullable(v[0]),
+    O.flatMap(parseChar),
+    O.flatMap(a =>
+      pipe(
+        O.fromNullable(v[1]),
+        O.flatMap(parseChar),
+        O.map(b => a * 16 + b),
+      ),
+    ),
+  )
+
+export const FromHex: S.Schema<string, Color> = S.transformOrFail(
+  S.string,
+  Schema,
+  (v: string) =>
+    !v.startsWith('#')
+      ? PR.failure(PR.type(Schema.ast, v))
+      : pipe(
+          O.all([
+            parseByte(String.slice(1, 3)(v)),
+            parseByte(String.slice(3, 5)(v)),
+            parseByte(String.slice(5, 7)(v)),
+          ]),
+          O.map(([r, g, b]) => color(r, g, b)),
+          O.map(c =>
+            pipe(
+              parseByte(String.slice(7, 9)(v)),
+              O.match({ onNone: () => identity<Color>, onSome: withOpacity }),
+              apply(c),
+            ),
+          ),
+          O.match({
+            onNone: () => PR.failure(PR.type(Schema.ast, v)),
+            onSome: PR.success,
+          }),
+        ),
+  flow(toHex, PR.success),
+)
+
 const toneByte =
   (whiteLevel: Byte) =>
   (factor: number) =>
@@ -72,7 +138,7 @@ export type Palette = {
   $9: Color
 }
 
-export const palette = (baseColor: SolidColor): Palette => ({
+export const palette = (baseColor: Color): Palette => ({
   $1: tint(0.8)(baseColor),
   $2: tint((1 + 0.8) ** (3 / 4) - 1)(baseColor),
   $3: tint((1 + 0.8) ** (2 / 4) - 1)(baseColor),

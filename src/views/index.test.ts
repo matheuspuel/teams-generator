@@ -19,7 +19,6 @@ import { ShareServiceEnv } from 'src/services/Share'
 import { SplashScreenEnv } from 'src/services/SplashScreen'
 import { StateRefLive } from 'src/services/StateRef/default'
 import { TelemetryEnv } from 'src/services/Telemetry'
-import { AppThemeLive } from 'src/services/Theme/default'
 import { Id } from 'src/utils/Entity'
 import { Clock, F, Layer, Number, Ref, Stream, pipe } from 'src/utils/fp'
 import { UIRoot } from '.'
@@ -115,7 +114,6 @@ const testLayer = pipe(
         },
       },
     }).pipe(Layer.succeedContext),
-    AppThemeLive,
     LinkingEnv.context({
       getInitialURL: () => F.never,
       startLinkingStream: () => Stream.never,

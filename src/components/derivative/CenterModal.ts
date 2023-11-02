@@ -1,4 +1,3 @@
-import { F } from 'fp'
 import {
   Fragment,
   MaterialIcons,
@@ -9,9 +8,9 @@ import {
   Txt,
   View,
 } from 'src/components'
-import { AppEvent, appEvents } from 'src/events'
+import { AppEvent } from 'src/events'
 import { Colors } from 'src/services/Theme'
-import { withOpacity } from 'src/utils/datatypes/Color'
+import { F } from 'src/utils/fp'
 import { named2 } from '../hyperscript'
 import { Children } from '../types'
 
@@ -35,13 +34,13 @@ export const CenterModal = named2('CenterModal')(
           onPress: props.onClose,
           flex: 1,
           justify: 'center',
-          bg: F.map(Colors.black, withOpacity(63)),
+          bg: Colors.opacity(0.25)(Colors.black),
           rippleColor: Colors.black,
           rippleOpacity: 0,
         })([
           Pressable({
-            onPress: appEvents.doNothing(),
-            bg: Colors.white,
+            onPress: F.unit,
+            bg: Colors.card,
             m: props.m ?? 48,
             round: 8,
             shadow: 2,
@@ -51,7 +50,10 @@ export const CenterModal = named2('CenterModal')(
             props.title
               ? Fragment([
                   Header({ title: props.title, onClose: props.onClose }),
-                  View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
+                  View({
+                    borderWidthT: 1,
+                    borderColor: Colors.opacity(0.375)(Colors.gray),
+                  })([]),
                 ])
               : Nothing,
             Fragment(children),
@@ -68,11 +70,10 @@ const Header = (props: { title: string; onClose: AppEvent }) =>
       m: 8,
       size: 16,
       weight: 600,
-      color: Colors.text.dark,
     })(props.title),
     Pressable({
       p: 8,
       round: 4,
       onPress: props.onClose,
-    })([MaterialIcons({ name: 'close', color: Colors.gray.$4 })]),
+    })([MaterialIcons({ name: 'close', color: Colors.gray })]),
   ])

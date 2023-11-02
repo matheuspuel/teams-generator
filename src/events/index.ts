@@ -1,17 +1,4 @@
-import {
-  A,
-  Effect,
-  F,
-  O,
-  Optic,
-  Record,
-  S,
-  String,
-  constant,
-  flow,
-  not,
-  pipe,
-} from 'fp'
+import { A, Effect, F, O, Optic, Record, S, String, flow, not, pipe } from 'fp'
 import {
   Modality,
   Parameters as Parameters_,
@@ -77,15 +64,11 @@ export type AppEvent = Effect<AppRequirements, never, unknown>
 
 const exec = StateRef.execute
 
-const noArg: <A>(a: A) => () => A = constant
-const ignore = noArg(F.unit)
-
 const closeParametersModal = State.on(root.at('ui').at('modalParameters')).set(
   false,
 )
 
 export const appEvents = {
-  doNothing: ignore,
   back: back,
   core: {
     uiMount: () => SplashScreen.hide(),

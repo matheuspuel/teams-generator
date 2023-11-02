@@ -1,66 +1,76 @@
-import { Context, F } from 'src/utils/fp'
-import { defaultTheme } from './default'
+import { UIColor } from 'src/components/types'
+import { Color } from 'src/utils/datatypes'
+import { withOpacity } from 'src/utils/datatypes/Color'
+import { Context, Effect, F, absurd } from 'src/utils/fp'
+import { lightTheme } from './light'
 
-type AppTheme_ = typeof defaultTheme
+type AppTheme_ = typeof lightTheme
 
 export interface AppTheme extends AppTheme_ {}
 
 export const AppThemeEnv = Context.Tag<AppTheme>()
 
+const matchType = <A>(cases: {
+  light: Effect<AppTheme, never, A>
+  dark: Effect<AppTheme, never, A>
+}): Effect<AppTheme, never, A> =>
+  F.flatMap(AppThemeEnv, t =>
+    t.type === 'light'
+      ? cases.light
+      : t.type === 'dark'
+      ? cases.dark
+      : absurd<never>(t.type),
+  )
+
 export const Theme = {
+  type: (t: AppTheme) => t.type,
+  matchType,
   colors: {
+    opacity: (factor: number): ((color: UIColor) => UIColor) =>
+      F.map(withOpacity(Math.round(factor * 255))),
+    toneStatic: (factor: number): ((color: UIColor) => UIColor) =>
+      F.map(
+        factor > 0 ? Color.tone(0)(factor) : Color.tone(255)(Math.abs(factor)),
+      ),
+    tone:
+      (factor: number): ((color: UIColor) => UIColor) =>
+      c =>
+        matchType({
+          light: F.map(
+            c,
+            factor > 0
+              ? Color.tone(0)(factor)
+              : Color.tone(255)(Math.abs(factor)),
+          ),
+          dark: F.map(
+            c,
+            factor > 0
+              ? Color.tone(255)(factor)
+              : Color.tone(0)(Math.abs(factor)),
+          ),
+        }),
     background: F.map(AppThemeEnv, env => env.colors.background),
+    card: F.map(AppThemeEnv, env => env.colors.card),
     text: {
       light: F.map(AppThemeEnv, env => env.colors.text.light),
       dark: F.map(AppThemeEnv, env => env.colors.text.dark),
+      secondary: F.map(AppThemeEnv, env => env.colors.text.secondary),
       gray: F.map(AppThemeEnv, env => env.colors.text.gray),
+      normal: matchType({
+        light: F.map(AppThemeEnv, env => env.colors.text.dark),
+        dark: F.map(AppThemeEnv, env => env.colors.text.light),
+      }),
+      inverted: matchType({
+        light: F.map(AppThemeEnv, env => env.colors.text.light),
+        dark: F.map(AppThemeEnv, env => env.colors.text.dark),
+      }),
     },
     white: F.map(AppThemeEnv, env => env.colors.white),
     black: F.map(AppThemeEnv, env => env.colors.black),
-    primary: {
-      $1: F.map(AppThemeEnv, env => env.colors.primary.$1),
-      $2: F.map(AppThemeEnv, env => env.colors.primary.$2),
-      $3: F.map(AppThemeEnv, env => env.colors.primary.$3),
-      $4: F.map(AppThemeEnv, env => env.colors.primary.$4),
-      $5: F.map(AppThemeEnv, env => env.colors.primary.$5),
-      $6: F.map(AppThemeEnv, env => env.colors.primary.$6),
-      $7: F.map(AppThemeEnv, env => env.colors.primary.$7),
-      $8: F.map(AppThemeEnv, env => env.colors.primary.$8),
-      $9: F.map(AppThemeEnv, env => env.colors.primary.$9),
-    },
-    danger: {
-      $1: F.map(AppThemeEnv, env => env.colors.danger.$1),
-      $2: F.map(AppThemeEnv, env => env.colors.danger.$2),
-      $3: F.map(AppThemeEnv, env => env.colors.danger.$3),
-      $4: F.map(AppThemeEnv, env => env.colors.danger.$4),
-      $5: F.map(AppThemeEnv, env => env.colors.danger.$5),
-      $6: F.map(AppThemeEnv, env => env.colors.danger.$6),
-      $7: F.map(AppThemeEnv, env => env.colors.danger.$7),
-      $8: F.map(AppThemeEnv, env => env.colors.danger.$8),
-      $9: F.map(AppThemeEnv, env => env.colors.danger.$9),
-    },
-    gray: {
-      $1: F.map(AppThemeEnv, env => env.colors.gray.$1),
-      $2: F.map(AppThemeEnv, env => env.colors.gray.$2),
-      $3: F.map(AppThemeEnv, env => env.colors.gray.$3),
-      $4: F.map(AppThemeEnv, env => env.colors.gray.$4),
-      $5: F.map(AppThemeEnv, env => env.colors.gray.$5),
-      $6: F.map(AppThemeEnv, env => env.colors.gray.$6),
-      $7: F.map(AppThemeEnv, env => env.colors.gray.$7),
-      $8: F.map(AppThemeEnv, env => env.colors.gray.$8),
-      $9: F.map(AppThemeEnv, env => env.colors.gray.$9),
-    },
-    yellow: {
-      $1: F.map(AppThemeEnv, env => env.colors.yellow.$1),
-      $2: F.map(AppThemeEnv, env => env.colors.yellow.$2),
-      $3: F.map(AppThemeEnv, env => env.colors.yellow.$3),
-      $4: F.map(AppThemeEnv, env => env.colors.yellow.$4),
-      $5: F.map(AppThemeEnv, env => env.colors.yellow.$5),
-      $6: F.map(AppThemeEnv, env => env.colors.yellow.$6),
-      $7: F.map(AppThemeEnv, env => env.colors.yellow.$7),
-      $8: F.map(AppThemeEnv, env => env.colors.yellow.$8),
-      $9: F.map(AppThemeEnv, env => env.colors.yellow.$9),
-    },
+    gray: F.map(AppThemeEnv, env => env.colors.gray),
+    primary: F.map(AppThemeEnv, env => env.colors.primary),
+    error: F.map(AppThemeEnv, env => env.colors.error),
+    yellow: F.map(AppThemeEnv, env => env.colors.yellow),
   },
 }
 

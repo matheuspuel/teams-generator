@@ -31,7 +31,7 @@ export const ModalitiesView = memoizedConst('ModalitiesView')(() => {
       keyExtractor: m => m.id,
       renderItem: Item,
       ListEmptyComponent: View({ flex: 1, justify: 'center' })([
-        Txt({ size: 16, color: Colors.gray.$3 })(
+        Txt({ size: 16, color: Colors.opacity(0.625)(Colors.gray) })(
           'Nenhuma modalidade cadastrada',
         ),
       ]),
@@ -42,11 +42,9 @@ export const ModalitiesView = memoizedConst('ModalitiesView')(() => {
 })
 
 const ScreenHeader = memoizedConst('ScreenHeader')(() =>
-  View({ bg: Colors.white })([
+  View({ bg: Colors.card })([
     Header({
       title: 'Modalidades',
-      headerStyle: { backgroundColor: Colors.primary.$5 },
-      headerTitleStyle: { color: Colors.text.light },
       headerLeft: HeaderButtonRow([
         HeaderButton({
           onPress: appEvents.back(),
@@ -77,13 +75,12 @@ const Item = memoized('Modality')((modality: Modality.Reference) => {
         p: 12,
         round: 8,
         shadow: 1,
-        bg: Colors.white,
+        bg: Colors.card,
         isEnabled: modality._tag === 'CustomModality',
       })([
         View({ minW: 30 })([]),
         Txt({
           flex: 1,
-          color: Colors.text.dark,
           numberOfLines: 1,
           size: 16,
           weight: 500,
@@ -91,7 +88,10 @@ const Item = memoized('Modality')((modality: Modality.Reference) => {
         View({ minW: 30, h: 24, align: 'end' })([
           modality._tag === 'CustomModality'
             ? Nothing
-            : MaterialIcons({ name: 'lock', color: Colors.gray.$2 }),
+            : MaterialIcons({
+                name: 'lock',
+                color: Colors.opacity(0.375)(Colors.gray),
+              }),
         ]),
       ]),
   })

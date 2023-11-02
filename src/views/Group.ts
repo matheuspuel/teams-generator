@@ -3,7 +3,6 @@ import {
   Boolean,
   Data,
   Eq,
-  F,
   Match,
   O,
   Option,
@@ -44,7 +43,6 @@ import {
   getSelectedGroup,
 } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
-import { withOpacity } from 'src/utils/datatypes/Color'
 
 const on = appEvents.group
 
@@ -70,7 +68,11 @@ export const GroupView = memoizedConst('GroupView')(() => {
     PreRender(
       View({ flex: 1, p: 8, gap: 8 })(
         A.replicate(3)(
-          View({ round: 8, shadow: 1, bg: Colors.gray.$1, h: 40 })([]),
+          View({
+            round: 8,
+            bg: Colors.opacity(0.125)(Colors.gray),
+            h: 40,
+          })([]),
         ),
       ),
     )(
@@ -79,7 +81,9 @@ export const GroupView = memoizedConst('GroupView')(() => {
         keyExtractor: id => id,
         renderItem: Item,
         ListEmptyComponent: View({ flex: 1, justify: 'center' })([
-          Txt({ size: 16, color: Colors.gray.$3 })('Nenhum jogador cadastrado'),
+          Txt({ size: 16, color: Colors.opacity(0.625)(Colors.gray) })(
+            'Nenhum jogador cadastrado',
+          ),
         ]),
         contentContainerStyle: { flexGrow: 1, p: 8, gap: 8 },
         initialNumToRender: 16,
@@ -92,11 +96,9 @@ export const GroupView = memoizedConst('GroupView')(() => {
 })
 
 const GroupHeader = memoizedConst('GroupHeader')(() =>
-  View({ bg: Colors.white })([
+  View({ bg: Colors.card })([
     Header({
       title: 'Grupo',
-      headerStyle: { backgroundColor: Colors.primary.$5 },
-      headerTitleStyle: { color: Colors.text.light },
       headerLeft: HeaderButtonRow([
         HeaderButton({
           onPress: appEvents.back(),
@@ -183,7 +185,7 @@ const Item = memoized('Player')((id: Id) => {
         gap: 8,
         round: 8,
         shadow: 1,
-        bg: Colors.white,
+        bg: Colors.card,
       })([
         Checkbox({
           onToggle: on.player.active.toggle(id),
@@ -194,7 +196,7 @@ const Item = memoized('Player')((id: Id) => {
         View({
           p: 4,
           round: 12,
-          bg: F.map(Colors.primary.$5, withOpacity(127)),
+          bg: Colors.opacity(0.5)(Colors.primary),
           minW: 35,
         })([
           Txt({
@@ -209,10 +211,8 @@ const Item = memoized('Player')((id: Id) => {
             }),
           ),
         ]),
-        Txt({ size: 18, weight: 600, color: Colors.text.dark })(
-          Rating.toString(rating),
-        ),
-        Txt({ my: 8, color: Colors.text.dark, numberOfLines: 1 })(name),
+        Txt({ size: 18, weight: 600 })(Rating.toString(rating)),
+        Txt({ my: 8, numberOfLines: 1 })(name),
       ]),
   })
 })
@@ -317,7 +317,7 @@ const FilterButton = (props: {
         onSome: ({ reverse }) =>
           MaterialCommunityIcons({
             name: reverse ? 'sort-descending' : 'sort-ascending',
-            color: Colors.primary.$5,
+            color: Colors.primary,
           }),
       }),
     ]),
@@ -340,7 +340,7 @@ const ParametersModal = namedConst('ParametersModal')(() => {
             BorderlessButton({ onPress: on.parameters.teamsCount.decrement() })(
               [MaterialIcons({ name: 'remove' })],
             ),
-            Txt({ p: 8, weight: 600, color: Colors.text.dark })(
+            Txt({ p: 8, weight: 600 })(
               pipe(
                 parameters.teamsCountMethod,
                 Match.valueTags({
@@ -360,7 +360,7 @@ const ParametersModal = namedConst('ParametersModal')(() => {
               p: 4,
               pl: 8,
               gap: 4,
-              color: Colors.text.dark,
+              color: Colors.text.normal,
             })([
               Txt({ flex: 1 })(
                 pipe(
@@ -374,7 +374,7 @@ const ParametersModal = namedConst('ParametersModal')(() => {
               MaterialIcons({
                 name: 'swap-horiz',
                 size: 20,
-                color: Colors.primary.$5,
+                color: Colors.primary,
               }),
             ]),
           ]),
@@ -384,7 +384,7 @@ const ParametersModal = namedConst('ParametersModal')(() => {
             align: 'center',
             p: 8,
             round: 8,
-            bg: F.map(Colors.white, withOpacity(0)),
+            bg: Colors.opacity(0)(Colors.white),
           })([
             Checkbox({
               onToggle: on.parameters.position.toggle(),
@@ -398,7 +398,7 @@ const ParametersModal = namedConst('ParametersModal')(() => {
             align: 'center',
             p: 8,
             round: 8,
-            bg: F.map(Colors.white, withOpacity(0)),
+            bg: Colors.opacity(0)(Colors.white),
           })([
             Checkbox({
               onToggle: on.parameters.rating.toggle(),
@@ -407,7 +407,10 @@ const ParametersModal = namedConst('ParametersModal')(() => {
             Txt({ ml: 8, size: 14 })('Considerar habilidade'),
           ]),
         ]),
-        View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
+        View({
+          borderWidthT: 1,
+          borderColor: Colors.opacity(0.375)(Colors.gray),
+        })([]),
         Row({ p: 16, gap: 8, justify: 'end' })([
           GhostButton({ onPress: on.parameters.close() })([Txt()('Cancelar')]),
           SolidButton({ onPress: on.parameters.shuffle() })([Txt()('Sortear')]),
@@ -428,23 +431,25 @@ const DeleteGroupModal = namedConst('DeleteGroupModal')(() => {
       pipe(
         group,
         O.map(g =>
-          TxtContext({ align: 'left', color: Colors.text.dark })([
+          TxtContext({ align: 'left' })([
             Txt()('Deseja excluir o grupo '),
-            Txt({ weight: 600, color: Colors.text.dark })(g.name),
+            Txt({ weight: 600 })(g.name),
             Txt()(' e todos os jogadores?'),
           ]),
         ),
         A.fromOption,
       ),
     ),
-    View({ borderWidthT: 1, borderColor: Colors.gray.$2 })([]),
+    View({ borderWidthT: 1, borderColor: Colors.opacity(0.375)(Colors.gray) })(
+      [],
+    ),
     Row({ p: 16, gap: 8, justify: 'end' })([
-      GhostButton({ onPress: on.delete.close(), color: Colors.danger.$5 })([
+      GhostButton({ onPress: on.delete.close(), color: Colors.error })([
         Txt()('Cancelar'),
       ]),
       SolidButton({
         onPress: on.delete.submit(),
-        color: Colors.danger.$5,
+        color: Colors.error,
       })([Txt()('Excluir')]),
     ]),
   ])

@@ -1,7 +1,5 @@
-import { F } from 'fp'
 import { Platform } from 'react-native'
 import { Colors } from 'src/services/Theme'
-import { withOpacity } from 'src/utils/datatypes/Color'
 import { named } from '../hyperscript'
 import { TextInput, TextInputProps } from '../react-native/TextInput'
 import { UIColor } from '../types'
@@ -13,20 +11,20 @@ export type InputProps = TextInputProps & {
 
 export const Input = named('Input')((props: InputProps) =>
   TextInput({
-    cursorColor: Colors.text.dark,
-    placeholderTextColor: Colors.gray.$3,
-    bg: Colors.white,
-    fontColor: Colors.text.dark,
+    cursorColor: Colors.primary,
+    placeholderTextColor: Colors.text.gray,
+    bg: Colors.card,
+    fontColor: Colors.text.normal,
     fontSize: 12,
     py: Platform.OS === 'ios' ? 16.5 : 10,
     px: Platform.OS === 'ios' ? 12 : 14,
     borderWidth: 1,
     round: 4,
     ...props,
-    borderColor: props.borderColor ?? Colors.gray.$2,
+    borderColor: props.borderColor ?? Colors.opacity(0.375)(Colors.gray),
     focused: {
-      bg: F.map(props.color ?? Colors.primary.$5, withOpacity(31)),
-      borderColor: props.color ?? Colors.primary.$5,
+      bg: Colors.opacity(0.125)(props.color ?? Colors.primary),
+      borderColor: props.color ?? Colors.primary,
       ...props.focused,
     },
   }),

@@ -26,7 +26,7 @@ export const AlertToast = memoizedConst('AlertToast')(() => {
           },
           Pressable({
             onPress: appEvents.alert.dismiss(),
-            bg: Colors.white,
+            bg: Colors.card,
             m: 16,
             mb: 48,
             round: 8,
@@ -36,9 +36,9 @@ export const AlertToast = memoizedConst('AlertToast')(() => {
             View({
               bg:
                 alert.type === 'error'
-                  ? Colors.danger.$1
+                  ? Colors.tone(-0.8)(Colors.error)
                   : alert.type === 'success'
-                  ? Colors.primary.$1
+                  ? Colors.tone(-0.8)(Colors.primary)
                   : absurd<never>(alert.type),
               p: 8,
               roundL: 8,
@@ -47,13 +47,13 @@ export const AlertToast = memoizedConst('AlertToast')(() => {
               alert.type === 'error'
                 ? MaterialIcons({
                     name: 'error-outline',
-                    color: Colors.danger.$7,
+                    color: Colors.tone(0.33)(Colors.error),
                     size: 36,
                   })
                 : alert.type === 'success'
                 ? MaterialIcons({
                     name: 'check-circle-outline',
-                    color: Colors.primary.$7,
+                    color: Colors.tone(0.33)(Colors.primary),
                     size: 36,
                   })
                 : absurd<never>(alert.type),
