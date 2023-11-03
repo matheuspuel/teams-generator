@@ -40,12 +40,13 @@ export const PlayerView = memoizedConst('PlayerView')(() => {
       isEnabled: String.isNonEmpty(name),
       p: 16,
       round: 0,
+      color: Colors.header,
     })([Txt()('Gravar')]),
   ])
 })
 
 const ScreenHeader = memoizedConst('Header')(() =>
-  View({ bg: Colors.card })([
+  View()([
     Header({
       title: 'Jogador',
       headerLeft: HeaderButtonRow([

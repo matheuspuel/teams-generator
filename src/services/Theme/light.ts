@@ -8,6 +8,8 @@ export const lightTheme = {
   colors: {
     background: hex('#f2f2f2'),
     card: hex('#ffffff'),
+    cardSecondary: hex('#ffffff'),
+    header: hex('#136d15'),
     text: {
       light: hex('#ffffff'),
       dark: hex('#2f2f2f'),
@@ -18,7 +20,7 @@ export const lightTheme = {
     black: hex('#000000'),
     gray: hex('#52525b'),
     primary: hex('#136d15'),
+    success: hex('#136d15'),
     error: hex('#dc2626'),
-    yellow: hex('#eab308'),
   },
 }

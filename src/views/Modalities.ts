@@ -42,7 +42,7 @@ export const ModalitiesView = memoizedConst('ModalitiesView')(() => {
 })
 
 const ScreenHeader = memoizedConst('ScreenHeader')(() =>
-  View({ bg: Colors.card })([
+  View()([
     Header({
       title: 'Modalidades',
       headerLeft: HeaderButtonRow([

@@ -29,7 +29,7 @@ export const ResultView = memoizedConst('ResultView')(() => {
     onNone: () => Nothing,
     onSome: modality =>
       View({ flex: 1 })([
-        View({ bg: Colors.card })([
+        View()([
           Header({
             title: 'Resultado',
             headerLeft: HeaderButtonRow([

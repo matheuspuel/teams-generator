@@ -14,8 +14,9 @@ const getConfig = (): ExpoConfig => ({
   owner: 'matheuspuel',
   version: packageJSON.version,
   runtimeVersion: packageJSON.version,
-  orientation: 'portrait',
   icon: './assets/icon.png',
+  orientation: 'portrait',
+  userInterfaceStyle: 'automatic',
   androidStatusBar: {
     barStyle: 'light-content',
     backgroundColor: '#136d15',

@@ -38,6 +38,7 @@ const getRawProps = ({
   },
   headerLeft: props.headerLeft ? constant(props.headerLeft) : undefined,
   headerRight: props.headerRight ? constant(props.headerRight) : undefined,
+  headerShadowVisible: false,
 })
 
 const Header_ = (args: HeaderArgs) =>

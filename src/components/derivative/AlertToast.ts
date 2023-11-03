@@ -38,7 +38,7 @@ export const AlertToast = memoizedConst('AlertToast')(() => {
                 alert.type === 'error'
                   ? Colors.tone(-0.8)(Colors.error)
                   : alert.type === 'success'
-                  ? Colors.tone(-0.8)(Colors.primary)
+                  ? Colors.tone(-0.8)(Colors.success)
                   : absurd<never>(alert.type),
               p: 8,
               roundL: 8,
@@ -53,7 +53,7 @@ export const AlertToast = memoizedConst('AlertToast')(() => {
                 : alert.type === 'success'
                 ? MaterialIcons({
                     name: 'check-circle-outline',
-                    color: Colors.tone(0.33)(Colors.primary),
+                    color: Colors.tone(0.33)(Colors.success),
                     size: 36,
                   })
                 : absurd<never>(alert.type),

@@ -6,7 +6,7 @@ import { HeaderComponent, HeaderProps } from '../navigation/Header'
 export const Header = named('Header')((props: HeaderProps) =>
   TextStyleContextProvider({ color: Colors.text.light })([
     HeaderComponent({
-      headerStyle: { backgroundColor: Colors.primary },
+      headerStyle: { backgroundColor: Colors.header },
       ...props,
     }),
   ]),

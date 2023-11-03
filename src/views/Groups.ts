@@ -52,7 +52,7 @@ export const Groups = memoizedConst('GroupsView')(() => {
 })
 
 const ScreenHeader = memoizedConst('Header')(() =>
-  View({ bg: Colors.card })([
+  View()([
     Header({
       title: 'Grupos',
       headerRight: HeaderButtonRow([

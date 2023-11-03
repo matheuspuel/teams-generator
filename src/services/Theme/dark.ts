@@ -9,6 +9,8 @@ export const darkTheme: typeof lightTheme = {
   colors: {
     background: hex('#090909'),
     card: hex('#1d1d1d'),
+    cardSecondary: hex('#2d2d2d'),
+    header: hex('#354735'),
     text: {
       light: hex('#efefef'),
       dark: hex('#2f2f2f'),
@@ -18,8 +20,8 @@ export const darkTheme: typeof lightTheme = {
     white: hex('#ffffff'),
     black: hex('#000000'),
     gray: hex('#52525b'),
-    primary: hex('#136d15'),
-    error: hex('#dc2626'),
-    yellow: hex('#eab308'),
+    primary: hex('#327033'),
+    success: hex('#327033'),
+    error: hex('#db4e4e'),
   },
 }

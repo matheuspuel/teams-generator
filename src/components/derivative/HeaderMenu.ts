@@ -23,7 +23,7 @@ export const HeaderMenu = named2('HeaderMenu')(
       })([
         Pressable({
           onPress: F.unit,
-          bg: Colors.card,
+          bg: Colors.cardSecondary,
           m: 8,
           round: 8,
           shadow: 2,

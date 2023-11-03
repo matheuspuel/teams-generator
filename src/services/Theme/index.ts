@@ -51,6 +51,8 @@ export const Theme = {
         }),
     background: F.map(AppThemeEnv, env => env.colors.background),
     card: F.map(AppThemeEnv, env => env.colors.card),
+    cardSecondary: F.map(AppThemeEnv, env => env.colors.cardSecondary),
+    header: F.map(AppThemeEnv, env => env.colors.header),
     text: {
       light: F.map(AppThemeEnv, env => env.colors.text.light),
       dark: F.map(AppThemeEnv, env => env.colors.text.dark),
@@ -69,8 +71,8 @@ export const Theme = {
     black: F.map(AppThemeEnv, env => env.colors.black),
     gray: F.map(AppThemeEnv, env => env.colors.gray),
     primary: F.map(AppThemeEnv, env => env.colors.primary),
+    success: F.map(AppThemeEnv, env => env.colors.success),
     error: F.map(AppThemeEnv, env => env.colors.error),
-    yellow: F.map(AppThemeEnv, env => env.colors.yellow),
   },
 }
 

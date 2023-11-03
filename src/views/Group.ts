@@ -96,7 +96,7 @@ export const GroupView = memoizedConst('GroupView')(() => {
 })
 
 const GroupHeader = memoizedConst('GroupHeader')(() =>
-  View({ bg: Colors.card })([
+  View()([
     Header({
       title: 'Grupo',
       headerLeft: HeaderButtonRow([
@@ -233,6 +233,7 @@ const ShuffleButton = namedConst('ShuffleButton')(() => {
     onPress: on.parameters.open(),
     p: 16,
     round: 0,
+    color: Colors.header,
   })([
     Txt()('Sortear'),
     Txt({ size: 12 })(

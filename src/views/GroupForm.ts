@@ -38,13 +38,14 @@ export const GroupForm = memoizedConst('GroupForm')(() => {
       isEnabled: isEnabled,
       p: 16,
       round: 0,
+      color: Colors.header,
     })([Txt()('Gravar')]),
   ])
 })
 
 const ScreenHeader = memoizedConst('Header')(() => {
   const isEdit = useSelector(s => O.isSome(s.groupForm.id))
-  return View({ bg: Colors.card })([
+  return View()([
     Header({
       title: isEdit ? 'Editar grupo' : 'Novo grupo',
       headerLeft: HeaderButtonRow([

@@ -1,8 +1,9 @@
+import * as SystemUI from 'expo-system-ui'
 import * as React from 'react'
 import { useColorScheme } from 'react-native'
 import { named } from 'src/components/hyperscript'
 import { Children, UIColor } from 'src/components/types'
-import { AppTheme, AppThemeEnv } from 'src/services/Theme'
+import { AppTheme, AppThemeEnv, Colors } from 'src/services/Theme'
 import { darkTheme } from 'src/services/Theme/dark'
 import { lightTheme } from 'src/services/Theme/light'
 import { Color } from 'src/utils/datatypes'
@@ -32,4 +33,13 @@ export const useThemeGetRawColor = () => {
     [theme],
   )
   return getColorHex
+}
+
+export const useAdjustRootColor = () => {
+  const getRawColor = useThemeGetRawColor()
+  // eslint-disable-next-line functional/no-expression-statements
+  React.useEffect(() => {
+    // eslint-disable-next-line functional/no-expression-statements
+    void SystemUI.setBackgroundColorAsync(getRawColor(Colors.background))
+  }, [getRawColor])
 }
