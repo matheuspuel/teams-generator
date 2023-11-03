@@ -36,6 +36,7 @@ import { memoized, memoizedConst, namedConst } from 'src/components/hyperscript'
 import { GroupOrder, Player, Position, Rating } from 'src/datatypes'
 import { AppEvent, appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
+import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 import {
   getActiveModality,
@@ -82,7 +83,7 @@ export const GroupView = memoizedConst('GroupView')(() => {
         renderItem: Item,
         ListEmptyComponent: View({ flex: 1, justify: 'center' })([
           Txt({ size: 16, color: Colors.opacity(0.625)(Colors.gray) })(
-            'Nenhum jogador cadastrado',
+            t('No players registered'),
           ),
         ]),
         contentContainerStyle: { flexGrow: 1, p: 8, gap: 8 },
@@ -98,7 +99,7 @@ export const GroupView = memoizedConst('GroupView')(() => {
 const GroupHeader = memoizedConst('GroupHeader')(() =>
   View()([
     Header({
-      title: 'Grupo',
+      title: t('Group'),
       headerLeft: HeaderButtonRow([
         HeaderButton({
           onPress: appEvents.back(),
@@ -129,27 +130,27 @@ const Menu = namedConst('GroupMenu')(() => {
       HeaderMenu({ onClose: on.menu.close() })([
         HeaderMenuButton({
           onPress: on.player.active.toggleAll(),
-          label: 'Selecionar todos',
+          label: t('Select all'),
           icon: MaterialCommunityIcons({ name: 'checkbox-multiple-outline' }),
         }),
         HeaderMenuButton({
           onPress: on.sort.open(),
-          label: 'Ordenar',
+          label: t('Sort'),
           icon: MaterialIcons({ name: 'sort' }),
         }),
         HeaderMenuButton({
           onPress: on.export(),
-          label: 'Exportar grupo',
+          label: t('Export group'),
           icon: MaterialCommunityIcons({ name: 'export' }),
         }),
         HeaderMenuButton({
           onPress: appEvents.groups.item.upsert.edit(),
-          label: 'Editar grupo',
+          label: t('Edit group'),
           icon: MaterialIcons({ name: 'edit' }),
         }),
         HeaderMenuButton({
           onPress: on.delete.open(),
-          label: 'Remover grupo',
+          label: t('Delete group'),
           icon: MaterialIcons({ name: 'delete-outline' }),
         }),
       ]),
@@ -235,14 +236,14 @@ const ShuffleButton = namedConst('ShuffleButton')(() => {
     round: 0,
     color: Colors.header,
   })([
-    Txt()('Sortear'),
+    Txt()(t('Shuffle')),
     Txt({ size: 12 })(
       pipe(numSelected, n =>
         n === 0
-          ? '(Nenhum jogador selecionado)'
+          ? `(${t('No players selected')})`
           : n === 1
-          ? '(1 jogador selecionado)'
-          : '(' + n.toString() + ' jogadores selecionados)',
+          ? `(${t('1 player selected')})`
+          : `(${n.toString()} ${t('players selected')})`,
       ),
     ),
   ])
@@ -254,10 +255,10 @@ const SortModal = namedConst('SortModal')(() => {
   return Boolean.match(modalSortGroup, {
     onFalse: () => Nothing,
     onTrue: () =>
-      CenterModal({ onClose: on.sort.close(), title: 'Ordenação' })([
+      CenterModal({ onClose: on.sort.close(), title: t('Sorting') })([
         View({ roundB: 8, overflow: 'hidden' })([
           FilterButton({
-            name: 'Nome',
+            name: t('Name'),
             onPress: on.sort.by.name(),
             state:
               mainSort._tag === 'name'
@@ -265,7 +266,7 @@ const SortModal = namedConst('SortModal')(() => {
                 : O.none(),
           }),
           FilterButton({
-            name: 'Posição',
+            name: t('Position'),
             onPress: on.sort.by.position(),
             state:
               mainSort._tag === 'position'
@@ -273,7 +274,7 @@ const SortModal = namedConst('SortModal')(() => {
                 : O.none(),
           }),
           FilterButton({
-            name: 'Habilidade',
+            name: t('Rating'),
             onPress: on.sort.by.rating(),
             state:
               mainSort._tag === 'rating'
@@ -281,7 +282,7 @@ const SortModal = namedConst('SortModal')(() => {
                 : O.none(),
           }),
           FilterButton({
-            name: 'Ativo',
+            name: t('Active'),
             onPress: on.sort.by.active(),
             state:
               mainSort._tag === 'active'
@@ -289,7 +290,7 @@ const SortModal = namedConst('SortModal')(() => {
                 : O.none(),
           }),
           FilterButton({
-            name: 'Data',
+            name: t('Date'),
             onPress: on.sort.by.date(),
             state:
               mainSort._tag === 'date'
@@ -333,7 +334,7 @@ const ParametersModal = namedConst('ParametersModal')(() => {
     onTrue: () =>
       CenterModal({
         onClose: on.parameters.close(),
-        title: 'Parâmetros',
+        title: t('Parameters'),
         m: 24,
       })([
         View({ p: 16 })([
@@ -367,8 +368,9 @@ const ParametersModal = namedConst('ParametersModal')(() => {
                 pipe(
                   parameters.teamsCountMethod,
                   Match.valueTags({
-                    count: () => 'Número de times',
-                    playersRequired: () => 'Número fixo de jogadores por time',
+                    count: () => t('Number of teams'),
+                    playersRequired: () =>
+                      t('Fixed number of players per team'),
                   }),
                 ),
               ),
@@ -391,7 +393,7 @@ const ParametersModal = namedConst('ParametersModal')(() => {
               onToggle: on.parameters.position.toggle(),
               isSelected: parameters.position,
             }),
-            Txt({ ml: 8, size: 14 })('Considerar posições'),
+            Txt({ ml: 8, size: 14 })(t('Consider positions')),
           ]),
           Pressable({
             onPress: on.parameters.rating.toggle(),
@@ -405,7 +407,7 @@ const ParametersModal = namedConst('ParametersModal')(() => {
               onToggle: on.parameters.rating.toggle(),
               isSelected: parameters.rating,
             }),
-            Txt({ ml: 8, size: 14 })('Considerar habilidade'),
+            Txt({ ml: 8, size: 14 })(t('Consider rating')),
           ]),
         ]),
         View({
@@ -413,8 +415,10 @@ const ParametersModal = namedConst('ParametersModal')(() => {
           borderColor: Colors.opacity(0.375)(Colors.gray),
         })([]),
         Row({ p: 16, gap: 8, justify: 'end' })([
-          GhostButton({ onPress: on.parameters.close() })([Txt()('Cancelar')]),
-          SolidButton({ onPress: on.parameters.shuffle() })([Txt()('Sortear')]),
+          GhostButton({ onPress: on.parameters.close() })([Txt()(t('Cancel'))]),
+          SolidButton({ onPress: on.parameters.shuffle() })([
+            Txt()(t('Shuffle')),
+          ]),
         ]),
       ]),
   })
@@ -426,16 +430,16 @@ const DeleteGroupModal = namedConst('DeleteGroupModal')(() => {
   return CenterModal({
     onClose: on.delete.close(),
     visible: isOpen && O.isSome(group),
-    title: 'Excluir grupo',
+    title: t('Delete group'),
   })([
     View({ p: 16 })(
       pipe(
         group,
         O.map(g =>
           TxtContext({ align: 'left' })([
-            Txt()('Deseja excluir o grupo '),
+            Txt()(`${t('Want to delete the group')} `),
             Txt({ weight: 600 })(g.name),
-            Txt()(' e todos os jogadores?'),
+            Txt()(` ${t('and all its players?')}`),
           ]),
         ),
         A.fromOption,
@@ -446,12 +450,12 @@ const DeleteGroupModal = namedConst('DeleteGroupModal')(() => {
     ),
     Row({ p: 16, gap: 8, justify: 'end' })([
       GhostButton({ onPress: on.delete.close(), color: Colors.error })([
-        Txt()('Cancelar'),
+        Txt()(t('Cancel')),
       ]),
       SolidButton({
         onPress: on.delete.submit(),
         color: Colors.error,
-      })([Txt()('Excluir')]),
+      })([Txt()(t('Delete'))]),
     ]),
   ])
 })

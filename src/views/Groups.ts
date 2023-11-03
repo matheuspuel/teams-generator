@@ -17,6 +17,7 @@ import { memoized, memoizedConst, namedConst } from 'src/components/hyperscript'
 import { Group } from 'src/datatypes'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
+import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 import { getGroupById, getModality } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
@@ -42,7 +43,7 @@ export const Groups = memoizedConst('GroupsView')(() => {
       renderItem: Item,
       ListEmptyComponent: View({ flex: 1, justify: 'center' })([
         Txt({ size: 16, color: Colors.opacity(0.625)(Colors.gray) })(
-          'Nenhum grupo cadastrado',
+          t('No groups registered'),
         ),
       ]),
       contentContainerStyle: { flexGrow: 1, p: 8, gap: 8 },
@@ -54,7 +55,7 @@ export const Groups = memoizedConst('GroupsView')(() => {
 const ScreenHeader = memoizedConst('Header')(() =>
   View()([
     Header({
-      title: 'Grupos',
+      title: t('Groups'),
       headerRight: HeaderButtonRow([
         HeaderButton({
           onPress: on.item.upsert.new(),
@@ -78,12 +79,12 @@ const Menu = namedConst('Menu')(() => {
       HeaderMenu({ onClose: on.menu.close() })([
         HeaderMenuButton({
           onPress: on.import(),
-          label: 'Importar grupo',
+          label: t('Import group'),
           icon: MaterialCommunityIcons({ name: 'import' }),
         }),
         HeaderMenuButton({
           onPress: appEvents.modality.go(),
-          label: 'Editar modalidades',
+          label: t('Edit modalities'),
           icon: MaterialIcons({ name: 'sports-soccer' }),
         }),
       ]),

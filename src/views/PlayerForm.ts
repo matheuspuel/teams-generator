@@ -19,6 +19,7 @@ import { Position, Rating } from 'src/datatypes'
 import { Abbreviation } from 'src/datatypes/Position'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
+import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 import { getActiveModality } from 'src/slices/groups'
 import { RatingSlider } from './components/RatingSlider'
@@ -41,14 +42,14 @@ export const PlayerView = memoizedConst('PlayerView')(() => {
       p: 16,
       round: 0,
       color: Colors.header,
-    })([Txt()('Gravar')]),
+    })([Txt()(t('Save'))]),
   ])
 })
 
 const ScreenHeader = memoizedConst('Header')(() =>
   View()([
     Header({
-      title: 'Jogador',
+      title: t('Player'),
       headerLeft: HeaderButtonRow([
         HeaderButton({
           onPress: appEvents.back(),
@@ -67,9 +68,9 @@ const ScreenHeader = memoizedConst('Header')(() =>
 
 const NameField = (name: string) =>
   View({ p: 4 })([
-    FormLabel()('Nome'),
+    FormLabel()(t('Name')),
     Input({
-      placeholder: 'Ex: Pedro',
+      placeholder: t('Ex: Jack'),
       value: name,
       onChange: on.name.change,
       autoFocus: true,
@@ -79,7 +80,7 @@ const NameField = (name: string) =>
 const RatingField = memoizedConst('RatingField')(() => {
   const rating = useSelector(s => s.playerForm.rating)
   return View({ p: 4 })([
-    FormLabel()('Habilidade'),
+    FormLabel()(t('Rating')),
     Txt({ size: 24, weight: 700, color: Colors.primary })(
       Rating.toString(rating),
     ),
@@ -100,7 +101,7 @@ const PositionField = memoizedConst('PositionField')(() => {
     ),
   )
   return View({ p: 4 })([
-    FormLabel()('Posição'),
+    FormLabel()(t('Position')),
     View()(A.map(positions, p => PositionItem(p.abbreviation))),
   ])
 })

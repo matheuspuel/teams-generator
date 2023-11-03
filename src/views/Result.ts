@@ -16,6 +16,7 @@ import { memoizedConst } from 'src/components/hyperscript'
 import { Modality, Player, Position, Rating } from 'src/datatypes'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
+import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 import { getActiveModality } from 'src/slices/groups'
 import { toFixedLocale } from 'src/utils/Number'
@@ -31,7 +32,7 @@ export const ResultView = memoizedConst('ResultView')(() => {
       View({ flex: 1 })([
         View()([
           Header({
-            title: 'Resultado',
+            title: t('Result'),
             headerLeft: HeaderButtonRow([
               HeaderButton({
                 onPress: appEvents.back(),
@@ -71,7 +72,7 @@ const TeamItem = (props: {
   players: Array<Player>
   modality: Modality
 }) => {
-  const title = `Time ${props.index + 1}`
+  const title = `${t('Team')} ${props.index + 1}`
   const numPlayers = props.players.length
   const totalRating = Player.getRatingTotal(props.players)
   const avgRating = toFixedLocale(2)(Number.div(numPlayers)(totalRating))
@@ -85,15 +86,15 @@ const TeamItem = (props: {
   })([
     Txt({ size: 16, weight: 600 })(title),
     TxtContext({ align: 'left', color: Colors.text.secondary, size: 12 })([
-      Txt()('Número de jogadores: '),
+      Txt()(`${t('Number of players')}: `),
       Txt()(numPlayers.toString()),
     ]),
     TxtContext({ align: 'left', color: Colors.text.secondary, size: 12 })([
-      Txt()('Média de habilidade: '),
+      Txt()(`${t('Rating average')}: `),
       Txt()(avgRating),
     ]),
     TxtContext({ align: 'left', color: Colors.text.secondary, size: 12 })([
-      Txt()('Total de habilidade: '),
+      Txt()(`${t('Rating total')}: `),
       Txt()(totalRating.toString()),
     ]),
     ...pipe(

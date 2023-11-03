@@ -75,6 +75,7 @@ const getConfig = (): ExpoConfig => ({
     envName,
     eas: { projectId: 'b5fe0e17-a64d-4005-b833-a57c2f04b664' },
   },
+  plugins: ['expo-localization'],
 })
 
 // Helpers

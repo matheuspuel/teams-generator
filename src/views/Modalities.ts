@@ -15,6 +15,7 @@ import { Modality } from 'src/datatypes'
 import { staticModalities } from 'src/datatypes/Modality'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
+import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 import { getModality } from 'src/slices/groups'
 
@@ -32,7 +33,7 @@ export const ModalitiesView = memoizedConst('ModalitiesView')(() => {
       renderItem: Item,
       ListEmptyComponent: View({ flex: 1, justify: 'center' })([
         Txt({ size: 16, color: Colors.opacity(0.625)(Colors.gray) })(
-          'Nenhuma modalidade cadastrada',
+          t('No modalities registered'),
         ),
       ]),
       contentContainerStyle: { flexGrow: 1, p: 8, gap: 8 },
@@ -44,7 +45,7 @@ export const ModalitiesView = memoizedConst('ModalitiesView')(() => {
 const ScreenHeader = memoizedConst('ScreenHeader')(() =>
   View()([
     Header({
-      title: 'Modalidades',
+      title: t('Modalities'),
       headerLeft: HeaderButtonRow([
         HeaderButton({
           onPress: appEvents.back(),

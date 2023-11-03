@@ -21,6 +21,7 @@ import { Modality } from 'src/datatypes'
 import { staticModalities } from 'src/datatypes/Modality'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
+import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 
 const on = appEvents.groups.item
@@ -39,7 +40,7 @@ export const GroupForm = memoizedConst('GroupForm')(() => {
       p: 16,
       round: 0,
       color: Colors.header,
-    })([Txt()('Gravar')]),
+    })([Txt()(t('Save'))]),
   ])
 })
 
@@ -47,7 +48,7 @@ const ScreenHeader = memoizedConst('Header')(() => {
   const isEdit = useSelector(s => O.isSome(s.groupForm.id))
   return View()([
     Header({
-      title: isEdit ? 'Editar grupo' : 'Novo grupo',
+      title: isEdit ? t('Edit group') : t('New group'),
       headerLeft: HeaderButtonRow([
         HeaderButton({
           onPress: appEvents.back(),
@@ -61,9 +62,9 @@ const ScreenHeader = memoizedConst('Header')(() => {
 const NameField = memoizedConst('NameField')(() => {
   const name = useSelector(s => s.groupForm.name)
   return View({ p: 4 })([
-    FormLabel()('Nome'),
+    FormLabel()(t('Name')),
     Input({
-      placeholder: 'Ex: Futebol de quinta',
+      placeholder: t('Ex: Thursday soccer'),
       value: name,
       onChange: on.upsert.form.name.change,
       autoFocus: true,
@@ -76,11 +77,11 @@ const ModalityField = memoizedConst('ModalityField')(() => {
   const modalities = [...customModalities, ...staticModalities]
   return View({ p: 4 })([
     Row({ justify: 'space-between', align: 'center' })([
-      FormLabel()('Modalidade/Esporte'),
+      FormLabel()(t('Modality/Sport')),
       GhostButton({ onPress: appEvents.modality.go(), alignSelf: 'center' })([
         Row({ align: 'center', gap: 8 })([
           MaterialIcons({ name: 'edit', size: 16 }),
-          Txt({ size: 12 })('Editar modalidades'),
+          Txt({ size: 12 })(t('Edit modalities')),
         ]),
       ]),
     ]),

@@ -56,6 +56,9 @@ dependencies:
   expo-linking:
     specifier: ~5.0.2
     version: 5.0.2(expo@49.0.16)
+  expo-localization:
+    specifier: ~14.3.0
+    version: 14.3.0(expo@49.0.16)
   expo-sharing:
     specifier: ~11.5.0
     version: 11.5.0(expo@49.0.16)
@@ -5026,6 +5029,15 @@ packages:
       - supports-color
     dev: false
 
+  /expo-localization@14.3.0(expo@49.0.16):
+    resolution: {integrity: sha512-TML3TeVtwpfuSNwbhBspC9XsGJaa0TWJNh+UaR/35YP9fQiaJfVWUMSrAq84ba6rY1Pm3kti07LV8UUa505oqg==}
+    peerDependencies:
+      expo: '*'
+    dependencies:
+      expo: 49.0.16(@babel/core@7.23.2)
+      rtl-detect: 1.1.2
+    dev: false
+
   /expo-manifests@0.7.2:
     resolution: {integrity: sha512-xlhL0XI2zw3foJ0q2Ra4ieBhU0V2yz+Rv6GpVEaaIHFlIC/Dbx+mKrX5dgenZEMERr/MG7sRJaRbAVB2PaAYhA==}
     dependencies:
@@ -8785,6 +8797,10 @@ packages:
     dependencies:
       glob: 10.3.10
     dev: true
+
+  /rtl-detect@1.1.2:
+    resolution: {integrity: sha512-PGMBq03+TTG/p/cRB7HCLKJ1MgDIi07+QU1faSjiYRfmY5UsAttV9Hs08jDAHVwcOwmVLcSJkpwyfXszVjWfIQ==}
+    dev: false
 
   /run-applescript@5.0.0:
     resolution: {integrity: sha512-XcT5rBksx1QdIhlFOCtgZkB99ZEouFZ1E2Kc2LHqNW13U3/74YGdkQRmThTwxy4QIyookibDKYZOPqX//6BlAg==}

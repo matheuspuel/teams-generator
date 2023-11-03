@@ -21,6 +21,7 @@ import { SolidButton } from 'src/components/derivative/SolidButton'
 import { memoized, memoizedConst, namedConst } from 'src/components/hyperscript'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
+import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 import { getModality } from 'src/slices/groups'
 import { validateModalityForm } from 'src/slices/modalityForm'
@@ -43,7 +44,7 @@ export const ModalityForm = memoizedConst('ModalityForm')(() => {
       p: 16,
       round: 0,
       color: Colors.header,
-    })([Txt()('Gravar')]),
+    })([Txt()(t('Save'))]),
   ])
 })
 
@@ -51,7 +52,7 @@ const ScreenHeader = memoizedConst('Header')(() => {
   const isEdit = useSelector(s => O.isSome(s.modalityForm.id))
   return View()([
     Header({
-      title: isEdit ? 'Editar modalidade' : 'Nova modalidade',
+      title: isEdit ? t('Edit modality') : t('New modality'),
       headerLeft: HeaderButtonRow([
         HeaderButton({
           onPress: appEvents.back(),
@@ -81,17 +82,19 @@ const DeleteModal = namedConst('DeleteModal')(() => {
   return CenterModal({
     onClose: on.remove.close(),
     visible: O.isSome(modality),
-    title: 'Excluir modalidade',
+    title: t('Delete modality'),
   })([
     View({ p: 16 })([
       O.match(modality, {
         onNone: () => Nothing,
         onSome: m =>
           TxtContext({ align: 'left' })([
-            Txt()('Deseja excluir a modalidade '),
+            Txt()(`${t('Want to delete the modality')} `),
             Txt({ weight: 600 })(m.name),
             Txt()(
-              '? As posições dos jogadores desta modalidade serão perdidas.',
+              `? ${t(
+                'The positions of the players of this modality will be lost',
+              )}.`,
             ),
           ]),
       }),
@@ -101,10 +104,10 @@ const DeleteModal = namedConst('DeleteModal')(() => {
     ),
     Row({ p: 16, gap: 8, justify: 'end' })([
       GhostButton({ onPress: on.remove.close(), color: Colors.error })([
-        Txt()('Cancelar'),
+        Txt()(t('Cancel')),
       ]),
       SolidButton({ onPress: on.remove.submit(), color: Colors.error })([
-        Txt()('Excluir'),
+        Txt()(t('Delete')),
       ]),
     ]),
   ])
@@ -113,9 +116,9 @@ const DeleteModal = namedConst('DeleteModal')(() => {
 const NameField = memoizedConst('NameField')(() => {
   const name = useSelector(s => s.modalityForm.name)
   return View({ p: 4 })([
-    FormLabel()('Nome'),
+    FormLabel()(t('Name')),
     Input({
-      placeholder: 'Ex: Futebol',
+      placeholder: t('Ex: Soccer'),
       value: name,
       onChange: on.name.change,
       autoFocus: true,
@@ -126,16 +129,16 @@ const NameField = memoizedConst('NameField')(() => {
 const PositionsField = memoizedConst('PositionsField')(() => {
   const positionCount = useSelector(s => s.modalityForm.positions.length)
   return View({ p: 4 })([
-    FormLabel()('Posições'),
+    FormLabel()(t('Positions')),
     Row({ p: 4 })([
-      View({ w: 90 })([FormLabel()('Sigla')]),
-      View()([FormLabel()('Nome')]),
+      View({ w: 90 })([FormLabel()(t('Abbreviation'))]),
+      View()([FormLabel()(t('Name'))]),
     ]),
     View()(A.map(A.replicate(positionCount)(null), (_, i) => PositionItem(i))),
     GhostButton({ onPress: on.position.add(), alignSelf: 'center' })([
       Row({ align: 'center' })([
         MaterialIcons({ name: 'add' }),
-        Txt()('Nova posição'),
+        Txt()(t('New position')),
       ]),
     ]),
   ])
@@ -163,7 +166,7 @@ const PositionAbbreviationField = memoized('PositionAbbreviationField')((
   )
   return View({ p: 4 })([
     Input({
-      placeholder: '  Ex: LD  ',
+      placeholder: `  ${t('Ex: LD')}  `,
       value: abbreviation.pipe(O.getOrElse(() => '')),
       onChange: t => on.position.abbreviation.change({ index, value: t }),
       autoCapitalize: 'characters',
@@ -180,7 +183,7 @@ const PositionNameField = memoized('PositionNameField')((index: number) => {
   )
   return View({ flex: 1, p: 4 })([
     Input({
-      placeholder: 'Ex: Lateral Direito',
+      placeholder: t('Ex: Right Wing'),
       value: name.pipe(O.getOrElse(() => '')),
       onChange: t => on.position.name.change({ index, value: t }),
       py: 6,
