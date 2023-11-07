@@ -1,5 +1,5 @@
 import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
-import { A, F, O, Optic, Option, Record, S, flow, pipe } from 'fp'
+import { A, Clock, F, O, Optic, Option, Record, S, flow, pipe } from 'fp'
 import { Group, Modality, Player } from 'src/datatypes'
 import {
   CustomModality,
@@ -16,7 +16,6 @@ import { root } from 'src/model/optic'
 import { IdGenerator } from 'src/services/IdGenerator'
 import { State } from 'src/services/StateRef'
 import { Id } from 'src/utils/Entity'
-import { Timestamp } from 'src/utils/datatypes'
 
 export type GroupsState = { [groupId: Id]: Group }
 const GroupsState_ = S.record(Id.pipe(S.to), Group.Schema)
@@ -154,7 +153,7 @@ export const createPlayer = ({
   player: Omit<Player, 'active' | 'id' | 'createdAt'>
 }) =>
   pipe(
-    F.all({ id: IdGenerator.generate(), time: Timestamp.getNow() }),
+    F.all({ id: IdGenerator.generate(), time: Clock.currentTimeMillis }),
     F.flatMap(({ id, time }) =>
       addPlayer({ groupId, player: { ...player, id, createdAt: time } }),
     ),

@@ -1,24 +1,10 @@
-import {
-  Clock,
-  Duration,
-  Effect,
-  F,
-  Number,
-  Ord,
-  Order as Order_,
-  Predicate,
-  S,
-  pipe,
-} from 'fp'
+import { Duration, Number, Ord, Order as Order_, Predicate, S, pipe } from 'fp'
 
 export const Schema = pipe(S.number, S.brand('Timestamp'))
 
 export type Timestamp = S.Schema.To<typeof Schema>
 
 export const Order: Order_<Timestamp> = Number.Order
-
-export const getNow = (): Effect<never, never, Timestamp> =>
-  F.map(Clock.currentTimeMillis, Schema)
 
 export const add =
   (duration: Duration.DurationInput) => (timestamp: Timestamp) =>

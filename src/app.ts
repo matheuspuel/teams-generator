@@ -1,4 +1,4 @@
-import { Duration, F, Stream, pipe } from 'fp'
+import { Clock, Duration, F, Stream, pipe } from 'fp'
 import { BackHandler } from 'src/services/BackHandler'
 import { StateRef } from 'src/services/StateRef'
 import { UI } from 'src/services/UI'
@@ -9,7 +9,6 @@ import { Metadata } from './services/Metadata'
 import { runMigrations } from './services/Repositories/migrations'
 import { SplashScreen } from './services/SplashScreen'
 import { Telemetry } from './services/Telemetry'
-import { Timestamp } from './utils/datatypes'
 
 export const startApp = pipe(
   UI.start(),
@@ -37,7 +36,7 @@ export const startApp = pipe(
   F.tap(() => appLoaded()),
   F.tap(() =>
     pipe(
-      F.all([Metadata.get(), Timestamp.getNow()]),
+      F.all([Metadata.get(), Clock.currentTimeMillis]),
       F.flatMap(([m, t]) =>
         Telemetry.log([{ timestamp: t, event: 'start', data: m }]),
       ),

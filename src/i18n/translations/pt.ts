@@ -1,6 +1,6 @@
 import { Translation } from '..'
 
-export const ptTranslations: Translation = {
+export const ptTranslation: Translation = {
   Cancel: 'Cancelar',
   Delete: 'Excluir',
   Save: 'Gravar',

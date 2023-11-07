@@ -44,6 +44,7 @@ import {
 import { blankPlayerForm, getPlayerFormFromData } from 'src/slices/playerForm'
 import { eraseResult, generateResult } from 'src/slices/result'
 import { Route, goBack, navigate } from 'src/slices/routes'
+import { openSponsorUrl } from 'src/slices/sponsor'
 import {
   setDeleteGroupModal,
   setGroupModality,
@@ -75,6 +76,7 @@ export const appEvents = {
     appLoaded: appLoaded,
   },
   alert: { dismiss: () => Alert.dismiss() },
+  sponsor: { open: () => openSponsorUrl() },
   modality: {
     go: () =>
       pipe(

@@ -1,4 +1,4 @@
-export const enTranslations = {
+export const enTranslation = {
   Cancel: 'Cancel',
   Delete: 'Delete',
   Save: 'Save',

@@ -1,18 +1,18 @@
 import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
 import { getCalendars, getLocales } from 'expo-localization'
 import { A, O, pipe } from 'fp'
-import { enTranslations } from './translations/en'
-import { ptTranslations } from './translations/pt'
+import { enTranslation } from './translations/en'
+import { ptTranslation } from './translations/pt'
 
-export type Translation = typeof enTranslations
+export type Translation = typeof enTranslation
 
 const translations: NonEmptyReadonlyArray<{
   languageCode: string
   regionCode: string
   translation: Translation
 }> = [
-  { languageCode: 'en', regionCode: 'GB', translation: enTranslations },
-  { languageCode: 'pt', regionCode: 'BR', translation: ptTranslations },
+  { languageCode: 'en', regionCode: 'GB', translation: enTranslation },
+  { languageCode: 'pt', regionCode: 'BR', translation: ptTranslation },
 ]
 
 const getPreferences = () => {
@@ -37,6 +37,10 @@ const getPreferences = () => {
 
 const preferences = getPreferences()
 
-const translation = preferences.translation.translation
+const translationsEnabled = false
+
+const translation = translationsEnabled
+  ? preferences.translation.translation
+  : ptTranslation
 
 export const t = (token: keyof Translation) => translation[token]

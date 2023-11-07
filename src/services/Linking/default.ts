@@ -3,6 +3,11 @@ import { Chunk, F, Layer, O, Stream, pipe } from 'fp'
 import { LinkingEnv } from '.'
 
 export const LinkingLive = LinkingEnv.context({
+  openURL: url =>
+    pipe(
+      F.tryPromise(() => ExpoLinking.openURL(url)),
+      F.ignore,
+    ),
   getInitialURL: () =>
     pipe(
       F.tryPromise(() => ExpoLinking.getInitialURL()),
