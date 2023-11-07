@@ -13,9 +13,11 @@
     "eas-build-pre-install": "npm i -g pnpm@8.10.0",
     "build:development": "eas build --platform android --profile development",
     "build:preview": "eas build --platform android --profile preview",
+    "build:sponsor": "eas build --platform android --profile sponsor",
     "build:staging": "eas build --platform android --profile staging",
     "build:production": "eas build --platform android --profile production --auto-submit",
     "update:preview": "eas update --auto --platform android --channel preview",
+    "update:sponsor": "eas update --auto --platform android --channel sponsor",
     "update:staging": "eas update --auto --platform android --channel staging",
     "update:production": "eas update --auto --platform android --channel production"
   },
