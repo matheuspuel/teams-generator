@@ -3,8 +3,7 @@ import { Linking } from 'src/services/Linking'
 import { Metadata } from 'src/services/Metadata'
 import { Telemetry } from 'src/services/Telemetry'
 
-const sponsorUrl =
-  'https://play.google.com/store/apps/details?id=br.com.goleirodealuguel&referrer=utm_source%3Dsorteiodetimes%26utm_medium%3Dbanner_grupos%26utm_campaign%3Dmetaverso'
+const sponsorUrl = 'https://rebrand.ly/st-gdaps'
 
 export const openSponsorUrl = () =>
   pipe(
