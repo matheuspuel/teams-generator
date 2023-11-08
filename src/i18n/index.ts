@@ -35,7 +35,7 @@ const getPreferences = () => {
   )
 }
 
-const preferences = getPreferences()
+export const preferences = getPreferences()
 
 const translationsEnabled = false
 

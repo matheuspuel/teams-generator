@@ -19,6 +19,10 @@ export type Metadata = {
       buildVersion: string | null
     }
   }
+  preferences: {
+    languageCode: string | null
+    regionCode: string | null
+  }
 }
 
 export type MetadataService = {

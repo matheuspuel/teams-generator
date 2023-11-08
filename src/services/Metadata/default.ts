@@ -2,6 +2,7 @@ import * as Application from 'expo-application'
 import * as Device from 'expo-device'
 import { F, Layer, O, Option, Ref, flow, identity, pipe } from 'fp'
 import packageJSON from 'src/../package.json'
+import { preferences } from 'src/i18n'
 import { IdGenerator } from 'src/services/IdGenerator'
 import { IdGeneratorLive } from 'src/services/IdGenerator/default'
 import { Metadata, MetadataServiceEnv } from 'src/services/Metadata'
@@ -23,6 +24,16 @@ const getStaticMetadata = F.sync(() => ({
       version: Application.nativeApplicationVersion,
       buildVersion: Application.nativeBuildVersion,
     },
+  },
+  preferences: {
+    languageCode: preferences.location.pipe(
+      O.map(_ => _.languageCode),
+      O.getOrNull,
+    ),
+    regionCode: preferences.location.pipe(
+      O.map(_ => _.regionCode),
+      O.getOrNull,
+    ),
   },
 }))
 
