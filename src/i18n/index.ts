@@ -37,10 +37,6 @@ const getPreferences = () => {
 
 export const preferences = getPreferences()
 
-const translationsEnabled = false
-
-const translation = translationsEnabled
-  ? preferences.translation.translation
-  : ptTranslation
+const translation = preferences.translation.translation
 
 export const t = (token: keyof Translation) => translation[token]

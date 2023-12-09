@@ -1,8 +1,9 @@
 import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
 import { S } from 'fp'
+import { t } from 'src/i18n'
 import { Id } from 'src/utils/Entity'
 import { NonEmptyString } from 'src/utils/datatypes/NonEmptyString'
-import { Position } from './Position'
+import { CustomPosition, StaticPosition } from './Position'
 
 const refineSync =
   <I, A>(schema: S.Schema<I, A>) =>
@@ -16,15 +17,15 @@ const refineSync =
     }
   }
 
-const pos = <const A extends S.Schema.From<typeof Position>>(_: A) =>
-  refineSync(Position)(_)
+const pos = <const A extends S.Schema.From<typeof StaticPosition>>(_: A) =>
+  refineSync(StaticPosition)(_)
 
 export interface StaticModality extends S.Schema.To<typeof StaticModality_> {}
 const StaticModality_ = S.struct({
   _tag: S.literal('StaticModality'),
   id: NonEmptyString,
   name: NonEmptyString,
-  positions: S.nonEmptyArray(Position),
+  positions: S.nonEmptyArray(StaticPosition),
 })
 export const StaticModality: S.Schema<
   S.Schema.From<typeof StaticModality_>,
@@ -34,60 +35,148 @@ export const StaticModality: S.Schema<
 export const soccer = refineSync(StaticModality)({
   _tag: 'StaticModality',
   id: 'soccer',
-  name: 'Futebol',
+  name: t('Soccer'),
   positions: [
-    pos({ abbreviation: 'g', name: 'Goleiro' }),
-    pos({ abbreviation: 'z', name: 'Zagueiro' }),
-    pos({ abbreviation: 'le', name: 'Lateral Esquerdo' }),
-    pos({ abbreviation: 'ld', name: 'Lateral Direito' }),
-    pos({ abbreviation: 'v', name: 'Volante' }),
-    pos({ abbreviation: 'm', name: 'Meia' }),
-    pos({ abbreviation: 'a', name: 'Atacante' }),
+    pos({
+      abbreviation: 'g',
+      abbreviationLabel: t('Goalkeeper(abv)'),
+      name: t('Goalkeeper'),
+    }),
+    pos({
+      abbreviation: 'z',
+      abbreviationLabel: t('Center Back(abv)'),
+      name: t('Center Back'),
+    }),
+    pos({
+      abbreviation: 'le',
+      abbreviationLabel: t('Left Back(abv)'),
+      name: t('Left Back'),
+    }),
+    pos({
+      abbreviation: 'ld',
+      abbreviationLabel: t('Right Back(abv)'),
+      name: t('Right Back'),
+    }),
+    pos({
+      abbreviation: 'v',
+      abbreviationLabel: t('Defensive Midfielder(abv)'),
+      name: t('Defensive Midfielder'),
+    }),
+    pos({
+      abbreviation: 'm',
+      abbreviationLabel: t('Attacking Midfielder(abv)'),
+      name: t('Attacking Midfielder'),
+    }),
+    pos({
+      abbreviation: 'a',
+      abbreviationLabel: t('Striker(abv)'),
+      name: t('Striker'),
+    }),
   ],
 } as const)
 
-export const indoorSoccer = refineSync(StaticModality)({
+export const futsal = refineSync(StaticModality)({
   _tag: 'StaticModality',
   id: 'indoorSoccer',
-  name: 'Futsal',
+  name: t('Futsal'),
   positions: [
-    pos({ abbreviation: 'g', name: 'Goleiro' }),
-    pos({ abbreviation: 'f', name: 'Fixo' }),
-    pos({ abbreviation: 'ae', name: 'Ala Esquerdo' }),
-    pos({ abbreviation: 'ad', name: 'Ala Direito' }),
-    pos({ abbreviation: 'p', name: 'Pivô' }),
+    pos({
+      abbreviation: 'g',
+      abbreviationLabel: t('Goalkeeper(abv)'),
+      name: t('Goalkeeper'),
+    }),
+    pos({
+      abbreviation: 'f',
+      abbreviationLabel: t('Defender(Futsal)(abv)'),
+      name: t('Defender(Futsal)'),
+    }),
+    pos({
+      abbreviation: 'ae',
+      abbreviationLabel: t('Left Wing(abv)'),
+      name: t('Left Wing'),
+    }),
+    pos({
+      abbreviation: 'ad',
+      abbreviationLabel: t('Right Wing(abv)'),
+      name: t('Right Wing'),
+    }),
+    pos({
+      abbreviation: 'p',
+      abbreviationLabel: t('Pivot(abv)'),
+      name: t('Pivot'),
+    }),
   ],
 } as const)
 
 export const volleyball = refineSync(StaticModality)({
   _tag: 'StaticModality',
   id: 'volleyball',
-  name: 'Vôlei',
+  name: t('Volleyball'),
   positions: [
-    pos({ abbreviation: 'l', name: 'Levantador' }),
-    pos({ abbreviation: 'p', name: 'Ponteiro' }),
-    pos({ abbreviation: 'o', name: 'Oposto' }),
-    pos({ abbreviation: 'c', name: 'Central' }),
-    pos({ abbreviation: 'li', name: 'Líbero' }),
+    pos({
+      abbreviation: 'l',
+      abbreviationLabel: t('Setter(abv)'),
+      name: t('Setter'),
+    }),
+    pos({
+      abbreviation: 'p',
+      abbreviationLabel: t('Outside Hitter(abv)'),
+      name: t('Outside Hitter'),
+    }),
+    pos({
+      abbreviation: 'o',
+      abbreviationLabel: t('Opposite Hitter(abv)'),
+      name: t('Opposite Hitter'),
+    }),
+    pos({
+      abbreviation: 'c',
+      abbreviationLabel: t('Middle Blocker(abv)'),
+      name: t('Middle Blocker'),
+    }),
+    pos({
+      abbreviation: 'li',
+      abbreviationLabel: t('Libero(abv)'),
+      name: t('Libero'),
+    }),
   ],
 } as const)
 
 export const basketball = refineSync(StaticModality)({
   _tag: 'StaticModality',
   id: 'basketball',
-  name: 'Basquete',
+  name: t('Basketball'),
   positions: [
-    pos({ abbreviation: 'pg', name: 'Point Guard' }),
-    pos({ abbreviation: 'sg', name: 'Shooting Guard' }),
-    pos({ abbreviation: 'sf', name: 'Small Forward' }),
-    pos({ abbreviation: 'pf', name: 'Power Forward' }),
-    pos({ abbreviation: 'c', name: 'Center' }),
+    pos({
+      abbreviation: 'pg',
+      abbreviationLabel: t('Point Guard(abv)'),
+      name: t('Point Guard'),
+    }),
+    pos({
+      abbreviation: 'sg',
+      abbreviationLabel: t('Shooting Guard(abv)'),
+      name: t('Shooting Guard'),
+    }),
+    pos({
+      abbreviation: 'sf',
+      abbreviationLabel: t('Small Forward(abv)'),
+      name: t('Small Forward'),
+    }),
+    pos({
+      abbreviation: 'pf',
+      abbreviationLabel: t('Power Forward(abv)'),
+      name: t('Power Forward'),
+    }),
+    pos({
+      abbreviation: 'c',
+      abbreviationLabel: t('Center(abv)'),
+      name: t('Center'),
+    }),
   ],
 } as const)
 
 export const staticModalities: NonEmptyReadonlyArray<StaticModality> = [
   soccer,
-  indoorSoccer,
+  futsal,
   volleyball,
   basketball,
 ]
@@ -97,7 +186,7 @@ const CustomModality_ = S.struct({
   _tag: S.literal('CustomModality'),
   id: Id,
   name: NonEmptyString,
-  positions: S.nonEmptyArray(Position),
+  positions: S.nonEmptyArray(CustomPosition),
 })
 export const CustomModality: S.Schema<
   S.Schema.From<typeof CustomModality_>,

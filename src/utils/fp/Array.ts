@@ -1,4 +1,4 @@
-import { constant, pipe } from 'effect/Function'
+import { constant, dual, pipe } from 'effect/Function'
 import * as O from 'effect/Option'
 import { Option } from 'effect/Option'
 import * as A from 'effect/ReadonlyArray'
@@ -14,6 +14,25 @@ export const toNonEmpty = <A>(
   array: ReadonlyArray<A>,
 ): Option<NonEmptyReadonlyArray<A>> =>
   A.match(array, { onEmpty: () => O.none(), onNonEmpty: O.some })
+
+export const findFirstMap: {
+  <A, B>(f: (a: A, i: number) => Option<B>): (self: Iterable<A>) => Option<B>
+  <A, B>(self: Iterable<A>, f: (a: A, i: number) => Option<B>): Option<B>
+} = dual(
+  2,
+  <A, B>(self: Iterable<A>, f: (a: A, i: number) => Option<B>): Option<B> => {
+    const as = A.fromIterable(self)
+    // eslint-disable-next-line functional/no-loop-statements
+    for (let i = 0; i < as.length; i++) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const o = f(as[i]!, i)
+      if (O.isSome(o)) {
+        return o
+      }
+    }
+    return O.none()
+  },
+)
 
 export const getUnorderedEquivalence = <A>(
   E: Eq.Equivalence<A>,

@@ -18,7 +18,7 @@
     {
       "label": "Client Packager",
       "type": "shell",
-      "command": "yarn start",
+      "command": "pnpm run start",
       "group": { "kind": "build" },
       "isBackground": true,
       "problemMatcher": {

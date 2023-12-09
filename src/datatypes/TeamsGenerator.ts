@@ -1,6 +1,7 @@
 import { Effect } from 'effect/Effect'
 import { sumAll } from 'effect/Number'
-import { A, F, Match, Number, O, Ord, Order, flow, pipe } from 'fp'
+import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
+import { A, F, Match, Number, O, Ord, Order, flow, identity, pipe } from 'fp'
 import * as Player from 'src/datatypes/Player'
 import * as Position from 'src/datatypes/Position'
 import { findFirstMapWithIndex } from 'src/utils/Array'
@@ -24,7 +25,11 @@ const getResultPositionDeviance =
   (teams: Array<Array<Player>>): number =>
     pipe(teams, A.flatten, allPlayers =>
       pipe(
-        args.modality.positions,
+        identity<
+          NonEmptyReadonlyArray<
+            Position.StaticPosition | Position.CustomPosition
+          >
+        >(args.modality.positions),
         A.map(pos =>
           pipe(
             allPlayers,

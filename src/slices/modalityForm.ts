@@ -38,7 +38,12 @@ export const validateModalityForm = (f: ModalityForm) =>
             S.Lowercase.pipe(S.compose(Abbreviation)),
           )(p.abbreviation),
           name: S.decodeEither(NonEmptyString)(p.name),
-        }),
+        }).pipe(
+          E.map(_ => ({
+            ..._,
+            abbreviationLabel: _.abbreviation.toUpperCase(),
+          })),
+        ),
       ),
     ).pipe(
       E.flatMap(ps =>

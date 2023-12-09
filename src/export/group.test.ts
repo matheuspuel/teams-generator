@@ -1,7 +1,7 @@
 /* eslint-disable functional/no-expression-statements */
 /* eslint-disable functional/no-let */
 import { Group, Modality } from 'src/datatypes'
-import { CustomModality, indoorSoccer } from 'src/datatypes/Modality'
+import { CustomModality, futsal } from 'src/datatypes/Modality'
 import { RootState, initialAppState } from 'src/model'
 import { IdGenerator, IdGeneratorEnv } from 'src/services/IdGenerator'
 import { AppStateRefEnv, StateRef } from 'src/services/StateRef'
@@ -128,14 +128,14 @@ const group2 = S.decodeSync(Group.Group)({
 const group3 = S.decodeSync(Group.Group)({
   id: 'g3',
   name: 'group3',
-  modality: { _tag: 'StaticModality', id: indoorSoccer.id },
+  modality: { _tag: 'StaticModality', id: futsal.id },
   players: [
     {
       id: 'p5',
       active: true,
       createdAt: 5,
       name: 'player5',
-      positionAbbreviation: indoorSoccer.positions[1].abbreviation,
+      positionAbbreviation: futsal.positions[1].abbreviation,
       rating: 5,
     },
     {
@@ -143,7 +143,7 @@ const group3 = S.decodeSync(Group.Group)({
       active: false,
       createdAt: 6,
       name: 'player6',
-      positionAbbreviation: indoorSoccer.positions[3].abbreviation,
+      positionAbbreviation: futsal.positions[3].abbreviation,
       rating: 6,
     },
   ],
@@ -293,7 +293,7 @@ describe('importGroup state logic', () => {
 
     _importGroup({
       ...group3,
-      modality: { _tag: 'StaticModality', id: indoorSoccer.id },
+      modality: { _tag: 'StaticModality', id: futsal.id },
     }).pipe(
       StateRef.execute,
       F.provideService(IdGeneratorEnv, idGeneratorSequential),
@@ -310,14 +310,14 @@ describe('importGroup state logic', () => {
       [Id('3')]: S.decodeSync(Group.Group)({
         id: '3',
         name: 'group3',
-        modality: { _tag: 'StaticModality', id: indoorSoccer.id },
+        modality: { _tag: 'StaticModality', id: futsal.id },
         players: [
           {
             id: '1',
             active: true,
             createdAt: 5,
             name: 'player5',
-            positionAbbreviation: indoorSoccer.positions[1].abbreviation,
+            positionAbbreviation: futsal.positions[1].abbreviation,
             rating: 5,
           },
           {
@@ -325,7 +325,7 @@ describe('importGroup state logic', () => {
             active: false,
             createdAt: 6,
             name: 'player6',
-            positionAbbreviation: indoorSoccer.positions[3].abbreviation,
+            positionAbbreviation: futsal.positions[3].abbreviation,
             rating: 6,
           },
         ],

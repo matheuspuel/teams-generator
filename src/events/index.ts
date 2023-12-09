@@ -7,6 +7,7 @@ import {
 } from 'src/datatypes'
 import { soccer } from 'src/datatypes/Modality'
 import { exportGroup, importGroupFromDocumentPicker } from 'src/export/group'
+import { t } from 'src/i18n'
 import { root } from 'src/model/optic'
 import { AppRequirements } from 'src/runtime'
 import { Alert } from 'src/services/Alert'
@@ -543,8 +544,8 @@ export const appEvents = {
         }),
         StateRef.query,
         F.flatMap(({ result, modality }) =>
-          pipe(Player.teamListToStringSensitive({ modality })(result), t =>
-            ShareService.shareMessage({ message: t, title: 'Times' }),
+          pipe(Player.teamListToStringSensitive({ modality })(result), _ =>
+            ShareService.shareMessage({ message: _, title: t('Teams') }),
           ),
         ),
         F.ignore,

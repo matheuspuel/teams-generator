@@ -1,4 +1,5 @@
-import { A, Number, O, Ord, pipe } from 'fp'
+import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
+import { A, Number, O, Ord, identity, pipe } from 'fp'
 import {
   ActivityIndicator,
   Header,
@@ -90,11 +91,11 @@ const TeamItem = (props: {
       Txt()(numPlayers.toString()),
     ]),
     TxtContext({ align: 'left', color: Colors.text.secondary, size: 12 })([
-      Txt()(`${t('Rating average')}: `),
+      Txt()(`${t('Average rating')}: `),
       Txt()(avgRating),
     ]),
     TxtContext({ align: 'left', color: Colors.text.secondary, size: 12 })([
-      Txt()(`${t('Rating total')}: `),
+      Txt()(`${t('Total rating')}: `),
       Txt()(totalRating.toString()),
     ]),
     ...pipe(
@@ -125,7 +126,11 @@ const PlayerItem = ({
     Txt({ numberOfLines: 1 })(` - ${name}`),
     Txt()(
       ` (${pipe(
-        modality.positions,
+        identity<
+          NonEmptyReadonlyArray<
+            Position.StaticPosition | Position.CustomPosition
+          >
+        >(modality.positions),
         A.findFirst(_ => _.abbreviation === positionAbbreviation),
         O.map(Position.toAbbreviationString),
         O.getOrElse(() => '-'),

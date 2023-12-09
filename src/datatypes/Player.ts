@@ -1,4 +1,5 @@
 import { sumAll } from 'effect/Number'
+import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
 import {
   A,
   Boolean,
@@ -10,8 +11,10 @@ import {
   S,
   String,
   flow,
+  identity,
   pipe,
 } from 'fp'
+import { t } from 'src/i18n'
 import { Id } from 'src/utils/Entity'
 import { normalize } from 'src/utils/String'
 import { Timestamp } from 'src/utils/datatypes'
@@ -34,12 +37,25 @@ export const Player = Schema
 
 export const isActive = (p: Player) => p.active
 
+const getPositionAndIndex =
+  (args: { modality: Modality }) =>
+  (player: Player): Option<{ position: Position.Position; index: number }> =>
+    pipe(
+      identity<
+        NonEmptyReadonlyArray<Position.StaticPosition | Position.CustomPosition>
+      >(args.modality.positions),
+      A.findFirstMap((po, i) =>
+        po.abbreviation === player.positionAbbreviation
+          ? O.some({ position: po, index: i })
+          : O.none(),
+      ),
+    )
+
 export const PositionOrd = (args: { modality: Modality }): Order<Player> =>
   Ord.mapInput(Number.Order, p =>
     pipe(
-      args.modality.positions,
-      A.findFirstIndex(po => po.abbreviation === p.positionAbbreviation),
-      O.getOrElse(() => -1),
+      getPositionAndIndex(args)(p),
+      O.match({ onNone: () => -1, onSome: _ => _.index }),
     ),
   )
 
@@ -66,10 +82,7 @@ export const CreatedAtOrder: Order<Player> = pipe(
 export const position =
   (args: { modality: Modality }) =>
   (player: Player): Option<Position.Position> =>
-    pipe(
-      args.modality.positions,
-      A.findFirst(po => po.abbreviation === player.positionAbbreviation),
-    )
+    O.map(getPositionAndIndex(args)(player), _ => _.position)
 
 export const toString =
   (args: { modality: Modality }): ((player: Player) => string) =>
@@ -96,7 +109,7 @@ export const teamListToString =
     pipe(
       teams,
       A.map(listToString(args)),
-      A.map((t, i) => `Time ${i + 1}\n\n${t}`),
+      A.map((v, i) => `${t('Team')} ${i + 1}\n\n${v}`),
       A.join('\n\n'),
     )
 
@@ -125,7 +138,7 @@ export const teamListToStringSensitive =
     pipe(
       teams,
       A.map(listToStringSensitive(args)),
-      A.map((t, i) => `Time ${i + 1}\n\n${t}`),
+      A.map((v, i) => `${t('Team')} ${i + 1}\n\n${v}`),
       A.join('\n\n'),
     )
 
