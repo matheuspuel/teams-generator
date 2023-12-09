@@ -1,6 +1,6 @@
 import { pipe } from 'fp'
 
-const thousandsSeparator = '.' as '.' | ','
+const thousandsSeparator = ',' as '.' | ','
 const decimalSeparator = thousandsSeparator === '.' ? ',' : '.'
 
 export const parseLocaleNumber = (stringNumber: string) =>
