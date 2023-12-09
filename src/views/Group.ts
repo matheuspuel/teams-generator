@@ -236,7 +236,7 @@ const ShuffleButton = namedConst('ShuffleButton')(() => {
     round: 0,
     color: Colors.header,
   })([
-    Txt()(t('Shuffle')),
+    Txt()(t('Generate teams')),
     Txt({ size: 12 })(
       pipe(numSelected, n =>
         n === 0
@@ -417,7 +417,7 @@ const ParametersModal = namedConst('ParametersModal')(() => {
         Row({ p: 16, gap: 8, justify: 'end' })([
           GhostButton({ onPress: on.parameters.close() })([Txt()(t('Cancel'))]),
           SolidButton({ onPress: on.parameters.shuffle() })([
-            Txt()(t('Shuffle')),
+            Txt()(t('Generate teams')),
           ]),
         ]),
       ]),
