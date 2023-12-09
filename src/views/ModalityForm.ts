@@ -131,8 +131,8 @@ const PositionsField = memoizedConst('PositionsField')(() => {
   return View({ p: 4 })([
     FormLabel()(t('Positions')),
     Row({ p: 4 })([
-      View({ w: 90 })([FormLabel()(t('Abbreviation'))]),
-      View()([FormLabel()(t('Name'))]),
+      View({ w: 90 })([FormLabel({ size: 12 })(t('Abbreviation'))]),
+      View()([FormLabel({ size: 12 })(t('Name'))]),
     ]),
     View()(A.map(A.replicate(positionCount)(null), (_, i) => PositionItem(i))),
     GhostButton({ onPress: on.position.add(), alignSelf: 'center' })([
