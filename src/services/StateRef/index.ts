@@ -82,28 +82,30 @@ export const State = {
 
 export type Subscription = (state: RootState) => Effect<never, never, void>
 
-const subscriptionsRef = Ref.unsafeMake<Array<Subscription>>([])
-
 const tag = AppStateRefEnv
 
 const subscribe = (f: Subscription) =>
-  pipe(
-    Ref.update(subscriptionsRef, A.append(f)),
-    F.map(() => ({
-      unsubscribe: () =>
-        Ref.update(subscriptionsRef, ss =>
-          pipe(
-            A.findFirstIndex(ss, s => s === f),
-            O.map(i => A.remove(ss, i)),
-            O.getOrElse(() => ss),
-          ),
-        ),
-    })),
+  tag.pipe(
+    F.flatMap(stateRef =>
+      pipe(
+        Ref.update(stateRef.subscriptionsRef, A.append(f)),
+        F.map(() => ({
+          unsubscribe: () =>
+            Ref.update(stateRef.subscriptionsRef, ss =>
+              pipe(
+                A.findFirstIndex(ss, s => s === f),
+                O.map(i => A.remove(ss, i)),
+                O.getOrElse(() => ss),
+              ),
+            ),
+        })),
+      ),
+    ),
   )
 
 export const StateRef = {
   react: { subscribe: subscribe },
-  changes: Stream.asyncEffect<never, never, RootState>(emit =>
+  changes: Stream.asyncEffect<AppStateRef, never, RootState>(emit =>
     subscribe(s => F.sync(() => emit(F.succeed(Chunk.of(s))))),
   ),
   get: F.flatMap(tag, _ => Ref.get(_.ref)),
