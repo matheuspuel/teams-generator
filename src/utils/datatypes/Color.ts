@@ -90,7 +90,7 @@ export const FromHex: S.Schema<string, Color> = S.transformOrFail(
   Schema,
   (v: string) =>
     !v.startsWith('#')
-      ? PR.failure(PR.type(Schema.ast, v))
+      ? PR.fail(PR.type(Schema.ast, v))
       : pipe(
           O.all([
             parseByte(String.slice(1, 3)(v)),
@@ -106,11 +106,11 @@ export const FromHex: S.Schema<string, Color> = S.transformOrFail(
             ),
           ),
           O.match({
-            onNone: () => PR.failure(PR.type(Schema.ast, v)),
-            onSome: PR.success,
+            onNone: () => PR.fail(PR.type(Schema.ast, v)),
+            onSome: PR.succeed,
           }),
         ),
-  flow(toHex, PR.success),
+  flow(toHex, PR.succeed),
 )
 
 const toneByte =

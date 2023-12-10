@@ -81,7 +81,7 @@ export const appEvents = {
   modality: {
     go: () =>
       pipe(
-        navigate(Route('Modalities')()),
+        navigate(Route.Modalities()),
         F.tap(() => State.on(root.at('ui').at('homeMenu')).set(false)),
         exec,
       ),
@@ -89,7 +89,7 @@ export const appEvents = {
       exec(
         F.all([
           State.on(root.at('modalityForm')).set(initialModalityForm),
-          navigate(Route('ModalityForm')()),
+          navigate(Route.ModalityForm()),
         ]),
       ),
     open: (modality: Modality.Reference) =>
@@ -101,14 +101,14 @@ export const appEvents = {
           State.on(root.at('modalityForm')).set({
             id: O.some(m.id),
             name: m.name,
-            positions: A.mapNonEmpty(m.positions, p => ({
+            positions: A.map(m.positions, p => ({
               abbreviation: p.abbreviation.toUpperCase(),
               name: p.name,
               oldAbbreviation: O.some(p.abbreviation),
             })),
           }),
         ),
-        F.tap(() => navigate(Route('ModalityForm')())),
+        F.tap(() => navigate(Route.ModalityForm())),
         exec,
         F.ignore,
       ),
@@ -310,7 +310,7 @@ export const appEvents = {
     item: {
       open: (id: Id) =>
         pipe(
-          navigate(Route('Group')()),
+          navigate(Route.Group()),
           F.tap(() =>
             State.on(root.at('ui').at('selectedGroupId')).set(O.some(id)),
           ),
@@ -329,7 +329,7 @@ export const appEvents = {
                 modality: m,
               }),
             ),
-            F.tap(() => navigate(Route('GroupForm')())),
+            F.tap(() => navigate(Route.GroupForm())),
             exec,
           ),
         edit: () =>
@@ -343,7 +343,7 @@ export const appEvents = {
                 modality: g.modality,
               }),
             ),
-            F.tap(() => navigate(Route('GroupForm')())),
+            F.tap(() => navigate(Route.GroupForm())),
             F.tap(() => State.on(root.at('ui').at('groupMenu')).set(false)),
             exec,
             F.ignore,
@@ -409,7 +409,7 @@ export const appEvents = {
         pipe(
           F.unit,
           F.flatMap(() => eraseResult),
-          F.flatMap(() => navigate(Route('Result')())),
+          F.flatMap(() => navigate(Route.Result())),
           F.flatMap(() => closeParametersModal),
           exec,
           F.tap(() => F.sleep(0)),
@@ -441,7 +441,7 @@ export const appEvents = {
     player: {
       new: () =>
         pipe(
-          navigate(Route('Player')()),
+          navigate(Route.Player()),
           F.tap(() =>
             State.on(root.at('ui').at('selectedPlayerId')).set(O.none()),
           ),
@@ -455,7 +455,7 @@ export const appEvents = {
         ).pipe(F.ignore),
       open: (playerId: Id) =>
         pipe(
-          navigate(Route('Player')()),
+          navigate(Route.Player()),
           F.flatMap(() =>
             State.with(getPlayerFromSelectedGroup({ playerId })).pipe(
               F.flatten,

@@ -18,7 +18,7 @@ import { RootState } from 'src/model'
 
 export type AppStateRef = {
   ref: Ref.Ref<RootState>
-  subscriptionsRef: Ref.Ref<Array<Subscription>>
+  subscriptionsRef: Ref.Ref<ReadonlyArray<Subscription>>
 }
 
 export const AppStateRefEnv = Context.Tag<AppStateRef>()
@@ -79,7 +79,7 @@ export const State = {
   }),
 }
 
-type Subscription = (state: RootState) => Effect<never, never, void>
+export type Subscription = (state: RootState) => Effect<never, never, void>
 
 const subscriptionsRef = Ref.unsafeMake<Array<Subscription>>([])
 

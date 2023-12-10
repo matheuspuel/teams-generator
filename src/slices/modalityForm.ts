@@ -31,7 +31,7 @@ export const validateModalityForm = (f: ModalityForm) =>
     id: E.right(f.id),
     name: S.decodeEither(NonEmptyString)(f.name),
     positions: E.all(
-      A.mapNonEmpty(f.positions, p =>
+      A.map(f.positions, p =>
         E.all({
           oldAbbreviation: E.right(p.oldAbbreviation),
           abbreviation: S.decodeEither(

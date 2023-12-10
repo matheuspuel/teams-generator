@@ -13,9 +13,15 @@ export const togglePosition = State.on(params.at('position')).update(toggle)
 
 export const toggleRating = State.on(params.at('rating')).update(toggle)
 
-const teamsCountClamp = Ord.clamp(Number.Order)(MINIMUM_NUMBER_OF_TEAMS, 9)
+const teamsCountClamp = Ord.clamp(Number.Order)({
+  minimum: MINIMUM_NUMBER_OF_TEAMS,
+  maximum: 9,
+})
 
-const playersRequiredClamp = Ord.clamp(Number.Order)(2, 99)
+const playersRequiredClamp = Ord.clamp(Number.Order)({
+  minimum: 2,
+  maximum: 99,
+})
 
 export const incrementTeamsCount = State.on(params).update(p =>
   pipe(

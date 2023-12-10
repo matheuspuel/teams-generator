@@ -78,8 +78,8 @@ export const MetadataServiceLive = MetadataServiceEnv.context({
       ),
       F.provide(
         Layer.provideMerge(
-          AsyncStorageLive,
           Layer.mergeAll(RepositoryLive, IdGeneratorLive),
+          AsyncStorageLive,
         ),
       ),
     ),

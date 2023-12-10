@@ -175,8 +175,8 @@ const importGroupFromFile = (args: { url: string }) =>
                   d.version > currentVersion
                     ? NewerVersionError()
                     : d.version < lastSupportedVersion
-                    ? OldVersionError()
-                    : e,
+                      ? OldVersionError()
+                      : e,
                 ),
               ),
             ),
@@ -204,8 +204,6 @@ const importGroupFromFile = (args: { url: string }) =>
               'O arquivo foi criado com uma versão antiga do aplicativo. Atualize o aplicativo antes de exportar e tente novamente.',
             FileSystemError: () => 'Não foi possível acessar o arquivo.',
             ParseError: () => 'O arquivo não é válido ou está corrompido',
-            NoSuchElementException: () =>
-              'O arquivo não é válido ou está corrompido',
           }),
         ),
       }),

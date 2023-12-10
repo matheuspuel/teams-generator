@@ -1,4 +1,4 @@
-import { F, Layer, LogLevel, Logger, Runtime, pipe } from 'fp'
+import { Context, F, Layer, LogLevel, Logger, Runtime, pipe } from 'fp'
 import { Alert } from 'src/services/Alert'
 import { BackHandler } from 'src/services/BackHandler'
 import { BackHandlerLive } from 'src/services/BackHandler/default'
@@ -46,11 +46,7 @@ export type AppRequirements =
   | Linking
 
 const appLayer = pipe(
-  Logger.minimumLogLevel(
-    envName === 'development' ? DEV_MINIMUM_LOG_LEVEL : LogLevel.Info,
-  ),
-  Layer.provideMerge(AsyncStorageLive),
-  Layer.provideMerge(Layer.mergeAll(RepositoryLive, StateRefLive)),
+  Layer.succeedContext(Context.empty()),
   Layer.provideMerge(
     Layer.mergeAll(
       FileSystemLive,
@@ -64,6 +60,13 @@ const appLayer = pipe(
       BackHandlerLive,
       SplashScreenLive,
       SafeAreaServiceLive,
+    ),
+  ),
+  Layer.provideMerge(Layer.mergeAll(RepositoryLive, StateRefLive)),
+  Layer.provideMerge(AsyncStorageLive),
+  Layer.provideMerge(
+    Logger.minimumLogLevel(
+      envName === 'development' ? DEV_MINIMUM_LOG_LEVEL : LogLevel.Info,
     ),
   ),
 )

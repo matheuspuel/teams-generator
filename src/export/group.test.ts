@@ -4,7 +4,7 @@ import { Group, Modality } from 'src/datatypes'
 import { CustomModality, futsal } from 'src/datatypes/Modality'
 import { RootState, initialAppState } from 'src/model'
 import { IdGenerator, IdGeneratorEnv } from 'src/services/IdGenerator'
-import { AppStateRefEnv, StateRef } from 'src/services/StateRef'
+import { AppStateRefEnv, StateRef, Subscription } from 'src/services/StateRef'
 import { Id } from 'src/utils/Entity'
 import { F, Ref, S, SubscriptionRef } from 'src/utils/fp'
 import { _importGroup } from './group'
@@ -169,7 +169,9 @@ describe('importGroup state logic', () => {
       F.provideService(IdGeneratorEnv, idGeneratorSequential),
       F.provideService(AppStateRefEnv, {
         ref,
-        subscriptionsRef: SubscriptionRef.make([]).pipe(F.runSync),
+        subscriptionsRef: SubscriptionRef.make<ReadonlyArray<Subscription>>(
+          [],
+        ).pipe(F.runSync),
       }),
       F.runSync,
     )
@@ -242,7 +244,9 @@ describe('importGroup state logic', () => {
       F.provideService(IdGeneratorEnv, idGeneratorSequential),
       F.provideService(AppStateRefEnv, {
         ref,
-        subscriptionsRef: SubscriptionRef.make([]).pipe(F.runSync),
+        subscriptionsRef: SubscriptionRef.make<ReadonlyArray<Subscription>>(
+          [],
+        ).pipe(F.runSync),
       }),
       F.runSync,
     )
@@ -299,7 +303,9 @@ describe('importGroup state logic', () => {
       F.provideService(IdGeneratorEnv, idGeneratorSequential),
       F.provideService(AppStateRefEnv, {
         ref,
-        subscriptionsRef: SubscriptionRef.make([]).pipe(F.runSync),
+        subscriptionsRef: SubscriptionRef.make<ReadonlyArray<Subscription>>(
+          [],
+        ).pipe(F.runSync),
       }),
       F.runSync,
     )

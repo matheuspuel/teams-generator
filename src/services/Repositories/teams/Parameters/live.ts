@@ -16,12 +16,12 @@ export const ParametersRepositoryLive: Repository['teams']['Parameters'] =
         Parameters.SchemaV1,
         Parameters.Schema,
         v =>
-          PR.success({
+          PR.succeed({
             ...v,
             teamsCountMethod: { _tag: 'count' as const },
             playersRequired: 11,
           }),
-        () => PR.failure(PR.forbidden),
+        () => PR.fail(PR.forbidden),
       ),
     ),
   })

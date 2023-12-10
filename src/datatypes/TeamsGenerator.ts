@@ -190,7 +190,7 @@ export const getFitOrdFromCriteria =
         criteria.position ? O.some(getResultPositionDeviance(args)) : O.none(),
         criteria.rating ? O.some(getResultRatingDeviance) : O.none(),
       ],
-      A.compact,
+      A.getSomes,
       getFitOrdByDevianceFns,
     )
 

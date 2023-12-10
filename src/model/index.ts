@@ -58,5 +58,5 @@ export const initialAppState: RootState = {
     homeMenu: false,
     groupMenu: false,
   },
-  route: [Route('Groups')()],
+  route: [Route.Groups()],
 }

@@ -102,6 +102,7 @@ const schemaWithMigrations = S.transform(
       ),
     })),
   _ => _,
+  { strict: false },
 )
 
 const oldGroupsStorage = createStorage({
