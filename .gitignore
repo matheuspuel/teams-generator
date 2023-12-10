@@ -68,3 +68,4 @@ coverage/
 TODO
 package-lock.json
 tsconfig.tsbuildinfo
+/src/experiment.ts

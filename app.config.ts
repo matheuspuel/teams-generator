@@ -29,17 +29,19 @@ const getConfig = (): ExpoConfig => ({
     resizeMode: 'contain',
     backgroundColor: brandColor,
   },
-  updates: {
-    enabled: matchEnv({
-      development: true,
-      preview: true,
-      sponsor: true,
-      staging: false,
-      production: false,
-    }),
-    fallbackToCacheTimeout: 0,
-    url: 'https://u.expo.dev/b5fe0e17-a64d-4005-b833-a57c2f04b664',
-  },
+  updates: matchEnv({
+    development: false,
+    preview: true,
+    sponsor: true,
+    staging: false,
+    production: false,
+  })
+    ? {
+        enabled: true,
+        fallbackToCacheTimeout: 10 * 1000,
+        url: 'https://u.expo.dev/3bb86839-e6c3-4a30-8246-440f8517683d',
+      }
+    : { enabled: false },
   assetBundlePatterns: ['**/*'],
   packagerOpts: {
     config: 'metro.config.js',
@@ -79,7 +81,7 @@ const getConfig = (): ExpoConfig => ({
   web: { favicon: './assets/favicon.png' },
   extra: {
     envName,
-    eas: { projectId: 'b5fe0e17-a64d-4005-b833-a57c2f04b664' },
+    eas: { projectId: '3bb86839-e6c3-4a30-8246-440f8517683d' },
   },
   plugins: ['expo-localization'],
 })
