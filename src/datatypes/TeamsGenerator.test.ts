@@ -6,6 +6,7 @@ import { playersMock } from 'src/mocks/Player'
 import { getCombinationsIndices } from 'src/utils/Combinations'
 import { Id } from 'src/utils/Entity'
 import { Timestamp } from 'src/utils/datatypes'
+import { describe, expect, test } from 'vitest'
 import { Player } from '.'
 import { soccer } from './Modality'
 import { Abbreviation } from './Position'
@@ -124,7 +125,7 @@ describe('Balance teams', () => {
     players: fc.array(Arb.to(Player.Schema)(fc)),
   })
 
-  it.skip('should return the optimal solution', () => {
+  test.skip('should return the optimal solution', () => {
     const playersCounterExample1: Array<Player> = [
       {
         active: false,
@@ -193,7 +194,7 @@ describe('Balance teams', () => {
     )
   })
 
-  it('should return the same players', () => {
+  test('should return the same players', () => {
     fc.assert(
       fc.property(balanceTeamsArb, ({ params, players }) =>
         pipe(
@@ -205,7 +206,7 @@ describe('Balance teams', () => {
     )
   })
 
-  it('should return the correct number of teams', () => {
+  test('should return the correct number of teams', () => {
     fc.assert(
       fc.property(
         balanceTeamsArb,
@@ -223,7 +224,7 @@ describe('Balance teams', () => {
     )
   })
 
-  it('should return the correct number of players each team', () => {
+  test('should return the correct number of players each team', () => {
     fc.assert(
       fc.property(balanceTeamsArb, ({ params, players }) =>
         distributeTeams({ modality })(params)(players).every(
@@ -247,7 +248,7 @@ describe('Balance teams', () => {
     )
   })
 
-  it('should not have teams with player count difference higher than one in any position', () => {
+  test('should not have teams with player count difference higher than one in any position', () => {
     fc.assert(
       fc.property(balanceTeamsArb, ({ params, players }) =>
         pipe(
@@ -286,7 +287,7 @@ describe('Balance teams', () => {
     )
   })
 
-  it('should return a balanced team', () => {
+  test('should return a balanced team', () => {
     expect(
       distributeTeams({ modality })({
         position: true,

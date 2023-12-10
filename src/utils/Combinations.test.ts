@@ -1,11 +1,12 @@
 /* eslint-disable functional/no-expression-statements */
 import * as fc from 'fast-check'
 import { A, flow, pipe } from 'fp'
+import { describe, test } from 'vitest'
 import { getCombinationsIndices } from './Combinations'
 import { factorial } from './Math'
 
 describe('getCombinationsIndices', () => {
-  it('should have the correct count on each combination', () => {
+  test('should have the correct count on each combination', () => {
     fc.assert(
       fc.property(
         fc.integer({ min: 0, max: 6 }),
@@ -19,7 +20,7 @@ describe('getCombinationsIndices', () => {
     )
   })
 
-  it('should have the correct count of combinations', () => {
+  test('should have the correct count of combinations', () => {
     fc.assert(
       fc.property(
         fc.integer({ min: 0, max: 6 }),

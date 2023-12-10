@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`Balance teams should return a balanced team 1`] = `
+exports[`Balance teams > should return a balanced team 1`] = `
 [
   [
     {
@@ -195,7 +195,7 @@ exports[`Balance teams should return a balanced team 1`] = `
 ]
 `;
 
-exports[`Balance teams should return a balanced team 2`] = `
+exports[`Balance teams > should return a balanced team 2`] = `
 [
   [
     {
