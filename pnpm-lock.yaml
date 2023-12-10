@@ -74,9 +74,6 @@ dependencies:
   fast-text-encoding:
     specifier: ^1.0.6
     version: 1.0.6
-  fp-ts:
-    specifier: ^2.16.1
-    version: 2.16.1
   react:
     specifier: 18.2.0
     version: 18.2.0
@@ -5561,10 +5558,6 @@ packages:
       combined-stream: 1.0.8
       mime-types: 2.1.35
     dev: true
-
-  /fp-ts@2.16.1:
-    resolution: {integrity: sha512-by7U5W8dkIzcvDofUcO42yl9JbnHTEDBrzu3pt5fKT+Z4Oy85I21K80EYJYdjQGC2qum4Vo55Ag57iiIK4FYuA==}
-    dev: false
 
   /freeport-async@2.0.0:
     resolution: {integrity: sha512-K7od3Uw45AJg00XUmy15+Hae2hOcgKcmN3/EF6Y7i01O0gaqiRx8sUSpsb9+BRNL8RPBrhzPsVfy8q9ADlJuWQ==}

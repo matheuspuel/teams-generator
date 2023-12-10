@@ -1,15 +1,7 @@
 import * as PR from '@effect/schema/ParseResult'
-import {
-  Endomorphism,
-  O,
-  Option,
-  S,
-  String,
-  apply,
-  flow,
-  identity,
-  pipe,
-} from 'fp'
+import { O, Option, S, String, apply, flow, identity, pipe } from 'fp'
+
+type Endomorphism<A> = (_: A) => A
 
 export type Byte = number
 

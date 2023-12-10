@@ -1,4 +1,4 @@
-import { Endomorphism, Match, Optic, S, pipe } from 'fp'
+import { Match, Optic, S, pipe } from 'fp'
 
 export type Parameters = {
   teamsCountMethod: { _tag: 'count' } | { _tag: 'playersRequired' }
@@ -50,7 +50,7 @@ export const numOfTeams = (numOfPlayersAvailable: number) => (p: Parameters) =>
     }),
   )
 
-export const toggleType: Endomorphism<Parameters> = Optic.modify(
+export const toggleType: (_: Parameters) => Parameters = Optic.modify(
   Optic.id<Parameters>().at('teamsCountMethod'),
 )(
   Match.valueTags({

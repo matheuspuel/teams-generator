@@ -1,5 +1,7 @@
-import { Endomorphism, Eq, Equal, Equivalence, flow } from 'fp'
+import { Eq, Equal, Equivalence, flow } from 'fp'
 import * as React from 'react'
+
+type Endomorphism<A> = (_: A) => A
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
 type AnySingleArgFunction<A> = <B>(arg: any) => A

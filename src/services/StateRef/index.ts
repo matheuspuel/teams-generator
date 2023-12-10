@@ -60,13 +60,13 @@ export const State = {
       ),
   }),
   onOption: <B>(optic: Optic.PolyOptional<RootState, RootState, B, B>) => ({
-    get: State_.get.pipe(F.map(r => O.fromFpTs(Optic.getOption(optic)(r)))),
+    get: State_.get.pipe(F.map(r => Optic.getOption(optic)(r))),
     set: (b: B) => State_.update(Optic.replace(optic)(b)),
     update: (f: (b: B) => B) => State_.update(Optic.modify(optic)(f)),
     modify: <C>(f: (b: B) => readonly [C, B]) =>
       State_.modify<Option<C>>(r =>
         pipe(
-          O.fromFpTs(Optic.getOption(optic)(r)),
+          Optic.getOption(optic)(r),
           O.map(
             flow(
               f,

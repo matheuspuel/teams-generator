@@ -17,13 +17,13 @@ export const deep = <A>(): Equivalence<A> =>
     a === b
       ? true
       : Array.isArray(a)
-      ? Array.isArray(b) && A.getEquivalence(deep())(a, b)
-      : typeof a === 'object' &&
-        typeof b === 'object' &&
-        a !== null &&
-        b !== null &&
-        Rec.getEquivalence(deep())(
-          a as Record<string, unknown>,
-          b as Record<string, unknown>,
-        ),
+        ? Array.isArray(b) && A.getEquivalence(deep())(a, b)
+        : typeof a === 'object' &&
+          typeof b === 'object' &&
+          a !== null &&
+          b !== null &&
+          Rec.getEquivalence(deep())(
+            a as Record<string, unknown>,
+            b as Record<string, unknown>,
+          ),
   )
