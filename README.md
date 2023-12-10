@@ -10,10 +10,9 @@ Distribution of players to each team in a balanced way, considering the number o
 
 
 <img src="https://github.com/matheuspuel/sorteio-times/assets/41768371/25ed5a66-515f-4b4a-8f90-68b7b7b7039e" width=20%>
-<img src="https://github.com/matheuspuel/sorteio-times/assets/41768371/ee7ea162-93da-467e-a6b4-a9ee9c6f144d" width=20%>
-<img src="https://github.com/matheuspuel/sorteio-times/assets/41768371/3cf8f25b-9652-40df-8dbe-04d2639eda98" width=20%>
-<img src="https://github.com/matheuspuel/sorteio-times/assets/41768371/5bf9fc35-1c75-4017-9442-c146eae78e9e" width=20%>
-
+<img src="https://github.com/matheuspuel/teams-generator/assets/41768371/222c77b2-37ba-483c-a25f-7ea30244149e" width=20%>
+<img src="https://github.com/matheuspuel/teams-generator/assets/41768371/acc77fd7-b531-401e-9234-d17e6a81c105" width=20%>
+<img src="https://github.com/matheuspuel/teams-generator/assets/41768371/e0ee9907-bf8c-46e6-a771-0a3ed546799c" width=20%>
 
 
 ### Built with
