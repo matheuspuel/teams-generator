@@ -14,6 +14,7 @@ import {
   flow,
   pipe,
 } from 'fp'
+import { unstable_batchedUpdates } from 'react-native'
 import { RootState } from 'src/model'
 
 export type AppStateRef = {
@@ -111,7 +112,7 @@ export const StateRef = {
   ): Effect<Exclude<R, Ref.Ref<RootState>> | AppStateRef, E, B> =>
     pipe(
       F.all({ stateRef: tag, runtime: F.runtime<R>() }),
-      F.flatMap(({ runtime, stateRef }) =>
+      F.bind('result', ({ runtime, stateRef }) =>
         Ref.modify(stateRef.ref, s =>
           pipe(
             Ref.make(s),
@@ -139,14 +140,25 @@ export const StateRef = {
           Effect.Error<typeof f>,
           Effect.Success<typeof f>
         >,
-      F.flatten,
-      F.tap(([, s]) =>
+      F.flatMap(({ result, stateRef }) =>
         pipe(
-          Ref.get(subscriptionsRef),
-          F.tap(ss => F.all(ss.map(f => f(s)))),
+          result,
+          F.tap(([, s]) =>
+            pipe(
+              Ref.get(stateRef.subscriptionsRef),
+              F.tap(ss =>
+                F.sync(() =>
+                  unstable_batchedUpdates(() => {
+                    // eslint-disable-next-line functional/no-expression-statements
+                    F.all(ss.map(f => f(s))).pipe(F.runSync)
+                  }),
+                ),
+              ),
+            ),
+          ),
+          F.map(([_]) => _),
         ),
       ),
-      F.map(([_]) => _),
     ),
   query: <R, E, B>(effect: Effect<R | Ref.Ref<RootState>, E, B>) =>
     pipe(
