@@ -2,6 +2,8 @@
   "version": "0.2",
   "language": "en,pt-BR",
   "import": ["@cspell/dict-pt-br/cspell-ext.json"],
+  "languageSettings": [{ "languageId": "*", "caseSensitive": false }],
+  "ignorePaths": ["pnpm-lock.yaml"],
   "flagWords": [],
   "words": [
     "sorteiotimes",
@@ -9,7 +11,6 @@
     "millis",
     "Nanos",
     "cuid",
-    "paralleldrive",
-    "RNGH"
+    "paralleldrive"
   ]
 }
