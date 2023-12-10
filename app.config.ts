@@ -3,7 +3,7 @@ import packageJSON from './package.json'
 
 const getConfig = (): ExpoConfig => ({
   name:
-    'Sorteio de Times' +
+    'Teams Generator' +
     matchEnv({
       production: '',
       staging: ' (staging)',
@@ -11,7 +11,7 @@ const getConfig = (): ExpoConfig => ({
       preview: ' (preview)',
       development: ' (dev)',
     }),
-  slug: 'sorteio-times',
+  slug: 'teams-generator',
   owner: 'matheuspuel',
   version: packageJSON.version,
   runtimeVersion: packageJSON.version,

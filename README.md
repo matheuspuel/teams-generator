@@ -1,4 +1,4 @@
-# Sorteio de Times
+# Teams Generator
 
 [![badge](https://PlayBadges.pavi2410.me/badge/downloads?id=dev.matheuspuel.sorteiotimes&pretty)](https://play.google.com/store/apps/details?id=dev.matheuspuel.sorteiotimes)
 
