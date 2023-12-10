@@ -1,0 +1,5 @@
+{
+  "./**/*.{js,ts,jsx,tsx}": [
+    "eslint --max-warnings 0 --config .eslintrc.production.js"
+  ]
+}
