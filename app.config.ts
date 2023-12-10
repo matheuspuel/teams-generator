@@ -1,6 +1,8 @@
 import { ExpoConfig } from '@expo/config-types'
 import packageJSON from './package.json'
 
+const brandColor = '#136d15'
+
 const getConfig = (): ExpoConfig => ({
   name:
     'Teams Generator' +
@@ -14,18 +16,18 @@ const getConfig = (): ExpoConfig => ({
   slug: 'teams-generator',
   owner: 'matheuspuel',
   version: packageJSON.version,
-  runtimeVersion: packageJSON.version,
+  runtimeVersion: versionWithZeroPatch(packageJSON.version),
   icon: './assets/icon.png',
   orientation: 'portrait',
   userInterfaceStyle: 'automatic',
   androidStatusBar: {
     barStyle: 'light-content',
-    backgroundColor: '#136d15',
+    backgroundColor: brandColor,
   },
   splash: {
     image: './assets/splash.png',
     resizeMode: 'contain',
-    backgroundColor: '#136d15',
+    backgroundColor: brandColor,
   },
   updates: {
     enabled: matchEnv({
@@ -53,7 +55,7 @@ const getConfig = (): ExpoConfig => ({
         development: '.development',
       }),
     adaptiveIcon: {
-      backgroundColor: '#136d15',
+      backgroundColor: brandColor,
       foregroundImage:
         './assets/adaptive-icon' +
         matchEnv({
@@ -87,6 +89,13 @@ const getConfig = (): ExpoConfig => ({
 const fatal = (reason: string): never => {
   // eslint-disable-next-line functional/no-throw-statements
   throw new Error(reason)
+}
+
+const versionWithZeroPatch = (version: string) => {
+  const parts = version.split('.')
+  return parts.length === 3 && parts.every(p => p.match(/\d+/))
+    ? `${parts[0]}.${parts[1]}.0`
+    : fatal('invalid version string')
 }
 
 const APP_VARIANT = process.env.APP_VARIANT

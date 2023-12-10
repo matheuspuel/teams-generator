@@ -58,6 +58,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.23.5",
+    "@changesets/cli": "^2.27.1",
     "@cspell/dict-pt-br": "^2.3.0",
     "@expo/config-types": "49.0.0",
     "@types/benchmark": "^2.1.5",
