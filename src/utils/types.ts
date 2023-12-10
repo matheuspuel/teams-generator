@@ -16,8 +16,8 @@ export type DeepMutable<T> = T extends
   | undefined
   ? T
   : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  T extends Record<keyof any, any>
-  ? {
-      -readonly [K in keyof T]: DeepMutable<T[K]>
-    }
-  : T
+    T extends Record<keyof any, any>
+    ? {
+        -readonly [K in keyof T]: DeepMutable<T[K]>
+      }
+    : T

@@ -7,5 +7,5 @@ export const enforceErrorInstance = (e: unknown) =>
   e instanceof Error
     ? e
     : typeof e === 'string'
-    ? new Error(e)
-    : new Error('Unknown type of error')
+      ? new Error(e)
+      : new Error('Unknown type of error')

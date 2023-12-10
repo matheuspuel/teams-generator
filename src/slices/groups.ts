@@ -239,30 +239,30 @@ const adaptStaticModalitiesPosition =
     args.previous.id === args.next.id
       ? O.none()
       : args.previous.id === soccer.id && args.next.id === futsal.id
-      ? positionAbbreviation === soccer.positions[1].abbreviation
-        ? O.some(futsal.positions[1])
-        : positionAbbreviation === soccer.positions[2].abbreviation
-        ? O.some(futsal.positions[2])
-        : positionAbbreviation === soccer.positions[3].abbreviation
-        ? O.some(futsal.positions[3])
-        : positionAbbreviation === soccer.positions[4].abbreviation
-        ? O.some(futsal.positions[1])
-        : positionAbbreviation === soccer.positions[5].abbreviation
-        ? O.some(futsal.positions[4])
-        : positionAbbreviation === soccer.positions[6].abbreviation
-        ? O.some(futsal.positions[4])
-        : O.none()
-      : args.previous.id === futsal.id && args.next.id === soccer.id
-      ? positionAbbreviation === futsal.positions[1].abbreviation
-        ? O.some(soccer.positions[1])
-        : positionAbbreviation === futsal.positions[2].abbreviation
-        ? O.some(soccer.positions[2])
-        : positionAbbreviation === futsal.positions[3].abbreviation
-        ? O.some(soccer.positions[3])
-        : positionAbbreviation === futsal.positions[4].abbreviation
-        ? O.some(soccer.positions[6])
-        : O.none()
-      : O.none()
+        ? positionAbbreviation === soccer.positions[1].abbreviation
+          ? O.some(futsal.positions[1])
+          : positionAbbreviation === soccer.positions[2].abbreviation
+            ? O.some(futsal.positions[2])
+            : positionAbbreviation === soccer.positions[3].abbreviation
+              ? O.some(futsal.positions[3])
+              : positionAbbreviation === soccer.positions[4].abbreviation
+                ? O.some(futsal.positions[1])
+                : positionAbbreviation === soccer.positions[5].abbreviation
+                  ? O.some(futsal.positions[4])
+                  : positionAbbreviation === soccer.positions[6].abbreviation
+                    ? O.some(futsal.positions[4])
+                    : O.none()
+        : args.previous.id === futsal.id && args.next.id === soccer.id
+          ? positionAbbreviation === futsal.positions[1].abbreviation
+            ? O.some(soccer.positions[1])
+            : positionAbbreviation === futsal.positions[2].abbreviation
+              ? O.some(soccer.positions[2])
+              : positionAbbreviation === futsal.positions[3].abbreviation
+                ? O.some(soccer.positions[3])
+                : positionAbbreviation === futsal.positions[4].abbreviation
+                  ? O.some(soccer.positions[6])
+                  : O.none()
+          : O.none()
 
 export const adjustPlayerPosition =
   (args: {
@@ -291,12 +291,12 @@ export const adjustPlayerPosition =
               }),
             )
           : args.nextModality.modality._tag === 'StaticModality' &&
-            prevModality._tag === 'StaticModality'
-          ? adaptStaticModalitiesPosition({
-              previous: prevModality,
-              next: args.nextModality.modality,
-            })(player.positionAbbreviation)
-          : O.none(),
+              prevModality._tag === 'StaticModality'
+            ? adaptStaticModalitiesPosition({
+                previous: prevModality,
+                next: args.nextModality.modality,
+              })(player.positionAbbreviation)
+            : O.none(),
       ),
       O.orElse(() =>
         A.findFirst(
@@ -310,12 +310,12 @@ export const adjustPlayerPosition =
           ? args.nextModality.modality.id === soccer.id
             ? O.some(soccer.positions[6])
             : args.nextModality.modality.id === futsal.id
-            ? O.some(futsal.positions[4])
-            : args.nextModality.modality.id === basketball.id
-            ? O.some(basketball.positions[4])
-            : args.nextModality.modality.id === volleyball.id
-            ? O.some(volleyball.positions[0])
-            : O.none()
+              ? O.some(futsal.positions[4])
+              : args.nextModality.modality.id === basketball.id
+                ? O.some(basketball.positions[4])
+                : args.nextModality.modality.id === volleyball.id
+                  ? O.some(volleyball.positions[0])
+                  : O.none()
           : O.none(),
       ),
       O.getOrElse(() => args.nextModality.modality.positions[0]),

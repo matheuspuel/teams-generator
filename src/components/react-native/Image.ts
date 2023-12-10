@@ -59,8 +59,8 @@ export const Image = named('Image')((props: ImageProps) => {
     (status === 'loading'
       ? props.Loading
       : status === 'error'
-      ? props.Error
-      : undefined) ??
+        ? props.Error
+        : undefined) ??
     React.createElement(RNImage_, {
       onLoad: () => setStatus('success'),
       onError: () => setStatus('error'),

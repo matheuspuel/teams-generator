@@ -129,8 +129,8 @@ const getRawProps =
         props?.alignSelf === 'start'
           ? 'flex-start'
           : props?.alignSelf === 'end'
-          ? 'flex-end'
-          : props?.alignSelf,
+            ? 'flex-end'
+            : props?.alignSelf,
     },
   })
 

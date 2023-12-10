@@ -4,9 +4,7 @@
 module.exports = {
   root: true,
   ignorePatterns: ['/dist/**'],
-  env: {
-    es2021: true,
-  },
+  env: { es2021: true },
   extends: [
     'eslint:recommended',
     'plugin:react/recommended',
@@ -17,7 +15,6 @@ module.exports = {
     'plugin:functional/external-typescript-recommended',
     'plugin:functional/recommended',
     'plugin:functional/stylistic',
-    'prettier',
   ],
   overrides: [],
   parser: '@typescript-eslint/parser',
@@ -27,12 +24,9 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  plugins: ['react', '@typescript-eslint', 'functional', 'prettier'],
-  settings: {
-    react: { version: 'detect' },
-  },
+  plugins: ['react', '@typescript-eslint', 'functional'],
+  settings: { react: { version: 'detect' } },
   rules: {
-    'prettier/prettier': ['warn'],
     'react/prop-types': ['off'],
     'react/jsx-key': 'off',
     '@typescript-eslint/no-empty-interface': 'off',

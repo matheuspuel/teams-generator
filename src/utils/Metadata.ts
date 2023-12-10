@@ -9,14 +9,14 @@ export const envName =
   envName_ === 'production'
     ? envName_
     : envName_ === 'staging'
-    ? envName_
-    : envName_ === 'sponsor'
-    ? envName_
-    : envName_ === 'preview'
-    ? envName_
-    : envName_ === 'development'
-    ? envName_
-    : fatal('Unknown app environment: ' + String.Class(envName_))
+      ? envName_
+      : envName_ === 'sponsor'
+        ? envName_
+        : envName_ === 'preview'
+          ? envName_
+          : envName_ === 'development'
+            ? envName_
+            : fatal('Unknown app environment: ' + String.Class(envName_))
 
 export const matchEnv = <D, PW, SP, S, P>(cases: {
   development: D

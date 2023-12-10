@@ -47,14 +47,14 @@ const typeToOrder = (
   type === 'name'
     ? () => NameOrd
     : type === 'position'
-    ? PositionOrd
-    : type === 'rating'
-    ? () => RatingOrd
-    : type === 'active'
-    ? () => ActiveOrd
-    : type === 'date'
-    ? () => CreatedAtOrder
-    : absurd<never>(type)
+      ? PositionOrd
+      : type === 'rating'
+        ? () => RatingOrd
+        : type === 'active'
+          ? () => ActiveOrd
+          : type === 'date'
+            ? () => CreatedAtOrder
+            : absurd<never>(type)
 
 export const toOrder =
   (order: GroupOrder): ((args: { modality: Modality }) => Order<Player>) =>

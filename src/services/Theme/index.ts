@@ -18,8 +18,8 @@ const matchType = <A>(cases: {
     t.type === 'light'
       ? cases.light
       : t.type === 'dark'
-      ? cases.dark
-      : absurd<never>(t.type),
+        ? cases.dark
+        : absurd<never>(t.type),
   )
 
 export const Theme = {

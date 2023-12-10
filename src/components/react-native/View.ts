@@ -99,27 +99,27 @@ const getRawProps = (
       props?.justify === 'start'
         ? 'flex-start'
         : props?.justify === 'end'
-        ? 'flex-end'
-        : props?.justify,
+          ? 'flex-end'
+          : props?.justify,
     alignItems:
       props?.align === 'start'
         ? 'flex-start'
         : props?.align === 'end'
-        ? 'flex-end'
-        : props?.align,
+          ? 'flex-end'
+          : props?.align,
     alignSelf:
       props?.alignSelf === 'start'
         ? 'flex-start'
         : props?.alignSelf === 'end'
-        ? 'flex-end'
-        : props?.alignSelf,
+          ? 'flex-end'
+          : props?.alignSelf,
     elevation: props?.shadow,
     ...pipe(
       props?.absolute
         ? { ...props.absolute, position: 'absolute' }
         : props?.absolute === false
-        ? { position: 'relative' }
-        : undefined,
+          ? { position: 'relative' }
+          : undefined,
     ),
     zIndex: props?.zIndex,
     overflow: props?.overflow,

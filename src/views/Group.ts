@@ -242,8 +242,8 @@ const ShuffleButton = namedConst('ShuffleButton')(() => {
         n === 0
           ? `(${t('No players selected')})`
           : n === 1
-          ? `(${t('1 player selected')})`
-          : `(${n.toString()} ${t('players selected')})`,
+            ? `(${t('1 player selected')})`
+            : `(${n.toString()} ${t('players selected')})`,
       ),
     ),
   ])

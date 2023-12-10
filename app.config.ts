@@ -95,16 +95,16 @@ const envName =
   APP_VARIANT === 'production'
     ? APP_VARIANT
     : APP_VARIANT === 'staging'
-    ? APP_VARIANT
-    : APP_VARIANT === 'sponsor'
-    ? APP_VARIANT
-    : APP_VARIANT === 'preview'
-    ? APP_VARIANT
-    : APP_VARIANT === 'development'
-    ? APP_VARIANT
-    : APP_VARIANT === undefined
-    ? 'development'
-    : fatal('Unknown app environment')
+      ? APP_VARIANT
+      : APP_VARIANT === 'sponsor'
+        ? APP_VARIANT
+        : APP_VARIANT === 'preview'
+          ? APP_VARIANT
+          : APP_VARIANT === 'development'
+            ? APP_VARIANT
+            : APP_VARIANT === undefined
+              ? 'development'
+              : fatal('Unknown app environment')
 
 const matchEnv = <D, PW, SP, S, P>(cases: {
   development: D
