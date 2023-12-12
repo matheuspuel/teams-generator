@@ -78,7 +78,25 @@ const getConfig = (): ExpoConfig => ({
       },
     ],
   },
+  ios: {
+    supportsTablet: true,
+    bundleIdentifier:
+      'dev.matheuspuel.sorteiotimes' +
+      matchEnv({
+        production: '',
+        staging: '.staging',
+        sponsor: '.sponsor',
+        preview: '.preview',
+        development: '.development',
+      }),
+    icon: './assets/ios-icon.png',
+    infoPlist: { CFBundleAllowMixedLocalizations: true },
+  },
   web: { favicon: './assets/favicon.png' },
+  locales: {
+    en: './languages/en.json',
+    pt: './languages/pt.json',
+  },
   extra: {
     envName,
     eas: { projectId: '3bb86839-e6c3-4a30-8246-440f8517683d' },
