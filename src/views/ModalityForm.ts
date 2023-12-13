@@ -1,11 +1,11 @@
 import { A, E, O, pipe } from 'fp'
 import {
-  Fragment,
   Header,
   Input,
   MaterialIcons,
   Nothing,
   Row,
+  SafeAreaView,
   ScrollView,
   Txt,
   TxtContext,
@@ -32,7 +32,7 @@ export const ModalityForm = memoizedConst('ModalityForm')(() => {
   const isEnabled = useSelector(s =>
     E.isRight(validateModalityForm(s.modalityForm)),
   )
-  return Fragment([
+  return SafeAreaView({ flex: 1, edges: ['bottom'] })([
     ScreenHeader,
     ScrollView({
       keyboardShouldPersistTaps: 'always',

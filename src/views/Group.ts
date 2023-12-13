@@ -18,6 +18,7 @@ import {
   Nothing,
   Pressable,
   Row,
+  SafeAreaView,
   Txt,
   TxtContext,
   View,
@@ -64,7 +65,7 @@ export const GroupView = memoizedConst('GroupView')(() => {
       Data.array,
     ),
   )
-  return View({ flex: 1 })([
+  return SafeAreaView({ flex: 1, edges: ['bottom'] })([
     GroupHeader,
     PreRender(
       View({ flex: 1, p: 8, gap: 8 })(

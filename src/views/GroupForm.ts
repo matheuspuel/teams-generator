@@ -1,12 +1,12 @@
 import { A, O, String } from 'fp'
 import {
-  Fragment,
   Header,
   Input,
   MaterialIcons,
   Nothing,
   Pressable,
   Row,
+  SafeAreaView,
   ScrollView,
   Txt,
   View,
@@ -28,7 +28,7 @@ const on = appEvents.groups.item
 
 export const GroupForm = memoizedConst('GroupForm')(() => {
   const isEnabled = useSelector(s => String.isNonEmpty(s.groupForm.name))
-  return Fragment([
+  return SafeAreaView({ flex: 1, edges: ['bottom'] })([
     ScreenHeader,
     ScrollView({
       keyboardShouldPersistTaps: 'always',

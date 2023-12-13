@@ -1,11 +1,11 @@
 import { A, O, String, pipe } from 'fp'
 import {
-  Fragment,
   Header,
   Input,
   MaterialIcons,
   Nothing,
   Pressable,
+  SafeAreaView,
   ScrollView,
   Txt,
   View,
@@ -28,7 +28,7 @@ const on = appEvents.player
 
 export const PlayerView = memoizedConst('PlayerView')(() => {
   const name = useSelector(s => s.playerForm.name)
-  return Fragment([
+  return SafeAreaView({ flex: 1, edges: ['bottom'] })([
     ScreenHeader,
     ScrollView({
       keyboardShouldPersistTaps: 'always',
