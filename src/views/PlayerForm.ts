@@ -133,7 +133,7 @@ const PositionItem = memoized('PositionItem')((abbreviation: Abbreviation) => {
         align: 'center',
         direction: 'row',
         bg: isActive ? Colors.opacity(0.125)(Colors.primary) : undefined,
-        rippleColor: Colors.opacity(0.125)(Colors.primary),
+        rippleColor: Colors.primary,
         rippleOpacity: 0.1,
       })([
         View({ w: 30 })([

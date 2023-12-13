@@ -73,7 +73,8 @@ const getRawProps = ({
           )
         : undefined
       : 'transparent',
-  activeOpacity: props.isEnabled !== false ? undefined : 0,
+  activeOpacity: props.isEnabled !== false ? props.rippleOpacity : 0,
+  underlayColor: props.rippleColor ? getRawColor(props.rippleColor) : undefined,
   borderless: props.borderless,
   foreground: props.foreground,
   style: {
