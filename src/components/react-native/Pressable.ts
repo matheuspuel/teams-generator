@@ -73,6 +73,7 @@ const getRawProps = ({
           )
         : undefined
       : 'transparent',
+  activeOpacity: props.isEnabled !== false ? undefined : 0,
   borderless: props.borderless,
   foreground: props.foreground,
   style: {
