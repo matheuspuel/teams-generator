@@ -1,4 +1,5 @@
 import { A, E, O, pipe } from 'fp'
+import { Platform } from 'react-native'
 import {
   Header,
   Input,
@@ -148,7 +149,7 @@ const PositionsField = memoizedConst('PositionsField')(() => {
 })
 
 const PositionItem = memoized('PositionItem')((index: number) =>
-  Row()([
+  Row({ align: 'center' })([
     PositionAbbreviationField(index),
     PositionNameField(index),
     BorderlessButton({ onPress: on.position.lift(index) })([
@@ -169,13 +170,14 @@ const PositionAbbreviationField = memoized('PositionAbbreviationField')((
   )
   return View({ p: 4 })([
     Input({
-      placeholder: `  ${t('Ex: LD')}  `,
+      placeholder: t('Ex: GK'),
+      w: 82,
       value: abbreviation.pipe(O.getOrElse(() => '')),
       onChange: t => on.position.abbreviation.change({ index, value: t }),
       autoCapitalize: 'characters',
       align: 'center',
-      py: 6,
-      px: 10,
+      py: Platform.OS === 'ios' ? 12.5 : 6,
+      px: Platform.OS === 'ios' ? 8 : 10,
     }),
   ])
 })
@@ -186,11 +188,11 @@ const PositionNameField = memoized('PositionNameField')((index: number) => {
   )
   return View({ flex: 1, p: 4 })([
     Input({
-      placeholder: t('Ex: Right Wing'),
+      placeholder: t('Ex: Goalkeeper'),
       value: name.pipe(O.getOrElse(() => '')),
       onChange: t => on.position.name.change({ index, value: t }),
-      py: 6,
-      px: 10,
+      py: Platform.OS === 'ios' ? 12.5 : 6,
+      px: Platform.OS === 'ios' ? 8 : 10,
     }),
   ])
 })
