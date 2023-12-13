@@ -1,9 +1,13 @@
 import { Clock, F, pipe } from 'fp'
+import { Platform } from 'react-native'
 import { Linking } from 'src/services/Linking'
 import { Metadata } from 'src/services/Metadata'
 import { Telemetry } from 'src/services/Telemetry'
 
-const sponsorUrl = 'https://rebrand.ly/st-gdaps'
+const sponsorUrl =
+  Platform.OS === 'ios'
+    ? 'https://apps.apple.com/br/app/goleiro-de-aluguel/id1133272031'
+    : 'https://rebrand.ly/st-gdaps'
 
 export const openSponsorUrl = () =>
   pipe(
