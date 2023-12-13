@@ -438,7 +438,7 @@ const DeleteGroupModal = namedConst('DeleteGroupModal')(() => {
         group,
         O.map(g =>
           TxtContext({ align: 'left' })([
-            Txt()(`${t('Want to delete the group')} `),
+            Txt({ align: 'left' })(`${t('Want to delete the group')} `),
             Txt({ weight: 600 })(g.name),
             Txt()(` ${t('and all its players?')}`),
           ]),

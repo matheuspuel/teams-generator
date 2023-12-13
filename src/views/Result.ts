@@ -87,15 +87,15 @@ const TeamItem = (props: {
   })([
     Txt({ size: 16, weight: 600 })(title),
     TxtContext({ align: 'left', color: Colors.text.secondary, size: 12 })([
-      Txt()(`${t('Number of players')}: `),
+      Txt({ align: 'left' })(`${t('Number of players')}: `),
       Txt()(numPlayers.toString()),
     ]),
     TxtContext({ align: 'left', color: Colors.text.secondary, size: 12 })([
-      Txt()(`${t('Average rating')}: `),
+      Txt({ align: 'left' })(`${t('Average rating')}: `),
       Txt()(avgRating),
     ]),
     TxtContext({ align: 'left', color: Colors.text.secondary, size: 12 })([
-      Txt()(`${t('Total rating')}: `),
+      Txt({ align: 'left' })(`${t('Total rating')}: `),
       Txt()(totalRating.toString()),
     ]),
     ...pipe(

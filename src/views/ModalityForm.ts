@@ -93,7 +93,7 @@ const DeleteModal = namedConst('DeleteModal')(() => {
         onNone: () => Nothing,
         onSome: m =>
           TxtContext({ align: 'left' })([
-            Txt()(`${t('Want to delete the modality')} `),
+            Txt({ align: 'left' })(`${t('Want to delete the modality')} `),
             Txt({ weight: 600 })(m.name),
             Txt()(
               `? ${t(
