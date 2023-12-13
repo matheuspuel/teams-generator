@@ -2,6 +2,7 @@ import { A, O, String, pipe } from 'fp'
 import {
   Header,
   Input,
+  KeyboardAvoidingView,
   MaterialIcons,
   Nothing,
   Pressable,
@@ -29,20 +30,22 @@ const on = appEvents.player
 export const PlayerView = memoizedConst('PlayerView')(() => {
   const name = useSelector(s => s.playerForm.name)
   return SafeAreaView({ flex: 1, edges: ['bottom'] })([
-    ScreenHeader,
-    ScrollView({
-      keyboardShouldPersistTaps: 'always',
-      contentContainerStyle: { flexGrow: 1 },
-    })([
-      View({ flex: 1, p: 4 })([NameField(name), RatingField, PositionField]),
+    KeyboardAvoidingView()([
+      ScreenHeader,
+      ScrollView({
+        keyboardShouldPersistTaps: 'always',
+        contentContainerStyle: { flexGrow: 1 },
+      })([
+        View({ flex: 1, p: 4 })([NameField(name), RatingField, PositionField]),
+      ]),
+      SolidButton({
+        onPress: on.save(),
+        isEnabled: String.isNonEmpty(name),
+        p: 16,
+        round: 0,
+        color: Colors.header,
+      })([Txt()(t('Save'))]),
     ]),
-    SolidButton({
-      onPress: on.save(),
-      isEnabled: String.isNonEmpty(name),
-      p: 16,
-      round: 0,
-      color: Colors.header,
-    })([Txt()(t('Save'))]),
   ])
 })
 

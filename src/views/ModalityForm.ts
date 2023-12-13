@@ -2,6 +2,7 @@ import { A, E, O, pipe } from 'fp'
 import {
   Header,
   Input,
+  KeyboardAvoidingView,
   MaterialIcons,
   Nothing,
   Row,
@@ -33,18 +34,20 @@ export const ModalityForm = memoizedConst('ModalityForm')(() => {
     E.isRight(validateModalityForm(s.modalityForm)),
   )
   return SafeAreaView({ flex: 1, edges: ['bottom'] })([
-    ScreenHeader,
-    ScrollView({
-      keyboardShouldPersistTaps: 'always',
-      contentContainerStyle: { flexGrow: 1 },
-    })([View({ flex: 1, p: 4 })([NameField, PositionsField])]),
-    SolidButton({
-      onPress: on.submit(),
-      isEnabled: isEnabled,
-      p: 16,
-      round: 0,
-      color: Colors.header,
-    })([Txt()(t('Save'))]),
+    KeyboardAvoidingView()([
+      ScreenHeader,
+      ScrollView({
+        keyboardShouldPersistTaps: 'always',
+        contentContainerStyle: { flexGrow: 1 },
+      })([View({ flex: 1, p: 4 })([NameField, PositionsField])]),
+      SolidButton({
+        onPress: on.submit(),
+        isEnabled: isEnabled,
+        p: 16,
+        round: 0,
+        color: Colors.header,
+      })([Txt()(t('Save'))]),
+    ]),
   ])
 })
 

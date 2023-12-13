@@ -2,6 +2,7 @@ import { A, O, String } from 'fp'
 import {
   Header,
   Input,
+  KeyboardAvoidingView,
   MaterialIcons,
   Nothing,
   Pressable,
@@ -29,18 +30,20 @@ const on = appEvents.groups.item
 export const GroupForm = memoizedConst('GroupForm')(() => {
   const isEnabled = useSelector(s => String.isNonEmpty(s.groupForm.name))
   return SafeAreaView({ flex: 1, edges: ['bottom'] })([
-    ScreenHeader,
-    ScrollView({
-      keyboardShouldPersistTaps: 'always',
-      contentContainerStyle: { flexGrow: 1 },
-    })([View({ flex: 1, p: 4 })([NameField, ModalityField])]),
-    SolidButton({
-      onPress: on.upsert.submit(),
-      isEnabled: isEnabled,
-      p: 16,
-      round: 0,
-      color: Colors.header,
-    })([Txt()(t('Save'))]),
+    KeyboardAvoidingView()([
+      ScreenHeader,
+      ScrollView({
+        keyboardShouldPersistTaps: 'always',
+        contentContainerStyle: { flexGrow: 1 },
+      })([View({ flex: 1, p: 4 })([NameField, ModalityField])]),
+      SolidButton({
+        onPress: on.upsert.submit(),
+        isEnabled: isEnabled,
+        p: 16,
+        round: 0,
+        color: Colors.header,
+      })([Txt()(t('Save'))]),
+    ]),
   ])
 })
 
