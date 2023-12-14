@@ -90,6 +90,8 @@ const getRawProps = (
     minHeight: props?.minH,
     aspectRatio: props?.aspectRatio,
     flex: props?.flex,
+    flexGrow: props?.flexGrow,
+    flexShrink: props?.flexShrink,
     flexDirection: props?.direction,
     backgroundColor: props?.bg ? getRawColor(props.bg) : undefined,
     borderColor: props?.borderColor

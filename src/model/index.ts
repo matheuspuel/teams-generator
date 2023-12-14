@@ -1,4 +1,4 @@
-import { A, O, Option } from 'fp'
+import { A, NonEmptyReadonlyArray, O, Option } from 'fp'
 import { GroupOrder, Modality, Parameters } from 'src/datatypes'
 import { CustomModality, soccer } from 'src/datatypes/Modality'
 import { Abbreviation } from 'src/datatypes/Position'
@@ -27,14 +27,8 @@ export type RootState = {
   ui: {
     selectedGroupId: Option<Id>
     selectedPlayerId: Option<Id>
-    modalDeleteGroup: boolean
-    modalDeleteModality: boolean
-    modalParameters: boolean
-    modalSortGroup: boolean
-    homeMenu: boolean
-    groupMenu: boolean
   }
-  route: ReadonlyArray<Route>
+  route: NonEmptyReadonlyArray<Route>
 }
 
 export const initialAppState: RootState = {
@@ -51,12 +45,6 @@ export const initialAppState: RootState = {
   ui: {
     selectedGroupId: O.none(),
     selectedPlayerId: O.none(),
-    modalDeleteGroup: false,
-    modalDeleteModality: false,
-    modalParameters: false,
-    modalSortGroup: false,
-    homeMenu: false,
-    groupMenu: false,
   },
   route: [Route.Groups()],
 }

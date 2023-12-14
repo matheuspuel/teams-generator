@@ -1,4 +1,4 @@
-import { Optic, pipe } from 'fp'
+import { F, Match, NonEmptyReadonlyArray, Optic, pipe } from 'fp'
 import { RootState } from 'src/model'
 import { root } from 'src/model/optic'
 import { State } from 'src/services/StateRef'
@@ -12,14 +12,39 @@ export type Route = Data.TaggedEnum<{
   Result: object
   GroupForm: object
   ModalityForm: object
+  DeleteGroup: object
+  DeleteModality: object
+  Parameters: object
+  SortGroup: object
+  HomeMenu: object
+  GroupMenu: object
 }>
 
 export const Route = Data.taggedEnum<Route>()
 
 const route$ = root.at('route')
 
+const isAllowedToGoBack = (_s: RootState): boolean => true
+
+const onNavigation = () =>
+  pipe(
+    State.flatWith(flow(Optic.get(route$), A.last)),
+    F.tap(
+      flow(
+        Match.valueSomeTags({}),
+        Match.orElse(() => F.unit),
+      ),
+    ),
+    F.ignore,
+  )
+
+const update = flow(
+  State.on(route$).update,
+  F.tap(() => onNavigation()),
+)
+
 export const navigate = (screen: Route) =>
-  State.on(route$).update(
+  update(
     flow(
       A.takeWhile(s => s._tag !== screen._tag),
       A.append(screen),
@@ -27,28 +52,31 @@ export const navigate = (screen: Route) =>
   )
 
 export const navigateReplace = (screen: Route) =>
-  State.on(route$).update(
+  update(
     A.matchRight({
       onEmpty: () => [screen],
-      onNonEmpty: init => [...init, screen],
+      onNonEmpty: init => A.append(init, screen),
     }),
   )
 
-export const navigateSet = (screens: Array<Route>) =>
-  State.on(route$).set(screens)
-
-const isAllowedToGoBack = (_s: RootState): boolean => true
+export const navigateSet = (screens: NonEmptyReadonlyArray<Route>) =>
+  update(() => screens)
 
 export const goBack = pipe(
-  State.modify(s =>
-    isAllowedToGoBack(s)
-      ? A.match(A.dropRight(1)(s.route), {
-          onEmpty: () => [{ shouldBubbleUpEvent: true }, s],
-          onNonEmpty: ss => [
-            { shouldBubbleUpEvent: false },
-            Optic.replace(route$)(ss)(s),
-          ],
-        })
-      : [{ shouldBubbleUpEvent: false }, s],
+  State.with(isAllowedToGoBack),
+  F.flatMap(isAllowedToGoBack =>
+    isAllowedToGoBack
+      ? State.with(flow(Optic.get(route$), A.initNonEmpty)).pipe(
+          F.flatMap(init =>
+            A.match(init, {
+              onEmpty: () => F.succeed({ isHandled: false }),
+              onNonEmpty: init =>
+                F.succeed({ isHandled: true }).pipe(
+                  F.tap(() => update(() => init)),
+                ),
+            }),
+          ),
+        )
+      : F.succeed({ isHandled: true }),
   ),
 )

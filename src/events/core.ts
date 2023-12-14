@@ -12,7 +12,5 @@ export const back = () =>
   pipe(
     goBack,
     StateRef.execute,
-    F.tap(({ shouldBubbleUpEvent }) =>
-      shouldBubbleUpEvent ? BackHandler.exit() : F.unit,
-    ),
+    F.tap(({ isHandled }) => (isHandled ? F.unit : BackHandler.exit())),
   )

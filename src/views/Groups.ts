@@ -1,10 +1,9 @@
-import { A, Boolean, Data, Equal, O, Record, Tuple, flow, pipe } from 'fp'
+import { A, Data, Equal, O, Record, Tuple, flow, pipe } from 'fp'
 import { Assets } from 'src/assets'
 import {
   FlatList,
   Header,
   Image,
-  MaterialCommunityIcons,
   MaterialIcons,
   Nothing,
   Pressable,
@@ -13,9 +12,7 @@ import {
 } from 'src/components'
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
-import { HeaderMenu } from 'src/components/derivative/HeaderMenu'
-import { HeaderMenuButton } from 'src/components/derivative/HeaderMenuButton'
-import { memoized, memoizedConst, namedConst } from 'src/components/hyperscript'
+import { memoized, memoizedConst } from 'src/components/hyperscript'
 import { Group } from 'src/datatypes'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
@@ -26,7 +23,7 @@ import { Id } from 'src/utils/Entity'
 
 const on = appEvents.groups
 
-export const Groups = memoizedConst('GroupsView')(() => {
+export const GroupsView = memoizedConst('GroupsView')(() => {
   const groupsIds = useSelector(
     flow(
       s => s.groups,
@@ -75,29 +72,8 @@ const ScreenHeader = memoizedConst('Header')(() =>
         }),
       ]),
     }),
-    Menu,
   ]),
 )
-
-const Menu = namedConst('Menu')(() => {
-  const homeMenu = useSelector(s => s.ui.homeMenu)
-  return Boolean.match(homeMenu, {
-    onFalse: () => Nothing,
-    onTrue: () =>
-      HeaderMenu({ onClose: on.menu.close() })([
-        HeaderMenuButton({
-          onPress: on.import(),
-          label: t('Import group'),
-          icon: MaterialCommunityIcons({ name: 'import' }),
-        }),
-        HeaderMenuButton({
-          onPress: appEvents.modality.go(),
-          label: t('Edit modalities'),
-          icon: MaterialIcons({ name: 'sports-soccer' }),
-        }),
-      ]),
-  })
-})
 
 const Item = memoized('Group')(Equal.equivalence(), (id: Id) => {
   const group = useSelector(s =>

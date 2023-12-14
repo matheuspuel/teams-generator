@@ -66,6 +66,8 @@ export type FlexContainerProps = {
 
 export type FlexChildProps = {
   flex?: number
+  flexGrow?: number
+  flexShrink?: number
   alignSelf?: 'start' | 'end' | 'center' | 'stretch'
 }
 

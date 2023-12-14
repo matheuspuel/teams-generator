@@ -31,6 +31,12 @@ const stateTag = <A = never>(): Context.Tag<Ref.Ref<A>, Ref.Ref<A>> =>
   anyStateTag
 
 const preparedStateOperations = <A>() => ({
+  with: <B>(selector: (rootState: A) => B): Effect<Ref.Ref<A>, never, B> =>
+    F.flatMap(stateTag<A>(), Ref.get).pipe(F.map(selector)),
+  flatWith: <R, E, B>(
+    effect: (rootState: A) => Effect<R, E, B>,
+  ): Effect<Ref.Ref<A> | R, E, B> =>
+    F.flatMap(stateTag<A>(), Ref.get).pipe(F.flatMap(effect)),
   get: F.flatMap(stateTag<A>(), Ref.get),
   set: (a: A) => F.flatMap(stateTag<A>(), Ref.set(a)),
   update: (f: (a: A) => A) => F.flatMap(stateTag<A>(), Ref.update(f)),
@@ -44,9 +50,6 @@ const State_ = preparedStateOperations<RootState>()
 
 export const State = {
   ...State_,
-  with: <B>(
-    selector: (rootState: RootState) => B,
-  ): Effect<Ref.Ref<RootState>, never, B> => State_.get.pipe(F.map(selector)),
   on: <B>(optic: Optic.PolyReversedPrism<RootState, RootState, B, B>) => ({
     get: State_.get.pipe(F.map(r => Optic.get(optic)(r))),
     set: (b: B) => State_.update(Optic.replace(optic)(b)),

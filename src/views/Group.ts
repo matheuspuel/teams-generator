@@ -1,41 +1,22 @@
-import {
-  A,
-  Boolean,
-  Data,
-  Eq,
-  Match,
-  O,
-  Option,
-  constant,
-  flow,
-  pipe,
-} from 'fp'
+import { A, Data, O, constant, flow, pipe } from 'fp'
 import {
   FlatList,
   Header,
-  MaterialCommunityIcons,
   MaterialIcons,
   Nothing,
   Pressable,
-  Row,
   SafeAreaView,
   Txt,
-  TxtContext,
   View,
 } from 'src/components'
-import { BorderlessButton } from 'src/components/derivative/BorderlessButton'
-import { CenterModal } from 'src/components/derivative/CenterModal'
 import { Checkbox } from 'src/components/derivative/Checkbox'
-import { GhostButton } from 'src/components/derivative/GhostButton'
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
-import { HeaderMenu } from 'src/components/derivative/HeaderMenu'
-import { HeaderMenuButton } from 'src/components/derivative/HeaderMenuButton'
 import { PreRender } from 'src/components/derivative/PreRender'
 import { SolidButton } from 'src/components/derivative/SolidButton'
 import { memoized, memoizedConst, namedConst } from 'src/components/hyperscript'
 import { GroupOrder, Player, Position, Rating } from 'src/datatypes'
-import { AppEvent, appEvents } from 'src/events'
+import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
@@ -92,8 +73,6 @@ export const GroupView = memoizedConst('GroupView')(() => {
       }),
     ),
     ShuffleButton,
-    ParametersModal,
-    SortModal,
   ])
 })
 
@@ -118,45 +97,8 @@ const GroupHeader = memoizedConst('GroupHeader')(() =>
         }),
       ]),
     }),
-    Menu,
-    DeleteGroupModal,
   ]),
 )
-
-const Menu = namedConst('GroupMenu')(() => {
-  const menu = useSelector(s => s.ui.groupMenu)
-  return Boolean.match(menu, {
-    onFalse: () => Nothing,
-    onTrue: () =>
-      HeaderMenu({ onClose: on.menu.close() })([
-        HeaderMenuButton({
-          onPress: on.player.active.toggleAll(),
-          label: t('Select all'),
-          icon: MaterialCommunityIcons({ name: 'checkbox-multiple-outline' }),
-        }),
-        HeaderMenuButton({
-          onPress: on.sort.open(),
-          label: t('Sort'),
-          icon: MaterialIcons({ name: 'sort' }),
-        }),
-        HeaderMenuButton({
-          onPress: on.export(),
-          label: t('Export group'),
-          icon: MaterialCommunityIcons({ name: 'export' }),
-        }),
-        HeaderMenuButton({
-          onPress: appEvents.groups.item.upsert.edit(),
-          label: t('Edit group'),
-          icon: MaterialIcons({ name: 'edit' }),
-        }),
-        HeaderMenuButton({
-          onPress: on.delete.open(),
-          label: t('Delete group'),
-          icon: MaterialIcons({ name: 'delete-outline' }),
-        }),
-      ]),
-  })
-})
 
 const Item = memoized('Player')((id: Id) => {
   const player = useSelector(s =>
@@ -249,216 +191,3 @@ const ShuffleButton = namedConst('ShuffleButton')(() => {
     ),
   ])
 })
-
-const SortModal = namedConst('SortModal')(() => {
-  const modalSortGroup = useSelector(s => s.ui.modalSortGroup)
-  const mainSort = useSelector(s => s.groupOrder[0])
-  return Boolean.match(modalSortGroup, {
-    onFalse: () => Nothing,
-    onTrue: () =>
-      CenterModal({ onClose: on.sort.close(), title: t('Sorting') })([
-        View({ roundB: 8, overflow: 'hidden' })([
-          FilterButton({
-            name: t('Name'),
-            onPress: on.sort.by.name(),
-            state:
-              mainSort._tag === 'name'
-                ? O.some({ reverse: mainSort.reverse })
-                : O.none(),
-          }),
-          FilterButton({
-            name: t('Position'),
-            onPress: on.sort.by.position(),
-            state:
-              mainSort._tag === 'position'
-                ? O.some({ reverse: mainSort.reverse })
-                : O.none(),
-          }),
-          FilterButton({
-            name: t('Rating'),
-            onPress: on.sort.by.rating(),
-            state:
-              mainSort._tag === 'rating'
-                ? O.some({ reverse: mainSort.reverse })
-                : O.none(),
-          }),
-          FilterButton({
-            name: t('Active'),
-            onPress: on.sort.by.active(),
-            state:
-              mainSort._tag === 'active'
-                ? O.some({ reverse: mainSort.reverse })
-                : O.none(),
-          }),
-          FilterButton({
-            name: t('Date'),
-            onPress: on.sort.by.date(),
-            state:
-              mainSort._tag === 'date'
-                ? O.some({ reverse: mainSort.reverse })
-                : O.none(),
-          }),
-        ]),
-      ]),
-  })
-})
-
-const FilterButton = (props: {
-  state: Option<{ reverse: boolean }>
-  onPress: AppEvent
-  name: string
-}) =>
-  Pressable({
-    direction: 'row',
-    align: 'center',
-    p: 16,
-    onPress: props.onPress,
-  })([
-    View({ w: 36 })([
-      O.match(props.state, {
-        onNone: () => Nothing,
-        onSome: ({ reverse }) =>
-          MaterialCommunityIcons({
-            name: reverse ? 'sort-descending' : 'sort-ascending',
-            color: Colors.primary,
-          }),
-      }),
-    ]),
-    Txt({ flex: 1, align: 'left' })(props.name),
-  ])
-
-const ParametersModal = namedConst('ParametersModal')(() => {
-  const modalParameters = useSelector(s => s.ui.modalParameters)
-  const parameters = useSelector(s => s.parameters, Eq.deep())
-  return Boolean.match(modalParameters, {
-    onFalse: () => Nothing,
-    onTrue: () =>
-      CenterModal({
-        onClose: on.parameters.close(),
-        title: t('Parameters'),
-        m: 24,
-      })([
-        View({ p: 16 })([
-          Row({ align: 'center' })([
-            BorderlessButton({ onPress: on.parameters.teamsCount.decrement() })(
-              [MaterialIcons({ name: 'remove' })],
-            ),
-            Txt({ p: 8, weight: 600 })(
-              pipe(
-                parameters.teamsCountMethod,
-                Match.valueTags({
-                  count: () => parameters.teamsCount.toString(),
-                  playersRequired: () => parameters.playersRequired.toString(),
-                }),
-              ),
-            ),
-            BorderlessButton({ onPress: on.parameters.teamsCount.increment() })(
-              [MaterialIcons({ name: 'add' })],
-            ),
-            GhostButton({
-              onPress: on.parameters.teamsCount.toggleType(),
-              flex: 1,
-              direction: 'row',
-              align: 'center',
-              p: 4,
-              pl: 8,
-              gap: 4,
-              color: Colors.text.normal,
-            })([
-              Txt({ flex: 1 })(
-                pipe(
-                  parameters.teamsCountMethod,
-                  Match.valueTags({
-                    count: () => t('Number of teams'),
-                    playersRequired: () =>
-                      t('Fixed number of players per team'),
-                  }),
-                ),
-              ),
-              MaterialIcons({
-                name: 'swap-horiz',
-                size: 20,
-                color: Colors.primary,
-              }),
-            ]),
-          ]),
-          Pressable({
-            onPress: on.parameters.position.toggle(),
-            direction: 'row',
-            align: 'center',
-            p: 8,
-            round: 8,
-            bg: Colors.opacity(0)(Colors.white),
-          })([
-            Checkbox({
-              onToggle: on.parameters.position.toggle(),
-              isSelected: parameters.position,
-            }),
-            Txt({ ml: 8, size: 14 })(t('Consider positions')),
-          ]),
-          Pressable({
-            onPress: on.parameters.rating.toggle(),
-            direction: 'row',
-            align: 'center',
-            p: 8,
-            round: 8,
-            bg: Colors.opacity(0)(Colors.white),
-          })([
-            Checkbox({
-              onToggle: on.parameters.rating.toggle(),
-              isSelected: parameters.rating,
-            }),
-            Txt({ ml: 8, size: 14 })(t('Consider rating')),
-          ]),
-        ]),
-        View({
-          borderWidthT: 1,
-          borderColor: Colors.opacity(0.375)(Colors.gray),
-        })([]),
-        Row({ p: 16, gap: 8, justify: 'end' })([
-          GhostButton({ onPress: on.parameters.close() })([Txt()(t('Cancel'))]),
-          SolidButton({ onPress: on.parameters.shuffle() })([
-            Txt()(t('Generate teams')),
-          ]),
-        ]),
-      ]),
-  })
-})
-
-const DeleteGroupModal = namedConst('DeleteGroupModal')(() => {
-  const group = useSelector(getSelectedGroup)
-  const isOpen = useSelector(s => s.ui.modalDeleteGroup)
-  return CenterModal({
-    onClose: on.delete.close(),
-    visible: isOpen && O.isSome(group),
-    title: t('Delete group'),
-  })([
-    View({ p: 16 })(
-      pipe(
-        group,
-        O.map(g =>
-          TxtContext({ align: 'left' })([
-            Txt({ align: 'left' })(`${t('Want to delete the group')} `),
-            Txt({ weight: 600 })(g.name),
-            Txt()(` ${t('and all its players?')}`),
-          ]),
-        ),
-        A.fromOption,
-      ),
-    ),
-    View({ borderWidthT: 1, borderColor: Colors.opacity(0.375)(Colors.gray) })(
-      [],
-    ),
-    Row({ p: 16, gap: 8, justify: 'end' })([
-      GhostButton({ onPress: on.delete.close(), color: Colors.error })([
-        Txt()(t('Cancel')),
-      ]),
-      SolidButton({
-        onPress: on.delete.submit(),
-        color: Colors.error,
-      })([Txt()(t('Delete'))]),
-    ]),
-  ])
-})
-
-// spell-checker:words horiz

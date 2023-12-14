@@ -117,6 +117,8 @@ const getRawProps =
       width: props?.w,
       height: props?.h,
       flex: props?.flex,
+      flexGrow: props?.flexGrow,
+      flexShrink: props?.flexShrink,
       backgroundColor: pipe(
         (state.isFocused && props.focused?.bg) || props.bg,
         c => c && getRawColor(c),

@@ -46,11 +46,6 @@ import { blankPlayerForm, getPlayerFormFromData } from 'src/slices/playerForm'
 import { eraseResult, generateResult } from 'src/slices/result'
 import { Route, goBack, navigate } from 'src/slices/routes'
 import { openSponsorUrl } from 'src/slices/sponsor'
-import {
-  setDeleteGroupModal,
-  setGroupModality,
-  setGroupName,
-} from 'src/slices/ui'
 import { Id } from 'src/utils/Entity'
 import { appLoaded, back } from './core'
 
@@ -66,10 +61,6 @@ export type AppEvent = Effect<AppRequirements, never, unknown>
 
 const exec = StateRef.execute
 
-const closeParametersModal = State.on(root.at('ui').at('modalParameters')).set(
-  false,
-)
-
 export const appEvents = {
   back: back,
   core: {
@@ -79,12 +70,7 @@ export const appEvents = {
   alert: { dismiss: () => Alert.dismiss() },
   sponsor: { open: () => openSponsorUrl() },
   modality: {
-    go: () =>
-      pipe(
-        navigate(Route.Modalities()),
-        F.tap(() => State.on(root.at('ui').at('homeMenu')).set(false)),
-        exec,
-      ),
+    go: () => exec(F.all([goBack, navigate(Route.Modalities())])),
     new: () =>
       exec(
         F.all([
@@ -176,14 +162,11 @@ export const appEvents = {
           F.flatMap(
             O.match({
               onNone: () => goBack,
-              onSome: () =>
-                State.on(root.at('ui').at('modalDeleteModality')).set(true),
+              onSome: () => navigate(Route.DeleteModality()),
             }),
           ),
           exec,
         ),
-      close: () =>
-        exec(State.on(root.at('ui').at('modalDeleteModality')).set(false)),
       submit: () =>
         pipe(
           State.with(s => s.modalityForm.id),
@@ -229,9 +212,7 @@ export const appEvents = {
             ),
           ),
           F.tap(() => goBack),
-          F.tap(() =>
-            State.on(root.at('ui').at('modalDeleteModality')).set(false),
-          ),
+          F.tap(() => goBack),
           exec,
           F.ignore,
         ),
@@ -297,12 +278,11 @@ export const appEvents = {
 
   groups: {
     menu: {
-      open: () => exec(State.on(root.at('ui').at('homeMenu')).set(true)),
-      close: () => exec(State.on(root.at('ui').at('homeMenu')).set(false)),
+      open: () => exec(navigate(Route.HomeMenu())),
     },
     import: () =>
       pipe(
-        State.on(root.at('ui').at('homeMenu')).set(false),
+        goBack,
         exec,
         F.tap(() => importGroupFromDocumentPicker()),
         F.ignore,
@@ -343,14 +323,21 @@ export const appEvents = {
                 modality: g.modality,
               }),
             ),
+            F.tap(goBack),
             F.tap(() => navigate(Route.GroupForm())),
-            F.tap(() => State.on(root.at('ui').at('groupMenu')).set(false)),
             exec,
             F.ignore,
           ),
         form: {
-          name: { change: flow(setGroupName, exec) },
-          modality: { change: flow(setGroupModality, exec) },
+          name: {
+            change: flow(State.on(root.at('groupForm').at('name')).set, exec),
+          },
+          modality: {
+            change: flow(
+              State.on(root.at('groupForm').at('modality')).set,
+              exec,
+            ),
+          },
         },
         submit: () =>
           pipe(
@@ -374,18 +361,10 @@ export const appEvents = {
   },
   group: {
     menu: {
-      open: () => exec(State.on(root.at('ui').at('groupMenu')).set(true)),
-      close: () => exec(State.on(root.at('ui').at('groupMenu')).set(false)),
+      open: () => exec(navigate(Route.GroupMenu())),
     },
     sort: {
-      open: () =>
-        pipe(
-          State.on(root.at('ui').at('modalSortGroup')).set(true),
-          F.tap(() => State.on(root.at('ui').at('groupMenu')).set(false)),
-          exec,
-        ),
-      close: () =>
-        exec(State.on(root.at('ui').at('modalSortGroup')).set(false)),
+      open: () => pipe(goBack, F.tap(navigate(Route.SortGroup())), exec),
       by: {
         name: () => exec(onSelectGroupOrder('name')),
         position: () => exec(onSelectGroupOrder('position')),
@@ -395,8 +374,7 @@ export const appEvents = {
       },
     },
     parameters: {
-      open: () => exec(State.on(root.at('ui').at('modalParameters')).set(true)),
-      close: () => exec(closeParametersModal),
+      open: () => exec(navigate(Route.Parameters())),
       teamsCount: {
         decrement: () => exec(decrementTeamsCount),
         increment: () => exec(incrementTeamsCount),
@@ -407,10 +385,7 @@ export const appEvents = {
       rating: { toggle: () => exec(toggleRating) },
       shuffle: () =>
         pipe(
-          F.unit,
-          F.flatMap(() => eraseResult),
-          F.flatMap(() => navigate(Route.Result())),
-          F.flatMap(() => closeParametersModal),
+          F.all([eraseResult, goBack, navigate(Route.Result())]),
           exec,
           F.tap(() => F.sleep(0)),
           F.flatMap(() => generateResult),
@@ -418,22 +393,21 @@ export const appEvents = {
     },
     export: () =>
       pipe(
-        State.on(root.at('ui').at('groupMenu')).set(false),
+        goBack,
         exec,
         F.tap(() => exportGroup()),
         F.ignore,
       ),
     delete: {
-      open: () => exec(setDeleteGroupModal(true)),
-      close: () => exec(setDeleteGroupModal(false)),
+      open: () => exec(navigate(Route.DeleteGroup())),
       submit: () =>
         pipe(
           State.with(getSelectedGroup),
           F.flatten,
           F.flatMap(({ id }) => deleteGroup({ id })),
-          F.tap(() => setDeleteGroupModal(false)),
-          F.tap(() => State.on(root.at('ui').at('groupMenu')).set(false)),
-          F.tap(() => goBack),
+          F.tap(goBack),
+          F.tap(goBack),
+          F.tap(goBack),
           exec,
           F.ignore,
         ),
@@ -477,11 +451,7 @@ export const appEvents = {
       active: {
         toggle: (id: Id) => exec(togglePlayerActive({ playerId: id })),
         toggleAll: () =>
-          pipe(
-            State.update(toggleAllPlayersActive),
-            F.tap(() => State.on(root.at('ui').at('groupMenu')).set(false)),
-            exec,
-          ),
+          pipe(State.update(toggleAllPlayersActive), F.tap(goBack), exec),
       },
     },
   },

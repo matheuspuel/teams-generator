@@ -1,36 +1,32 @@
-import { A, E, O, pipe } from 'fp'
+import { A, E, O } from 'fp'
 import { Platform } from 'react-native'
 import {
   Header,
   Input,
   KeyboardAvoidingView,
   MaterialIcons,
-  Nothing,
   Row,
   SafeAreaView,
   ScrollView,
   Txt,
-  TxtContext,
   View,
 } from 'src/components'
 import { BorderlessButton } from 'src/components/derivative/BorderlessButton'
-import { CenterModal } from 'src/components/derivative/CenterModal'
 import { FormLabel } from 'src/components/derivative/FormLabel'
 import { GhostButton } from 'src/components/derivative/GhostButton'
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { SolidButton } from 'src/components/derivative/SolidButton'
-import { memoized, memoizedConst, namedConst } from 'src/components/hyperscript'
+import { memoized, memoizedConst } from 'src/components/hyperscript'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
-import { getModality } from 'src/slices/groups'
 import { validateModalityForm } from 'src/slices/modalityForm'
 
 const on = appEvents.modality
 
-export const ModalityForm = memoizedConst('ModalityForm')(() => {
+export const ModalityFormView = memoizedConst('ModalityFormView')(() => {
   const isEnabled = useSelector(s =>
     E.isRight(validateModalityForm(s.modalityForm)),
   )
@@ -70,50 +66,6 @@ const ScreenHeader = memoizedConst('Header')(() => {
         }),
       ]),
     }),
-    DeleteModal,
-  ])
-})
-
-const DeleteModal = namedConst('DeleteModal')(() => {
-  const modality = useSelector(s =>
-    s.ui.modalDeleteModality
-      ? pipe(
-          s.modalityForm.id,
-          O.flatMap(id => getModality({ _tag: 'CustomModality', id })(s)),
-        )
-      : O.none(),
-  )
-  return CenterModal({
-    onClose: on.remove.close(),
-    visible: O.isSome(modality),
-    title: t('Delete modality'),
-  })([
-    View({ p: 16 })([
-      O.match(modality, {
-        onNone: () => Nothing,
-        onSome: m =>
-          TxtContext({ align: 'left' })([
-            Txt({ align: 'left' })(`${t('Want to delete the modality')} `),
-            Txt({ weight: 600 })(m.name),
-            Txt()(
-              `? ${t(
-                'The positions of the players of this modality will be lost',
-              )}.`,
-            ),
-          ]),
-      }),
-    ]),
-    View({ borderWidthT: 1, borderColor: Colors.opacity(0.375)(Colors.gray) })(
-      [],
-    ),
-    Row({ p: 16, gap: 8, justify: 'end' })([
-      GhostButton({ onPress: on.remove.close(), color: Colors.error })([
-        Txt()(t('Cancel')),
-      ]),
-      SolidButton({ onPress: on.remove.submit(), color: Colors.error })([
-        Txt()(t('Delete')),
-      ]),
-    ]),
   ])
 })
 

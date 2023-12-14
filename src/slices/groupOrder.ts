@@ -4,6 +4,7 @@ import { GroupOrderType } from 'src/datatypes/GroupOrder'
 import { root } from 'src/model/optic'
 import { State } from 'src/services/StateRef'
 import { A } from 'src/utils/fp'
+import { goBack } from './routes'
 
 const selectGroupOrder =
   (option: GroupOrderType) =>
@@ -22,5 +23,5 @@ const selectGroupOrder =
 export const onSelectGroupOrder = flow(
   selectGroupOrder,
   State.on(root.at('groupOrder')).update,
-  F.tap(() => State.on(root.at('ui').at('modalSortGroup')).set(false)),
+  F.tap(goBack),
 )
