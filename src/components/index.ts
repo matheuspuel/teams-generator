@@ -1,4 +1,3 @@
-export { BottomModal } from './custom/BottomModal'
 export { Modal } from './custom/Modal'
 export { Header } from './derivative/Header'
 export { Input } from './derivative/Input'

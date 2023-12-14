@@ -1,8 +1,11 @@
 import { F } from 'fp'
 import React from 'react'
 import Animated, {
+  BaseAnimationBuilder,
+  EntryExitAnimationFunction,
   FadeIn,
   FadeOut,
+  Keyframe,
   SlideInDown,
   SlideOutDown,
 } from 'react-native-reanimated'
@@ -26,6 +29,16 @@ export const Modal = named2('Modal')(
       MarginProps & {
         onClose: AppEvent
         bg?: UIColor
+        entering?:
+          | typeof BaseAnimationBuilder
+          | BaseAnimationBuilder
+          | EntryExitAnimationFunction
+          | Keyframe
+        exiting?:
+          | typeof BaseAnimationBuilder
+          | BaseAnimationBuilder
+          | EntryExitAnimationFunction
+          | Keyframe
       },
   ) =>
     // eslint-disable-next-line react/display-name
@@ -48,36 +61,40 @@ export const Modal = named2('Modal')(
           Pressable({ onPress: F.unit, flex: 1 })([
             Pressable({
               onPress: props?.onClose,
+              rippleColor: Colors.black,
+              rippleOpacity: 0,
               flex: 1,
               direction: props.direction,
               justify: props.justify ?? 'center',
               align: props.align,
-              rippleColor: Colors.black,
-              rippleOpacity: 0,
             })([
-              Pressable({ onPress: F.unit, flexShrink: 1 })([
-                React.createElement(
-                  Animated.View,
-                  {
-                    entering: SlideInDown.duration(ANIMATION_DURATION),
-                    exiting: SlideOutDown.duration(ANIMATION_DURATION),
-                  },
+              React.createElement(
+                Animated.View,
+                {
+                  entering:
+                    props.entering ?? SlideInDown.duration(ANIMATION_DURATION),
+                  exiting:
+                    props.exiting ?? SlideOutDown.duration(ANIMATION_DURATION),
+                },
+                Pressable({
+                  onPress: F.unit,
+                  flexShrink: 1,
+                  m: props?.m,
+                  mx: props?.mx,
+                  my: props?.my,
+                  ml: props?.ml,
+                  mr: props?.mr,
+                  mt: props?.mt,
+                  mb: props?.mb,
+                })([
                   View({
                     bg: props.bg ?? Colors.card,
                     round: 8,
                     zIndex: 1,
                     flexShrink: 1,
-                    shadow: 2,
-                    m: props?.m,
-                    mx: props?.mx,
-                    my: props?.my,
-                    ml: props?.ml,
-                    mr: props?.mr,
-                    mt: props?.mt,
-                    mb: props?.mb,
                   })(children),
-                ),
-              ]),
+                ]),
+              ),
             ]),
           ]),
         ]),

@@ -399,7 +399,7 @@ export const appEvents = {
         F.ignore,
       ),
     delete: {
-      open: () => exec(navigate(Route.DeleteGroup())),
+      open: () => exec(F.all([goBack, navigate(Route.DeleteGroup())])),
       submit: () =>
         pipe(
           State.with(getSelectedGroup),
