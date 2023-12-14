@@ -90,7 +90,15 @@ const getConfig = (): ExpoConfig => ({
         development: '.development',
       }),
     icon: './assets/ios-icon.png',
-    infoPlist: { CFBundleAllowMixedLocalizations: true },
+    infoPlist: {
+      CFBundleAllowMixedLocalizations: true,
+      CFBundleDocumentTypes: [
+        {
+          CFBundleTypeName: 'JSON File',
+          LSItemContentTypes: ['public.json'],
+        },
+      ],
+    },
   },
   web: { favicon: './assets/favicon.png' },
   locales: {
