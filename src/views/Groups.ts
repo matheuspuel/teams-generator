@@ -1,9 +1,7 @@
 import { A, Data, Equal, O, Record, Tuple, flow, pipe } from 'fp'
-import { Assets } from 'src/assets'
 import {
   FlatList,
   Header,
-  Image,
   MaterialIcons,
   Nothing,
   Pressable,
@@ -48,12 +46,6 @@ export const GroupsView = memoizedConst('GroupsView')(() => {
       contentContainerStyle: { flexGrow: 1, p: 8, gap: 8 },
       initialNumToRender: 16,
     }),
-    Pressable({ onPress: appEvents.sponsor.open() })([
-      Image({
-        src: { _tag: 'require', require: Assets.img.sponsorBanner },
-        aspectRatio: 1080 / 400,
-      }),
-    ]),
   ])
 })
 

@@ -1,10 +1,13 @@
 import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
 import { A, Number, O, Ord, identity, pipe } from 'fp'
+import { Assets } from 'src/assets'
 import {
   ActivityIndicator,
   Header,
+  Image,
   MaterialIcons,
   Nothing,
+  Pressable,
   Row,
   ScrollView,
   Txt,
@@ -17,12 +20,17 @@ import { memoizedConst } from 'src/components/hyperscript'
 import { Modality, Player, Position, Rating } from 'src/datatypes'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
-import { t } from 'src/i18n'
+import { preferences, t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 import { getActiveModality } from 'src/slices/groups'
 import { toFixedLocale } from 'src/utils/Number'
 
 const on = appEvents.result
+
+const isBrazil = O.match(preferences.location, {
+  onNone: () => false,
+  onSome: _ => _.regionCode === 'BR',
+})
 
 export const ResultView = memoizedConst('ResultView')(() => {
   const result = useSelector(s => s.result)
@@ -48,7 +56,7 @@ export const ResultView = memoizedConst('ResultView')(() => {
             ]),
           }),
         ]),
-        ScrollView({ contentContainerStyle: { flexGrow: 1 } })(
+        ScrollView({ contentContainerStyle: { flexGrow: 1, gap: 8, p: 8 } })(
           pipe(
             result,
             O.match({
@@ -63,6 +71,14 @@ export const ResultView = memoizedConst('ResultView')(() => {
             }),
           ),
         ),
+        isBrazil
+          ? Pressable({ onPress: appEvents.sponsor.open() })([
+              Image({
+                src: { _tag: 'require', require: Assets.img.sponsorBanner },
+                aspectRatio: 1080 / 400,
+              }),
+            ])
+          : Nothing,
       ]),
   })
 })
@@ -80,8 +96,7 @@ const TeamItem = (props: {
   return View({
     key: props.key,
     bg: Colors.card,
-    m: 4,
-    p: 4,
+    p: 8,
     round: 8,
     shadow: 1,
   })([
