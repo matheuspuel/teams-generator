@@ -16,7 +16,7 @@ export const LogRepositoryLive = F.map(
         F.flatMap(
           O.match({
             onNone: () => F.succeed(A.empty<TelemetryLog>()),
-            onSome: S.decode(S.compose(S.ParseJson, S.array(Schema))),
+            onSome: S.decode(S.parseJson(S.array(Schema))),
           }),
         ),
         F.provide(ctx),
@@ -27,11 +27,11 @@ export const LogRepositoryLive = F.map(
         F.flatMap(
           O.match({
             onNone: () => F.succeed(A.empty<TelemetryLog>()),
-            onSome: S.decode(S.compose(S.ParseJson, S.array(Schema))),
+            onSome: S.decode(S.parseJson(S.array(Schema))),
           }),
         ),
         F.map(A.appendAll(vs)),
-        F.flatMap(S.encode(S.compose(S.ParseJson, S.array(Schema)))),
+        F.flatMap(S.encode(S.parseJson(S.array(Schema)))),
         F.flatMap(value => AsyncStorage.setItem({ key, value })),
         F.provide(ctx),
       ),

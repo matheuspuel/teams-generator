@@ -169,7 +169,7 @@ const importGroupFromFile = (args: { url: string }) =>
         F.catchTags({
           ParseError: e =>
             pipe(
-              S.parse(S.compose(S.ParseJson, anyVersionSchema))(data),
+              S.parse(S.parseJson(anyVersionSchema))(data),
               F.flatMap(d =>
                 F.fail(
                   d.version > currentVersion
@@ -226,8 +226,7 @@ const lastSupportedVersion = 2 as const
 const currentVersion = 2 as const
 
 const schema = S.transform(
-  S.compose(
-    S.ParseJson,
+  S.parseJson(
     S.struct({
       application: S.literal('sorteio-times'),
       type: S.literal('group'),

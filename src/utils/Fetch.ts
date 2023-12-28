@@ -66,7 +66,7 @@ export const json = (args: {
   pipe(
     args.body === undefined
       ? F.succeed(undefined)
-      : S.encode(S.ParseJson)(args.body),
+      : S.encode(S.parseJson())(args.body),
     F.unified,
     F.mapError(e => EncodingError({ error: e })),
     F.flatMap(bodyString =>
@@ -84,7 +84,7 @@ export const json = (args: {
     F.flatMap(({ getBodyString, ...r }) =>
       pipe(
         getBodyString(),
-        F.flatMap(S.decode(S.ParseJson)),
+        F.flatMap(S.decode(S.parseJson())),
         F.map(data => ({ ...r, data })),
       ),
     ),
