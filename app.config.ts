@@ -96,8 +96,10 @@ const getConfig = (): ExpoConfig => ({
         {
           CFBundleTypeName: 'JSON File',
           LSItemContentTypes: ['public.json'],
+          LSHandlerRank: 'Default',
         },
       ],
+      LSSupportsOpeningDocumentsInPlace: true,
     },
   },
   web: { favicon: './assets/favicon.png' },
