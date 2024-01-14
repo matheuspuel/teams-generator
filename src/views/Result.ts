@@ -1,5 +1,6 @@
 import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
 import { A, Number, O, Ord, identity, pipe } from 'fp'
+import { Platform } from 'react-native'
 import { Assets } from 'src/assets'
 import {
   ActivityIndicator,
@@ -71,7 +72,7 @@ export const ResultView = memoizedConst('ResultView')(() => {
             }),
           ),
         ),
-        isBrazil
+        isBrazil && Platform.OS === 'android'
           ? Pressable({ onPress: appEvents.sponsor.open() })([
               Image({
                 src: { _tag: 'require', require: Assets.img.sponsorBanner },
