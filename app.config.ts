@@ -100,6 +100,7 @@ const getConfig = (): ExpoConfig => ({
         },
       ],
       LSSupportsOpeningDocumentsInPlace: true,
+      ITSAppUsesNonExemptEncryption: false,
     },
   },
   web: { favicon: './assets/favicon.png' },
