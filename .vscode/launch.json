@@ -6,7 +6,20 @@
       "cwd": "${workspaceFolder}",
       "type": "reactnative",
       "request": "attach",
-      "preLaunchTask": "Client Packager"
-    }
-  ]
+      "preLaunchTask": "Client Packager",
+    },
+    {
+      "name": "tsx",
+      "type": "node",
+      "request": "launch",
+      "program": "${file}", // Debug current file
+      "runtimeExecutable": "${workspaceRoot}/node_modules/.bin/tsx",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": [
+        "<node_internals>/**",
+        "${workspaceFolder}/node_modules/**",
+      ],
+    },
+  ],
 }
