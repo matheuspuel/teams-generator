@@ -23,7 +23,7 @@ import { getActiveModality } from 'src/slices/groups'
 import { toFixedLocale } from 'src/utils/Number'
 
 const on = appEvents.result
-
+ 
 export const ResultView = memoizedConst('ResultView')(() => {
   const result = useSelector(s => s.result)
   const modality = useSelector(s => getActiveModality(s))
