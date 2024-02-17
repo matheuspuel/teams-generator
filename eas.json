@@ -19,11 +19,6 @@
       "env": { "APP_VARIANT": "preview" },
       "distribution": "internal"
     },
-    "sponsor": {
-      "channel": "sponsor",
-      "env": { "APP_VARIANT": "sponsor" },
-      "distribution": "internal"
-    },
     "staging": {
       "env": { "APP_VARIANT": "staging" },
       "distribution": "internal"

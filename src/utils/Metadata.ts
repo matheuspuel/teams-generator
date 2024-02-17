@@ -10,18 +10,15 @@ export const envName =
     ? envName_
     : envName_ === 'staging'
       ? envName_
-      : envName_ === 'sponsor'
+      : envName_ === 'preview'
         ? envName_
-        : envName_ === 'preview'
+        : envName_ === 'development'
           ? envName_
-          : envName_ === 'development'
-            ? envName_
-            : fatal('Unknown app environment: ' + String.Class(envName_))
+          : fatal('Unknown app environment: ' + String.Class(envName_))
 
-export const matchEnv = <D, PW, SP, S, P>(cases: {
+export const matchEnv = <D, PW, S, P>(cases: {
   development: D
   preview: PW
-  sponsor: SP
   staging: S
   production: P
 }) => cases[envName]
@@ -34,7 +31,6 @@ export const appVersionName =
   matchEnv({
     production: '',
     staging: ' (STAGING)',
-    sponsor: ' (SPONSOR)',
     preview: ' (PREVIEW)',
     development: ' (DEV)',
   })

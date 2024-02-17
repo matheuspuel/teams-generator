@@ -9,7 +9,6 @@ const getConfig = (): ExpoConfig => ({
     matchEnv({
       production: '',
       staging: ' (staging)',
-      sponsor: ' (preview)',
       preview: ' (preview)',
       development: ' (dev)',
     }),
@@ -32,7 +31,6 @@ const getConfig = (): ExpoConfig => ({
   updates: matchEnv({
     development: false,
     preview: true,
-    sponsor: true,
     staging: false,
     production: false,
   })
@@ -52,7 +50,6 @@ const getConfig = (): ExpoConfig => ({
       matchEnv({
         production: '',
         staging: '.staging',
-        sponsor: '.sponsor',
         preview: '.preview',
         development: '.development',
       }),
@@ -63,7 +60,6 @@ const getConfig = (): ExpoConfig => ({
         matchEnv({
           production: '',
           staging: '-staging',
-          sponsor: '-sponsor',
           preview: '-preview',
           development: '-dev',
         }) +
@@ -85,7 +81,6 @@ const getConfig = (): ExpoConfig => ({
       matchEnv({
         production: '',
         staging: '.staging',
-        sponsor: '.sponsor',
         preview: '.preview',
         development: '.development',
       }),
@@ -136,20 +131,17 @@ const envName =
     ? APP_VARIANT
     : APP_VARIANT === 'staging'
       ? APP_VARIANT
-      : APP_VARIANT === 'sponsor'
+      : APP_VARIANT === 'preview'
         ? APP_VARIANT
-        : APP_VARIANT === 'preview'
+        : APP_VARIANT === 'development'
           ? APP_VARIANT
-          : APP_VARIANT === 'development'
-            ? APP_VARIANT
-            : APP_VARIANT === undefined
-              ? 'development'
-              : fatal('Unknown app environment')
+          : APP_VARIANT === undefined
+            ? 'development'
+            : fatal('Unknown app environment')
 
-const matchEnv = <D, PW, SP, S, P>(cases: {
+const matchEnv = <D, PW, S, P>(cases: {
   development: D
   preview: PW
-  sponsor: SP
   staging: S
   production: P
 }) => cases[envName]

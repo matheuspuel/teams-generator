@@ -1,14 +1,10 @@
 import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
 import { A, Number, O, Ord, identity, pipe } from 'fp'
-import { Platform } from 'react-native'
-import { Assets } from 'src/assets'
 import {
   ActivityIndicator,
   Header,
-  Image,
   MaterialIcons,
   Nothing,
-  Pressable,
   Row,
   ScrollView,
   Txt,
@@ -21,17 +17,12 @@ import { memoizedConst } from 'src/components/hyperscript'
 import { Modality, Player, Position, Rating } from 'src/datatypes'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
-import { preferences, t } from 'src/i18n'
+import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 import { getActiveModality } from 'src/slices/groups'
 import { toFixedLocale } from 'src/utils/Number'
 
 const on = appEvents.result
-
-const isBrazil = O.match(preferences.location, {
-  onNone: () => false,
-  onSome: _ => _.regionCode === 'BR',
-})
 
 export const ResultView = memoizedConst('ResultView')(() => {
   const result = useSelector(s => s.result)
@@ -72,14 +63,6 @@ export const ResultView = memoizedConst('ResultView')(() => {
             }),
           ),
         ),
-        isBrazil && Platform.OS === 'android'
-          ? Pressable({ onPress: appEvents.sponsor.open() })([
-              Image({
-                src: { _tag: 'require', require: Assets.img.sponsorBanner },
-                aspectRatio: 1080 / 400,
-              }),
-            ])
-          : Nothing,
       ]),
   })
 })

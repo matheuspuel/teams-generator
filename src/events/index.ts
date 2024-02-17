@@ -45,7 +45,6 @@ import {
 import { blankPlayerForm, getPlayerFormFromData } from 'src/slices/playerForm'
 import { eraseResult, generateResult } from 'src/slices/result'
 import { Route, goBack, navigate } from 'src/slices/routes'
-import { openSponsorUrl } from 'src/slices/sponsor'
 import { Id } from 'src/utils/Entity'
 import { appLoaded, back } from './core'
 
@@ -68,7 +67,6 @@ export const appEvents = {
     appLoaded: appLoaded,
   },
   alert: { dismiss: () => Alert.dismiss() },
-  sponsor: { open: () => openSponsorUrl() },
   modality: {
     go: () => exec(F.all([goBack, navigate(Route.Modalities())])),
     new: () =>

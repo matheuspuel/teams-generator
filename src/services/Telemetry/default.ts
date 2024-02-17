@@ -7,7 +7,6 @@ import { Repository } from '../Repositories'
 const telemetryServerUrl = Metadata.matchEnv({
   production: 'https://telemetry-production.up.railway.app',
   staging: 'http://192.168.3.2:8080',
-  sponsor: 'http://192.168.3.2:8080',
   preview: 'http://192.168.3.2:8080',
   development: 'http://192.168.3.2:8080',
 })
