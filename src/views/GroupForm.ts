@@ -23,7 +23,9 @@ import { staticModalities } from 'src/datatypes/Modality'
 import { appEvents } from 'src/events'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
+import { StateRef } from 'src/services/StateRef'
 import { Colors } from 'src/services/Theme'
+import { Route, navigate } from 'src/slices/routes'
 
 const on = appEvents.groups.item
 
@@ -81,7 +83,10 @@ const ModalityField = memoizedConst('ModalityField')(() => {
   return View({ p: 4 })([
     Row({ justify: 'space-between', align: 'center' })([
       FormLabel()(t('Modality/Sport')),
-      GhostButton({ onPress: appEvents.modality.go(), alignSelf: 'center' })([
+      GhostButton({
+        onPress: StateRef.execute(navigate(Route.Modalities())),
+        alignSelf: 'center',
+      })([
         Row({ align: 'center', gap: 8 })([
           MaterialIcons({ name: 'edit', size: 16 }),
           Txt({ size: 12 })(t('Edit modalities')),
