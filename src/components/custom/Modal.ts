@@ -1,11 +1,8 @@
 import { F } from 'fp'
 import React from 'react'
 import Animated, {
-  BaseAnimationBuilder,
-  EntryExitAnimationFunction,
   FadeIn,
   FadeOut,
-  Keyframe,
   SlideInDown,
   SlideOutDown,
 } from 'react-native-reanimated'
@@ -29,16 +26,8 @@ export const Modal = named2('Modal')(
       MarginProps & {
         onClose: AppEvent
         bg?: UIColor
-        entering?:
-          | typeof BaseAnimationBuilder
-          | BaseAnimationBuilder
-          | EntryExitAnimationFunction
-          | Keyframe
-        exiting?:
-          | typeof BaseAnimationBuilder
-          | BaseAnimationBuilder
-          | EntryExitAnimationFunction
-          | Keyframe
+        entering?: React.ComponentProps<typeof Animated.View>['entering']
+        exiting?: React.ComponentProps<typeof Animated.View>['exiting']
       },
   ) =>
     // eslint-disable-next-line react/display-name
