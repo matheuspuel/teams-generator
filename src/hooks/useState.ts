@@ -6,7 +6,7 @@ export const useState = <A>(initialStateLazy: () => A) => {
   const [value, updater] = React.useState(initialStateLazy)
   const update = React.useMemo(
     () =>
-      (f: (a: A) => A): Effect<never, never, void> =>
+      (f: (a: A) => A): Effect<void> =>
         F.sync(() => updater(f)),
     [updater],
   )

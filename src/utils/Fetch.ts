@@ -1,3 +1,4 @@
+import { Unify } from 'effect'
 import { Data, F, S, pipe } from 'fp'
 
 export type HttpMethod =
@@ -11,24 +12,17 @@ export type HttpMethod =
   | 'OPTIONS'
   | 'TRACE'
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface EncodingError extends Data.Case {
-  readonly _tag: 'EncodingError'
+export class EncodingError extends Data.TaggedError('EncodingError')<{
   error: unknown
-}
-const EncodingError = Data.tagged<EncodingError>('EncodingError')
+}> {}
 
-export interface FetchingError extends Data.Case {
-  readonly _tag: 'FetchingError'
+export class FetchingError extends Data.TaggedError('FetchingError')<{
   error: unknown
-}
-const FetchingError = Data.tagged<FetchingError>('FetchingError')
+}> {}
 
-export interface BodyParsingError extends Data.Case {
-  readonly _tag: 'BodyParsingError'
+export class BodyParsingError extends Data.TaggedError('BodyParsingError')<{
   error: unknown
-}
-const BodyParsingError = Data.tagged<BodyParsingError>('BodyParsingError')
+}> {}
 
 export const bare = (args: {
   method: HttpMethod
@@ -44,7 +38,7 @@ export const bare = (args: {
           body: args.bodyString,
           headers: args.headers,
         }),
-      catch: e => FetchingError({ error: e }),
+      catch: e => new FetchingError({ error: e }),
     }),
     F.map(r => ({
       status: r.status,
@@ -52,7 +46,7 @@ export const bare = (args: {
       getBodyString: () =>
         F.tryPromise({
           try: () => r.text(),
-          catch: e => BodyParsingError({ error: e }),
+          catch: e => new BodyParsingError({ error: e }),
         }),
     })),
   )
@@ -67,8 +61,8 @@ export const json = (args: {
     args.body === undefined
       ? F.succeed(undefined)
       : S.encode(S.parseJson())(args.body),
-    F.unified,
-    F.mapError(e => EncodingError({ error: e })),
+    _ => Unify.unify(_),
+    F.mapError(e => new EncodingError({ error: e })),
     F.flatMap(bodyString =>
       bare({
         method: args.method,

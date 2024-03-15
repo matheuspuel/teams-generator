@@ -3,10 +3,13 @@ import { Effect } from 'effect/Effect'
 import { F } from 'src/utils/fp'
 
 export type SplashScreen = {
-  preventAutoHide: () => Effect<never, never, void>
-  hide: () => Effect<never, never, void>
+  preventAutoHide: () => Effect<void>
+  hide: () => Effect<void>
 }
 
-export const SplashScreenEnv = Context.Tag<SplashScreen>()
+export class SplashScreenEnv extends Context.Tag('SplashScreen')<
+  SplashScreenEnv,
+  SplashScreen
+>() {}
 
 export const SplashScreen = F.serviceFunctions(SplashScreenEnv)

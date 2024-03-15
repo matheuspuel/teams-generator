@@ -54,5 +54,7 @@ module.exports = {
     'functional/no-return-void': ['off'],
     // sometimes it is necessary for using functions before defining them in the same file
     'functional/prefer-tacit': 'off',
+    // effect use classes to create services
+    'functional/no-classes': 'off',
   },
 }

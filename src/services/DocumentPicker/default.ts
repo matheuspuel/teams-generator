@@ -20,16 +20,19 @@ export const DocumentPickerLive = DocumentPickerEnv.context({
             multiple: false,
             copyToCacheDirectory: false,
           }),
-        catch: e => DocumentPickerError({ error: enforceErrorInstance(e) }),
+        catch: e => new DocumentPickerError({ error: enforceErrorInstance(e) }),
       }),
       F.flatMap(r =>
-        r.canceled ? F.fail(CanceledOperationError()) : F.succeed(r),
+        r.canceled ? F.fail(new CanceledOperationError()) : F.succeed(r),
       ),
       F.map(r => r.assets),
       F.flatMap(as =>
         A.head(as).pipe(
-          F.orElseFail(() =>
-            DocumentPickerError({ error: new Error('No assets received') }),
+          F.orElseFail(
+            () =>
+              new DocumentPickerError({
+                error: new Error('No assets received'),
+              }),
           ),
         ),
       ),

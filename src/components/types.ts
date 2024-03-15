@@ -1,6 +1,6 @@
 import { Effect } from 'fp'
 import React from 'react'
-import { AppTheme } from 'src/services/Theme'
+import { AppThemeEnv } from 'src/services/Theme'
 import { Color } from 'src/utils/datatypes'
 
 export type Element = React.ReactElement
@@ -81,4 +81,4 @@ export type UIElement = Element
 
 export type Children = ReadonlyArray<UIElement>
 
-export type UIColor = Effect<AppTheme, never, Color>
+export type UIColor = Effect<Color, never, AppThemeEnv>

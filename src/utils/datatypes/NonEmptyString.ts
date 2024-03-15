@@ -5,4 +5,4 @@ export const NonEmptyString = pipe(
   S.nonEmpty(),
   S.brand('NonEmptyString'),
 )
-export type NonEmptyString = S.Schema.To<typeof NonEmptyString>
+export type NonEmptyString = S.Schema.Type<typeof NonEmptyString>

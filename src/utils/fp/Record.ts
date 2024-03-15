@@ -1,18 +1,14 @@
 import * as Eq from 'effect/Equivalence'
-import { ReadonlyRecord } from 'effect/ReadonlyRecord'
 
 export * from 'effect/ReadonlyRecord'
 
-export function isSubrecord<A>(E: Eq.Equivalence<A>): {
-  (that: ReadonlyRecord<A>): (me: ReadonlyRecord<A>) => boolean
-  (me: ReadonlyRecord<A>, that: ReadonlyRecord<A>): boolean
+function isSubrecord<A>(E: Eq.Equivalence<A>): {
+  (that: A): (me: A) => boolean
+  (me: A, that: A): boolean
 }
-export function isSubrecord<A>(
+function isSubrecord<A>(
   E: Eq.Equivalence<A>,
-): (
-  me: ReadonlyRecord<A>,
-  that?: ReadonlyRecord<A>,
-) => boolean | ((me: ReadonlyRecord<A>) => boolean) {
+): (me: A, that?: A) => boolean | ((me: A) => boolean) {
   return (me, that?) => {
     if (that === undefined) {
       const isSubrecordE = isSubrecord(E)
@@ -23,7 +19,7 @@ export function isSubrecord<A>(
       if (
         !Object.prototype.hasOwnProperty.call(that, k) ||
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any
-        !E(me[k] as any, that[k] as any)
+        !E(me[k] as any, that?.[k] as any)
       ) {
         return false
       }
@@ -34,9 +30,7 @@ export function isSubrecord<A>(
 export function getEquivalence<K extends string, A>(
   E: Eq.Equivalence<A>,
 ): Eq.Equivalence<Readonly<Record<K, A>>>
-export function getEquivalence<A>(
-  E: Eq.Equivalence<A>,
-): Eq.Equivalence<ReadonlyRecord<A>> {
+export function getEquivalence<A>(E: Eq.Equivalence<A>): Eq.Equivalence<A> {
   const isSubrecordE = isSubrecord(E)
   return Eq.make((x, y) => isSubrecordE(x)(y) && isSubrecordE(y)(x))
 }

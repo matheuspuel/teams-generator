@@ -48,7 +48,7 @@ import { Route, goBack, navigate } from 'src/slices/routes'
 import { Id } from 'src/utils/Entity'
 import { appLoaded, back } from './core'
 
-type EventLeaf<R, A> = (payload: A) => Effect<R, never, void>
+type EventLeaf<R, A> = (payload: A) => Effect<void, never, R>
 
 export type EventTree<R> = {
   [k: string]: EventLeaf<R, never> | EventTree<R>
@@ -56,7 +56,7 @@ export type EventTree<R> = {
 
 export type AppEventTree = EventTree<AppRequirements>
 
-export type AppEvent = Effect<AppRequirements, never, unknown>
+export type AppEvent = Effect<unknown, never, AppRequirements>
 
 const exec = StateRef.execute
 
@@ -466,7 +466,7 @@ export const appEvents = {
     rating: {
       change: flow(
         (v: number) => Math.round(v * 20) / 2,
-        S.parseOption(Rating.Schema),
+        S.decodeUnknownOption(Rating.Schema),
         O.map(flow(State.on(root.at('playerForm').at('rating')).set, exec)),
         O.getOrElse(() => F.unit),
       ),

@@ -1,7 +1,7 @@
 import { Ord, S, String, pipe } from 'fp'
 
 export const Id = pipe(S.string, S.brand('Id'))
-export type Id = S.Schema.To<typeof Id>
+export type Id = S.Schema.Type<typeof Id>
 
 export const IdOrder: Ord.Order<Id> = String.Order
 

@@ -2,14 +2,14 @@
 import { Context, Effect, F, Option } from 'fp'
 
 export type AsyncStorage = {
-  getItem: (key: string) => Effect<never, unknown, Option<string>>
-  setItem: (args: {
-    key: string
-    value: string
-  }) => Effect<never, unknown, void>
-  removeItem: (key: string) => Effect<never, unknown, void>
+  getItem: (key: string) => Effect<Option<string>, unknown>
+  setItem: (args: { key: string; value: string }) => Effect<void, unknown>
+  removeItem: (key: string) => Effect<void, unknown>
 }
 
-export const AsyncStorageEnv = Context.Tag<AsyncStorage>()
+export class AsyncStorageEnv extends Context.Tag('AsyncStorage')<
+  AsyncStorageEnv,
+  AsyncStorage
+>() {}
 
 export const AsyncStorage = F.serviceFunctions(AsyncStorageEnv)

@@ -122,7 +122,7 @@ describe('Balance teams', () => {
   })
   const balanceTeamsArb = fc.record({
     params: paramsArb,
-    players: fc.array(Arb.to(Player.Schema)(fc)),
+    players: fc.array(Arb.make(Player.Schema)(fc)),
   })
 
   test.skip('should return the optimal solution', () => {
@@ -171,7 +171,7 @@ describe('Balance teams', () => {
     fc.assert(
       fc.property(
         paramsArb,
-        fc.array(Arb.to(Player.Schema)(fc), { minLength: 1, maxLength: 8 }),
+        fc.array(Arb.make(Player.Schema)(fc), { minLength: 1, maxLength: 8 }),
         (params, players) =>
           pipe(getFitOrdFromCriteria({ modality })(params), fitOrd =>
             Ord.equals(fitOrd)(distributeTeams({ modality })(params)(players))(

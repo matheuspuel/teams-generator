@@ -44,7 +44,7 @@ export const getUnorderedEquivalence = <A>(
         onEmpty: () => A.isEmptyArray(bs),
         onNonEmpty: (a, as_) =>
           pipe(
-            A.findFirstIndex(Eq.equals(E)(a))(bs),
+            A.findFirstIndex(bs, Eq.equals(E)(a)),
             O.map(i => A.remove(i)(bs)),
             O.match({
               onNone: () => false,

@@ -15,10 +15,11 @@ export const LinkingLive = LinkingEnv.context({
       F.orElseSucceed(() => O.none()),
     ),
   startLinkingStream: () =>
-    Stream.async<never, never, string>(emit =>
-      ExpoLinking.addEventListener(
-        'url',
-        e => void emit(F.succeed(Chunk.of(e.url))),
-      ),
+    Stream.async<string>(
+      emit =>
+        void ExpoLinking.addEventListener(
+          'url',
+          e => void emit(F.succeed(Chunk.of(e.url))),
+        ),
     ),
 }).pipe(Layer.succeedContext)

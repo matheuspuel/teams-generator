@@ -1,5 +1,5 @@
 /* eslint-disable functional/no-expression-statements */
-import * as Arb from '@effect/schema/Arbitrary'
+import { Arbitrary } from '@effect/schema'
 import * as Benchmark from 'benchmark'
 import * as fc from 'fast-check'
 import { A, Match, Semigroup, String, constant, pipe } from 'fp'
@@ -14,7 +14,7 @@ import { getCombinationsIndices } from 'src/utils/Combinations'
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const sample1 = fc.sample(
-  fc.array(Arb.to(Player.Schema)(fc), { minLength: 8, maxLength: 8 }),
+  fc.array(Arbitrary.make(Player.Schema)(fc), { minLength: 8, maxLength: 8 }),
   1,
 )[0]!
 

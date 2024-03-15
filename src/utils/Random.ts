@@ -2,9 +2,7 @@ import { Effect } from 'effect/Effect'
 import * as Random from 'effect/Random'
 import { A, F, O, Option, pipe } from 'fp'
 
-export const randomizeArray = <A>(
-  as: Array<A>,
-): Effect<never, never, Array<A>> =>
+export const randomizeArray = <A>(as: Array<A>): Effect<Array<A>> =>
   pipe(
     randomExtractElem(as),
     F.flatMap(
@@ -15,9 +13,7 @@ export const randomizeArray = <A>(
     ),
   )
 
-const randomExtractElem = <A>(
-  as: Array<A>,
-): Effect<never, never, Option<[A, Array<A>]>> =>
+const randomExtractElem = <A>(as: Array<A>): Effect<Option<[A, Array<A>]>> =>
   pipe(
     Random.nextIntBetween(0, as.length),
     F.map(i => extractElem(i)(as)),

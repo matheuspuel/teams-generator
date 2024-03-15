@@ -204,5 +204,5 @@ export const distributeTeams =
 export const generateRandomBalancedTeams =
   (args: { modality: Modality }) =>
   (criteria: Criteria) =>
-  (players: Array<Player>): Effect<never, never, Array<Array<Player>>> =>
+  (players: Array<Player>): Effect<Array<Array<Player>>> =>
     pipe(randomizeArray(players), F.map(distributeTeams(args)(criteria)))

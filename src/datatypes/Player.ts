@@ -22,7 +22,7 @@ import { Modality } from './Modality'
 import * as Position from './Position'
 import * as Rating from './Rating'
 
-export interface Player extends S.Schema.To<typeof Schema_> {}
+export interface Player extends S.Schema.Type<typeof Schema_> {}
 const Schema_ = S.struct({
   id: Id,
   name: S.string,
@@ -31,7 +31,10 @@ const Schema_ = S.struct({
   active: S.boolean,
   createdAt: Timestamp.Schema,
 })
-export const Schema: S.Schema<S.Schema.From<typeof Schema_>, Player> = Schema_
+export const Schema: S.Schema<
+  Player,
+  S.Schema.Encoded<typeof Schema_>
+> = Schema_
 
 export const Player = Schema
 

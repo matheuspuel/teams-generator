@@ -77,12 +77,12 @@ const parseByte = (v: string): Option<Byte> =>
     ),
   )
 
-export const FromHex: S.Schema<string, Color> = S.transformOrFail(
+export const FromHex: S.Schema<Color, string> = S.transformOrFail(
   S.string,
   Schema,
   (v: string) =>
     !v.startsWith('#')
-      ? PR.fail(PR.type(Schema.ast, v))
+      ? PR.fail(new PR.Type(Schema.ast, v))
       : pipe(
           O.all([
             parseByte(String.slice(1, 3)(v)),
@@ -98,7 +98,7 @@ export const FromHex: S.Schema<string, Color> = S.transformOrFail(
             ),
           ),
           O.match({
-            onNone: () => PR.fail(PR.type(Schema.ast, v)),
+            onNone: () => PR.fail(new PR.Type(Schema.ast, v)),
             onSome: PR.succeed,
           }),
         ),

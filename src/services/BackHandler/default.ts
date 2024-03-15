@@ -4,7 +4,7 @@ import { BackHandlerEnv } from '.'
 
 export const BackHandlerLive = BackHandlerEnv.context({
   exit: () => F.sync(() => BackHandler_.exitApp()),
-  stream: Stream.async<never, never, void>(emit => {
+  stream: Stream.async<void>(emit => {
     // eslint-disable-next-line functional/no-expression-statements
     BackHandler_.addEventListener('hardwareBackPress', () => {
       // eslint-disable-next-line functional/no-expression-statements

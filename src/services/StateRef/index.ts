@@ -22,28 +22,37 @@ export type AppStateRef = {
   subscriptionsRef: Ref.Ref<ReadonlyArray<Subscription>>
 }
 
-export const AppStateRefEnv = Context.Tag<AppStateRef>()
+export class AppStateRefEnv extends Context.Tag('AppStateRef')<
+  AppStateRefEnv,
+  AppStateRef
+>() {}
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const anyStateTag = Context.Tag<Ref.Ref<any>>()
-const stateTag = <A = never>(): Context.Tag<Ref.Ref<A>, Ref.Ref<A>> =>
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  anyStateTag
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export class InternalStateRef<_A> extends Context.Tag('InternalStateRef')<
+  InternalStateRef<never>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  Ref.Ref<any>
+>() {}
+const stateTag = <A = never>(): Context.TagClass<
+  InternalStateRef<A>,
+  'InternalStateRef',
+  Ref.Ref<A>
+> => InternalStateRef<A>
 
 const preparedStateOperations = <A>() => ({
-  with: <B>(selector: (rootState: A) => B): Effect<Ref.Ref<A>, never, B> =>
+  with: <B>(
+    selector: (rootState: A) => B,
+  ): Effect<B, never, InternalStateRef<A>> =>
     F.flatMap(stateTag<A>(), Ref.get).pipe(F.map(selector)),
   flatWith: <R, E, B>(
-    effect: (rootState: A) => Effect<R, E, B>,
-  ): Effect<Ref.Ref<A> | R, E, B> =>
+    effect: (rootState: A) => Effect<B, E, R>,
+  ): Effect<B, E, InternalStateRef<A> | R> =>
     F.flatMap(stateTag<A>(), Ref.get).pipe(F.flatMap(effect)),
   get: F.flatMap(stateTag<A>(), Ref.get),
   set: (a: A) => F.flatMap(stateTag<A>(), Ref.set(a)),
   update: (f: (a: A) => A) => F.flatMap(stateTag<A>(), Ref.update(f)),
   modify: <B>(f: (a: A) => readonly [B, A]) =>
     F.flatMap(stateTag<A>(), Ref.modify(f)),
-  // modifyEffect: <R, E, B>(f: (a: A) => Effect<R, E, readonly [B, A]>) =>
-  //   F.flatMap(stateTag<A>(), Ref.modifyEffect(f)),
 })
 
 const State_ = preparedStateOperations<RootState>()
@@ -83,7 +92,7 @@ export const State = {
   }),
 }
 
-export type Subscription = (state: RootState) => Effect<never, never, void>
+export type Subscription = (state: RootState) => Effect<void>
 
 const tag = AppStateRefEnv
 
@@ -108,13 +117,13 @@ const subscribe = (f: Subscription) =>
 
 export const StateRef = {
   react: { subscribe: subscribe },
-  changes: Stream.asyncEffect<AppStateRef, never, RootState>(emit =>
+  changes: Stream.asyncEffect<RootState, never, AppStateRefEnv>(emit =>
     subscribe(s => F.sync(() => emit(F.succeed(Chunk.of(s))))),
   ),
   get: F.flatMap(tag, _ => Ref.get(_.ref)),
   execute: <R, E, B>(
-    effect: Effect<R | Ref.Ref<RootState>, E, B>,
-  ): Effect<Exclude<R, Ref.Ref<RootState>> | AppStateRef, E, B> =>
+    effect: Effect<B, E, R | InternalStateRef<RootState>>,
+  ): Effect<B, E, Exclude<R, InternalStateRef<RootState>> | AppStateRefEnv> =>
     pipe(
       F.all({ stateRef: tag, runtime: F.runtime<R>() }),
       F.bind('result', ({ runtime, stateRef }) =>
@@ -132,7 +141,7 @@ export const StateRef = {
             Exit.match({
               onFailure: (
                 e,
-              ): readonly [Exit.Exit<E, readonly [B, RootState]>, RootState] =>
+              ): readonly [Exit.Exit<readonly [B, RootState], E>, RootState] =>
                 [Exit.failCause(e), s] as const,
               onSuccess: v => [Exit.succeed(v), v[1]] as const,
             }),
@@ -141,9 +150,9 @@ export const StateRef = {
       ),
       f =>
         f as Effect<
-          Exclude<Effect.Context<typeof f>, Ref.Ref<RootState>>,
+          Effect.Success<typeof f>,
           Effect.Error<typeof f>,
-          Effect.Success<typeof f>
+          Exclude<Effect.Context<typeof f>, InternalStateRef<RootState>>
         >,
       F.flatMap(({ result, stateRef }) =>
         pipe(
@@ -165,7 +174,7 @@ export const StateRef = {
         ),
       ),
     ),
-  query: <R, E, B>(effect: Effect<R | Ref.Ref<RootState>, E, B>) =>
+  query: <B, E, R>(effect: Effect<B, E, R | InternalStateRef<RootState>>) =>
     pipe(
       tag,
       F.flatMap(_ => Ref.get(_.ref)),

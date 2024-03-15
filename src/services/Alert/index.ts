@@ -6,10 +6,10 @@ export type Alert = {
     type: 'error' | 'success'
     title: string
     message: string
-  }) => Effect<never, never, void>
-  dismiss: () => Effect<never, never, void>
+  }) => Effect<void>
+  dismiss: () => Effect<void>
 }
 
-export const AlertEnv = Context.Tag<Alert>()
+export class AlertEnv extends Context.Tag('Alert')<AlertEnv, Alert>() {}
 
 export const Alert = F.serviceFunctions(AlertEnv)

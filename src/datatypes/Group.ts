@@ -4,14 +4,14 @@ import { normalize } from 'src/utils/String'
 import * as Modality from './Modality'
 import { Player } from './Player'
 
-export interface Group extends S.Schema.To<typeof Schema_> {}
+export interface Group extends S.Schema.Type<typeof Schema_> {}
 const Schema_ = S.struct({
   id: Id,
   name: S.string,
   players: S.array(Player),
   modality: Modality.Reference,
 })
-export const Schema: S.Schema<S.Schema.From<typeof Schema_>, Group> = Schema_
+export const Schema: S.Schema<Group, S.Schema.Encoded<typeof Schema_>> = Schema_
 
 export const Group = Schema
 

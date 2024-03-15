@@ -6,7 +6,7 @@ import { NonEmptyString } from 'src/utils/datatypes/NonEmptyString'
 import { CustomPosition, StaticPosition } from './Position'
 
 const refineSync =
-  <I, A>(schema: S.Schema<I, A>) =>
+  <A, I>(schema: S.Schema<A, I>) =>
   <B extends I>(value: B): A & B => {
     if (S.is(schema)(value)) return value
     else {
@@ -17,10 +17,10 @@ const refineSync =
     }
   }
 
-const pos = <const A extends S.Schema.From<typeof StaticPosition>>(_: A) =>
+const pos = <const A extends S.Schema.Encoded<typeof StaticPosition>>(_: A) =>
   refineSync(StaticPosition)(_)
 
-export interface StaticModality extends S.Schema.To<typeof StaticModality_> {}
+export interface StaticModality extends S.Schema.Type<typeof StaticModality_> {}
 const StaticModality_ = S.struct({
   _tag: S.literal('StaticModality'),
   id: NonEmptyString,
@@ -28,8 +28,8 @@ const StaticModality_ = S.struct({
   positions: S.nonEmptyArray(StaticPosition),
 })
 export const StaticModality: S.Schema<
-  S.Schema.From<typeof StaticModality_>,
-  StaticModality
+  StaticModality,
+  S.Schema.Encoded<typeof StaticModality_>
 > = StaticModality_
 
 export const soccer = refineSync(StaticModality)({
@@ -181,7 +181,7 @@ export const staticModalities: NonEmptyReadonlyArray<StaticModality> = [
   basketball,
 ]
 
-export interface CustomModality extends S.Schema.To<typeof CustomModality_> {}
+export interface CustomModality extends S.Schema.Type<typeof CustomModality_> {}
 const CustomModality_ = S.struct({
   _tag: S.literal('CustomModality'),
   id: Id,
@@ -189,18 +189,18 @@ const CustomModality_ = S.struct({
   positions: S.nonEmptyArray(CustomPosition),
 })
 export const CustomModality: S.Schema<
-  S.Schema.From<typeof CustomModality_>,
-  CustomModality
+  CustomModality,
+  S.Schema.Encoded<typeof CustomModality_>
 > = CustomModality_
 
 export type Modality = StaticModality | CustomModality
 
-export type Reference = S.Schema.To<typeof Reference_>
+export type Reference = S.Schema.Type<typeof Reference_>
 const Reference_ = S.union(
   S.struct({ _tag: S.literal('StaticModality'), id: NonEmptyString }),
   S.struct({ _tag: S.literal('CustomModality'), id: Id }),
 )
 export const Reference: S.Schema<
-  S.Schema.From<typeof Reference_>,
-  Reference
+  Reference,
+  S.Schema.Encoded<typeof Reference_>
 > = Reference_

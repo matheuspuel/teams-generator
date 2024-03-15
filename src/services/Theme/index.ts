@@ -8,12 +8,15 @@ type AppTheme_ = typeof lightTheme
 
 export interface AppTheme extends AppTheme_ {}
 
-export const AppThemeEnv = Context.Tag<AppTheme>()
+export class AppThemeEnv extends Context.Tag('AppTheme')<
+  AppThemeEnv,
+  AppTheme
+>() {}
 
 const matchType = <A>(cases: {
-  light: Effect<AppTheme, never, A>
-  dark: Effect<AppTheme, never, A>
-}): Effect<AppTheme, never, A> =>
+  light: Effect<A, never, AppThemeEnv>
+  dark: Effect<A, never, AppThemeEnv>
+}): Effect<A, never, AppThemeEnv> =>
   F.flatMap(AppThemeEnv, t =>
     t.type === 'light'
       ? cases.light

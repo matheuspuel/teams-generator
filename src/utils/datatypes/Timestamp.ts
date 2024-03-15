@@ -2,7 +2,7 @@ import { Duration, Number, Ord, Order as Order_, Predicate, S, pipe } from 'fp'
 
 export const Schema = pipe(S.number, S.brand('Timestamp'))
 
-export type Timestamp = S.Schema.To<typeof Schema>
+export type Timestamp = S.Schema.Type<typeof Schema>
 
 export const Order: Order_<Timestamp> = Number.Order
 

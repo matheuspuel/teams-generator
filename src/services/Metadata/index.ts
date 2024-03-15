@@ -26,9 +26,12 @@ export type Metadata = {
 }
 
 export type MetadataService = {
-  get: () => Effect<never, never, Metadata>
+  get: () => Effect<Metadata>
 }
 
-export const MetadataServiceEnv = Context.Tag<MetadataService>()
+export class MetadataServiceEnv extends Context.Tag('MetadataService')<
+  MetadataServiceEnv,
+  MetadataService
+>() {}
 
 export const Metadata = F.serviceFunctions(MetadataServiceEnv)

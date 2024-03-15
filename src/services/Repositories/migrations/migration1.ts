@@ -25,7 +25,7 @@ const PositionV2: S.Schema<PositionV2> = S.literal(
 )
 
 const GroupsV1 = S.record(
-  Id.pipe(S.to),
+  Id.pipe(S.typeSchema),
   S.struct({
     id: Id,
     name: S.string,
@@ -39,10 +39,10 @@ const GroupsV1 = S.record(
       }),
     ),
   }),
-).pipe(S.from)
+).pipe(S.encodedSchema)
 
 const GroupsV2 = S.record(
-  Id.pipe(S.to),
+  Id.pipe(S.typeSchema),
   S.struct({
     id: Id,
     name: S.string,
@@ -79,7 +79,7 @@ const oldGroupsSchema = S.union(
 
 const schemaWithMigrations = S.transform(
   oldGroupsSchema,
-  GroupsState.pipe(S.to),
+  GroupsState.pipe(S.typeSchema),
   (gs): GroupsState =>
     Record.map(gs, g => ({
       id: g.id,

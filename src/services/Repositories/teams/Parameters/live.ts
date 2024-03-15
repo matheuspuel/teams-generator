@@ -6,8 +6,8 @@ import { Repository } from '../..'
 
 export const ParametersRepositoryLive: Repository['teams']['Parameters'] =
   createStorage<
-    S.Schema.From<typeof Parameters.Schema | typeof Parameters.SchemaV1>,
-    Parameters
+    Parameters,
+    S.Schema.Encoded<typeof Parameters.Schema | typeof Parameters.SchemaV1>
   >({
     key: 'core/parameters',
     schema: S.union(
@@ -21,7 +21,7 @@ export const ParametersRepositoryLive: Repository['teams']['Parameters'] =
             teamsCountMethod: { _tag: 'count' as const },
             playersRequired: 11,
           }),
-        () => PR.fail(PR.forbidden),
+        (v, _, ast) => PR.fail(new PR.Forbidden(ast, v)),
       ),
     ),
   })

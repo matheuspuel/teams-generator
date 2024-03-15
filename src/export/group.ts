@@ -165,17 +165,17 @@ const importGroupFromFile = (args: { url: string }) =>
     F.flatMap(tempUri => FileSystem.read({ uri: tempUri })),
     F.flatMap(data =>
       pipe(
-        S.parse(schema)(data),
+        S.decodeUnknown(schema)(data),
         F.catchTags({
           ParseError: e =>
             pipe(
-              S.parse(S.parseJson(anyVersionSchema))(data),
+              S.decodeUnknown(S.parseJson(anyVersionSchema))(data),
               F.flatMap(d =>
                 F.fail(
                   d.version > currentVersion
-                    ? NewerVersionError()
+                    ? new NewerVersionError()
                     : d.version < lastSupportedVersion
-                      ? OldVersionError()
+                      ? new OldVersionError()
                       : e,
                 ),
               ),
@@ -234,7 +234,7 @@ const schema = S.transform(
       data: dataSchema,
     }),
   ),
-  dataSchema.pipe(S.to),
+  dataSchema.pipe(S.typeSchema),
   v => v.data,
   v => ({
     application: 'sorteio-times' as const,
@@ -268,13 +268,6 @@ const toUri = flow(
   String.replace(/[^a-z0-9-]/g, ''),
 )
 
-export interface NewerVersionError extends Data.Case {
-  _tag: 'NewerVersionError'
-}
-export const NewerVersionError =
-  Data.tagged<NewerVersionError>('NewerVersionError')
+export class NewerVersionError extends Data.TaggedError('NewerVersionError') {}
 
-export interface OldVersionError extends Data.Case {
-  _tag: 'OldVersionError'
-}
-export const OldVersionError = Data.tagged<OldVersionError>('OldVersionError')
+export class OldVersionError extends Data.TaggedError('OldVersionError') {}

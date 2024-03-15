@@ -3,11 +3,14 @@ import { Effect } from 'effect/Effect'
 import { F, Stream } from 'src/utils/fp'
 
 export type BackHandler = {
-  exit: () => Effect<never, never, void>
-  stream: Stream.Stream<never, never, void>
+  exit: () => Effect<void>
+  stream: Stream.Stream<void>
 }
 
-export const BackHandlerEnv = Context.Tag<BackHandler>()
+export class BackHandlerEnv extends Context.Tag('BackHandler')<
+  BackHandlerEnv,
+  BackHandler
+>() {}
 
 export const BackHandler = {
   exit: F.serviceFunctionEffect(BackHandlerEnv, s => s.exit),

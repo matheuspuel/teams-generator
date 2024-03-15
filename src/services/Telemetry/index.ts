@@ -10,13 +10,16 @@ export const TelemetryLogSchema = S.struct({
   data: S.unknown,
 })
 
-export type TelemetryLog = S.Schema.To<typeof TelemetryLogSchema>
+export type TelemetryLog = S.Schema.Type<typeof TelemetryLogSchema>
 
 export type Telemetry = {
-  log: (logs: Array<TelemetryLog>) => Effect<never, unknown, void>
-  send: () => Effect<never, unknown, void>
+  log: (logs: Array<TelemetryLog>) => Effect<void, unknown>
+  send: () => Effect<void, unknown>
 }
 
-export const TelemetryEnv = Context.Tag<Telemetry>()
+export class TelemetryEnv extends Context.Tag('Telemetry')<
+  TelemetryEnv,
+  Telemetry
+>() {}
 
 export const Telemetry = F.serviceFunctions(TelemetryEnv)

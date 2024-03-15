@@ -1,5 +1,5 @@
 import { A, F, O, S, pipe } from 'fp'
-import { AsyncStorage } from 'src/services/AsyncStorage'
+import { AsyncStorage, AsyncStorageEnv } from 'src/services/AsyncStorage'
 import { TelemetryLog, TelemetryLogSchema } from 'src/services/Telemetry'
 import { Repository } from '../..'
 
@@ -8,7 +8,7 @@ const key = 'log'
 const Schema = TelemetryLogSchema
 
 export const LogRepositoryLive = F.map(
-  F.context<AsyncStorage>(),
+  F.context<AsyncStorageEnv>(),
   (ctx): Repository['telemetry']['Log'] => ({
     get: () =>
       pipe(

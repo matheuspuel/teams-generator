@@ -7,27 +7,27 @@ export const Abbreviation = pipe(
   S.lowercased(),
   S.brand('Abbreviation'),
 )
-export type Abbreviation = S.Schema.To<typeof Abbreviation>
+export type Abbreviation = S.Schema.Type<typeof Abbreviation>
 
-export interface StaticPosition extends S.Schema.To<typeof StaticPosition_> {}
+export interface StaticPosition extends S.Schema.Type<typeof StaticPosition_> {}
 const StaticPosition_ = S.struct({
   abbreviation: Abbreviation,
   abbreviationLabel: S.string,
   name: NonEmptyString,
 })
 export const StaticPosition: S.Schema<
-  S.Schema.From<typeof StaticPosition_>,
-  StaticPosition
+  StaticPosition,
+  S.Schema.Encoded<typeof StaticPosition_>
 > = StaticPosition_
 
-export interface CustomPosition extends S.Schema.To<typeof CustomPosition_> {}
+export interface CustomPosition extends S.Schema.Type<typeof CustomPosition_> {}
 const CustomPosition_ = S.struct({
   abbreviation: Abbreviation,
   name: NonEmptyString,
 })
 export const CustomPosition: S.Schema<
-  S.Schema.From<typeof CustomPosition_>,
-  CustomPosition
+  CustomPosition,
+  S.Schema.Encoded<typeof CustomPosition_>
 > = CustomPosition_
 
 export type Position = StaticPosition | CustomPosition

@@ -1,12 +1,12 @@
-import { AsyncStorage } from 'src/services/AsyncStorage'
+import { AsyncStorageEnv } from 'src/services/AsyncStorage'
 import { Effect, F } from 'src/utils/fp'
 import { TelemetryRepositories } from '.'
 import { LogRepositoryLive } from './Log/live'
 
 export const TelemetryRepositoriesLive: Effect<
-  AsyncStorage,
+  TelemetryRepositories,
   never,
-  TelemetryRepositories
+  AsyncStorageEnv
 > = F.all({
   Log: LogRepositoryLive,
 })

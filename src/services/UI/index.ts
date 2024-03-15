@@ -3,9 +3,9 @@ import { Effect } from 'effect/Effect'
 import { F } from 'src/utils/fp'
 
 export type UI = {
-  start: () => Effect<never, never, void>
+  start: () => Effect<void>
 }
 
-export const UIEnv = Context.Tag<UI>()
+export class UIEnv extends Context.Tag('UI')<UIEnv, UI>() {}
 
 export const UI = F.serviceFunctions(UIEnv)

@@ -18,10 +18,10 @@ import { State } from 'src/services/StateRef'
 import { Id } from 'src/utils/Entity'
 
 export type GroupsState = { [groupId: Id]: Group }
-const GroupsState_ = S.record(Id.pipe(S.to), Group.Schema)
+const GroupsState_ = S.record(Id.pipe(S.typeSchema), Group.Schema)
 export const GroupsState: S.Schema<
-  S.Schema.From<typeof GroupsState_>,
-  GroupsState
+  GroupsState,
+  S.Schema.Encoded<typeof GroupsState_>
 > = GroupsState_
 
 export const emptyGroups: GroupsState = {}

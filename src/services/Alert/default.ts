@@ -1,6 +1,6 @@
 import { Duration, F, Layer, O, Stream, SubscriptionRef, pipe } from 'fp'
 import { root } from 'src/model/optic'
-import { AppStateRef, State, StateRef } from 'src/services/StateRef'
+import { AppStateRefEnv, State, StateRef } from 'src/services/StateRef'
 import { AlertEnv } from '.'
 
 const ref = SubscriptionRef.make<void>(undefined).pipe(F.runSync)
@@ -15,7 +15,7 @@ export const AlertLive = pipe(
   stream,
   Stream.runDrain,
   F.forkDaemon,
-  F.flatMap(() => F.context<AppStateRef>()),
+  F.flatMap(() => F.context<AppStateRefEnv>()),
   F.map(ctx =>
     AlertEnv.context({
       alert: (args: {

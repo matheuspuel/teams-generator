@@ -4,9 +4,12 @@ import { Id } from 'src/utils/Entity'
 import { F } from 'src/utils/fp'
 
 export type IdGenerator = {
-  generate: () => Effect<never, never, Id>
+  generate: () => Effect<Id>
 }
 
-export const IdGeneratorEnv = Context.Tag<IdGenerator>()
+export class IdGeneratorEnv extends Context.Tag('IdGenerator')<
+  IdGeneratorEnv,
+  IdGenerator
+>() {}
 
 export const IdGenerator = F.serviceFunctions(IdGeneratorEnv)

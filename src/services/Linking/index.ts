@@ -2,12 +2,12 @@ import { serviceFunctions } from 'effect/Effect'
 import { Context, Effect, Option, Stream } from 'fp'
 
 export type Linking = {
-  openURL: (url: string) => Effect<never, never, void>
-  getInitialURL: () => Effect<never, never, Option<string>>
-  startLinkingStream: () => Stream.Stream<never, never, string>
+  openURL: (url: string) => Effect<void>
+  getInitialURL: () => Effect<Option<string>>
+  startLinkingStream: () => Stream.Stream<string>
 }
 
-export const LinkingEnv = Context.Tag<Linking>()
+export class LinkingEnv extends Context.Tag('Linking')<LinkingEnv, Linking>() {}
 
 const functions = serviceFunctions(LinkingEnv)
 
