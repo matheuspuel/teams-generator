@@ -1,5 +1,4 @@
-import { Effect } from 'effect'
-import * as Context from 'effect/Context'
+import { Context, Effect } from 'effect'
 import { Id } from 'src/utils/Entity'
 
 export type IdGenerator = {

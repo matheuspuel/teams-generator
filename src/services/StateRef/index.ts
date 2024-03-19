@@ -1,6 +1,7 @@
 import * as Optic from '@fp-ts/optic'
 import {
   Chunk,
+  Context,
   Effect,
   Exit,
   Option,
@@ -11,7 +12,6 @@ import {
   flow,
   pipe,
 } from 'effect'
-import * as Context from 'effect/Context'
 import { unstable_batchedUpdates } from 'react-native'
 import { RootState } from 'src/model'
 

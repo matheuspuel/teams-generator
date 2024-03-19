@@ -1,5 +1,4 @@
-import { Schema } from '@effect/schema'
-import * as PR from '@effect/schema/ParseResult'
+import { ParseResult, Schema } from '@effect/schema'
 import { Option, String, flow, identity, pipe } from 'effect'
 import { apply } from 'effect/Function'
 
@@ -84,7 +83,7 @@ export const FromHex: Schema.Schema<Color, string> = Schema.transformOrFail(
   Color,
   (v: string) =>
     !v.startsWith('#')
-      ? PR.fail(new PR.Type(Color.ast, v))
+      ? ParseResult.fail(new ParseResult.Type(Color.ast, v))
       : pipe(
           Option.all([
             parseByte(String.slice(1, 3)(v)),
@@ -103,11 +102,11 @@ export const FromHex: Schema.Schema<Color, string> = Schema.transformOrFail(
             ),
           ),
           Option.match({
-            onNone: () => PR.fail(new PR.Type(Color.ast, v)),
-            onSome: PR.succeed,
+            onNone: () => ParseResult.fail(new ParseResult.Type(Color.ast, v)),
+            onSome: ParseResult.succeed,
           }),
         ),
-  flow(toHex, PR.succeed),
+  flow(toHex, ParseResult.succeed),
 )
 
 const toneByte =

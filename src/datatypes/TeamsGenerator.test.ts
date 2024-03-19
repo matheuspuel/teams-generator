@@ -1,5 +1,5 @@
 /* eslint-disable functional/no-expression-statements */
-import * as Arb from '@effect/schema/Arbitrary'
+import { Arbitrary } from '@effect/schema'
 import { Semigroup } from '@effect/typeclass'
 import { Equivalence, Match, ReadonlyArray, identity, pipe } from 'effect'
 import { constant } from 'effect/Function'
@@ -9,7 +9,7 @@ import { getCombinationsIndices } from 'src/utils/Combinations'
 import { Id } from 'src/utils/Entity'
 import { Timestamp } from 'src/utils/datatypes'
 import { getUnorderedEquivalence } from 'src/utils/fp/Array'
-import { equals } from 'src/utils/fp/Order'
+import { toEquivalence } from 'src/utils/fp/Order'
 import { combineAllNonEmpty } from 'src/utils/fp/Semigroup'
 import { describe, expect, test } from 'vitest'
 import { Player } from '.'
@@ -127,7 +127,7 @@ describe('Balance teams', () => {
   })
   const balanceTeamsArb = fc.record({
     params: paramsArb,
-    players: fc.array(Arb.make(Player.Player)(fc)),
+    players: fc.array(Arbitrary.make(Player.Player)(fc)),
   })
 
   test.skip('should return the optimal solution', () => {
@@ -176,10 +176,14 @@ describe('Balance teams', () => {
     fc.assert(
       fc.property(
         paramsArb,
-        fc.array(Arb.make(Player.Player)(fc), { minLength: 1, maxLength: 8 }),
+        fc.array(Arbitrary.make(Player.Player)(fc), {
+          minLength: 1,
+          maxLength: 8,
+        }),
         (params, players) =>
           pipe(getFitOrdFromCriteria({ modality })(params), fitOrd =>
-            equals(fitOrd)(distributeTeams({ modality })(params)(players))(
+            toEquivalence(fitOrd)(
+              distributeTeams({ modality })(params)(players),
               distributeTeamsUsingCombinations({ modality })(params)(players),
             ),
           ),

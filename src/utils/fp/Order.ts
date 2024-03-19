@@ -1,9 +1,6 @@
-import * as Ord from 'effect/Order'
+import { Equivalence, Order } from 'effect'
 
-export * from 'effect/Order'
-
-export const equals =
-  <A>(ord: Ord.Order<A>) =>
-  (b: A) =>
-  (a: A) =>
-    ord(a, b) === 0
+export const toEquivalence =
+  <A>(order: Order.Order<A>): Equivalence.Equivalence<A> =>
+  (a, b) =>
+    order(a, b) === 0

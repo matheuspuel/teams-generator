@@ -1,5 +1,4 @@
-import { Data, Effect } from 'effect'
-import * as Context from 'effect/Context'
+import { Context, Data, Effect } from 'effect'
 
 export type FileSystem = {
   read: (args: { uri: string }) => Effect.Effect<string, FileSystemError>

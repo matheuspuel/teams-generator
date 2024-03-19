@@ -1,9 +1,6 @@
+import { ReadonlyArray as A, Equivalence, Option } from 'effect'
 import { constant, pipe } from 'effect/Function'
-import * as O from 'effect/Option'
-import { Option } from 'effect/Option'
-import * as A from 'effect/ReadonlyArray'
 import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
-import * as Eq from './Equivalence'
 
 export * from 'effect/ReadonlyArray'
 
@@ -12,24 +9,24 @@ export const isArray = <A>(a: A): a is Extract<A, ReadonlyArray<unknown>> =>
 
 export const toNonEmpty = <A>(
   array: ReadonlyArray<A>,
-): Option<NonEmptyReadonlyArray<A>> =>
-  A.match(array, { onEmpty: () => O.none(), onNonEmpty: O.some })
+): Option.Option<NonEmptyReadonlyArray<A>> =>
+  A.match(array, { onEmpty: () => Option.none(), onNonEmpty: Option.some })
 
 export const getUnorderedEquivalence = <A>(
-  E: Eq.Equivalence<A>,
-): Eq.Equivalence<Array<A>> =>
-  Eq.make((as, bs) =>
+  Eq: Equivalence.Equivalence<A>,
+): Equivalence.Equivalence<Array<A>> =>
+  Equivalence.make((as, bs) =>
     pipe(
       as,
       A.matchLeft({
         onEmpty: () => A.isEmptyArray(bs),
         onNonEmpty: (a, as_) =>
           pipe(
-            A.findFirstIndex(bs, Eq.equals(E)(a)),
-            O.map(i => A.remove(i)(bs)),
-            O.match({
+            A.findFirstIndex(bs, _ => Eq(_, a)),
+            Option.map(i => A.remove(i)(bs)),
+            Option.match({
               onNone: () => false,
-              onSome: Eq.equals(getUnorderedEquivalence(E))(as_),
+              onSome: _ => getUnorderedEquivalence(Eq)(_, as_),
             }),
           ),
       }),

@@ -1,3 +1,4 @@
+import { Equivalence as SchemaEquivalence } from '@effect/schema'
 import { Match, pipe } from 'effect'
 import { MaterialIcons, Pressable, Row, Txt, View } from 'src/components'
 import { BorderlessButton } from 'src/components/derivative/BorderlessButton'
@@ -6,17 +7,20 @@ import { Checkbox } from 'src/components/derivative/Checkbox'
 import { GhostButton } from 'src/components/derivative/GhostButton'
 import { SolidButton } from 'src/components/derivative/SolidButton'
 import { namedConst } from 'src/components/hyperscript'
+import { Parameters } from 'src/datatypes/Parameters'
 import { appEvents } from 'src/events'
 import { back } from 'src/events/core'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
-import * as Equivalence from 'src/utils/fp/Equivalence'
 
 const on = appEvents.group
 
 export const ParametersView = namedConst('ParametersView')(() => {
-  const parameters = useSelector(s => s.parameters, Equivalence.deep())
+  const parameters = useSelector(
+    s => s.parameters,
+    SchemaEquivalence.make(Parameters),
+  )
   return CenterModal({
     onClose: back(),
     title: t('Parameters'),

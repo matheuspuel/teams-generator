@@ -1,5 +1,4 @@
-import { Effect, Option, ReadonlyArray, pipe } from 'effect'
-import * as Random from 'effect/Random'
+import { Effect, Option, Random, ReadonlyArray, pipe } from 'effect'
 
 export const randomizeArray = <A>(as: Array<A>): Effect.Effect<Array<A>> =>
   pipe(

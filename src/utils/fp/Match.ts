@@ -1,5 +1,5 @@
+import { Match } from 'effect'
 import { LazyArg, pipe } from 'effect/Function'
-import * as Match_ from 'effect/Match'
 
 export * from 'effect/Match'
 
@@ -17,7 +17,7 @@ export const valueSomeTags =
     fields: P,
   ) =>
   (value: R) =>
-    pipe(value, Match_.value, Match_.tags(fields))
+    pipe(value, Match.value, Match.tags(fields))
 
 export const valueTagsOrElse =
   <
@@ -42,4 +42,4 @@ export const valueString =
     fields: P,
   ) =>
   (value: R) =>
-    pipe({ _tag: value }, Match_.valueTags(fields))
+    pipe({ _tag: value }, Match.valueTags(fields))

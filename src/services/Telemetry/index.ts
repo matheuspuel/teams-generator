@@ -1,7 +1,6 @@
 /* eslint-disable functional/functional-parameters */
 import { Schema } from '@effect/schema'
-import { Effect } from 'effect'
-import * as Context from 'effect/Context'
+import { Context, Effect } from 'effect'
 import { Timestamp } from 'src/utils/datatypes'
 
 export const TelemetryLogSchema = Schema.struct({
