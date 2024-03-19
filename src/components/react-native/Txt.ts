@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { Text as RawText } from 'react-native'
 import {
   MarginProps,

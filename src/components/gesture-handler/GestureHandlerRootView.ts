@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { GestureHandlerRootView as GestureHandlerRootView_ } from 'react-native-gesture-handler'
 import { Children, UIElement } from 'src/components/types'
 import { named } from '../hyperscript'

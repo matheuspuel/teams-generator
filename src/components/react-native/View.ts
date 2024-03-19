@@ -1,5 +1,5 @@
 import { Runtime, pipe } from 'effect'
-import React from 'react'
+import * as React from 'react'
 import { View as RawView } from 'react-native'
 import {
   AbsolutePositionProps,

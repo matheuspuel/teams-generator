@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { Screen as RNSScreen_ } from 'react-native-screens'
 import {
   Children,

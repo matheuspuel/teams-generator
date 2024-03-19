@@ -1,5 +1,5 @@
 import { getDefaultHeaderHeight } from '@react-navigation/elements'
-import Constants from 'expo-constants'
+import ExpoConstants from 'expo-constants'
 import { FadeIn, FadeOut } from 'react-native-reanimated'
 import { Modal, View } from 'src/components'
 import { AppEvent } from 'src/events'
@@ -20,7 +20,7 @@ export const HeaderMenu = named2('HeaderMenu')(
       mt: getDefaultHeaderHeight(
         { height: 1, width: 0 },
         false,
-        Constants.statusBarHeight,
+        ExpoConstants.statusBarHeight,
       ),
       entering: FadeIn.duration(ANIMATION_DURATION),
       exiting: FadeOut.duration(ANIMATION_DURATION),

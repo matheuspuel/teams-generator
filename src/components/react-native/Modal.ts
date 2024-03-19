@@ -1,5 +1,5 @@
 import { Runtime, identity } from 'effect'
-import React from 'react'
+import * as React from 'react'
 import { Modal as RNModal_ } from 'react-native'
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler'
 import { Children, JSXElementsChildren, UIElement } from 'src/components/types'

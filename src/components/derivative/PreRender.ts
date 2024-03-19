@@ -1,5 +1,5 @@
 import { Runtime } from 'effect'
-import React from 'react'
+import * as React from 'react'
 import { useRuntime } from 'src/contexts/Runtime'
 import { useState } from 'src/hooks/useState'
 import { named2 } from '../hyperscript'

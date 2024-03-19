@@ -1,5 +1,5 @@
 import { pipe, Runtime } from 'effect'
-import React from 'react'
+import * as React from 'react'
 import { TextInput as RNTextInput_ } from 'react-native-gesture-handler'
 import {
   BorderWidthProps,

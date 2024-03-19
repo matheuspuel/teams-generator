@@ -1,5 +1,5 @@
 import { Effect } from 'effect'
-import React from 'react'
+import * as React from 'react'
 import { AppThemeEnv } from 'src/services/Theme'
 import { Color } from 'src/utils/datatypes'
 

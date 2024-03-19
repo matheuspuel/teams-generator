@@ -1,6 +1,6 @@
 /* eslint-disable functional/no-expression-statements */
 import { Effect, Equal, Equivalence, Runtime, flow } from 'effect'
-import React from 'react'
+import * as React from 'react'
 import { useRuntime } from 'src/contexts/Runtime'
 import { RootState } from 'src/model'
 import { AppRuntime } from 'src/runtime'

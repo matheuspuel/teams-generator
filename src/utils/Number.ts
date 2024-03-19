@@ -3,11 +3,6 @@ import { pipe } from 'effect'
 const thousandsSeparator = ',' as '.' | ','
 const decimalSeparator = thousandsSeparator === '.' ? ',' : '.'
 
-export const parseLocaleNumber = (stringNumber: string) =>
-  stringNumber
-    .replace(new RegExp(`\\${thousandsSeparator}`, 'g'), '')
-    .replace(new RegExp(`\\${decimalSeparator}`), '.')
-
 const addThousandsSeparators = (numStr: string) =>
   pipe(
     numStr.indexOf(decimalSeparator),
@@ -32,15 +27,6 @@ const numStringToLocale = (numStr: string) =>
     addThousandsSeparators,
   )
 
+// TODO reimplement using localization
 export const toFixedLocale = (fractionDigits: number) => (value: number) =>
   pipe(value.toFixed(fractionDigits), numStringToLocale)
-
-export const numberToLocaleString = (value: number) =>
-  pipe(value.toString(), numStringToLocale)
-
-export const formatPercentage = (value: number) =>
-  numberToLocaleString(value * 100) + '%'
-
-export const formatFixedPercentage =
-  (fractionDigits: number) => (value: number) =>
-    toFixedLocale(fractionDigits)(value * 100) + '%'

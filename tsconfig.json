@@ -7,9 +7,6 @@
     "noFallthroughCasesInSwitch": true,
     "noErrorTruncation": true,
     "skipLibCheck": true,
-    "paths": {
-      "src/*": ["src/*"],
-      "fp": ["src/utils/fp"],
-    },
+    "paths": { "src/*": ["src/*"] },
   },
 }

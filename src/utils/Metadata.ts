@@ -1,8 +1,8 @@
-import Constants from 'expo-constants'
+import ExpoConstants from 'expo-constants'
 import packageJSON from 'src/../package.json'
 import { fatal } from './Error'
 
-const envName_: unknown = Constants.expoConfig?.extra?.envName
+const envName_: unknown = ExpoConstants.expoConfig?.extra?.envName
 
 export const envName =
   envName_ === 'production'

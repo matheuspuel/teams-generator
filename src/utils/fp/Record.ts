@@ -1,7 +1,5 @@
 import * as Eq from 'effect/Equivalence'
 
-export * from 'effect/ReadonlyRecord'
-
 function isSubrecord<A>(E: Eq.Equivalence<A>): {
   (that: A): (me: A) => boolean
   (me: A, that: A): boolean
@@ -27,10 +25,13 @@ function isSubrecord<A>(
     return true
   }
 }
-export function getEquivalence<K extends string, A>(
-  E: Eq.Equivalence<A>,
-): Eq.Equivalence<Readonly<Record<K, A>>>
-export function getEquivalence<A>(E: Eq.Equivalence<A>): Eq.Equivalence<A> {
+
+export const getEquivalence: {
+  <K extends string, A>(
+    E: Eq.Equivalence<A>,
+  ): Eq.Equivalence<Readonly<Record<K, A>>>
+  <A>(E: Eq.Equivalence<A>): Eq.Equivalence<A>
+} = <A>(E: Eq.Equivalence<A>): Eq.Equivalence<A> => {
   const isSubrecordE = isSubrecord(E)
   return Eq.make((x, y) => isSubrecordE(x)(y) && isSubrecordE(y)(x))
 }

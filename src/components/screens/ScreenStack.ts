@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { StyleSheet } from 'react-native'
 import { ScreenStack as RNSScreenStack_ } from 'react-native-screens'
 import { Children, JSXElementsChildren, UIElement } from 'src/components/types'

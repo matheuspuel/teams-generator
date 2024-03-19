@@ -1,5 +1,5 @@
 import { Runtime, identity, pipe } from 'effect'
-import React from 'react'
+import * as React from 'react'
 import { BorderlessButton, RectButton } from 'react-native-gesture-handler'
 import {
   AbsolutePositionProps,

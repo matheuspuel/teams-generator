@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { ScrollView as RNScrollView_ } from 'react-native'
 import {
   Children,

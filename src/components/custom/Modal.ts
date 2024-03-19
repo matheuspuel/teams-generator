@@ -1,5 +1,5 @@
 import { Effect } from 'effect'
-import React from 'react'
+import * as React from 'react'
 import Animated, {
   FadeIn,
   FadeOut,

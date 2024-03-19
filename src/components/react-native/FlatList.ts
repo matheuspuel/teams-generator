@@ -1,6 +1,6 @@
 import { ReadonlyArray, pipe } from 'effect'
 import { constUndefined } from 'effect/Function'
-import React from 'react'
+import * as React from 'react'
 import { FlatList as RNFlatList_ } from 'react-native'
 import { GapProps, PaddingProps, UIElement } from 'src/components/types'
 import { useRuntime } from 'src/contexts/Runtime'

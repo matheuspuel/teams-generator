@@ -1,5 +1,5 @@
 import { Effect, Option, Runtime, pipe } from 'effect'
-import React from 'react'
+import * as React from 'react'
 import { SafeAreaProvider as RawSafeAreaProvider_ } from 'react-native-safe-area-context'
 import {
   Children,

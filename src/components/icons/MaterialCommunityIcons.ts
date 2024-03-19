@@ -1,5 +1,5 @@
 import RawIcons_ from '@expo/vector-icons/MaterialCommunityIcons'
-import React from 'react'
+import * as React from 'react'
 import { TextStyleContext, useTextStyle } from 'src/contexts/TextStyle'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
 import { named } from '../hyperscript'

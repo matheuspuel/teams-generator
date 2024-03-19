@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { ActivityIndicator as RNActivityIndicator_ } from 'react-native'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
 import { named } from '../hyperscript'
