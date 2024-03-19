@@ -1,4 +1,4 @@
-import { F } from 'src/utils/fp'
+import { Effect } from 'effect'
 import { RepositoryEnv } from '../tag'
 import { LogRepository } from './Log'
 
@@ -8,8 +8,14 @@ export type TelemetryRepositories = {
 
 export const TelemetryRepositories = {
   Log: {
-    get: F.serviceFunctionEffect(RepositoryEnv, r => r.telemetry.Log.get),
-    concat: F.serviceFunctionEffect(RepositoryEnv, r => r.telemetry.Log.concat),
-    clear: F.serviceFunctionEffect(RepositoryEnv, r => r.telemetry.Log.clear),
+    get: Effect.serviceFunctionEffect(RepositoryEnv, r => r.telemetry.Log.get),
+    concat: Effect.serviceFunctionEffect(
+      RepositoryEnv,
+      r => r.telemetry.Log.concat,
+    ),
+    clear: Effect.serviceFunctionEffect(
+      RepositoryEnv,
+      r => r.telemetry.Log.clear,
+    ),
   },
 }

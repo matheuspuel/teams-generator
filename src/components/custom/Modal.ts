@@ -1,4 +1,4 @@
-import { F } from 'fp'
+import { Effect } from 'effect'
 import React from 'react'
 import Animated, {
   FadeIn,
@@ -47,7 +47,7 @@ export const Modal = named2('Modal')(
           },
         },
         View({ flex: 1, bg: Colors.opacity(0.375)(Colors.black) })([
-          Pressable({ onPress: F.unit, flex: 1 })([
+          Pressable({ onPress: Effect.unit, flex: 1 })([
             Pressable({
               onPress: props?.onClose,
               rippleColor: Colors.black,
@@ -66,7 +66,7 @@ export const Modal = named2('Modal')(
                     props.exiting ?? SlideOutDown.duration(ANIMATION_DURATION),
                 },
                 Pressable({
-                  onPress: F.unit,
+                  onPress: Effect.unit,
                   flexShrink: 1,
                   m: props?.m,
                   mx: props?.mx,

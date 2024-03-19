@@ -1,4 +1,4 @@
-import { Runtime, pipe } from 'fp'
+import { Runtime, pipe } from 'effect'
 import React from 'react'
 import { View as RawView } from 'react-native'
 import {
@@ -55,7 +55,8 @@ const getRawProps = (
   key: props.key,
   onLayout:
     props.onLayout &&
-    (() => props.onLayout && Runtime.runPromise(runtime)(props.onLayout)),
+    (() =>
+      void (props.onLayout && Runtime.runPromise(runtime)(props.onLayout))),
   style: {
     padding: props?.p,
     paddingHorizontal: props?.px,

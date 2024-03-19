@@ -1,4 +1,4 @@
-import { F, Layer, flow, pipe } from 'fp'
+import { Effect, Layer, flow, pipe } from 'effect'
 import * as Fetch from 'src/utils/Fetch'
 import * as Metadata from 'src/utils/Metadata'
 import { TelemetryEnv } from '.'
@@ -12,13 +12,13 @@ const telemetryServerUrl = Metadata.matchEnv({
   development: 'http://192.168.3.2:8080',
 })
 
-export const TelemetryLive = F.map(F.context<RepositoryEnv>(), ctx =>
+export const TelemetryLive = Effect.map(Effect.context<RepositoryEnv>(), ctx =>
   TelemetryEnv.context({
-    log: flow(Repository.telemetry.Log.concat, F.provide(ctx)),
+    log: flow(Repository.telemetry.Log.concat, Effect.provide(ctx)),
     send: () =>
       pipe(
         Repository.telemetry.Log.get(),
-        F.flatMap(logs =>
+        Effect.flatMap(logs =>
           Fetch.json({
             method: 'POST',
             url: telemetryServerUrl + '/api/v1/sorteio-times/logs',
@@ -26,8 +26,8 @@ export const TelemetryLive = F.map(F.context<RepositoryEnv>(), ctx =>
             body: logs,
           }),
         ),
-        F.flatMap(() => Repository.telemetry.Log.clear()),
-        F.provide(ctx),
+        Effect.flatMap(() => Repository.telemetry.Log.clear()),
+        Effect.provide(ctx),
       ),
   }),
 ).pipe(Layer.effectContext)

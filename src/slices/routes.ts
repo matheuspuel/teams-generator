@@ -1,8 +1,10 @@
-import { F, Match, NonEmptyReadonlyArray, Optic, pipe } from 'fp'
+import * as Optic from '@fp-ts/optic'
+import { Data, Effect, ReadonlyArray, flow, pipe } from 'effect'
+import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
 import { RootState } from 'src/model'
 import { root } from 'src/model/optic'
 import { State } from 'src/services/StateRef'
-import { A, Data, flow } from 'src/utils/fp'
+import * as Match from 'src/utils/fp/Match'
 
 export type Route = Data.TaggedEnum<{
   Groups: object
@@ -28,34 +30,34 @@ const isAllowedToGoBack = (_s: RootState): boolean => true
 
 const onNavigation = () =>
   pipe(
-    State.flatWith(flow(Optic.get(route$), A.last)),
-    F.tap(
+    State.flatWith(flow(Optic.get(route$), ReadonlyArray.last)),
+    Effect.tap(
       flow(
         Match.valueSomeTags({}),
-        Match.orElse(() => F.unit),
+        Match.orElse(() => Effect.unit),
       ),
     ),
-    F.ignore,
+    Effect.ignore,
   )
 
 const update = flow(
   State.on(route$).update,
-  F.tap(() => onNavigation()),
+  Effect.tap(() => onNavigation()),
 )
 
 export const navigate = (screen: Route) =>
   update(
     flow(
-      A.takeWhile(s => s._tag !== screen._tag),
-      A.append(screen),
+      ReadonlyArray.takeWhile(s => s._tag !== screen._tag),
+      ReadonlyArray.append(screen),
     ),
   )
 
 export const navigateReplace = (screen: Route) =>
   update(
-    A.matchRight({
+    ReadonlyArray.matchRight({
       onEmpty: () => [screen],
-      onNonEmpty: init => A.append(init, screen),
+      onNonEmpty: init => ReadonlyArray.append(init, screen),
     }),
   )
 
@@ -64,19 +66,19 @@ export const navigateSet = (screens: NonEmptyReadonlyArray<Route>) =>
 
 export const goBack = pipe(
   State.with(isAllowedToGoBack),
-  F.flatMap(isAllowedToGoBack =>
+  Effect.flatMap(isAllowedToGoBack =>
     isAllowedToGoBack
-      ? State.with(flow(Optic.get(route$), A.initNonEmpty)).pipe(
-          F.flatMap(init =>
-            A.match(init, {
-              onEmpty: () => F.succeed({ isHandled: false }),
+      ? State.with(flow(Optic.get(route$), ReadonlyArray.initNonEmpty)).pipe(
+          Effect.flatMap(init =>
+            ReadonlyArray.match(init, {
+              onEmpty: () => Effect.succeed({ isHandled: false }),
               onNonEmpty: init =>
-                F.succeed({ isHandled: true }).pipe(
-                  F.tap(() => update(() => init)),
+                Effect.succeed({ isHandled: true }).pipe(
+                  Effect.tap(() => update(() => init)),
                 ),
             }),
           ),
         )
-      : F.succeed({ isHandled: true }),
+      : Effect.succeed({ isHandled: true }),
   ),
 )

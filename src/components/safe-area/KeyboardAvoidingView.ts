@@ -1,4 +1,4 @@
-import { Runtime, identity, pipe } from 'fp'
+import { Runtime, identity, pipe } from 'effect'
 import * as React from 'react'
 import {
   KeyboardAvoidingViewProps as KeyboardAvoidingViewProps_,
@@ -28,7 +28,9 @@ export const KeyboardAvoidingView = named2('KeyboardAvoidingView')(
           onLayout:
             props.onLayout &&
             (() =>
-              props.onLayout && Runtime.runPromise(runtime)(props.onLayout)),
+              void (
+                props.onLayout && Runtime.runPromise(runtime)(props.onLayout)
+              )),
           // behavior: props.behavior,
           behavior: Platform.OS === 'ios' ? 'padding' : undefined,
           contentContainerStyle: { flexGrow: 1 },

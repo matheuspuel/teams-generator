@@ -1,10 +1,10 @@
-import { F, Layer, O } from 'fp'
+import { Effect, Layer, Option } from 'effect'
 import { SafeAreaServiceEnv } from '.'
 
 export const SafeAreaServiceTest = SafeAreaServiceEnv.context({
   initialMetrics: () =>
-    F.succeed(
-      O.some({
+    Effect.succeed(
+      Option.some({
         frame: {
           width: 320,
           height: 640,

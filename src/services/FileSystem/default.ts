@@ -1,5 +1,5 @@
+import { Effect, Layer, ReadonlyArray, String, pipe } from 'effect'
 import * as ExpoFileSystem from 'expo-file-system'
-import { A, F, Layer, String, pipe } from 'fp'
 import { enforceErrorInstance } from 'src/utils/Error'
 import { FileSystemEnv, FileSystemError } from '.'
 
@@ -8,34 +8,34 @@ export const FileSystemLive = FileSystemEnv.context({
   write: args =>
     pipe(
       makeDirectory({ uri: getParentDirectoryUri(args.uri) }),
-      F.tap(() => write(args)),
+      Effect.tap(() => write(args)),
     ),
   copy: args => copy(args),
-  cacheDirectory: () => F.succeed(ExpoFileSystem.cacheDirectory ?? ''),
+  cacheDirectory: () => Effect.succeed(ExpoFileSystem.cacheDirectory ?? ''),
 }).pipe(Layer.succeedContext)
 
 const read = (args: { uri: string }) =>
-  F.tryPromise({
+  Effect.tryPromise({
     try: () => ExpoFileSystem.readAsStringAsync(args.uri),
     catch: e => new FileSystemError({ error: enforceErrorInstance(e) }),
   })
 
 const write = (args: { uri: string; data: string }) =>
-  F.tryPromise({
+  Effect.tryPromise({
     try: () => ExpoFileSystem.writeAsStringAsync(args.uri, args.data),
     catch: e => new FileSystemError({ error: enforceErrorInstance(e) }),
   })
 
 const copy = (args: { from: string; to: string }) =>
-  F.tryPromise({
+  Effect.tryPromise({
     try: () => ExpoFileSystem.copyAsync(args),
     catch: e => new FileSystemError({ error: enforceErrorInstance(e) }),
   })
 
 const makeDirectory = (args: { uri: string }) =>
-  F.logDebug('make dir: ' + args.uri).pipe(
-    F.flatMap(() =>
-      F.tryPromise({
+  Effect.logDebug('make dir: ' + args.uri).pipe(
+    Effect.flatMap(() =>
+      Effect.tryPromise({
         try: () =>
           ExpoFileSystem.makeDirectoryAsync(args.uri, { intermediates: true }),
         catch: e => new FileSystemError({ error: enforceErrorInstance(e) }),
@@ -44,4 +44,9 @@ const makeDirectory = (args: { uri: string }) =>
   )
 
 const getParentDirectoryUri = (uri: string) =>
-  pipe(uri, String.split('/'), A.dropRight(1), A.join('/'))
+  pipe(
+    uri,
+    String.split('/'),
+    ReadonlyArray.dropRight(1),
+    ReadonlyArray.join('/'),
+  )

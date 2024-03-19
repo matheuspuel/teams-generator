@@ -1,5 +1,5 @@
 /* eslint-disable functional/no-expression-statements */
-import { Eq, Equal, F, Runtime, flow } from 'fp'
+import { Effect, Equal, Equivalence, Runtime, flow } from 'effect'
 import React from 'react'
 import { useRuntime } from 'src/contexts/Runtime'
 import { RootState } from 'src/model'
@@ -8,7 +8,7 @@ import { StateRef } from '../services/StateRef'
 
 export const useSelector = <A>(
   selector: (state: RootState) => A,
-  equivalence?: Eq.Equivalence<A>,
+  equivalence?: Equivalence.Equivalence<A>,
 ) => {
   const runtime = useRuntime()
   return useSelectorComplete({
@@ -24,7 +24,7 @@ export const useSelectorComplete = <A>({
   runtime,
 }: {
   selector: (state: RootState) => A
-  equivalence: Eq.Equivalence<A>
+  equivalence: Equivalence.Equivalence<A>
   runtime: AppRuntime
 }): A => {
   const [state, setState] = React.useState<A>(() =>
@@ -34,7 +34,9 @@ export const useSelectorComplete = <A>({
     const subscription = StateRef.react
       .subscribe(
         flow(selector, s =>
-          F.sync(() => setState(state => (equivalence(state, s) ? state : s))),
+          Effect.sync(() =>
+            setState(state => (equivalence(state, s) ? state : s)),
+          ),
         ),
       )
       .pipe(Runtime.runSync(runtime))

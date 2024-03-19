@@ -1,8 +1,9 @@
-import { S, pipe } from 'fp'
+import { Schema } from '@effect/schema'
+import { pipe } from 'effect'
 
 export const NonEmptyString = pipe(
-  S.string,
-  S.nonEmpty(),
-  S.brand('NonEmptyString'),
+  Schema.string,
+  Schema.nonEmpty(),
+  Schema.brand('NonEmptyString'),
 )
-export type NonEmptyString = S.Schema.Type<typeof NonEmptyString>
+export type NonEmptyString = Schema.Schema.Type<typeof NonEmptyString>

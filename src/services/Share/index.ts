@@ -1,13 +1,16 @@
+import { Effect } from 'effect'
 import * as Context from 'effect/Context'
-import { Effect, F } from 'src/utils/fp'
 
 export type ShareService = {
-  shareMessage: (args: { title: string; message: string }) => Effect<void>
+  shareMessage: (args: {
+    title: string
+    message: string
+  }) => Effect.Effect<void>
   shareFile: (args: {
     title: string
     uri: string
     mimeType?: string
-  }) => Effect<void>
+  }) => Effect.Effect<void>
 }
 
 export class ShareServiceEnv extends Context.Tag('ShareService')<
@@ -15,4 +18,4 @@ export class ShareServiceEnv extends Context.Tag('ShareService')<
   ShareService
 >() {}
 
-export const ShareService = F.serviceFunctions(ShareServiceEnv)
+export const ShareService = Effect.serviceFunctions(ShareServiceEnv)

@@ -1,4 +1,4 @@
-import { Eq, Equal, Equivalence, flow } from 'fp'
+import { Equal, Equivalence, flow } from 'effect'
 import * as React from 'react'
 
 type Endomorphism<A> = (_: A) => A
@@ -136,13 +136,13 @@ export const memoized =
   ): {
     <C extends UIComponent1>(component: C): C
     <C extends UIComponent1>(
-      propsEquivalence: Equivalence<Arg<C>>,
+      propsEquivalence: Equivalence.Equivalence<Arg<C>>,
       component: C,
     ): C
   } =>
   <C extends UIComponent1>(
     ...args:
-      | [propsEquivalence: Equivalence<Arg<C>>, component: C]
+      | [propsEquivalence: Equivalence.Equivalence<Arg<C>>, component: C]
       | [component: C, arg1?: undefined]
   ): C =>
     transformUnderlyingComponent1(
@@ -153,10 +153,10 @@ export const memoized =
         c =>
           React.memo(
             c,
-            Eq.tuple(
+            Equivalence.tuple(
               args[1] === undefined
                 ? Equal.equivalence()
-                : (args[0] as Equivalence<Arg<C>>),
+                : (args[0] as Equivalence.Equivalence<Arg<C>>),
             ),
           ) as UIUnderlyingComponent1<C>,
       ),
@@ -166,7 +166,10 @@ export const memoized2 =
   (name: string) =>
   <C extends UIComponent2>(
     propsEquivalence: Readonly<
-      [Equivalence<Arg<C>>, Equivalence<Arg<ReturnType<C>>>]
+      [
+        Equivalence.Equivalence<Arg<C>>,
+        Equivalence.Equivalence<Arg<ReturnType<C>>>,
+      ]
     >,
     component: C,
   ): C =>
@@ -176,7 +179,7 @@ export const memoized2 =
         c =>
           React.memo(
             c,
-            Eq.tuple(...propsEquivalence),
+            Equivalence.tuple(...propsEquivalence),
           ) as UIUnderlyingComponent2<C>,
       ),
     )
@@ -186,9 +189,9 @@ export const memoized3 =
   <C extends UIComponent3>(
     propsEquivalence: Readonly<
       [
-        Equivalence<Arg<C>>,
-        Equivalence<Arg<ReturnType<C>>>,
-        Equivalence<Arg<ReturnType<ReturnType<C>>>>,
+        Equivalence.Equivalence<Arg<C>>,
+        Equivalence.Equivalence<Arg<ReturnType<C>>>,
+        Equivalence.Equivalence<Arg<ReturnType<ReturnType<C>>>>,
       ]
     >,
     component: C,
@@ -199,7 +202,7 @@ export const memoized3 =
         c =>
           React.memo(
             c,
-            Eq.tuple(...propsEquivalence),
+            Equivalence.tuple(...propsEquivalence),
           ) as UIUnderlyingComponent3<C>,
       ),
     )

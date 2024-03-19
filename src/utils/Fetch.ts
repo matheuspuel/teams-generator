@@ -1,5 +1,5 @@
-import { Unify } from 'effect'
-import { Data, F, S, pipe } from 'fp'
+import { Schema } from '@effect/schema'
+import { Data, Effect, Unify, pipe } from 'effect'
 
 export type HttpMethod =
   | 'POST'
@@ -31,7 +31,7 @@ export const bare = (args: {
   headers: Record<string, string>
 }) =>
   pipe(
-    F.tryPromise({
+    Effect.tryPromise({
       try: () =>
         fetch(args.url, {
           method: args.method,
@@ -40,11 +40,11 @@ export const bare = (args: {
         }),
       catch: e => new FetchingError({ error: e }),
     }),
-    F.map(r => ({
+    Effect.map(r => ({
       status: r.status,
       headers: r.headers,
       getBodyString: () =>
-        F.tryPromise({
+        Effect.tryPromise({
           try: () => r.text(),
           catch: e => new BodyParsingError({ error: e }),
         }),
@@ -59,11 +59,11 @@ export const json = (args: {
 }) =>
   pipe(
     args.body === undefined
-      ? F.succeed(undefined)
-      : S.encode(S.parseJson())(args.body),
+      ? Effect.succeed(undefined)
+      : Schema.encode(Schema.parseJson())(args.body),
     _ => Unify.unify(_),
-    F.mapError(e => new EncodingError({ error: e })),
-    F.flatMap(bodyString =>
+    Effect.mapError(e => new EncodingError({ error: e })),
+    Effect.flatMap(bodyString =>
       bare({
         method: args.method,
         url: args.url,
@@ -75,11 +75,11 @@ export const json = (args: {
         },
       }),
     ),
-    F.flatMap(({ getBodyString, ...r }) =>
+    Effect.flatMap(({ getBodyString, ...r }) =>
       pipe(
         getBodyString(),
-        F.flatMap(S.decode(S.parseJson())),
-        F.map(data => ({ ...r, data })),
+        Effect.flatMap(Schema.decode(Schema.parseJson())),
+        Effect.map(data => ({ ...r, data })),
       ),
     ),
   )

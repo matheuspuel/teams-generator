@@ -10,7 +10,7 @@ export const playersMock: Array<Player> = [
     rating: 10,
     positionAbbreviation: Abbreviation('m'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
   {
     id: '2' as Id,
@@ -18,7 +18,7 @@ export const playersMock: Array<Player> = [
     rating: 4,
     positionAbbreviation: Abbreviation('a'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
   {
     id: '3' as Id,
@@ -26,7 +26,7 @@ export const playersMock: Array<Player> = [
     rating: 5,
     positionAbbreviation: Abbreviation('z'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
   {
     id: '4' as Id,
@@ -34,7 +34,7 @@ export const playersMock: Array<Player> = [
     rating: 8,
     positionAbbreviation: Abbreviation('g'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
   {
     id: '5' as Id,
@@ -42,7 +42,7 @@ export const playersMock: Array<Player> = [
     rating: 6,
     positionAbbreviation: Abbreviation('z'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
   {
     id: '6' as Id,
@@ -50,7 +50,7 @@ export const playersMock: Array<Player> = [
     rating: 3,
     positionAbbreviation: Abbreviation('le'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
   {
     id: '7' as Id,
@@ -58,7 +58,7 @@ export const playersMock: Array<Player> = [
     rating: 3,
     positionAbbreviation: Abbreviation('ld'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
   {
     id: '8' as Id,
@@ -66,7 +66,7 @@ export const playersMock: Array<Player> = [
     rating: 9,
     positionAbbreviation: Abbreviation('m'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
   {
     id: '9' as Id,
@@ -74,7 +74,7 @@ export const playersMock: Array<Player> = [
     rating: 10,
     positionAbbreviation: Abbreviation('a'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
   {
     id: '10' as Id,
@@ -82,7 +82,7 @@ export const playersMock: Array<Player> = [
     rating: 7,
     positionAbbreviation: Abbreviation('m'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
   {
     id: '11' as Id,
@@ -90,7 +90,7 @@ export const playersMock: Array<Player> = [
     rating: 3,
     positionAbbreviation: Abbreviation('z'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
   {
     id: '12' as Id,
@@ -98,7 +98,7 @@ export const playersMock: Array<Player> = [
     rating: 6,
     positionAbbreviation: Abbreviation('ld'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
   {
     id: '13' as Id,
@@ -106,7 +106,7 @@ export const playersMock: Array<Player> = [
     rating: 8,
     positionAbbreviation: Abbreviation('m'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
   {
     id: '14' as Id,
@@ -114,7 +114,7 @@ export const playersMock: Array<Player> = [
     rating: 2,
     positionAbbreviation: Abbreviation('ld'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
   {
     id: '15' as Id,
@@ -122,7 +122,7 @@ export const playersMock: Array<Player> = [
     rating: 4,
     positionAbbreviation: Abbreviation('a'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
   {
     id: '16' as Id,
@@ -130,7 +130,7 @@ export const playersMock: Array<Player> = [
     rating: 8,
     positionAbbreviation: Abbreviation('m'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
   {
     id: '17' as Id,
@@ -138,7 +138,7 @@ export const playersMock: Array<Player> = [
     rating: 4,
     positionAbbreviation: Abbreviation('a'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
   {
     id: '18' as Id,
@@ -146,7 +146,7 @@ export const playersMock: Array<Player> = [
     rating: 7,
     positionAbbreviation: Abbreviation('a'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
   {
     id: '19' as Id,
@@ -154,7 +154,7 @@ export const playersMock: Array<Player> = [
     rating: 5,
     positionAbbreviation: Abbreviation('a'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
   {
     id: '20' as Id,
@@ -162,7 +162,7 @@ export const playersMock: Array<Player> = [
     rating: 5,
     positionAbbreviation: Abbreviation('a'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
   {
     id: '21' as Id,
@@ -170,7 +170,7 @@ export const playersMock: Array<Player> = [
     rating: 7,
     positionAbbreviation: Abbreviation('z'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
   {
     id: '22' as Id,
@@ -178,7 +178,7 @@ export const playersMock: Array<Player> = [
     rating: 3,
     positionAbbreviation: Abbreviation('ld'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
   {
     id: '23' as Id,
@@ -186,6 +186,6 @@ export const playersMock: Array<Player> = [
     rating: 7,
     positionAbbreviation: Abbreviation('z'),
     active: true,
-    createdAt: Timestamp.Schema(0),
+    createdAt: Timestamp.Timestamp(0),
   },
 ]

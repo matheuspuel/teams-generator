@@ -1,11 +1,17 @@
+import { Data, Effect } from 'effect'
 import * as Context from 'effect/Context'
-import { Data, Effect, F } from 'src/utils/fp'
 
 export type FileSystem = {
-  read: (args: { uri: string }) => Effect<string, FileSystemError>
-  write: (args: { uri: string; data: string }) => Effect<void, FileSystemError>
-  copy: (args: { from: string; to: string }) => Effect<void, FileSystemError>
-  cacheDirectory: () => Effect<string>
+  read: (args: { uri: string }) => Effect.Effect<string, FileSystemError>
+  write: (args: {
+    uri: string
+    data: string
+  }) => Effect.Effect<void, FileSystemError>
+  copy: (args: {
+    from: string
+    to: string
+  }) => Effect.Effect<void, FileSystemError>
+  cacheDirectory: () => Effect.Effect<string>
 }
 
 export class FileSystemEnv extends Context.Tag('FileSystem')<
@@ -13,7 +19,7 @@ export class FileSystemEnv extends Context.Tag('FileSystem')<
   FileSystem
 >() {}
 
-export const FileSystem = F.serviceFunctions(FileSystemEnv)
+export const FileSystem = Effect.serviceFunctions(FileSystemEnv)
 
 export class FileSystemError extends Data.TaggedError('FileSystemError')<{
   error: Error

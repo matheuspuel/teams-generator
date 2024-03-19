@@ -1,5 +1,14 @@
+import { Schema } from '@effect/schema'
+import {
+  Order,
+  ReadonlyArray,
+  ReadonlyRecord,
+  Tuple,
+  absurd,
+  identity,
+  pipe,
+} from 'effect'
 import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
-import { A, Ord, Order, Record, S, Tuple, absurd, identity, pipe } from 'fp'
 import { Modality, Player } from 'src/datatypes'
 import {
   ActiveOrd,
@@ -19,9 +28,14 @@ export const GroupOrderTypeDict = {
 
 export type GroupOrderType = keyof typeof GroupOrderTypeDict
 
-export const GroupOrderTypeSchema: S.Schema<GroupOrderType> = S.literal(
-  ...pipe(GroupOrderTypeDict, Record.toEntries, A.map(Tuple.getFirst)),
-)
+export const GroupOrderTypeSchema: Schema.Schema<GroupOrderType> =
+  Schema.literal(
+    ...pipe(
+      GroupOrderTypeDict,
+      ReadonlyRecord.toEntries,
+      ReadonlyArray.map(Tuple.getFirst),
+    ),
+  )
 
 export type GroupOrder = NonEmptyReadonlyArray<
   Readonly<{
@@ -30,20 +44,18 @@ export type GroupOrder = NonEmptyReadonlyArray<
   }>
 >
 
-export const Schema: S.Schema<GroupOrder> = S.nonEmptyArray(
-  S.struct({
+export const GroupOrder: Schema.Schema<GroupOrder> = Schema.nonEmptyArray(
+  Schema.struct({
     _tag: GroupOrderTypeSchema,
-    reverse: S.boolean,
+    reverse: Schema.boolean,
   }),
 )
-
-export const GroupOrder = Schema
 
 export const initial: GroupOrder = [{ _tag: 'date', reverse: false }]
 
 const typeToOrder = (
   type: GroupOrderType,
-): ((args: { modality: Modality }) => Order<Player>) =>
+): ((args: { modality: Modality }) => Order.Order<Player>) =>
   type === 'name'
     ? () => NameOrd
     : type === 'position'
@@ -57,12 +69,14 @@ const typeToOrder = (
             : absurd<never>(type)
 
 export const toOrder =
-  (order: GroupOrder): ((args: { modality: Modality }) => Order<Player>) =>
+  (
+    order: GroupOrder,
+  ): ((args: { modality: Modality }) => Order.Order<Player>) =>
   args =>
     pipe(
       order,
-      A.map(v =>
-        pipe(typeToOrder(v._tag)(args), v.reverse ? Ord.reverse : identity),
+      ReadonlyArray.map(v =>
+        pipe(typeToOrder(v._tag)(args), v.reverse ? Order.reverse : identity),
       ),
-      Ord.combineAll,
+      Order.combineAll,
     )

@@ -1,11 +1,14 @@
+import { Data, Effect } from 'effect'
 import * as Context from 'effect/Context'
 import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
-import { Data, Effect, F } from 'src/utils/fp'
 
 export type DocumentPicker = {
   getDocument: (args?: {
     type?: NonEmptyReadonlyArray<string>
-  }) => Effect<{ uri: string }, DocumentPickerError | CanceledOperationError>
+  }) => Effect.Effect<
+    { uri: string },
+    DocumentPickerError | CanceledOperationError
+  >
 }
 
 export class DocumentPickerEnv extends Context.Tag('DocumentPicker')<
@@ -13,7 +16,7 @@ export class DocumentPickerEnv extends Context.Tag('DocumentPicker')<
   DocumentPicker
 >() {}
 
-export const DocumentPicker = F.serviceFunctions(DocumentPickerEnv)
+export const DocumentPicker = Effect.serviceFunctions(DocumentPickerEnv)
 
 export class DocumentPickerError extends Data.TaggedError(
   'DocumentPickerError',

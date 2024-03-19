@@ -1,4 +1,15 @@
-import { A, Data, F, Match, O, S, Stream, String, flow, pipe } from 'fp'
+import { Schema } from '@effect/schema'
+import {
+  Data,
+  Effect,
+  Match,
+  Option,
+  ReadonlyArray,
+  Stream,
+  String,
+  flow,
+  pipe,
+} from 'effect'
 import { Group, Modality } from 'src/datatypes'
 import {
   CustomModality,
@@ -20,47 +31,47 @@ import { NonEmptyString } from 'src/utils/datatypes/NonEmptyString'
 export const exportGroup = () =>
   pipe(
     State.on(root.at('ui').at('selectedGroupId')).get,
-    F.flatMap(
-      O.match({
-        onNone: () => F.succeed(O.none()),
-        onSome: id => pipe(State.get, F.map(getGroupById(id))),
+    Effect.flatMap(
+      Option.match({
+        onNone: () => Effect.succeed(Option.none()),
+        onSome: id => pipe(State.get, Effect.map(getGroupById(id))),
       }),
     ),
-    F.flatten,
-    F.bindTo('group'),
-    F.bind('modality', ({ group }) =>
-      State.with(getModality(group.modality)).pipe(F.flatten),
+    Effect.flatten,
+    Effect.bindTo('group'),
+    Effect.bind('modality', ({ group }) =>
+      State.with(getModality(group.modality)).pipe(Effect.flatten),
     ),
     StateRef.query,
-    F.bind('fileUri', ({ group }) => makeFileUri(group)),
-    F.tap(({ group, modality, fileUri }) =>
+    Effect.bind('fileUri', ({ group }) => makeFileUri(group)),
+    Effect.tap(({ group, modality, fileUri }) =>
       pipe(
-        S.encode(schema)({ ...group, modality }),
-        F.tap(s => FileSystem.write({ uri: fileUri, data: s })),
+        Schema.encode(schema)({ ...group, modality }),
+        Effect.tap(s => FileSystem.write({ uri: fileUri, data: s })),
       ),
     ),
-    F.flatMap(({ fileUri }) =>
+    Effect.flatMap(({ fileUri }) =>
       ShareService.shareFile({
         title: 'Exportar Grupo',
         uri: fileUri,
         mimeType: 'application/json',
       }),
     ),
-    F.tapError(e =>
-      F.logError(e._tag === 'FileSystemError' ? e.error.message : e),
+    Effect.tapError(e =>
+      Effect.logError(e._tag === 'FileSystemError' ? e.error.message : e),
     ),
   )
 
 export const importGroupFromDocumentPicker = () =>
   pipe(
     DocumentPicker.getDocument({ type: ['application/json'] }),
-    F.flatMap(f => importGroupFromFile({ url: f.uri })),
+    Effect.flatMap(f => importGroupFromFile({ url: f.uri })),
   )
 
 export const setupReceiveURLHandler = () =>
   pipe(
     Linking.getInitialURL(),
-    F.flatten,
+    Effect.flatten,
     Stream.catchAll(() => Stream.empty),
     Stream.concat(Linking.startLinkingStream()),
     Stream.map(url => ({ url })),
@@ -74,27 +85,33 @@ export const _importGroup = (
 ) =>
   data.modality._tag === 'StaticModality'
     ? pipe(
-        A.findFirst(staticModalities, m => m.id === data.modality.id),
-        O.getOrElse(() => soccer),
+        ReadonlyArray.findFirst(
+          staticModalities,
+          m => m.id === data.modality.id,
+        ),
+        Option.getOrElse(() => soccer),
         modality =>
           pipe(
-            F.all({
-              modality: F.succeed({ _tag: modality._tag, id: modality.id }),
-              name: F.succeed(data.name),
-              players: F.forEach(data.players, p =>
+            Effect.all({
+              modality: Effect.succeed({
+                _tag: modality._tag,
+                id: modality.id,
+              }),
+              name: Effect.succeed(data.name),
+              players: Effect.forEach(data.players, p =>
                 pipe(
-                  F.all({
+                  Effect.all({
                     id: IdGenerator.generate(),
-                    positionAbbreviation: A.findFirst(
+                    positionAbbreviation: ReadonlyArray.findFirst(
                       modality.positions,
                       pos => pos.abbreviation === p.positionAbbreviation,
                     ).pipe(
-                      O.getOrElse(() => modality.positions[0]),
+                      Option.getOrElse(() => modality.positions[0]),
                       _ => _.abbreviation,
-                      F.succeed,
+                      Effect.succeed,
                     ),
                   }),
-                  F.map(({ id, positionAbbreviation }) => ({
+                  Effect.map(({ id, positionAbbreviation }) => ({
                     ...p,
                     id,
                     positionAbbreviation,
@@ -102,14 +119,14 @@ export const _importGroup = (
                 ),
               ),
             }),
-            F.flatMap(addImportedGroup),
+            Effect.flatMap(addImportedGroup),
           ),
       )
     : pipe(
-        F.succeed({ modality: data.modality }),
-        F.bind('existingModality', ({ modality }) =>
+        Effect.succeed({ modality: data.modality }),
+        Effect.bind('existingModality', ({ modality }) =>
           State.with(s =>
-            A.findFirst(
+            ReadonlyArray.findFirst(
               s.customModalities,
               m =>
                 m.name === modality.name &&
@@ -119,39 +136,39 @@ export const _importGroup = (
             ),
           ),
         ),
-        F.bind('nextModalityId', ({ existingModality }) =>
+        Effect.bind('nextModalityId', ({ existingModality }) =>
           existingModality.pipe(
-            O.map(_ => _.id),
-            F.orElse(() => IdGenerator.generate()),
+            Option.map(_ => _.id),
+            Effect.orElse(() => IdGenerator.generate()),
           ),
         ),
-        F.tap(({ existingModality, modality, nextModalityId }) =>
-          O.match(existingModality, {
+        Effect.tap(({ existingModality, modality, nextModalityId }) =>
+          Option.match(existingModality, {
             onNone: () =>
               State.on(root.at('customModalities')).update(
-                A.append({
+                ReadonlyArray.append({
                   _tag: 'CustomModality' as const,
                   id: nextModalityId,
                   name: modality.name,
                   positions: modality.positions,
                 }),
               ),
-            onSome: () => F.unit,
+            onSome: () => Effect.unit,
           }),
         ),
-        F.tap(({ nextModalityId }) =>
+        Effect.tap(({ nextModalityId }) =>
           pipe(
-            F.all({
-              modality: F.succeed({
+            Effect.all({
+              modality: Effect.succeed({
                 _tag: 'CustomModality' as const,
                 id: nextModalityId,
               }),
-              name: F.succeed(data.name),
-              players: F.forEach(data.players, p =>
-                F.map(IdGenerator.generate(), id => ({ ...p, id })),
+              name: Effect.succeed(data.name),
+              players: Effect.forEach(data.players, p =>
+                Effect.map(IdGenerator.generate(), id => ({ ...p, id })),
               ),
             }),
-            F.flatMap(addImportedGroup),
+            Effect.flatMap(addImportedGroup),
           ),
         ),
       )
@@ -159,19 +176,19 @@ export const _importGroup = (
 const importGroupFromFile = (args: { url: string }) =>
   pipe(
     temporaryImportUri,
-    F.tap(() => F.logDebug(args.url)),
-    F.tap(tempUri => FileSystem.copy({ from: args.url, to: tempUri })),
-    F.tapError(e => F.logError(e.error)),
-    F.flatMap(tempUri => FileSystem.read({ uri: tempUri })),
-    F.flatMap(data =>
+    Effect.tap(() => Effect.logDebug(args.url)),
+    Effect.tap(tempUri => FileSystem.copy({ from: args.url, to: tempUri })),
+    Effect.tapError(e => Effect.logError(e.error)),
+    Effect.flatMap(tempUri => FileSystem.read({ uri: tempUri })),
+    Effect.flatMap(data =>
       pipe(
-        S.decodeUnknown(schema)(data),
-        F.catchTags({
+        Schema.decodeUnknown(schema)(data),
+        Effect.catchTags({
           ParseError: e =>
             pipe(
-              S.decodeUnknown(S.parseJson(anyVersionSchema))(data),
-              F.flatMap(d =>
-                F.fail(
+              Schema.decodeUnknown(Schema.parseJson(anyVersionSchema))(data),
+              Effect.flatMap(d =>
+                Effect.fail(
                   d.version > currentVersion
                     ? new NewerVersionError()
                     : d.version < lastSupportedVersion
@@ -183,15 +200,15 @@ const importGroupFromFile = (args: { url: string }) =>
         }),
       ),
     ),
-    F.flatMap(data => pipe(_importGroup(data), StateRef.execute)),
-    F.tap(() =>
+    Effect.flatMap(data => pipe(_importGroup(data), StateRef.execute)),
+    Effect.tap(() =>
       Alert.alert({
         type: 'success',
         title: 'Sucesso',
         message: 'Grupo importado',
       }),
     ),
-    F.tapError(e =>
+    Effect.tapError(e =>
       Alert.alert({
         type: 'error',
         title: 'Falha ao importar grupo',
@@ -211,11 +228,14 @@ const importGroupFromFile = (args: { url: string }) =>
   )
 
 const dataSchema = Group.Group.pipe(
-  S.omit('modality'),
-  S.extend(
-    S.struct({
-      modality: S.union(
-        S.struct({ _tag: S.literal('StaticModality'), id: NonEmptyString }),
+  Schema.omit('modality'),
+  Schema.extend(
+    Schema.struct({
+      modality: Schema.union(
+        Schema.struct({
+          _tag: Schema.literal('StaticModality'),
+          id: NonEmptyString,
+        }),
         Modality.CustomModality,
       ),
     }),
@@ -225,16 +245,16 @@ const dataSchema = Group.Group.pipe(
 const lastSupportedVersion = 2 as const
 const currentVersion = 2 as const
 
-const schema = S.transform(
-  S.parseJson(
-    S.struct({
-      application: S.literal('sorteio-times'),
-      type: S.literal('group'),
-      version: S.literal(currentVersion),
+const schema = Schema.transform(
+  Schema.parseJson(
+    Schema.struct({
+      application: Schema.literal('sorteio-times'),
+      type: Schema.literal('group'),
+      version: Schema.literal(currentVersion),
       data: dataSchema,
     }),
   ),
-  dataSchema.pipe(S.typeSchema),
+  dataSchema.pipe(Schema.typeSchema),
   v => v.data,
   v => ({
     application: 'sorteio-times' as const,
@@ -244,19 +264,19 @@ const schema = S.transform(
   }),
 )
 
-const anyVersionSchema = S.struct({
-  application: S.literal('sorteio-times'),
-  type: S.literal('group'),
-  version: S.JsonNumber,
+const anyVersionSchema = Schema.struct({
+  application: Schema.literal('sorteio-times'),
+  type: Schema.literal('group'),
+  version: Schema.JsonNumber,
 })
 
-const temporaryImportUri = F.map(
+const temporaryImportUri = Effect.map(
   FileSystem.cacheDirectory(),
   cacheDir => cacheDir + '/import2.json',
 )
 
 const makeFileUri = (group: Group) =>
-  F.map(
+  Effect.map(
     FileSystem.cacheDirectory(),
     cacheDir =>
       cacheDir + '/export/' + toUri(group.name) + '.sorteio-times.json',

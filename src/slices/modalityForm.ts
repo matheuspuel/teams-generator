@@ -1,58 +1,59 @@
+import { Schema } from '@effect/schema'
+import { Either, Option, ReadonlyArray } from 'effect'
 import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
-import { A, E, O, Option, S } from 'fp'
 import { Abbreviation } from 'src/datatypes/Position'
 import { Id } from 'src/utils/Entity'
 import { NonEmptyString } from 'src/utils/datatypes/NonEmptyString'
 
 export type ModalityForm = {
-  id: Option<Id>
+  id: Option.Option<Id>
   name: string
   positions: NonEmptyReadonlyArray<{
-    oldAbbreviation: Option<Abbreviation>
+    oldAbbreviation: Option.Option<Abbreviation>
     abbreviation: string
     name: string
   }>
 }
 
 export const blankPositionForm: ModalityForm['positions'][number] = {
-  oldAbbreviation: O.none(),
+  oldAbbreviation: Option.none(),
   abbreviation: '',
   name: '',
 }
 
 export const initialModalityForm: ModalityForm = {
-  id: O.none(),
+  id: Option.none(),
   name: '',
   positions: [blankPositionForm],
 }
 
 export const validateModalityForm = (f: ModalityForm) =>
-  E.all({
-    id: E.right(f.id),
-    name: S.decodeEither(NonEmptyString)(f.name),
-    positions: E.all(
-      A.map(f.positions, p =>
-        E.all({
-          oldAbbreviation: E.right(p.oldAbbreviation),
-          abbreviation: S.decodeEither(
-            S.Lowercase.pipe(S.compose(Abbreviation)),
+  Either.all({
+    id: Either.right(f.id),
+    name: Schema.decodeEither(NonEmptyString)(f.name),
+    positions: Either.all(
+      ReadonlyArray.map(f.positions, p =>
+        Either.all({
+          oldAbbreviation: Either.right(p.oldAbbreviation),
+          abbreviation: Schema.decodeEither(
+            Schema.Lowercase.pipe(Schema.compose(Abbreviation)),
           )(p.abbreviation),
-          name: S.decodeEither(NonEmptyString)(p.name),
+          name: Schema.decodeEither(NonEmptyString)(p.name),
         }).pipe(
-          E.map(_ => ({
+          Either.map(_ => ({
             ..._,
             abbreviationLabel: _.abbreviation.toUpperCase(),
           })),
         ),
       ),
     ).pipe(
-      E.flatMap(ps =>
+      Either.flatMap(ps =>
         ps.every(
           (a, ai) =>
             !ps.some((b, bi) => a.abbreviation === b.abbreviation && ai !== bi),
         )
-          ? E.right(ps)
-          : E.left('duplicatePositions' as const),
+          ? Either.right(ps)
+          : Either.left('duplicatePositions' as const),
       ),
     ),
   })

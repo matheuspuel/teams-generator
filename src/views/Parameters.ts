@@ -1,4 +1,4 @@
-import { Eq, Match, pipe } from 'fp'
+import { Match, pipe } from 'effect'
 import { MaterialIcons, Pressable, Row, Txt, View } from 'src/components'
 import { BorderlessButton } from 'src/components/derivative/BorderlessButton'
 import { CenterModal } from 'src/components/derivative/CenterModal'
@@ -11,11 +11,12 @@ import { back } from 'src/events/core'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
+import * as Equivalence from 'src/utils/fp/Equivalence'
 
 const on = appEvents.group
 
 export const ParametersView = namedConst('ParametersView')(() => {
-  const parameters = useSelector(s => s.parameters, Eq.deep())
+  const parameters = useSelector(s => s.parameters, Equivalence.deep())
   return CenterModal({
     onClose: back(),
     title: t('Parameters'),

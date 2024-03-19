@@ -5,5 +5,5 @@ import { Repository } from '../..'
 export const GroupOrderRepositoryLive: Repository['teams']['GroupOrder'] =
   createStorage<GroupOrder, GroupOrder>({
     key: 'core/groupOrder',
-    schema: GroupOrder.Schema,
+    schema: GroupOrder.GroupOrder,
   })

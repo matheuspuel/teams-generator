@@ -1,4 +1,14 @@
-import { A, Effect, F, O, Optic, Record, S, String, flow, not, pipe } from 'fp'
+import { Schema } from '@effect/schema'
+import {
+  Effect,
+  Option,
+  ReadonlyArray,
+  ReadonlyRecord,
+  String,
+  flow,
+  pipe,
+} from 'effect'
+import { not } from 'effect/Predicate'
 import {
   Modality,
   Parameters as Parameters_,
@@ -46,9 +56,11 @@ import { blankPlayerForm, getPlayerFormFromData } from 'src/slices/playerForm'
 import { eraseResult, generateResult } from 'src/slices/result'
 import { Route, goBack, navigate } from 'src/slices/routes'
 import { Id } from 'src/utils/Entity'
+import { toNonEmpty } from 'src/utils/fp/Array'
+import { nonEmptyIndex } from 'src/utils/fp/Optic'
 import { appLoaded, back } from './core'
 
-type EventLeaf<R, A> = (payload: A) => Effect<void, never, R>
+type EventLeaf<R, A> = (payload: A) => Effect.Effect<void, never, R>
 
 export type EventTree<R> = {
   [k: string]: EventLeaf<R, never> | EventTree<R>
@@ -56,7 +68,7 @@ export type EventTree<R> = {
 
 export type AppEventTree = EventTree<AppRequirements>
 
-export type AppEvent = Effect<unknown, never, AppRequirements>
+export type AppEvent = Effect.Effect<unknown, never, AppRequirements>
 
 const exec = StateRef.execute
 
@@ -68,10 +80,10 @@ export const appEvents = {
   },
   alert: { dismiss: () => Alert.dismiss() },
   modality: {
-    go: () => exec(F.all([goBack, navigate(Route.Modalities())])),
+    go: () => exec(Effect.all([goBack, navigate(Route.Modalities())])),
     new: () =>
       exec(
-        F.all([
+        Effect.all([
           State.on(root.at('modalityForm')).set(initialModalityForm),
           navigate(Route.ModalityForm()),
         ]),
@@ -79,62 +91,64 @@ export const appEvents = {
     open: (modality: Modality.Reference) =>
       pipe(
         State.with(getModality(modality)),
-        F.flatten,
-        F.flatMap(m => (m._tag === 'StaticModality' ? O.none() : O.some(m))),
-        F.tap(m =>
+        Effect.flatten,
+        Effect.flatMap(m =>
+          m._tag === 'StaticModality' ? Option.none() : Option.some(m),
+        ),
+        Effect.tap(m =>
           State.on(root.at('modalityForm')).set({
-            id: O.some(m.id),
+            id: Option.some(m.id),
             name: m.name,
-            positions: A.map(m.positions, p => ({
+            positions: ReadonlyArray.map(m.positions, p => ({
               abbreviation: p.abbreviation.toUpperCase(),
               name: p.name,
-              oldAbbreviation: O.some(p.abbreviation),
+              oldAbbreviation: Option.some(p.abbreviation),
             })),
           }),
         ),
-        F.tap(() => navigate(Route.ModalityForm())),
+        Effect.tap(() => navigate(Route.ModalityForm())),
         exec,
-        F.ignore,
+        Effect.ignore,
       ),
     submit: () =>
       pipe(
         State.with(s => s.modalityForm),
-        F.flatMap(validateModalityForm),
-        F.flatMap(f =>
-          F.all({
-            _tag: F.succeed('CustomModality' as const),
-            id: F.orElse(f.id, () => IdGenerator.generate()),
-            name: F.succeed(f.name),
-            positions: F.succeed(f.positions),
+        Effect.flatMap(validateModalityForm),
+        Effect.flatMap(f =>
+          Effect.all({
+            _tag: Effect.succeed('CustomModality' as const),
+            id: Effect.orElse(f.id, () => IdGenerator.generate()),
+            name: Effect.succeed(f.name),
+            positions: Effect.succeed(f.positions),
           }),
         ),
-        F.bindTo('nextModality'),
-        F.bind('prevModality', ({ nextModality }) =>
+        Effect.bindTo('nextModality'),
+        Effect.bind('prevModality', ({ nextModality }) =>
           State.with(
             getModality({ _tag: 'CustomModality', id: nextModality.id }),
           ),
         ),
-        F.tap(({ nextModality }) =>
+        Effect.tap(({ nextModality }) =>
           State.on(root.at('customModalities')).update(ms =>
             pipe(
-              A.filter(ms, m => m.id !== nextModality.id),
-              A.prepend(nextModality),
+              ReadonlyArray.filter(ms, m => m.id !== nextModality.id),
+              ReadonlyArray.prepend(nextModality),
             ),
           ),
         ),
-        F.tap(({ nextModality, prevModality }) =>
+        Effect.tap(({ nextModality, prevModality }) =>
           pipe(
             prevModality,
-            F.tap(prevModality =>
+            Effect.tap(prevModality =>
               State.on(root.at('groups')).update(
-                Record.map(g =>
+                ReadonlyRecord.map(g =>
                   g.modality.id === prevModality.id
                     ? {
                         ...g,
-                        players: A.map(
+                        players: ReadonlyArray.map(
                           g.players,
                           adjustPlayerPosition({
-                            prevModality: O.some(prevModality),
+                            prevModality: Option.some(prevModality),
                             nextModality: {
                               _tag: 'edited',
                               modality: nextModality,
@@ -146,19 +160,19 @@ export const appEvents = {
                 ),
               ),
             ),
-            F.optionFromOptional,
+            Effect.optionFromOptional,
           ),
         ),
         exec,
-        F.tap(() => back()),
-        F.ignore,
+        Effect.tap(() => back()),
+        Effect.ignore,
       ),
     remove: {
       open: () =>
         pipe(
           State.with(s => s.modalityForm.id),
-          F.flatMap(
-            O.match({
+          Effect.flatMap(
+            Option.match({
               onNone: () => goBack,
               onSome: () => navigate(Route.DeleteModality()),
             }),
@@ -168,25 +182,27 @@ export const appEvents = {
       submit: () =>
         pipe(
           State.with(s => s.modalityForm.id),
-          F.flatten,
-          F.flatMap(id =>
+          Effect.flatten,
+          Effect.flatMap(id =>
             State.with(getModality({ _tag: 'CustomModality', id })),
           ),
-          F.flatten,
-          F.bindTo('prevModality'),
-          F.tap(({ prevModality }) =>
+          Effect.flatten,
+          Effect.bindTo('prevModality'),
+          Effect.tap(({ prevModality }) =>
             State.on(root.at('customModalities')).update(
-              A.filter(m => m.id !== prevModality.id),
+              ReadonlyArray.filter(m => m.id !== prevModality.id),
             ),
           ),
-          F.bind('nextModality', () =>
+          Effect.bind('nextModality', () =>
             State.with(s =>
-              A.head(s.customModalities).pipe(O.getOrElse(() => soccer)),
+              ReadonlyArray.head(s.customModalities).pipe(
+                Option.getOrElse(() => soccer),
+              ),
             ),
           ),
-          F.tap(({ nextModality, prevModality }) =>
+          Effect.tap(({ nextModality, prevModality }) =>
             State.on(root.at('groups')).update(
-              Record.map(g =>
+              ReadonlyRecord.map(g =>
                 g.modality.id === prevModality.id
                   ? {
                       ...g,
@@ -194,10 +210,10 @@ export const appEvents = {
                         nextModality._tag === 'CustomModality'
                           ? { _tag: nextModality._tag, id: nextModality.id }
                           : { _tag: nextModality._tag, id: nextModality.id },
-                      players: A.map(
+                      players: ReadonlyArray.map(
                         g.players,
                         adjustPlayerPosition({
-                          prevModality: O.some(prevModality),
+                          prevModality: Option.some(prevModality),
                           nextModality: {
                             _tag: 'unchanged',
                             modality: nextModality,
@@ -209,10 +225,10 @@ export const appEvents = {
               ),
             ),
           ),
-          F.tap(() => goBack),
-          F.tap(() => goBack),
+          Effect.tap(() => goBack),
+          Effect.tap(() => goBack),
           exec,
-          F.ignore,
+          Effect.ignore,
         ),
     },
     name: {
@@ -222,16 +238,16 @@ export const appEvents = {
       add: () =>
         exec(
           State.on(root.at('modalityForm').at('positions')).update(
-            A.append(blankPositionForm),
+            ReadonlyArray.append(blankPositionForm),
           ),
         ),
       remove: (index: number) =>
         exec(
           State.on(root.at('modalityForm').at('positions')).update(
             flow(
-              A.remove(index),
-              A.toNonEmpty,
-              O.getOrElse(() => A.of(blankPositionForm)),
+              ReadonlyArray.remove(index),
+              toNonEmpty,
+              Option.getOrElse(() => ReadonlyArray.of(blankPositionForm)),
             ),
           ),
         ),
@@ -239,11 +255,14 @@ export const appEvents = {
         exec(
           State.on(root.at('modalityForm').at('positions')).update(as =>
             pipe(
-              A.get(as, index),
-              O.flatMap(a =>
-                pipe(A.remove(as, index), A.insertAt(index - 1, a)),
+              ReadonlyArray.get(as, index),
+              Option.flatMap(a =>
+                pipe(
+                  ReadonlyArray.remove(as, index),
+                  ReadonlyArray.insertAt(index - 1, a),
+                ),
               ),
-              O.getOrElse(() => as),
+              Option.getOrElse(() => as),
             ),
           ),
         ),
@@ -254,7 +273,7 @@ export const appEvents = {
               root
                 .at('modalityForm')
                 .at('positions')
-                .compose(Optic.nonEmptyIndex(args.index))
+                .compose(nonEmptyIndex(args.index))
                 .at('abbreviation'),
             ).set(args.value.slice(0, 3).toUpperCase()),
           ),
@@ -266,7 +285,7 @@ export const appEvents = {
               root
                 .at('modalityForm')
                 .at('positions')
-                .compose(Optic.nonEmptyIndex(args.index))
+                .compose(nonEmptyIndex(args.index))
                 .at('name'),
             ).set(args.value),
           ),
@@ -282,15 +301,15 @@ export const appEvents = {
       pipe(
         goBack,
         exec,
-        F.tap(() => importGroupFromDocumentPicker()),
-        F.ignore,
+        Effect.tap(() => importGroupFromDocumentPicker()),
+        Effect.ignore,
       ),
     item: {
       open: (id: Id) =>
         pipe(
           navigate(Route.Group()),
-          F.tap(() =>
-            State.on(root.at('ui').at('selectedGroupId')).set(O.some(id)),
+          Effect.tap(() =>
+            State.on(root.at('ui').at('selectedGroupId')).set(Option.some(id)),
           ),
           exec,
         ),
@@ -298,33 +317,35 @@ export const appEvents = {
         new: () =>
           pipe(
             State.with(s =>
-              A.head(s.customModalities).pipe(O.getOrElse(() => soccer)),
+              ReadonlyArray.head(s.customModalities).pipe(
+                Option.getOrElse(() => soccer),
+              ),
             ),
-            F.flatMap(m =>
+            Effect.flatMap(m =>
               State.on(root.at('groupForm')).set({
-                id: O.none(),
+                id: Option.none(),
                 name: '',
                 modality: m,
               }),
             ),
-            F.tap(() => navigate(Route.GroupForm())),
+            Effect.tap(() => navigate(Route.GroupForm())),
             exec,
           ),
         edit: () =>
           pipe(
             State.with(getSelectedGroup),
-            F.flatten,
-            F.flatMap(g =>
+            Effect.flatten,
+            Effect.flatMap(g =>
               State.on(root.at('groupForm')).set({
-                id: O.some(g.id),
+                id: Option.some(g.id),
                 name: g.name,
                 modality: g.modality,
               }),
             ),
-            F.tap(goBack),
-            F.tap(() => navigate(Route.GroupForm())),
+            Effect.tap(goBack),
+            Effect.tap(() => navigate(Route.GroupForm())),
             exec,
-            F.ignore,
+            Effect.ignore,
           ),
         form: {
           name: {
@@ -340,19 +361,19 @@ export const appEvents = {
         submit: () =>
           pipe(
             State.with(s => s.groupForm),
-            F.filterOrElse(
+            Effect.filterOrElse(
               f => not(String.isEmpty)(f.name),
-              () => O.none(),
+              () => Option.none(),
             ),
-            F.flatMap(g =>
-              O.match(g.id, {
+            Effect.flatMap(g =>
+              Option.match(g.id, {
                 onNone: () => createGroup(g),
                 onSome: id => editGroup({ ...g, id }),
               }),
             ),
-            F.tap(() => goBack),
+            Effect.tap(() => goBack),
             exec,
-            F.ignore,
+            Effect.ignore,
           ),
       },
     },
@@ -362,7 +383,7 @@ export const appEvents = {
       open: () => exec(navigate(Route.GroupMenu())),
     },
     sort: {
-      open: () => pipe(goBack, F.tap(navigate(Route.SortGroup())), exec),
+      open: () => pipe(goBack, Effect.tap(navigate(Route.SortGroup())), exec),
       by: {
         name: () => exec(onSelectGroupOrder('name')),
         position: () => exec(onSelectGroupOrder('position')),
@@ -383,73 +404,75 @@ export const appEvents = {
       rating: { toggle: () => exec(toggleRating) },
       shuffle: () =>
         pipe(
-          F.all([eraseResult, goBack, navigate(Route.Result())]),
+          Effect.all([eraseResult, goBack, navigate(Route.Result())]),
           exec,
-          F.tap(() => F.sleep(0)),
-          F.flatMap(() => generateResult),
-        ).pipe(F.ignore),
+          Effect.tap(() => Effect.sleep(0)),
+          Effect.flatMap(() => generateResult),
+        ).pipe(Effect.ignore),
     },
     export: () =>
       pipe(
         goBack,
         exec,
-        F.tap(() => exportGroup()),
-        F.ignore,
+        Effect.tap(() => exportGroup()),
+        Effect.ignore,
       ),
     delete: {
-      open: () => exec(F.all([goBack, navigate(Route.DeleteGroup())])),
+      open: () => exec(Effect.all([goBack, navigate(Route.DeleteGroup())])),
       submit: () =>
         pipe(
           State.with(getSelectedGroup),
-          F.flatten,
-          F.flatMap(({ id }) => deleteGroup({ id })),
-          F.tap(goBack),
-          F.tap(goBack),
-          F.tap(goBack),
+          Effect.flatten,
+          Effect.flatMap(({ id }) => deleteGroup({ id })),
+          Effect.tap(goBack),
+          Effect.tap(goBack),
+          Effect.tap(goBack),
           exec,
-          F.ignore,
+          Effect.ignore,
         ),
     },
     player: {
       new: () =>
         pipe(
           navigate(Route.Player()),
-          F.tap(() =>
-            State.on(root.at('ui').at('selectedPlayerId')).set(O.none()),
+          Effect.tap(() =>
+            State.on(root.at('ui').at('selectedPlayerId')).set(Option.none()),
           ),
-          F.flatMap(() => State.with(getActiveModality).pipe(F.flatten)),
-          F.tap(m =>
+          Effect.flatMap(() =>
+            State.with(getActiveModality).pipe(Effect.flatten),
+          ),
+          Effect.tap(m =>
             State.on(root.at('playerForm')).set(
               blankPlayerForm({ modality: m }),
             ),
           ),
           exec,
-        ).pipe(F.ignore),
+        ).pipe(Effect.ignore),
       open: (playerId: Id) =>
         pipe(
           navigate(Route.Player()),
-          F.flatMap(() =>
+          Effect.flatMap(() =>
             State.with(getPlayerFromSelectedGroup({ playerId })).pipe(
-              F.flatten,
+              Effect.flatten,
             ),
           ),
-          F.flatMap(v =>
+          Effect.flatMap(v =>
             pipe(
               State.on(root.at('playerForm')).set(getPlayerFormFromData(v)),
-              F.tap(() =>
+              Effect.tap(() =>
                 State.on(root.at('ui').at('selectedPlayerId')).set(
-                  O.some(playerId),
+                  Option.some(playerId),
                 ),
               ),
             ),
           ),
           exec,
-          F.ignore,
+          Effect.ignore,
         ),
       active: {
         toggle: (id: Id) => exec(togglePlayerActive({ playerId: id })),
         toggleAll: () =>
-          pipe(State.update(toggleAllPlayersActive), F.tap(goBack), exec),
+          pipe(State.update(toggleAllPlayersActive), Effect.tap(goBack), exec),
       },
     },
   },
@@ -466,57 +489,61 @@ export const appEvents = {
     rating: {
       change: flow(
         (v: number) => Math.round(v * 20) / 2,
-        S.decodeUnknownOption(Rating.Schema),
-        O.map(flow(State.on(root.at('playerForm').at('rating')).set, exec)),
-        O.getOrElse(() => F.unit),
+        Schema.decodeUnknownOption(Rating.Rating),
+        Option.map(
+          flow(State.on(root.at('playerForm').at('rating')).set, exec),
+        ),
+        Option.getOrElse(() => Effect.unit),
       ),
     },
     delete: () =>
       pipe(
         State.update(deleteCurrentPlayer),
-        F.tap(() => goBack),
+        Effect.tap(() => goBack),
         exec,
       ),
     save: () =>
       pipe(
-        F.all({
+        Effect.all({
           form: pipe(
             State.on(root.at('playerForm')).get,
-            F.flatMap(f =>
-              pipe(f, O.liftPredicate(not(() => String.isEmpty(f.name)))),
+            Effect.flatMap(f =>
+              pipe(f, Option.liftPredicate(not(() => String.isEmpty(f.name)))),
             ),
           ),
-          groupId: F.flatten(State.on(root.at('ui').at('selectedGroupId')).get),
+          groupId: Effect.flatten(
+            State.on(root.at('ui').at('selectedGroupId')).get,
+          ),
           playerId: State.on(root.at('ui').at('selectedPlayerId')).get,
         }),
-        F.flatMap(({ form, groupId, playerId }) =>
+        Effect.flatMap(({ form, groupId, playerId }) =>
           pipe(
             playerId,
-            O.match({
+            Option.match({
               onNone: () => createPlayer({ groupId, player: form }),
               onSome: id => editPlayer({ groupId, player: { ...form, id } }),
             }),
-            F.flatMap(() => goBack),
+            Effect.flatMap(() => goBack),
           ),
         ),
         exec,
-        F.ignore,
+        Effect.ignore,
       ),
   },
   result: {
     share: () =>
       pipe(
-        F.all({
-          result: State.with(s => s.result).pipe(F.flatten),
-          modality: State.with(getActiveModality).pipe(F.flatten),
+        Effect.all({
+          result: State.with(s => s.result).pipe(Effect.flatten),
+          modality: State.with(getActiveModality).pipe(Effect.flatten),
         }),
         StateRef.query,
-        F.flatMap(({ result, modality }) =>
+        Effect.flatMap(({ result, modality }) =>
           pipe(Player.teamListToStringSensitive({ modality })(result), _ =>
             ShareService.shareMessage({ message: _, title: t('Teams') }),
           ),
         ),
-        F.ignore,
+        Effect.ignore,
       ),
   },
 } satisfies AppEventTree

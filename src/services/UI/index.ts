@@ -1,11 +1,9 @@
-import * as Context from 'effect/Context'
-import { Effect } from 'effect/Effect'
-import { F } from 'src/utils/fp'
+import { Context, Effect } from 'effect'
 
 export type UI = {
-  start: () => Effect<void>
+  start: () => Effect.Effect<void>
 }
 
 export class UIEnv extends Context.Tag('UI')<UIEnv, UI>() {}
 
-export const UI = F.serviceFunctions(UIEnv)
+export const UI = Effect.serviceFunctions(UIEnv)

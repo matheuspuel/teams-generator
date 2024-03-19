@@ -1,16 +1,23 @@
-import { Effect, F, O, S, flow } from 'fp'
+import { Schema } from '@effect/schema'
+import { Effect, Option, flow } from 'effect'
 import { AsyncStorageFP } from './wrapper'
 
-const get: (key: string) => Effect<unknown, unknown> = flow(
+const get: (key: string) => Effect.Effect<unknown, unknown> = flow(
   AsyncStorageFP.getItem,
-  F.flatMap(O.fromNullable),
-  F.flatMap(S.decode(S.parseJson())),
+  Effect.flatMap(Option.fromNullable),
+  Effect.flatMap(Schema.decode(Schema.parseJson())),
 )
 
-const set: (key: string) => (value: unknown) => Effect<void, unknown> = key =>
-  flow(S.encode(S.parseJson()), F.flatMap(AsyncStorageFP.setItem(key)))
+const set: (
+  key: string,
+) => (value: unknown) => Effect.Effect<void, unknown> = key =>
+  flow(
+    Schema.encode(Schema.parseJson()),
+    Effect.flatMap(AsyncStorageFP.setItem(key)),
+  )
 
-const remove: (key: string) => Effect<void, void> = AsyncStorageFP.removeItem
+const remove: (key: string) => Effect.Effect<void, void> =
+  AsyncStorageFP.removeItem
 
 export const SimpleStorage = {
   get,

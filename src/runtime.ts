@@ -1,4 +1,4 @@
-import { Context, F, Layer, LogLevel, Logger, Runtime, pipe } from 'fp'
+import { Context, Effect, Layer, LogLevel, Logger, Runtime, pipe } from 'effect'
 import { AlertEnv } from 'src/services/Alert'
 import { BackHandlerEnv } from 'src/services/BackHandler'
 import { BackHandlerLive } from 'src/services/BackHandler/default'
@@ -75,8 +75,8 @@ export type AppRuntime = Runtime.Runtime<AppRequirements>
 
 export const runtime: AppRuntime = pipe(
   Layer.toRuntime(appLayer),
-  F.scoped,
-  F.cached,
-  F.flatten,
-  F.runSync,
+  Effect.scoped,
+  Effect.cached,
+  Effect.flatten,
+  Effect.runSync,
 )

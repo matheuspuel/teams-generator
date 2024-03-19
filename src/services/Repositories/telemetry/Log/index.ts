@@ -1,8 +1,8 @@
-import { Effect } from 'fp'
+import { Effect } from 'effect'
 import { TelemetryLog } from 'src/services/Telemetry'
 
 export type LogRepository = {
-  get: () => Effect<ReadonlyArray<TelemetryLog>, unknown>
-  concat: (value: ReadonlyArray<TelemetryLog>) => Effect<void, unknown>
-  clear: () => Effect<void, unknown>
+  get: () => Effect.Effect<ReadonlyArray<TelemetryLog>, unknown>
+  concat: (value: ReadonlyArray<TelemetryLog>) => Effect.Effect<void, unknown>
+  clear: () => Effect.Effect<void, unknown>
 }

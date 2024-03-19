@@ -1,4 +1,6 @@
-import { Match, Number, Optic, Ord, apply, flow, pipe } from 'fp'
+import * as Optic from '@fp-ts/optic'
+import { Match, Number, Order, flow, pipe } from 'effect'
+import { apply } from 'effect/Function'
 import { MINIMUM_NUMBER_OF_TEAMS, Parameters } from 'src/datatypes/Parameters'
 import { root } from 'src/model/optic'
 import { State } from 'src/services/StateRef'
@@ -13,12 +15,12 @@ export const togglePosition = State.on(params.at('position')).update(toggle)
 
 export const toggleRating = State.on(params.at('rating')).update(toggle)
 
-const teamsCountClamp = Ord.clamp(Number.Order)({
+const teamsCountClamp = Order.clamp(Number.Order)({
   minimum: MINIMUM_NUMBER_OF_TEAMS,
   maximum: 9,
 })
 
-const playersRequiredClamp = Ord.clamp(Number.Order)({
+const playersRequiredClamp = Order.clamp(Number.Order)({
   minimum: 2,
   maximum: 99,
 })

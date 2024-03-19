@@ -1,5 +1,5 @@
+import { Schema } from '@effect/schema'
 import * as PR from '@effect/schema/ParseResult'
-import { S } from 'fp'
 import { Parameters } from 'src/datatypes'
 import { createStorage } from 'src/utils/storage'
 import { Repository } from '../..'
@@ -7,14 +7,16 @@ import { Repository } from '../..'
 export const ParametersRepositoryLive: Repository['teams']['Parameters'] =
   createStorage<
     Parameters,
-    S.Schema.Encoded<typeof Parameters.Schema | typeof Parameters.SchemaV1>
+    Schema.Schema.Encoded<
+      typeof Parameters.Parameters | typeof Parameters.SchemaV1
+    >
   >({
     key: 'core/parameters',
-    schema: S.union(
-      Parameters.Schema,
-      S.transformOrFail(
+    schema: Schema.union(
+      Parameters.Parameters,
+      Schema.transformOrFail(
         Parameters.SchemaV1,
-        Parameters.Schema,
+        Parameters.Parameters,
         v =>
           PR.succeed({
             ...v,

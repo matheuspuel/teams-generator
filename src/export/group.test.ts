@@ -1,16 +1,17 @@
 /* eslint-disable functional/no-expression-statements */
 /* eslint-disable functional/no-let */
+import { Schema } from '@effect/schema'
+import { Effect, Ref, SubscriptionRef } from 'effect'
 import { Group, Modality } from 'src/datatypes'
 import { CustomModality, futsal } from 'src/datatypes/Modality'
 import { RootState, initialAppState } from 'src/model'
 import { IdGenerator, IdGeneratorEnv } from 'src/services/IdGenerator'
 import { AppStateRefEnv, StateRef, Subscription } from 'src/services/StateRef'
 import { Id } from 'src/utils/Entity'
-import { F, Ref, S, SubscriptionRef } from 'src/utils/fp'
 import { describe, expect, test } from 'vitest'
 import { _importGroup } from './group'
 
-const modality0 = S.decodeSync(Modality.CustomModality)({
+const modality0 = Schema.decodeSync(Modality.CustomModality)({
   _tag: 'CustomModality',
   id: 'm0',
   name: 'modality0',
@@ -30,7 +31,7 @@ const modality0 = S.decodeSync(Modality.CustomModality)({
   ],
 })
 
-const modality1 = S.decodeSync(Modality.CustomModality)({
+const modality1 = Schema.decodeSync(Modality.CustomModality)({
   _tag: 'CustomModality',
   id: 'm1',
   name: 'modality1',
@@ -46,7 +47,7 @@ const modality1 = S.decodeSync(Modality.CustomModality)({
   ],
 })
 
-const modality2 = S.decodeSync(Modality.CustomModality)({
+const modality2 = Schema.decodeSync(Modality.CustomModality)({
   _tag: 'CustomModality',
   id: 'm2',
   name: 'modality0',
@@ -62,7 +63,7 @@ const modality2 = S.decodeSync(Modality.CustomModality)({
   ],
 })
 
-const group0 = S.decodeSync(Group.Group)({
+const group0 = Schema.decodeSync(Group.Group)({
   id: 'g0',
   name: 'group0',
   modality: { _tag: 'StaticModality', id: 'm0' },
@@ -78,7 +79,7 @@ const group0 = S.decodeSync(Group.Group)({
   ],
 })
 
-const group1 = S.decodeSync(Group.Group)({
+const group1 = Schema.decodeSync(Group.Group)({
   id: 'g1',
   name: 'group1',
   modality: { _tag: 'CustomModality', id: 'm1' },
@@ -102,7 +103,7 @@ const group1 = S.decodeSync(Group.Group)({
   ],
 })
 
-const group2 = S.decodeSync(Group.Group)({
+const group2 = Schema.decodeSync(Group.Group)({
   id: 'g2',
   name: 'group2',
   modality: { _tag: 'CustomModality', id: 'm2' },
@@ -126,7 +127,7 @@ const group2 = S.decodeSync(Group.Group)({
   ],
 })
 
-const group3 = S.decodeSync(Group.Group)({
+const group3 = Schema.decodeSync(Group.Group)({
   id: 'g3',
   name: 'group3',
   modality: { _tag: 'StaticModality', id: futsal.id },
@@ -159,7 +160,7 @@ describe('importGroup state logic', () => {
     })
     let currentId = 0
     const idGeneratorSequential: IdGenerator = {
-      generate: () => F.sync(() => Id((++currentId).toString())),
+      generate: () => Effect.sync(() => Id((++currentId).toString())),
     }
 
     _importGroup({
@@ -167,20 +168,20 @@ describe('importGroup state logic', () => {
       modality: modality1,
     }).pipe(
       StateRef.execute,
-      F.provideService(IdGeneratorEnv, idGeneratorSequential),
-      F.provideService(AppStateRefEnv, {
+      Effect.provideService(IdGeneratorEnv, idGeneratorSequential),
+      Effect.provideService(AppStateRefEnv, {
         ref,
         subscriptionsRef: SubscriptionRef.make<ReadonlyArray<Subscription>>(
           [],
-        ).pipe(F.runSync),
+        ).pipe(Effect.runSync),
       }),
-      F.runSync,
+      Effect.runSync,
     )
 
-    const state = Ref.get(ref).pipe(F.runSync)
+    const state = Ref.get(ref).pipe(Effect.runSync)
     expect(state.groups).toStrictEqual<typeof state.groups>({
       [group0.id]: group0,
-      [Id('4')]: S.decodeSync(Group.Group)({
+      [Id('4')]: Schema.decodeSync(Group.Group)({
         id: '4',
         name: 'group1',
         modality: { _tag: 'CustomModality', id: '1' },
@@ -207,7 +208,7 @@ describe('importGroup state logic', () => {
     expect(state.customModalities).toStrictEqual<ReadonlyArray<CustomModality>>(
       [
         modality0,
-        S.decodeSync(Modality.CustomModality)({
+        Schema.decodeSync(Modality.CustomModality)({
           _tag: 'CustomModality',
           id: '1',
           name: 'modality1',
@@ -234,7 +235,7 @@ describe('importGroup state logic', () => {
     })
     let currentId = 0
     const idGeneratorSequential: IdGenerator = {
-      generate: () => F.sync(() => Id((++currentId).toString())),
+      generate: () => Effect.sync(() => Id((++currentId).toString())),
     }
 
     _importGroup({
@@ -242,20 +243,20 @@ describe('importGroup state logic', () => {
       modality: modality2,
     }).pipe(
       StateRef.execute,
-      F.provideService(IdGeneratorEnv, idGeneratorSequential),
-      F.provideService(AppStateRefEnv, {
+      Effect.provideService(IdGeneratorEnv, idGeneratorSequential),
+      Effect.provideService(AppStateRefEnv, {
         ref,
         subscriptionsRef: SubscriptionRef.make<ReadonlyArray<Subscription>>(
           [],
-        ).pipe(F.runSync),
+        ).pipe(Effect.runSync),
       }),
-      F.runSync,
+      Effect.runSync,
     )
 
-    const state = Ref.get(ref).pipe(F.runSync)
+    const state = Ref.get(ref).pipe(Effect.runSync)
     expect(state.groups).toStrictEqual<typeof state.groups>({
       [group0.id]: group0,
-      [Id('3')]: S.decodeSync(Group.Group)({
+      [Id('3')]: Schema.decodeSync(Group.Group)({
         id: '3',
         name: 'group2',
         modality: { _tag: 'CustomModality', id: 'm0' },
@@ -292,7 +293,7 @@ describe('importGroup state logic', () => {
     })
     let currentId = 0
     const idGeneratorSequential: IdGenerator = {
-      generate: () => F.sync(() => Id((++currentId).toString())),
+      generate: () => Effect.sync(() => Id((++currentId).toString())),
     }
     // TODO reuse IdGeneratorTest
 
@@ -301,20 +302,20 @@ describe('importGroup state logic', () => {
       modality: { _tag: 'StaticModality', id: futsal.id },
     }).pipe(
       StateRef.execute,
-      F.provideService(IdGeneratorEnv, idGeneratorSequential),
-      F.provideService(AppStateRefEnv, {
+      Effect.provideService(IdGeneratorEnv, idGeneratorSequential),
+      Effect.provideService(AppStateRefEnv, {
         ref,
         subscriptionsRef: SubscriptionRef.make<ReadonlyArray<Subscription>>(
           [],
-        ).pipe(F.runSync),
+        ).pipe(Effect.runSync),
       }),
-      F.runSync,
+      Effect.runSync,
     )
 
-    const state = Ref.get(ref).pipe(F.runSync)
+    const state = Ref.get(ref).pipe(Effect.runSync)
     expect(state.groups).toStrictEqual<typeof state.groups>({
       [group0.id]: group0,
-      [Id('3')]: S.decodeSync(Group.Group)({
+      [Id('3')]: Schema.decodeSync(Group.Group)({
         id: '3',
         name: 'group3',
         modality: { _tag: 'StaticModality', id: futsal.id },

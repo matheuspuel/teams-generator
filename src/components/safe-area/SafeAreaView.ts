@@ -1,4 +1,4 @@
-import { Runtime, identity, pipe } from 'fp'
+import { Runtime, identity, pipe } from 'effect'
 import React from 'react'
 import {
   Edges,
@@ -29,7 +29,9 @@ export const SafeAreaView = named2('SafeAreaView')(
           onLayout:
             props.onLayout &&
             (() =>
-              props.onLayout && Runtime.runPromise(runtime)(props.onLayout)),
+              void (
+                props.onLayout && Runtime.runPromise(runtime)(props.onLayout)
+              )),
           mode: props.mode,
           edges: props.edges,
           style: {

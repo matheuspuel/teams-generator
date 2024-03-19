@@ -1,3 +1,4 @@
+import { Effect } from 'effect'
 import * as SystemUI from 'expo-system-ui'
 import * as React from 'react'
 import { useColorScheme } from 'react-native'
@@ -7,7 +8,6 @@ import { AppTheme, AppThemeEnv, Colors } from 'src/services/Theme'
 import { darkTheme } from 'src/services/Theme/dark'
 import { lightTheme } from 'src/services/Theme/light'
 import { Color } from 'src/utils/datatypes'
-import { F } from 'src/utils/fp'
 
 export const ThemeContext = React.createContext<{
   light: AppTheme
@@ -29,7 +29,9 @@ export const useThemeGetRawColor = () => {
   const theme = useTheme()
   const getColorHex = React.useMemo(
     () => (color: UIColor) =>
-      Color.toHex(F.runSync(F.provideService(color, AppThemeEnv, theme))),
+      Color.toHex(
+        Effect.runSync(Effect.provideService(color, AppThemeEnv, theme)),
+      ),
     [theme],
   )
   return getColorHex

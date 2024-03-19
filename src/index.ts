@@ -1,6 +1,6 @@
 import 'fast-text-encoding'
 
-import { F, Layer, Runtime, pipe } from 'fp'
+import { Effect, Layer, Runtime, pipe } from 'effect'
 import { startApp } from 'src/app'
 import { runtime } from './runtime'
 import { UILive } from './services/UI/default'
@@ -11,10 +11,10 @@ const appLayerWithUI = Layer.succeedContext(runtime.context).pipe(
 
 const runtimeWithUI = pipe(
   Layer.toRuntime(appLayerWithUI),
-  F.scoped,
-  F.cached,
-  F.flatten,
-  F.runSync,
+  Effect.scoped,
+  Effect.cached,
+  Effect.flatten,
+  Effect.runSync,
 )
 
 // eslint-disable-next-line functional/no-expression-statements

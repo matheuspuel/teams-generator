@@ -1,6 +1,6 @@
-import { Effect } from 'fp'
+import { Effect } from 'effect'
 
 export type StorageVersionRepository = {
-  get: () => Effect<{ version: number }, unknown>
-  set: (value: { version: number }) => Effect<void, unknown>
+  get: () => Effect.Effect<{ version: number }, unknown>
+  set: (value: { version: number }) => Effect.Effect<void, unknown>
 }

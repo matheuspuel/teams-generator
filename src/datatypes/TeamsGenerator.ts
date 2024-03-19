@@ -1,10 +1,18 @@
-import { Effect } from 'effect/Effect'
+import {
+  Effect,
+  Match,
+  Number,
+  Option,
+  Order,
+  ReadonlyArray,
+  flow,
+  identity,
+  pipe,
+} from 'effect'
 import { sumAll } from 'effect/Number'
 import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
-import { A, F, Match, Number, O, Ord, Order, flow, identity, pipe } from 'fp'
 import * as Player from 'src/datatypes/Player'
 import * as Position from 'src/datatypes/Position'
-import { findFirstMapWithIndex } from 'src/utils/Array'
 import { randomizeArray } from 'src/utils/Random'
 import { Modality } from './Modality'
 
@@ -13,24 +21,24 @@ type Position = Position.Position
 
 const getFitOrdByDevianceFns = (
   fns: Array<(teams: Array<Array<Player>>) => number>,
-): Order<Array<Array<Player>>> =>
+): Order.Order<Array<Array<Player>>> =>
   pipe(
     fns,
-    A.map(f => Ord.mapInput(f)(Number.Order)),
-    Ord.combineAll<Array<Array<Player>>>,
+    ReadonlyArray.map(f => Order.mapInput(f)(Number.Order)),
+    Order.combineAll<Array<Array<Player>>>,
   )
 
 const getResultPositionDeviance =
   (args: { modality: Modality }) =>
   (teams: Array<Array<Player>>): number =>
-    pipe(teams, A.flatten, allPlayers =>
+    pipe(teams, ReadonlyArray.flatten, allPlayers =>
       pipe(
         identity<
           NonEmptyReadonlyArray<
             Position.StaticPosition | Position.CustomPosition
           >
         >(args.modality.positions),
-        A.map(pos =>
+        ReadonlyArray.map(pos =>
           pipe(
             allPlayers,
             positionCount(pos),
@@ -38,7 +46,9 @@ const getResultPositionDeviance =
             positionAvg =>
               pipe(
                 teams,
-                A.map(flow(positionCount(pos), deviance(positionAvg))),
+                ReadonlyArray.map(
+                  flow(positionCount(pos), deviance(positionAvg)),
+                ),
                 sumAll,
               ),
           ),
@@ -52,45 +62,45 @@ const fixFloatFactor = 1000000000000
 const fixFloat = (v: number) => Math.round(v * fixFloatFactor) / fixFloatFactor
 
 export const getResultRatingDeviance = (teams: Array<Array<Player>>): number =>
-  pipe(teams, A.flatten, Player.getRatingAvg, overallAvg =>
+  pipe(teams, ReadonlyArray.flatten, Player.getRatingAvg, overallAvg =>
     pipe(
       teams,
-      A.map(flow(Player.getRatingAvg, deviance(overallAvg))),
+      ReadonlyArray.map(flow(Player.getRatingAvg, deviance(overallAvg))),
       sumAll,
       fixFloat,
     ),
   )
 
 const balanceTeams: (
-  fitOrd: Order<Array<Array<Player>>>,
+  fitOrd: Order.Order<Array<Array<Player>>>,
 ) => (teams: Array<Array<Player>>) => Array<Array<Player>> = fitOrd => teams =>
   pipe(
     teams,
-    findFirstMapWithIndex((i, team) =>
+    ReadonlyArray.findFirst((team, i) =>
       pipe(
         teams,
-        findFirstMapWithIndex((j, otherTeam) =>
+        ReadonlyArray.findFirst((otherTeam, j) =>
           j > i
             ? pipe(
                 team,
-                findFirstMapWithIndex(k =>
+                ReadonlyArray.findFirst((_, k) =>
                   pipe(
                     otherTeam,
-                    findFirstMapWithIndex(l =>
+                    ReadonlyArray.findFirst((_, l) =>
                       pipe(changePlayers(i)(k)(j)(l)(teams), nextState =>
-                        Ord.lt(fitOrd)(teams)(nextState)
-                          ? O.some(balanceTeams(fitOrd)(nextState))
-                          : O.none(),
+                        Order.lessThan(fitOrd)(teams)(nextState)
+                          ? Option.some(balanceTeams(fitOrd)(nextState))
+                          : Option.none(),
                       ),
                     ),
                   ),
                 ),
               )
-            : O.none(),
+            : Option.none(),
         ),
       ),
     ),
-    O.getOrElse(() => teams),
+    Option.getOrElse(() => teams),
   )
 
 const deviance = (b: number) => (a: number) => Math.pow(Math.abs(a - b), 2)
@@ -100,8 +110,10 @@ const positionCount =
   (players: Array<Player>): number =>
     pipe(
       players,
-      A.filter(p => p.positionAbbreviation === position.abbreviation),
-      A.length,
+      ReadonlyArray.filter(
+        p => p.positionAbbreviation === position.abbreviation,
+      ),
+      ReadonlyArray.length,
     )
 
 const changePlayers =
@@ -111,29 +123,44 @@ const changePlayers =
   (otherPlayerIndex: number) =>
   (teams: Array<Array<Player>>): Array<Array<Player>> =>
     pipe(
-      O.Do,
-      O.bind('team', () => pipe(teams, A.get(teamIndex))),
-      O.bind('otherTeam', () => pipe(teams, A.get(otherTeamIndex))),
-      O.bind('player', ({ team }) => pipe(team, A.get(playerIndex))),
-      O.bind('otherPlayer', ({ otherTeam }) =>
-        pipe(otherTeam, A.get(otherPlayerIndex)),
+      Option.Do,
+      Option.bind('team', () => pipe(teams, ReadonlyArray.get(teamIndex))),
+      Option.bind('otherTeam', () =>
+        pipe(teams, ReadonlyArray.get(otherTeamIndex)),
       ),
-      O.let('nextTeam', ({ team, otherPlayer }) =>
-        pipe(team, A.remove(playerIndex), A.append(otherPlayer)),
+      Option.bind('player', ({ team }) =>
+        pipe(team, ReadonlyArray.get(playerIndex)),
       ),
-      O.let('nextOtherTeam', ({ otherTeam, player }) =>
-        pipe(otherTeam, A.remove(otherPlayerIndex), A.append(player)),
+      Option.bind('otherPlayer', ({ otherTeam }) =>
+        pipe(otherTeam, ReadonlyArray.get(otherPlayerIndex)),
       ),
-      O.flatMap(({ nextTeam, nextOtherTeam }) =>
+      Option.let('nextTeam', ({ team, otherPlayer }) =>
+        pipe(
+          team,
+          ReadonlyArray.remove(playerIndex),
+          ReadonlyArray.append(otherPlayer),
+        ),
+      ),
+      Option.let('nextOtherTeam', ({ otherTeam, player }) =>
+        pipe(
+          otherTeam,
+          ReadonlyArray.remove(otherPlayerIndex),
+          ReadonlyArray.append(player),
+        ),
+      ),
+      Option.flatMap(({ nextTeam, nextOtherTeam }) =>
         pipe(
           teams,
-          A.replaceOption<Array<Player>>(teamIndex, nextTeam),
-          O.flatMap(
-            A.replaceOption<Array<Player>>(otherTeamIndex, nextOtherTeam),
+          ReadonlyArray.replaceOption<Array<Player>>(teamIndex, nextTeam),
+          Option.flatMap(
+            ReadonlyArray.replaceOption<Array<Player>>(
+              otherTeamIndex,
+              nextOtherTeam,
+            ),
           ),
         ),
       ),
-      O.getOrElse(() => teams),
+      Option.getOrElse(() => teams),
     )
 
 export const divideTeamsWithEqualNumberOfPlayers =
@@ -143,11 +170,11 @@ export const divideTeamsWithEqualNumberOfPlayers =
       ? []
       : pipe(
           players,
-          A.splitAt(Math.floor(players.length / numOfTeams)),
+          ReadonlyArray.splitAt(Math.floor(players.length / numOfTeams)),
           ([as, bs]) =>
             pipe(
               divideTeamsWithEqualNumberOfPlayers(numOfTeams - 1)(bs),
-              A.append(as),
+              ReadonlyArray.append(as),
             ),
         )
 
@@ -156,10 +183,10 @@ export const divideTeamsWithFixedNumberOfPlayers =
   (players: Array<Player>): Array<Array<Player>> =>
     players.length === 0
       ? []
-      : pipe(players, A.splitAt(numOfPlayers), ([as, bs]) =>
+      : pipe(players, ReadonlyArray.splitAt(numOfPlayers), ([as, bs]) =>
           pipe(
             divideTeamsWithFixedNumberOfPlayers(numOfPlayers)(bs),
-            A.prepend(as),
+            ReadonlyArray.prepend(as),
           ),
         )
 
@@ -184,13 +211,15 @@ export type Criteria = {
 
 export const getFitOrdFromCriteria =
   (args: { modality: Modality }) =>
-  (criteria: Criteria): Order<Array<Array<Player>>> =>
+  (criteria: Criteria): Order.Order<Array<Array<Player>>> =>
     pipe(
       [
-        criteria.position ? O.some(getResultPositionDeviance(args)) : O.none(),
-        criteria.rating ? O.some(getResultRatingDeviance) : O.none(),
+        criteria.position
+          ? Option.some(getResultPositionDeviance(args))
+          : Option.none(),
+        criteria.rating ? Option.some(getResultRatingDeviance) : Option.none(),
       ],
-      A.getSomes,
+      ReadonlyArray.getSomes,
       getFitOrdByDevianceFns,
     )
 
@@ -204,5 +233,5 @@ export const distributeTeams =
 export const generateRandomBalancedTeams =
   (args: { modality: Modality }) =>
   (criteria: Criteria) =>
-  (players: Array<Player>): Effect<Array<Array<Player>>> =>
-    pipe(randomizeArray(players), F.map(distributeTeams(args)(criteria)))
+  (players: Array<Player>): Effect.Effect<Array<Array<Player>>> =>
+    pipe(randomizeArray(players), Effect.map(distributeTeams(args)(criteria)))

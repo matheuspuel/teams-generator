@@ -1,6 +1,6 @@
-import { Effect } from 'fp'
+import { Effect } from 'effect'
 
 export type InstallationRepository = {
-  get: () => Effect<{ id: string }, unknown>
-  set: (value: { id: string }) => Effect<void, unknown>
+  get: () => Effect.Effect<{ id: string }, unknown>
+  set: (value: { id: string }) => Effect.Effect<void, unknown>
 }

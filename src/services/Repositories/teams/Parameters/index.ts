@@ -1,7 +1,7 @@
-import { Effect } from 'fp'
+import { Effect } from 'effect'
 import { Parameters } from 'src/datatypes'
 
 export type ParameterRepository = {
-  get: () => Effect<Parameters, unknown>
-  set: (value: Parameters) => Effect<void, unknown>
+  get: () => Effect.Effect<Parameters, unknown>
+  set: (value: Parameters) => Effect.Effect<void, unknown>
 }

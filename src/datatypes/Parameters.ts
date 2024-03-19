@@ -1,4 +1,6 @@
-import { Match, Optic, S, pipe } from 'fp'
+import { Schema } from '@effect/schema'
+import * as Optic from '@fp-ts/optic'
+import { Match, pipe } from 'effect'
 
 export type Parameters = {
   teamsCountMethod: { _tag: 'count' } | { _tag: 'playersRequired' }
@@ -8,24 +10,22 @@ export type Parameters = {
   rating: boolean
 }
 
-export const SchemaV1 = S.struct({
-  teamsCount: S.number,
-  position: S.boolean,
-  rating: S.boolean,
+export const SchemaV1 = Schema.struct({
+  teamsCount: Schema.number,
+  position: Schema.boolean,
+  rating: Schema.boolean,
 })
 
-export const Schema: S.Schema<Parameters> = S.struct({
-  teamsCountMethod: S.union(
-    S.struct({ _tag: S.literal('count') }),
-    S.struct({ _tag: S.literal('playersRequired') }),
+export const Parameters: Schema.Schema<Parameters> = Schema.struct({
+  teamsCountMethod: Schema.union(
+    Schema.struct({ _tag: Schema.literal('count') }),
+    Schema.struct({ _tag: Schema.literal('playersRequired') }),
   ),
-  teamsCount: S.number,
-  playersRequired: S.number,
-  position: S.boolean,
-  rating: S.boolean,
+  teamsCount: Schema.number,
+  playersRequired: Schema.number,
+  position: Schema.boolean,
+  rating: Schema.boolean,
 })
-
-export const Parameters = Schema
 
 export const initial: Parameters = {
   teamsCountMethod: { _tag: 'count' },

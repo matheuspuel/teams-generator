@@ -1,4 +1,4 @@
-import { S } from 'fp'
+import { Schema } from '@effect/schema'
 import { toFixedLocale } from 'src/utils/Number'
 
 export const List = [
@@ -8,9 +8,7 @@ export const List = [
 
 export type Rating = (typeof List)[number]
 
-export const Schema: S.Schema<Rating> = S.literal(...List)
-
-export const Rating = Schema
+export const Rating: Schema.Schema<Rating> = Schema.literal(...List)
 
 export const toString: (rating: Rating) => string = r =>
   r === 10 ? r.toString() : toFixedLocale(1)(r)

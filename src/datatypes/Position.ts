@@ -1,33 +1,36 @@
-import { S, pipe } from 'fp'
+import { Schema } from '@effect/schema'
+import { pipe } from 'effect'
 import { NonEmptyString } from 'src/utils/datatypes/NonEmptyString'
 
 export const Abbreviation = pipe(
   NonEmptyString,
-  S.maxLength(3),
-  S.lowercased(),
-  S.brand('Abbreviation'),
+  Schema.maxLength(3),
+  Schema.lowercased(),
+  Schema.brand('Abbreviation'),
 )
-export type Abbreviation = S.Schema.Type<typeof Abbreviation>
+export type Abbreviation = Schema.Schema.Type<typeof Abbreviation>
 
-export interface StaticPosition extends S.Schema.Type<typeof StaticPosition_> {}
-const StaticPosition_ = S.struct({
+export interface StaticPosition
+  extends Schema.Schema.Type<typeof StaticPosition_> {}
+const StaticPosition_ = Schema.struct({
   abbreviation: Abbreviation,
-  abbreviationLabel: S.string,
+  abbreviationLabel: Schema.string,
   name: NonEmptyString,
 })
-export const StaticPosition: S.Schema<
+export const StaticPosition: Schema.Schema<
   StaticPosition,
-  S.Schema.Encoded<typeof StaticPosition_>
+  Schema.Schema.Encoded<typeof StaticPosition_>
 > = StaticPosition_
 
-export interface CustomPosition extends S.Schema.Type<typeof CustomPosition_> {}
-const CustomPosition_ = S.struct({
+export interface CustomPosition
+  extends Schema.Schema.Type<typeof CustomPosition_> {}
+const CustomPosition_ = Schema.struct({
   abbreviation: Abbreviation,
   name: NonEmptyString,
 })
-export const CustomPosition: S.Schema<
+export const CustomPosition: Schema.Schema<
   CustomPosition,
-  S.Schema.Encoded<typeof CustomPosition_>
+  Schema.Schema.Encoded<typeof CustomPosition_>
 > = CustomPosition_
 
 export type Position = StaticPosition | CustomPosition

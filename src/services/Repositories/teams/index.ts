@@ -1,4 +1,4 @@
-import { F } from 'src/utils/fp'
+import { Effect } from 'effect'
 import { RepositoryEnv } from '../tag'
 import { GroupOrderRepository } from './GroupOrder'
 import { GroupsRepository } from './Groups'
@@ -14,19 +14,31 @@ export type TeamsRepositories = {
 
 export const TeamsRepositories = {
   Parameters: {
-    get: F.serviceFunctionEffect(RepositoryEnv, r => r.teams.Parameters.get),
-    set: F.serviceFunctionEffect(RepositoryEnv, r => r.teams.Parameters.set),
+    get: Effect.serviceFunctionEffect(
+      RepositoryEnv,
+      r => r.teams.Parameters.get,
+    ),
+    set: Effect.serviceFunctionEffect(
+      RepositoryEnv,
+      r => r.teams.Parameters.set,
+    ),
   },
   Groups: {
-    get: F.serviceFunctionEffect(RepositoryEnv, r => r.teams.Groups.get),
-    set: F.serviceFunctionEffect(RepositoryEnv, r => r.teams.Groups.set),
+    get: Effect.serviceFunctionEffect(RepositoryEnv, r => r.teams.Groups.get),
+    set: Effect.serviceFunctionEffect(RepositoryEnv, r => r.teams.Groups.set),
   },
   GroupOrder: {
-    get: F.serviceFunctionEffect(RepositoryEnv, r => r.teams.GroupOrder.get),
-    set: F.serviceFunctionEffect(RepositoryEnv, r => r.teams.GroupOrder.set),
+    get: Effect.serviceFunctionEffect(
+      RepositoryEnv,
+      r => r.teams.GroupOrder.get,
+    ),
+    set: Effect.serviceFunctionEffect(
+      RepositoryEnv,
+      r => r.teams.GroupOrder.set,
+    ),
   },
   Modality: {
-    get: F.serviceFunctionEffect(RepositoryEnv, r => r.teams.Modality.get),
-    set: F.serviceFunctionEffect(RepositoryEnv, r => r.teams.Modality.set),
+    get: Effect.serviceFunctionEffect(RepositoryEnv, r => r.teams.Modality.get),
+    set: Effect.serviceFunctionEffect(RepositoryEnv, r => r.teams.Modality.set),
   },
 }

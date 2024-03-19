@@ -1,9 +1,10 @@
-import { Ord, S, String, pipe } from 'fp'
+import { Schema } from '@effect/schema'
+import { Order, String, pipe } from 'effect'
 
-export const Id = pipe(S.string, S.brand('Id'))
-export type Id = S.Schema.Type<typeof Id>
+export const Id = pipe(Schema.string, Schema.brand('Id'))
+export type Id = Schema.Schema.Type<typeof Id>
 
-export const IdOrder: Ord.Order<Id> = String.Order
+export const IdOrder: Order.Order<Id> = String.Order
 
 export const getId: <A extends { id: unknown }>(a: A) => A['id'] = a => a.id
 

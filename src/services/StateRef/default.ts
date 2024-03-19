@@ -1,5 +1,5 @@
+import { Layer, Ref } from 'effect'
 import { initialAppState, RootState } from 'src/model'
-import { Layer, Ref } from 'src/utils/fp'
 import { AppStateRefEnv, Subscription } from '.'
 
 export const StateRefLive = AppStateRefEnv.context({

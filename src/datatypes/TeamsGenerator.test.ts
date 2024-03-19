@@ -1,11 +1,16 @@
 /* eslint-disable functional/no-expression-statements */
 import * as Arb from '@effect/schema/Arbitrary'
+import { Semigroup } from '@effect/typeclass'
+import { Equivalence, Match, ReadonlyArray, identity, pipe } from 'effect'
+import { constant } from 'effect/Function'
 import * as fc from 'fast-check'
-import { A, Eq, Match, Ord, Semigroup, constant, identity, pipe } from 'fp'
 import { playersMock } from 'src/mocks/Player'
 import { getCombinationsIndices } from 'src/utils/Combinations'
 import { Id } from 'src/utils/Entity'
 import { Timestamp } from 'src/utils/datatypes'
+import { getUnorderedEquivalence } from 'src/utils/fp/Array'
+import { equals } from 'src/utils/fp/Order'
+import { combineAllNonEmpty } from 'src/utils/fp/Semigroup'
 import { describe, expect, test } from 'vitest'
 import { Player } from '.'
 import { soccer } from './Modality'
@@ -21,22 +26,22 @@ const getAllCombinationsOfSubListsWithEqualLength =
       ? [[as]]
       : pipe(
           getCombinationsIndices(Math.floor(as.length / numOfLists))(
-            A.length(as),
+            ReadonlyArray.length(as),
           ),
-          A.map(is =>
+          ReadonlyArray.map(is =>
             pipe(
               as,
-              A.partition((_, i) => is.includes(i)),
+              ReadonlyArray.partition((_, i) => is.includes(i)),
               ([cs, bs]) =>
                 pipe(
                   getAllCombinationsOfSubListsWithEqualLength(numOfLists - 1)(
                     cs,
                   ),
-                  A.map(A.prepend(bs)),
+                  ReadonlyArray.map(ReadonlyArray.prepend(bs)),
                 ),
             ),
           ),
-          A.flatten,
+          ReadonlyArray.flatten,
         )
 
 const getAllCombinationsOfSubListsWithFixedLength =
@@ -46,14 +51,14 @@ const getAllCombinationsOfSubListsWithFixedLength =
       ? [[as]]
       : pipe(
           getCombinationsIndices(listLength)(as.length),
-          A.flatMap(is =>
+          ReadonlyArray.flatMap(is =>
             pipe(
               as,
-              A.partition((_, i) => is.includes(i)),
+              ReadonlyArray.partition((_, i) => is.includes(i)),
               ([bs, as]) =>
                 pipe(
                   getAllCombinationsOfSubListsWithFixedLength(listLength)(bs),
-                  A.map(A.prepend(as)),
+                  ReadonlyArray.map(ReadonlyArray.prepend(as)),
                 ),
             ),
           ),
@@ -71,9 +76,9 @@ const distributeTeamsUsingCombinations: typeof distributeTeams =
             players,
           ),
       }),
-      A.match({
+      ReadonlyArray.match({
         onEmpty: constant([]),
-        onNonEmpty: Semigroup.combineAllNonEmpty(
+        onNonEmpty: combineAllNonEmpty(
           Semigroup.min(getFitOrdFromCriteria(args)(params)),
         ),
       }),
@@ -122,7 +127,7 @@ describe('Balance teams', () => {
   })
   const balanceTeamsArb = fc.record({
     params: paramsArb,
-    players: fc.array(Arb.make(Player.Schema)(fc)),
+    players: fc.array(Arb.make(Player.Player)(fc)),
   })
 
   test.skip('should return the optimal solution', () => {
@@ -133,7 +138,7 @@ describe('Balance teams', () => {
         name: '',
         rating: 6.5,
         positionAbbreviation: Abbreviation('m'),
-        createdAt: Timestamp.Schema(0),
+        createdAt: Timestamp.Timestamp(0),
       },
       {
         active: false,
@@ -141,7 +146,7 @@ describe('Balance teams', () => {
         name: '',
         rating: 3.5,
         positionAbbreviation: Abbreviation('m'),
-        createdAt: Timestamp.Schema(0),
+        createdAt: Timestamp.Timestamp(0),
       },
       {
         active: false,
@@ -149,7 +154,7 @@ describe('Balance teams', () => {
         name: '',
         rating: 2.5,
         positionAbbreviation: Abbreviation('le'),
-        createdAt: Timestamp.Schema(0),
+        createdAt: Timestamp.Timestamp(0),
       },
       {
         active: false,
@@ -157,7 +162,7 @@ describe('Balance teams', () => {
         name: '',
         rating: 3,
         positionAbbreviation: Abbreviation('m'),
-        createdAt: Timestamp.Schema(0),
+        createdAt: Timestamp.Timestamp(0),
       },
       {
         active: false,
@@ -165,16 +170,16 @@ describe('Balance teams', () => {
         name: '',
         rating: 5,
         positionAbbreviation: Abbreviation('z'),
-        createdAt: Timestamp.Schema(0),
+        createdAt: Timestamp.Timestamp(0),
       },
     ]
     fc.assert(
       fc.property(
         paramsArb,
-        fc.array(Arb.make(Player.Schema)(fc), { minLength: 1, maxLength: 8 }),
+        fc.array(Arb.make(Player.Player)(fc), { minLength: 1, maxLength: 8 }),
         (params, players) =>
           pipe(getFitOrdFromCriteria({ modality })(params), fitOrd =>
-            Ord.equals(fitOrd)(distributeTeams({ modality })(params)(players))(
+            equals(fitOrd)(distributeTeams({ modality })(params)(players))(
               distributeTeamsUsingCombinations({ modality })(params)(players),
             ),
           ),
@@ -199,8 +204,8 @@ describe('Balance teams', () => {
       fc.property(balanceTeamsArb, ({ params, players }) =>
         pipe(
           distributeTeams({ modality })(params)(players),
-          A.flatten,
-          Eq.equals(A.getUnorderedEquivalence(Eq.strict()))(players),
+          ReadonlyArray.flatten,
+          _ => getUnorderedEquivalence(Equivalence.strict())(_, players),
         ),
       ),
     )
@@ -268,7 +273,7 @@ describe('Balance teams', () => {
                   ) ||
                   pipe(
                     modality.positions,
-                    A.every(
+                    ReadonlyArray.every(
                       pos =>
                         Math.abs(
                           a.filter(

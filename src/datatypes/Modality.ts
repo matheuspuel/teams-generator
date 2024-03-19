@@ -1,35 +1,37 @@
+import { Schema } from '@effect/schema'
 import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
-import { S } from 'fp'
 import { t } from 'src/i18n'
 import { Id } from 'src/utils/Entity'
 import { NonEmptyString } from 'src/utils/datatypes/NonEmptyString'
 import { CustomPosition, StaticPosition } from './Position'
 
 const refineSync =
-  <A, I>(schema: S.Schema<A, I>) =>
+  <A, I>(schema: Schema.Schema<A, I>) =>
   <B extends I>(value: B): A & B => {
-    if (S.is(schema)(value)) return value
+    if (Schema.is(schema)(value)) return value
     else {
       // eslint-disable-next-line functional/no-expression-statements
-      S.validateSync(schema)(value)
+      Schema.validateSync(schema)(value)
       // eslint-disable-next-line functional/no-throw-statements
       throw new Error('Invalid refinement')
     }
   }
 
-const pos = <const A extends S.Schema.Encoded<typeof StaticPosition>>(_: A) =>
-  refineSync(StaticPosition)(_)
+const pos = <const A extends Schema.Schema.Encoded<typeof StaticPosition>>(
+  _: A,
+) => refineSync(StaticPosition)(_)
 
-export interface StaticModality extends S.Schema.Type<typeof StaticModality_> {}
-const StaticModality_ = S.struct({
-  _tag: S.literal('StaticModality'),
+export interface StaticModality
+  extends Schema.Schema.Type<typeof StaticModality_> {}
+const StaticModality_ = Schema.struct({
+  _tag: Schema.literal('StaticModality'),
   id: NonEmptyString,
   name: NonEmptyString,
-  positions: S.nonEmptyArray(StaticPosition),
+  positions: Schema.nonEmptyArray(StaticPosition),
 })
-export const StaticModality: S.Schema<
+export const StaticModality: Schema.Schema<
   StaticModality,
-  S.Schema.Encoded<typeof StaticModality_>
+  Schema.Schema.Encoded<typeof StaticModality_>
 > = StaticModality_
 
 export const soccer = refineSync(StaticModality)({
@@ -181,26 +183,27 @@ export const staticModalities: NonEmptyReadonlyArray<StaticModality> = [
   basketball,
 ]
 
-export interface CustomModality extends S.Schema.Type<typeof CustomModality_> {}
-const CustomModality_ = S.struct({
-  _tag: S.literal('CustomModality'),
+export interface CustomModality
+  extends Schema.Schema.Type<typeof CustomModality_> {}
+const CustomModality_ = Schema.struct({
+  _tag: Schema.literal('CustomModality'),
   id: Id,
   name: NonEmptyString,
-  positions: S.nonEmptyArray(CustomPosition),
+  positions: Schema.nonEmptyArray(CustomPosition),
 })
-export const CustomModality: S.Schema<
+export const CustomModality: Schema.Schema<
   CustomModality,
-  S.Schema.Encoded<typeof CustomModality_>
+  Schema.Schema.Encoded<typeof CustomModality_>
 > = CustomModality_
 
 export type Modality = StaticModality | CustomModality
 
-export type Reference = S.Schema.Type<typeof Reference_>
-const Reference_ = S.union(
-  S.struct({ _tag: S.literal('StaticModality'), id: NonEmptyString }),
-  S.struct({ _tag: S.literal('CustomModality'), id: Id }),
+export type Reference = Schema.Schema.Type<typeof Reference_>
+const Reference_ = Schema.union(
+  Schema.struct({ _tag: Schema.literal('StaticModality'), id: NonEmptyString }),
+  Schema.struct({ _tag: Schema.literal('CustomModality'), id: Id }),
 )
-export const Reference: S.Schema<
+export const Reference: Schema.Schema<
   Reference,
-  S.Schema.Encoded<typeof Reference_>
+  Schema.Schema.Encoded<typeof Reference_>
 > = Reference_

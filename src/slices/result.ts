@@ -1,5 +1,12 @@
+import {
+  Effect,
+  Match,
+  Option,
+  ReadonlyArray,
+  ReadonlyRecord,
+  pipe,
+} from 'effect'
 import { clockWith } from 'effect/Effect'
-import { A, F, Match, O, Record, pipe } from 'fp'
 import { Player, TeamsGenerator } from 'src/datatypes'
 import { getResultRatingDeviance } from 'src/datatypes/TeamsGenerator'
 import { root } from 'src/model/optic'
@@ -11,24 +18,28 @@ import { getModality } from './groups'
 
 export type GeneratedResult = Array<Array<Player>>
 
-export const eraseResult = State.on(root.at('result')).set(O.none())
+export const eraseResult = State.on(root.at('result')).set(Option.none())
 
 export const generateResult = pipe(
   State.get.pipe(
-    F.flatMap(s =>
-      O.flatMap(s.ui.selectedGroupId, id => Record.get(s.groups, id)),
+    Effect.flatMap(s =>
+      Option.flatMap(s.ui.selectedGroupId, id =>
+        ReadonlyRecord.get(s.groups, id),
+      ),
     ),
   ),
-  F.flatMap(group =>
-    F.all({
-      players: F.succeed(A.filter(group.players, Player.isActive)),
-      modality: State.with(getModality(group.modality)).pipe(F.flatten),
+  Effect.flatMap(group =>
+    Effect.all({
+      players: Effect.succeed(
+        ReadonlyArray.filter(group.players, Player.isActive),
+      ),
+      modality: State.with(getModality(group.modality)).pipe(Effect.flatten),
       parameters: State.with(s => s.parameters),
       start: clockWith(c => c.currentTimeMillis),
     }),
   ),
   StateRef.execute,
-  F.bind('result', ({ players, parameters, modality }) =>
+  Effect.bind('result', ({ players, parameters, modality }) =>
     TeamsGenerator.generateRandomBalancedTeams({ modality })({
       position: parameters.position,
       rating: parameters.rating,
@@ -47,14 +58,19 @@ export const generateResult = pipe(
       ),
     })(players),
   ),
-  F.bind('end', () => clockWith(c => c.currentTimeMillis)),
-  F.tap(({ result }) =>
-    pipe(result, O.some, State.on(root.at('result')).set, StateRef.execute),
+  Effect.bind('end', () => clockWith(c => c.currentTimeMillis)),
+  Effect.tap(({ result }) =>
+    pipe(
+      result,
+      Option.some,
+      State.on(root.at('result')).set,
+      StateRef.execute,
+    ),
   ),
-  F.tap(({ parameters, players, start, end, result }) =>
+  Effect.tap(({ parameters, players, start, end, result }) =>
     pipe(
       Metadata.get(),
-      F.flatMap(meta =>
+      Effect.flatMap(meta =>
         Telemetry.log([
           {
             timestamp: end as Timestamp,
@@ -72,8 +88,8 @@ export const generateResult = pipe(
           },
         ]),
       ),
-      F.flatMap(() => Telemetry.send()),
-      F.ignore,
+      Effect.flatMap(() => Telemetry.send()),
+      Effect.ignore,
     ),
   ),
 )

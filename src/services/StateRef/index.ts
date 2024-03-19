@@ -1,19 +1,17 @@
-import * as Context from 'effect/Context'
+import * as Optic from '@fp-ts/optic'
 import {
-  A,
   Chunk,
   Effect,
   Exit,
-  F,
-  O,
-  Optic,
   Option,
+  ReadonlyArray,
   Ref,
   Runtime,
   Stream,
   flow,
   pipe,
-} from 'fp'
+} from 'effect'
+import * as Context from 'effect/Context'
 import { unstable_batchedUpdates } from 'react-native'
 import { RootState } from 'src/model'
 
@@ -42,17 +40,17 @@ const stateTag = <A = never>(): Context.TagClass<
 const preparedStateOperations = <A>() => ({
   with: <B>(
     selector: (rootState: A) => B,
-  ): Effect<B, never, InternalStateRef<A>> =>
-    F.flatMap(stateTag<A>(), Ref.get).pipe(F.map(selector)),
+  ): Effect.Effect<B, never, InternalStateRef<A>> =>
+    Effect.flatMap(stateTag<A>(), Ref.get).pipe(Effect.map(selector)),
   flatWith: <R, E, B>(
-    effect: (rootState: A) => Effect<B, E, R>,
-  ): Effect<B, E, InternalStateRef<A> | R> =>
-    F.flatMap(stateTag<A>(), Ref.get).pipe(F.flatMap(effect)),
-  get: F.flatMap(stateTag<A>(), Ref.get),
-  set: (a: A) => F.flatMap(stateTag<A>(), Ref.set(a)),
-  update: (f: (a: A) => A) => F.flatMap(stateTag<A>(), Ref.update(f)),
+    effect: (rootState: A) => Effect.Effect<B, E, R>,
+  ): Effect.Effect<B, E, InternalStateRef<A> | R> =>
+    Effect.flatMap(stateTag<A>(), Ref.get).pipe(Effect.flatMap(effect)),
+  get: Effect.flatMap(stateTag<A>(), Ref.get),
+  set: (a: A) => Effect.flatMap(stateTag<A>(), Ref.set(a)),
+  update: (f: (a: A) => A) => Effect.flatMap(stateTag<A>(), Ref.update(f)),
   modify: <B>(f: (a: A) => readonly [B, A]) =>
-    F.flatMap(stateTag<A>(), Ref.modify(f)),
+    Effect.flatMap(stateTag<A>(), Ref.modify(f)),
 })
 
 const State_ = preparedStateOperations<RootState>()
@@ -60,7 +58,7 @@ const State_ = preparedStateOperations<RootState>()
 export const State = {
   ...State_,
   on: <B>(optic: Optic.PolyReversedPrism<RootState, RootState, B, B>) => ({
-    get: State_.get.pipe(F.map(r => Optic.get(optic)(r))),
+    get: State_.get.pipe(Effect.map(r => Optic.get(optic)(r))),
     set: (b: B) => State_.update(Optic.replace(optic)(b)),
     update: (f: (b: B) => B) => State_.update(Optic.modify(optic)(f)),
     modify: <C>(f: (b: B) => readonly [C, B]) =>
@@ -73,41 +71,41 @@ export const State = {
       ),
   }),
   onOption: <B>(optic: Optic.PolyOptional<RootState, RootState, B, B>) => ({
-    get: State_.get.pipe(F.map(r => Optic.getOption(optic)(r))),
+    get: State_.get.pipe(Effect.map(r => Optic.getOption(optic)(r))),
     set: (b: B) => State_.update(Optic.replace(optic)(b)),
     update: (f: (b: B) => B) => State_.update(Optic.modify(optic)(f)),
     modify: <C>(f: (b: B) => readonly [C, B]) =>
-      State_.modify<Option<C>>(r =>
+      State_.modify<Option.Option<C>>(r =>
         pipe(
           Optic.getOption(optic)(r),
-          O.map(
+          Option.map(
             flow(
               f,
-              v => [O.some(v[0]), Optic.replace(optic)(v[1])(r)] as const,
+              v => [Option.some(v[0]), Optic.replace(optic)(v[1])(r)] as const,
             ),
           ),
-          O.getOrElse(() => [O.none<C>(), r] as const),
+          Option.getOrElse(() => [Option.none<C>(), r] as const),
         ),
       ),
   }),
 }
 
-export type Subscription = (state: RootState) => Effect<void>
+export type Subscription = (state: RootState) => Effect.Effect<void>
 
 const tag = AppStateRefEnv
 
 const subscribe = (f: Subscription) =>
   tag.pipe(
-    F.flatMap(stateRef =>
+    Effect.flatMap(stateRef =>
       pipe(
-        Ref.update(stateRef.subscriptionsRef, A.append(f)),
-        F.map(() => ({
+        Ref.update(stateRef.subscriptionsRef, ReadonlyArray.append(f)),
+        Effect.map(() => ({
           unsubscribe: () =>
             Ref.update(stateRef.subscriptionsRef, ss =>
               pipe(
-                A.findFirstIndex(ss, s => s === f),
-                O.map(i => A.remove(ss, i)),
-                O.getOrElse(() => ss),
+                ReadonlyArray.findFirstIndex(ss, s => s === f),
+                Option.map(i => ReadonlyArray.remove(ss, i)),
+                Option.getOrElse(() => ss),
               ),
             ),
         })),
@@ -118,25 +116,29 @@ const subscribe = (f: Subscription) =>
 export const StateRef = {
   react: { subscribe: subscribe },
   changes: Stream.asyncEffect<RootState, never, AppStateRefEnv>(emit =>
-    subscribe(s => F.sync(() => emit(F.succeed(Chunk.of(s))))),
+    subscribe(s => Effect.sync(() => emit(Effect.succeed(Chunk.of(s))))),
   ),
-  get: F.flatMap(tag, _ => Ref.get(_.ref)),
+  get: Effect.flatMap(tag, _ => Ref.get(_.ref)),
   execute: <R, E, B>(
-    effect: Effect<B, E, R | InternalStateRef<RootState>>,
-  ): Effect<B, E, Exclude<R, InternalStateRef<RootState>> | AppStateRefEnv> =>
+    effect: Effect.Effect<B, E, R | InternalStateRef<RootState>>,
+  ): Effect.Effect<
+    B,
+    E,
+    Exclude<R, InternalStateRef<RootState>> | AppStateRefEnv
+  > =>
     pipe(
-      F.all({ stateRef: tag, runtime: F.runtime<R>() }),
-      F.bind('result', ({ runtime, stateRef }) =>
+      Effect.all({ stateRef: tag, runtime: Effect.runtime<R>() }),
+      Effect.bind('result', ({ runtime, stateRef }) =>
         Ref.modify(stateRef.ref, s =>
           pipe(
             Ref.make(s),
-            F.flatMap(ref =>
+            Effect.flatMap(ref =>
               pipe(
-                F.all([effect, Ref.get(ref)]),
-                F.provideService(stateTag<RootState>(), ref),
+                Effect.all([effect, Ref.get(ref)]),
+                Effect.provideService(stateTag<RootState>(), ref),
               ),
             ),
-            F.exit,
+            Effect.exit,
             Runtime.runSync(runtime),
             Exit.match({
               onFailure: (
@@ -149,39 +151,41 @@ export const StateRef = {
         ),
       ),
       f =>
-        f as Effect<
-          Effect.Success<typeof f>,
-          Effect.Error<typeof f>,
-          Exclude<Effect.Context<typeof f>, InternalStateRef<RootState>>
+        f as Effect.Effect<
+          Effect.Effect.Success<typeof f>,
+          Effect.Effect.Error<typeof f>,
+          Exclude<Effect.Effect.Context<typeof f>, InternalStateRef<RootState>>
         >,
-      F.flatMap(({ result, stateRef }) =>
+      Effect.flatMap(({ result, stateRef }) =>
         pipe(
           result,
-          F.tap(([, s]) =>
+          Effect.tap(([, s]) =>
             pipe(
               Ref.get(stateRef.subscriptionsRef),
-              F.tap(ss =>
-                F.sync(() =>
+              Effect.tap(ss =>
+                Effect.sync(() =>
                   unstable_batchedUpdates(() => {
                     // eslint-disable-next-line functional/no-expression-statements
-                    F.all(ss.map(f => f(s))).pipe(F.runSync)
+                    Effect.all(ss.map(f => f(s))).pipe(Effect.runSync)
                   }),
                 ),
               ),
             ),
           ),
-          F.map(([_]) => _),
+          Effect.map(([_]) => _),
         ),
       ),
     ),
-  query: <B, E, R>(effect: Effect<B, E, R | InternalStateRef<RootState>>) =>
+  query: <B, E, R>(
+    effect: Effect.Effect<B, E, R | InternalStateRef<RootState>>,
+  ) =>
     pipe(
       tag,
-      F.flatMap(_ => Ref.get(_.ref)),
-      F.flatMap(s =>
+      Effect.flatMap(_ => Ref.get(_.ref)),
+      Effect.flatMap(s =>
         Ref.make(s).pipe(
-          F.flatMap(ref =>
-            pipe(effect, F.provideService(stateTag<RootState>(), ref)),
+          Effect.flatMap(ref =>
+            pipe(effect, Effect.provideService(stateTag<RootState>(), ref)),
           ),
         ),
       ),

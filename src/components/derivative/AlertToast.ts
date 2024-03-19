@@ -1,4 +1,4 @@
-import { O, absurd } from 'fp'
+import { Option, absurd } from 'effect'
 import * as React from 'react'
 import Animated, { SlideInRight, SlideOutRight } from 'react-native-reanimated'
 import { MaterialIcons, Nothing, Pressable, Txt, View } from 'src/components'
@@ -11,7 +11,7 @@ const ANIMATION_DURATION = 200
 
 export const AlertToast = memoizedConst('AlertToast')(() => {
   const alert = useSelector(s => s.alert)
-  return O.match(alert, {
+  return Option.match(alert, {
     onNone: () => Nothing,
     onSome: alert =>
       View({

@@ -1,4 +1,4 @@
-import { A, O, pipe } from 'fp'
+import { Option, ReadonlyArray, pipe } from 'effect'
 import { Row, Txt, TxtContext, View } from 'src/components'
 import { CenterModal } from 'src/components/derivative/CenterModal'
 import { GhostButton } from 'src/components/derivative/GhostButton'
@@ -19,14 +19,14 @@ export const DeleteGroupView = namedConst('DeleteGroupView')(() => {
     View({ p: 16 })(
       pipe(
         group,
-        O.map(g =>
+        Option.map(g =>
           TxtContext({ align: 'left' })([
             Txt({ align: 'left' })(`${t('Want to delete the group')} `),
             Txt({ weight: 600 })(g.name),
             Txt()(` ${t('and all its players?')}`),
           ]),
         ),
-        A.fromOption,
+        ReadonlyArray.fromOption,
       ),
     ),
     View({ borderWidthT: 1, borderColor: Colors.opacity(0.375)(Colors.gray) })(

@@ -1,4 +1,4 @@
-import { O, pipe } from 'fp'
+import { Option, pipe } from 'effect'
 import { Nothing, Row, Txt, TxtContext, View } from 'src/components'
 import { CenterModal } from 'src/components/derivative/CenterModal'
 import { GhostButton } from 'src/components/derivative/GhostButton'
@@ -17,16 +17,16 @@ export const DeleteModalityView = namedConst('DeleteModalityView')(() => {
   const modality = useSelector(s =>
     pipe(
       s.modalityForm.id,
-      O.flatMap(id => getModality({ _tag: 'CustomModality', id })(s)),
+      Option.flatMap(id => getModality({ _tag: 'CustomModality', id })(s)),
     ),
   )
   return CenterModal({
     onClose: back(),
-    visible: O.isSome(modality),
+    visible: Option.isSome(modality),
     title: t('Delete modality'),
   })([
     View({ p: 16 })([
-      O.match(modality, {
+      Option.match(modality, {
         onNone: () => Nothing,
         onSome: m =>
           TxtContext({ align: 'left' })([

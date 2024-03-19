@@ -1,4 +1,4 @@
-import { Clock, Duration, F, Stream, pipe } from 'fp'
+import { Duration, Effect, Stream, pipe } from 'effect'
 import { BackHandler } from 'src/services/BackHandler'
 import { StateRef } from 'src/services/StateRef'
 import { UI } from 'src/services/UI'
@@ -9,41 +9,44 @@ import { Metadata } from './services/Metadata'
 import { runMigrations } from './services/Repositories/migrations'
 import { SplashScreen } from './services/SplashScreen'
 import { Telemetry } from './services/Telemetry'
+import { Timestamp } from './utils/datatypes'
 
 export const startApp = pipe(
   UI.start(),
-  F.flatMap(() => SplashScreen.preventAutoHide()),
-  F.flatMap(() =>
+  Effect.flatMap(() => SplashScreen.preventAutoHide()),
+  Effect.flatMap(() =>
     pipe(
       BackHandler.stream,
       Stream.tap(() => back()),
       Stream.runDrain,
-      F.forkDaemon,
+      Effect.forkDaemon,
     ),
   ),
-  F.tap(() => runMigrations.pipe(F.ignore)),
-  F.flatMap(() => hydrate),
-  F.tap(() =>
+  Effect.tap(() => runMigrations.pipe(Effect.ignore)),
+  Effect.flatMap(() => hydrate),
+  Effect.tap(() =>
     pipe(
       StateRef.changes,
       Stream.debounce(Duration.decode('1000 millis')),
       Stream.changes,
       Stream.flatMap(() => saveState()),
       Stream.runDrain,
-      F.forkDaemon,
+      Effect.forkDaemon,
     ),
   ),
-  F.tap(() => appLoaded()),
-  F.tap(() =>
+  Effect.tap(() => appLoaded()),
+  Effect.tap(() =>
     pipe(
-      F.all([Metadata.get(), Clock.currentTimeMillis]),
-      F.flatMap(([m, t]) =>
+      Effect.all([Metadata.get(), Timestamp.now]),
+      Effect.flatMap(([m, t]) =>
         Telemetry.log([{ timestamp: t, event: 'start', data: m }]),
       ),
-      F.flatMap(() => Telemetry.send()),
-      F.catchAll(() => F.unit),
+      Effect.flatMap(() => Telemetry.send()),
+      Effect.catchAll(() => Effect.unit),
     ),
   ),
-  F.tap(() => setupReceiveURLHandler().pipe(Stream.runDrain, F.forkDaemon)),
-  F.tap(() => F.logDebug('startApp done')),
+  Effect.tap(() =>
+    setupReceiveURLHandler().pipe(Stream.runDrain, Effect.forkDaemon),
+  ),
+  Effect.tap(() => Effect.logDebug('startApp done')),
 )

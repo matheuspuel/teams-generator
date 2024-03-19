@@ -1,4 +1,4 @@
-import { pipe, Runtime } from 'fp'
+import { pipe, Runtime } from 'effect'
 import React from 'react'
 import { TextInput as RNTextInput_ } from 'react-native-gesture-handler'
 import {

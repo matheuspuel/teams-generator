@@ -1,5 +1,6 @@
 import RawHeader_ from '@react-navigation/elements/src/Header/Header'
-import { constant, pipe } from 'fp'
+import { pipe } from 'effect'
+import { constant } from 'effect/Function'
 import React from 'react'
 import { UIColor, UIElement } from 'src/components/types'
 import { TextStyleContext, useTextStyle } from 'src/contexts/TextStyle'

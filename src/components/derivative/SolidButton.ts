@@ -1,4 +1,4 @@
-import { pipe } from 'fp'
+import { pipe } from 'effect'
 import { Pressable } from 'src/components'
 import { TextStyleContextProvider } from 'src/contexts/TextStyle'
 import { Colors } from 'src/services/Theme'

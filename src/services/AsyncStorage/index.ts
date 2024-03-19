@@ -1,10 +1,13 @@
 /* eslint-disable functional/functional-parameters */
-import { Context, Effect, F, Option } from 'fp'
+import { Context, Effect, Option } from 'effect'
 
 export type AsyncStorage = {
-  getItem: (key: string) => Effect<Option<string>, unknown>
-  setItem: (args: { key: string; value: string }) => Effect<void, unknown>
-  removeItem: (key: string) => Effect<void, unknown>
+  getItem: (key: string) => Effect.Effect<Option.Option<string>, unknown>
+  setItem: (args: {
+    key: string
+    value: string
+  }) => Effect.Effect<void, unknown>
+  removeItem: (key: string) => Effect.Effect<void, unknown>
 }
 
 export class AsyncStorageEnv extends Context.Tag('AsyncStorage')<
@@ -12,4 +15,4 @@ export class AsyncStorageEnv extends Context.Tag('AsyncStorage')<
   AsyncStorage
 >() {}
 
-export const AsyncStorage = F.serviceFunctions(AsyncStorageEnv)
+export const AsyncStorage = Effect.serviceFunctions(AsyncStorageEnv)

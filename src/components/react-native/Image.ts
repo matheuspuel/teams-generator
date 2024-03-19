@@ -1,9 +1,10 @@
-import { F, Match, Runtime, pipe } from 'fp'
+import { Effect, Runtime, pipe } from 'effect'
 import * as React from 'react'
 import { Image as RNImage_ } from 'react-native'
 import { UIColor, UIElement } from 'src/components/types'
 import { useRuntime } from 'src/contexts/Runtime'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
+import * as Match from 'src/utils/fp/Match'
 import { named } from '../hyperscript'
 
 export type ImageStyleProps = {
@@ -40,17 +41,17 @@ export const Image = named('Image')((props: ImageProps) => {
       Match.valueTagsOrElse({
         uri: ({ uri }) =>
           pipe(
-            F.tryPromise(() => RNImage_.prefetch(uri)),
-            F.filterOrElse(
+            Effect.tryPromise(() => RNImage_.prefetch(uri)),
+            Effect.filterOrElse(
               b => b,
-              () => F.fail(new Error('Error loading image')),
+              () => Effect.fail(new Error('Error loading image')),
             ),
-            F.matchEffect({
-              onFailure: () => F.sync(() => setStatus('error')),
-              onSuccess: () => F.sync(() => setStatus('success')),
+            Effect.matchEffect({
+              onFailure: () => Effect.sync(() => setStatus('error')),
+              onSuccess: () => Effect.sync(() => setStatus('success')),
             }),
           ),
-        _: () => F.unit,
+        _: () => Effect.unit,
       }),
       Runtime.runPromise(runtime),
     )

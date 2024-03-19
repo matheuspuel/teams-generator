@@ -1,4 +1,13 @@
-import { A, Data, Equal, O, Record, Tuple, flow, pipe } from 'fp'
+import {
+  Data,
+  Equal,
+  Option,
+  ReadonlyArray,
+  ReadonlyRecord,
+  Tuple,
+  flow,
+  pipe,
+} from 'effect'
 import {
   FlatList,
   Header,
@@ -25,10 +34,10 @@ export const GroupsView = memoizedConst('GroupsView')(() => {
   const groupsIds = useSelector(
     flow(
       s => s.groups,
-      Record.toEntries,
-      A.map(Tuple.getSecond),
-      A.sort(Group.NameOrd),
-      A.map(_ => _.id),
+      ReadonlyRecord.toEntries,
+      ReadonlyArray.map(Tuple.getSecond),
+      ReadonlyArray.sort(Group.NameOrd),
+      ReadonlyArray.map(_ => _.id),
       Data.array,
     ),
   )
@@ -71,18 +80,18 @@ const Item = memoized('Group')(Equal.equivalence(), (id: Id) => {
   const group = useSelector(s =>
     pipe(
       getGroupById(id)(s),
-      O.map(({ name, modality }) =>
+      Option.map(({ name, modality }) =>
         Data.struct({
           name,
           modality: pipe(
             getModality(modality)(s),
-            O.map(_ => _.name),
+            Option.map(_ => _.name),
           ),
         }),
       ),
     ),
   )
-  return O.match(group, {
+  return Option.match(group, {
     onNone: () => Nothing,
     onSome: ({ name, modality }) =>
       Pressable({
@@ -99,7 +108,7 @@ const Item = memoized('Group')(Equal.equivalence(), (id: Id) => {
           weight: 600,
           color: Colors.text.secondary,
           size: 10,
-        })(O.getOrElse(modality, () => '-')),
+        })(Option.getOrElse(modality, () => '-')),
         Txt({
           numberOfLines: 1,
           flex: 1,

@@ -1,7 +1,5 @@
-/* eslint-disable functional/functional-parameters */
+import { Effect } from 'effect'
 import * as Context from 'effect/Context'
-import { Effect } from 'effect/Effect'
-import { F } from 'src/utils/fp'
 
 export type Metadata = {
   installation: { id: string }
@@ -26,7 +24,7 @@ export type Metadata = {
 }
 
 export type MetadataService = {
-  get: () => Effect<Metadata>
+  get: () => Effect.Effect<Metadata>
 }
 
 export class MetadataServiceEnv extends Context.Tag('MetadataService')<
@@ -34,4 +32,4 @@ export class MetadataServiceEnv extends Context.Tag('MetadataService')<
   MetadataService
 >() {}
 
-export const Metadata = F.serviceFunctions(MetadataServiceEnv)
+export const Metadata = Effect.serviceFunctions(MetadataServiceEnv)

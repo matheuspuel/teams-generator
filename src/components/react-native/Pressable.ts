@@ -1,4 +1,4 @@
-import { Runtime, identity, pipe } from 'fp'
+import { Runtime, identity, pipe } from 'effect'
 import React from 'react'
 import { BorderlessButton, RectButton } from 'react-native-gesture-handler'
 import {
@@ -56,7 +56,7 @@ export const Pressable = named2('Pressable')((props: PressableProps) =>
         children: children,
         onPress:
           props.isEnabled !== false
-            ? () => Runtime.runPromise(runtime)(props.onPress)
+            ? () => void Runtime.runPromise(runtime)(props.onPress)
             : undefined,
         rippleColor:
           props.isEnabled !== false

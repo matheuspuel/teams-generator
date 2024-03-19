@@ -1,4 +1,4 @@
-import { A, O, String } from 'fp'
+import { Option, ReadonlyArray, String } from 'effect'
 import {
   Header,
   Input,
@@ -50,7 +50,7 @@ export const GroupFormView = memoizedConst('GroupFormView')(() => {
 })
 
 const ScreenHeader = memoizedConst('Header')(() => {
-  const isEdit = useSelector(s => O.isSome(s.groupForm.id))
+  const isEdit = useSelector(s => Option.isSome(s.groupForm.id))
   return View()([
     Header({
       title: isEdit ? t('Edit group') : t('New group'),
@@ -93,7 +93,7 @@ const ModalityField = memoizedConst('ModalityField')(() => {
         ]),
       ]),
     ]),
-    View()(A.map(modalities, m => ModalityItem(m))),
+    View()(ReadonlyArray.map(modalities, m => ModalityItem(m))),
   ])
 })
 

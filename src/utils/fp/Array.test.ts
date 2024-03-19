@@ -1,7 +1,7 @@
 /* eslint-disable functional/no-expression-statements */
+import { flow, pipe } from 'effect'
 import * as fc from 'fast-check'
 import { describe, test } from 'vitest'
-import { flow, pipe } from '.'
 import { factorial } from '../Math'
 import * as A from './Array'
 

@@ -1,9 +1,9 @@
+import { Context, Effect, Option, Stream } from 'effect'
 import { serviceFunctions } from 'effect/Effect'
-import { Context, Effect, Option, Stream } from 'fp'
 
 export type Linking = {
-  openURL: (url: string) => Effect<void>
-  getInitialURL: () => Effect<Option<string>>
+  openURL: (url: string) => Effect.Effect<void>
+  getInitialURL: () => Effect.Effect<Option.Option<string>>
   startLinkingStream: () => Stream.Stream<string>
 }
 

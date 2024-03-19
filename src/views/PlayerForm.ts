@@ -1,4 +1,4 @@
-import { A, O, String, pipe } from 'fp'
+import { Option, ReadonlyArray, String, pipe } from 'effect'
 import {
   Header,
   Input,
@@ -99,13 +99,13 @@ const PositionField = memoizedConst('PositionField')(() => {
   const positions = useSelector(s =>
     pipe(
       getActiveModality(s),
-      O.map(m => m.positions),
-      O.getOrElse(() => A.empty()),
+      Option.map(m => m.positions),
+      Option.getOrElse(() => ReadonlyArray.empty()),
     ),
   )
   return View({ p: 4 })([
     FormLabel()(t('Position')),
-    View()(A.map(positions, p => PositionItem(p.abbreviation))),
+    View()(ReadonlyArray.map(positions, p => PositionItem(p.abbreviation))),
   ])
 })
 
@@ -113,15 +113,18 @@ const PositionItem = memoized('PositionItem')((abbreviation: Abbreviation) => {
   const position = useSelector(s =>
     pipe(
       getActiveModality(s),
-      O.flatMap(m =>
-        A.findFirst(m.positions, _ => _.abbreviation === abbreviation),
+      Option.flatMap(m =>
+        ReadonlyArray.findFirst(
+          m.positions,
+          _ => _.abbreviation === abbreviation,
+        ),
       ),
     ),
   )
   const isActive = useSelector(
     s => s.playerForm.positionAbbreviation === abbreviation,
   )
-  return O.match(position, {
+  return Option.match(position, {
     onNone: () => Nothing,
     onSome: position =>
       Pressable({

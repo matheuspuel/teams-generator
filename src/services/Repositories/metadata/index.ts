@@ -1,4 +1,4 @@
-import { F } from 'src/utils/fp'
+import { Effect } from 'effect'
 import { RepositoryEnv } from '../tag'
 import { InstallationRepository } from './Installation'
 import { StorageVersionRepository } from './StorageVersion'
@@ -10,21 +10,21 @@ export type MetadataRepositories = {
 
 export const MetadataRepositories = {
   Installation: {
-    get: F.serviceFunctionEffect(
+    get: Effect.serviceFunctionEffect(
       RepositoryEnv,
       r => r.metadata.Installation.get,
     ),
-    set: F.serviceFunctionEffect(
+    set: Effect.serviceFunctionEffect(
       RepositoryEnv,
       r => r.metadata.Installation.set,
     ),
   },
   StorageVersion: {
-    get: F.serviceFunctionEffect(
+    get: Effect.serviceFunctionEffect(
       RepositoryEnv,
       r => r.metadata.StorageVersion.get,
     ),
-    set: F.serviceFunctionEffect(
+    set: Effect.serviceFunctionEffect(
       RepositoryEnv,
       r => r.metadata.StorageVersion.set,
     ),

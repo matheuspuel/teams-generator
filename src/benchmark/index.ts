@@ -1,8 +1,10 @@
 /* eslint-disable functional/no-expression-statements */
 import { Arbitrary } from '@effect/schema'
+import { Semigroup } from '@effect/typeclass'
 import * as Benchmark from 'benchmark'
+import { Match, ReadonlyArray, pipe } from 'effect'
+import { constant } from 'effect/Function'
 import * as fc from 'fast-check'
-import { A, Match, Semigroup, String, constant, pipe } from 'fp'
 import { Player } from 'src/datatypes'
 import { soccer } from 'src/datatypes/Modality'
 import {
@@ -11,10 +13,11 @@ import {
   getFitOrdFromCriteria,
 } from 'src/datatypes/TeamsGenerator'
 import { getCombinationsIndices } from 'src/utils/Combinations'
+import { combineAllNonEmpty } from 'src/utils/fp/Semigroup'
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const sample1 = fc.sample(
-  fc.array(Arbitrary.make(Player.Schema)(fc), { minLength: 8, maxLength: 8 }),
+  fc.array(Arbitrary.make(Player.Player)(fc), { minLength: 8, maxLength: 8 }),
   1,
 )[0]!
 
@@ -25,22 +28,22 @@ const getAllCombinationsOfSubListsWithEqualLength =
       ? [[as]]
       : pipe(
           getCombinationsIndices(Math.floor(as.length / numOfLists))(
-            A.length(as),
+            ReadonlyArray.length(as),
           ),
-          A.map(is =>
+          ReadonlyArray.map(is =>
             pipe(
               as,
-              A.partition((_, i) => is.includes(i)),
+              ReadonlyArray.partition((_, i) => is.includes(i)),
               ([cs, bs]) =>
                 pipe(
                   getAllCombinationsOfSubListsWithEqualLength(numOfLists - 1)(
                     cs,
                   ),
-                  A.map(A.prepend(bs)),
+                  ReadonlyArray.map(ReadonlyArray.prepend(bs)),
                 ),
             ),
           ),
-          A.flatten,
+          ReadonlyArray.flatten,
         )
 
 const getAllCombinationsOfSubListsWithFixedLength =
@@ -50,14 +53,14 @@ const getAllCombinationsOfSubListsWithFixedLength =
       ? [[as]]
       : pipe(
           getCombinationsIndices(listLength)(as.length),
-          A.flatMap(is =>
+          ReadonlyArray.flatMap(is =>
             pipe(
               as,
-              A.partition((_, i) => is.includes(i)),
+              ReadonlyArray.partition((_, i) => is.includes(i)),
               ([bs, as]) =>
                 pipe(
                   getAllCombinationsOfSubListsWithFixedLength(listLength)(bs),
-                  A.map(A.prepend(as)),
+                  ReadonlyArray.map(ReadonlyArray.prepend(as)),
                 ),
             ),
           ),
@@ -75,9 +78,9 @@ const distributeTeamsUsingCombinations: typeof distributeTeams =
             players,
           ),
       }),
-      A.match({
+      ReadonlyArray.match({
         onEmpty: constant([]),
-        onNonEmpty: Semigroup.combineAllNonEmpty(
+        onNonEmpty: combineAllNonEmpty(
           Semigroup.min(getFitOrdFromCriteria(args)(params)),
         ),
       }),
@@ -108,7 +111,7 @@ void (async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .on('cycle', function (event: any) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        console.log(String.Class(event.target))
+        console.log(String(event.target))
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .on('complete', function (this: any) {
@@ -130,7 +133,7 @@ void (async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .on('cycle', function (event: any) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        console.log(String.Class(event.target))
+        console.log(String(event.target))
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .on('complete', function (this: any) {

@@ -1,6 +1,6 @@
+import { Effect, Layer, Option, Ref, flow, identity, pipe } from 'effect'
 import * as Application from 'expo-application'
 import * as Device from 'expo-device'
-import { F, Layer, O, Option, Ref, flow, identity, pipe } from 'fp'
 import packageJSON from 'src/../package.json'
 import { preferences } from 'src/i18n'
 import { IdGenerator } from 'src/services/IdGenerator'
@@ -10,9 +10,11 @@ import { Repository } from 'src/services/Repositories'
 import { AsyncStorageLive } from '../AsyncStorage/live'
 import { RepositoryLive } from '../Repositories/live'
 
-const metadataRef = Ref.make<Option<Metadata>>(O.none()).pipe(F.runSync)
+const metadataRef = Ref.make<Option.Option<Metadata>>(Option.none()).pipe(
+  Effect.runSync,
+)
 
-const getStaticMetadata = F.sync(() => ({
+const getStaticMetadata = Effect.sync(() => ({
   device: {
     modelName: Device.modelName,
     osVersion: Device.osVersion,
@@ -27,12 +29,12 @@ const getStaticMetadata = F.sync(() => ({
   },
   preferences: {
     languageCode: preferences.location.pipe(
-      O.map(_ => _.languageCode),
-      O.getOrNull,
+      Option.map(_ => _.languageCode),
+      Option.getOrNull,
     ),
     regionCode: preferences.location.pipe(
-      O.map(_ => _.regionCode),
-      O.getOrNull,
+      Option.map(_ => _.regionCode),
+      Option.getOrNull,
     ),
   },
 }))
@@ -41,31 +43,31 @@ export const MetadataServiceLive = MetadataServiceEnv.context({
   get: () =>
     pipe(
       Ref.get(metadataRef),
-      F.flatMap(identity),
-      F.orElse(() =>
+      Effect.flatMap(identity),
+      Effect.orElse(() =>
         pipe(
-          F.all({
+          Effect.all({
             installation: pipe(
               Repository.metadata.Installation.get(),
-              F.map(_ => ({ ..._, isFirstLaunch: false })),
-              F.orElse(() =>
+              Effect.map(_ => ({ ..._, isFirstLaunch: false })),
+              Effect.orElse(() =>
                 pipe(
                   IdGenerator.generate(),
-                  F.map(id => ({ id })),
-                  F.tap(
+                  Effect.map(id => ({ id })),
+                  Effect.tap(
                     flow(
                       Repository.metadata.Installation.set,
-                      F.catchAll(() => F.unit),
+                      Effect.catchAll(() => Effect.unit),
                     ),
                   ),
-                  F.map(_ => ({ ..._, isFirstLaunch: true })),
+                  Effect.map(_ => ({ ..._, isFirstLaunch: true })),
                 ),
               ),
             ),
-            launch: F.map(IdGenerator.generate(), id => ({ id })),
+            launch: Effect.map(IdGenerator.generate(), id => ({ id })),
             staticMeta: getStaticMetadata,
           }),
-          F.map(
+          Effect.map(
             (v): Metadata => ({
               ...v.staticMeta,
               installation: { id: v.installation.id },
@@ -73,10 +75,10 @@ export const MetadataServiceLive = MetadataServiceEnv.context({
               launch: v.launch,
             }),
           ),
-          F.tap(v => pipe(O.some(v), x => Ref.set(metadataRef, x))),
+          Effect.tap(v => pipe(Option.some(v), x => Ref.set(metadataRef, x))),
         ),
       ),
-      F.provide(
+      Effect.provide(
         Layer.provideMerge(
           Layer.mergeAll(RepositoryLive, IdGeneratorLive),
           AsyncStorageLive,

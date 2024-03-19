@@ -1,5 +1,5 @@
+import { Effect, Layer, ReadonlyArray, pipe } from 'effect'
 import * as ExpoDocumentPicker from 'expo-document-picker'
-import { A, F, Layer, pipe } from 'fp'
 import { enforceErrorInstance } from 'src/utils/Error'
 import { DeepMutable } from 'src/utils/types'
 import {
@@ -11,7 +11,7 @@ import {
 export const DocumentPickerLive = DocumentPickerEnv.context({
   getDocument: args =>
     pipe(
-      F.tryPromise({
+      Effect.tryPromise({
         try: () =>
           ExpoDocumentPicker.getDocumentAsync({
             type: args?.type
@@ -22,13 +22,15 @@ export const DocumentPickerLive = DocumentPickerEnv.context({
           }),
         catch: e => new DocumentPickerError({ error: enforceErrorInstance(e) }),
       }),
-      F.flatMap(r =>
-        r.canceled ? F.fail(new CanceledOperationError()) : F.succeed(r),
+      Effect.flatMap(r =>
+        r.canceled
+          ? Effect.fail(new CanceledOperationError())
+          : Effect.succeed(r),
       ),
-      F.map(r => r.assets),
-      F.flatMap(as =>
-        A.head(as).pipe(
-          F.orElseFail(
+      Effect.map(r => r.assets),
+      Effect.flatMap(as =>
+        ReadonlyArray.head(as).pipe(
+          Effect.orElseFail(
             () =>
               new DocumentPickerError({
                 error: new Error('No assets received'),

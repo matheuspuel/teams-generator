@@ -1,4 +1,4 @@
-import { pipe } from 'fp'
+import { pipe } from 'effect'
 
 const thousandsSeparator = ',' as '.' | ','
 const decimalSeparator = thousandsSeparator === '.' ? ',' : '.'

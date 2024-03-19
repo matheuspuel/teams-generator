@@ -1,4 +1,5 @@
-import { A, NonEmptyReadonlyArray, O, Option } from 'fp'
+import { Option, ReadonlyArray } from 'effect'
+import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
 import { GroupOrder, Modality, Parameters } from 'src/datatypes'
 import { CustomModality, soccer } from 'src/datatypes/Modality'
 import { Abbreviation } from 'src/datatypes/Position'
@@ -11,40 +12,44 @@ import { Id } from 'src/utils/Entity'
 
 export type RootState = {
   core: { isLoaded: boolean }
-  alert: Option<{ title: string; message: string; type: 'error' | 'success' }>
+  alert: Option.Option<{
+    title: string
+    message: string
+    type: 'error' | 'success'
+  }>
   parameters: Parameters
   groupOrder: GroupOrder
   groups: GroupsState
   customModalities: ReadonlyArray<CustomModality>
-  result: Option<GeneratedResult>
+  result: Option.Option<GeneratedResult>
   playerForm: PlayerForm
   groupForm: {
-    id: Option<Id>
+    id: Option.Option<Id>
     name: string
     modality: Modality.Reference
   }
   modalityForm: ModalityForm
   ui: {
-    selectedGroupId: Option<Id>
-    selectedPlayerId: Option<Id>
+    selectedGroupId: Option.Option<Id>
+    selectedPlayerId: Option.Option<Id>
   }
   route: NonEmptyReadonlyArray<Route>
 }
 
 export const initialAppState: RootState = {
   core: { isLoaded: false },
-  alert: O.none(),
+  alert: Option.none(),
   groups: emptyGroups,
-  customModalities: A.empty(),
+  customModalities: ReadonlyArray.empty(),
   parameters: Parameters.initial,
   playerForm: { name: '', positionAbbreviation: Abbreviation('a'), rating: 5 },
-  groupForm: { id: O.none(), name: '', modality: soccer },
+  groupForm: { id: Option.none(), name: '', modality: soccer },
   modalityForm: initialModalityForm,
-  result: O.none(),
+  result: Option.none(),
   groupOrder: GroupOrder.initial,
   ui: {
-    selectedGroupId: O.none(),
-    selectedPlayerId: O.none(),
+    selectedGroupId: Option.none(),
+    selectedPlayerId: Option.none(),
   },
   route: [Route.Groups()],
 }

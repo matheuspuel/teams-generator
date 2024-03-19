@@ -1,4 +1,4 @@
-import { Data, O } from 'fp'
+import { Data, Option } from 'effect'
 import {
   FlatList,
   Header,
@@ -64,9 +64,9 @@ const ScreenHeader = memoizedConst('ScreenHeader')(() =>
 
 const Item = memoized('Modality')((modality: Modality.Reference) => {
   const name = useSelector(s =>
-    getModality(modality)(s).pipe(O.map(m => m.name)),
+    getModality(modality)(s).pipe(Option.map(m => m.name)),
   )
-  return O.match(name, {
+  return Option.match(name, {
     onNone: () => Nothing,
     onSome: name =>
       Pressable({

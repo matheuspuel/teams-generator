@@ -1,16 +1,16 @@
+import { Effect, Layer, pipe } from 'effect'
 import * as SplashScreen_ from 'expo-splash-screen'
-import { F, Layer, pipe } from 'fp'
 import { SplashScreenEnv } from '.'
 
 export const SplashScreenLive = SplashScreenEnv.context({
   preventAutoHide: () =>
     pipe(
-      F.tryPromise(() => SplashScreen_.preventAutoHideAsync()),
-      F.catchAll(() => F.unit),
+      Effect.tryPromise(() => SplashScreen_.preventAutoHideAsync()),
+      Effect.catchAll(() => Effect.unit),
     ),
   hide: () =>
     pipe(
-      F.tryPromise(() => SplashScreen_.hideAsync()),
-      F.catchAll(() => F.unit),
+      Effect.tryPromise(() => SplashScreen_.hideAsync()),
+      Effect.catchAll(() => Effect.unit),
     ),
 }).pipe(Layer.succeedContext)

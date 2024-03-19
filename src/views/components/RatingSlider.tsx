@@ -1,6 +1,6 @@
 /* eslint-disable functional/immutable-data */
 /* eslint-disable functional/no-expression-statements */
-import { A, Runtime, pipe } from 'fp'
+import { ReadonlyArray, Runtime, pipe } from 'effect'
 import React from 'react'
 import { View as View_ } from 'react-native'
 import {
@@ -106,7 +106,7 @@ const RatingSlider_ = ({
         >
           {pipe(
             Rating.List,
-            A.map(r =>
+            ReadonlyArray.map(r =>
               View({
                 key: r.toString(),
                 absolute: {

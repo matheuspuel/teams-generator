@@ -1,5 +1,5 @@
+import { Option, Order, ReadonlyArray, identity, pipe } from 'effect'
 import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
-import { A, Number, O, Ord, identity, pipe } from 'fp'
 import {
   ActivityIndicator,
   Header,
@@ -23,11 +23,11 @@ import { getActiveModality } from 'src/slices/groups'
 import { toFixedLocale } from 'src/utils/Number'
 
 const on = appEvents.result
- 
+
 export const ResultView = memoizedConst('ResultView')(() => {
   const result = useSelector(s => s.result)
   const modality = useSelector(s => getActiveModality(s))
-  return O.match(modality, {
+  return Option.match(modality, {
     onNone: () => Nothing,
     onSome: modality =>
       View({ flex: 1 })([
@@ -51,13 +51,13 @@ export const ResultView = memoizedConst('ResultView')(() => {
         ScrollView({ contentContainerStyle: { flexGrow: 1, gap: 8, p: 8 } })(
           pipe(
             result,
-            O.match({
+            Option.match({
               onNone: () => [
                 View({ flex: 1, justify: 'center' })([
                   ActivityIndicator({ color: Colors.primary }),
                 ]),
               ],
-              onSome: A.map((t, i) =>
+              onSome: ReadonlyArray.map((t, i) =>
                 TeamItem({ key: i.toString(), index: i, players: t, modality }),
               ),
             }),
@@ -76,7 +76,7 @@ const TeamItem = (props: {
   const title = `${t('Team')} ${props.index + 1}`
   const numPlayers = props.players.length
   const totalRating = Player.getRatingTotal(props.players)
-  const avgRating = toFixedLocale(2)(Number.div(numPlayers)(totalRating))
+  const avgRating = toFixedLocale(2)(totalRating / numPlayers)
   return View({
     key: props.key,
     bg: Colors.card,
@@ -99,12 +99,12 @@ const TeamItem = (props: {
     ]),
     ...pipe(
       props.players,
-      A.sortBy(
+      ReadonlyArray.sortBy(
         Player.PositionOrd({ modality: props.modality }),
-        Ord.reverse(Player.RatingOrd),
+        Order.reverse(Player.RatingOrd),
         Player.NameOrd,
       ),
-      A.map(p =>
+      ReadonlyArray.map(p =>
         PlayerItem({ key: p.id, player: p, modality: props.modality }),
       ),
     ),
@@ -130,9 +130,9 @@ const PlayerItem = ({
             Position.StaticPosition | Position.CustomPosition
           >
         >(modality.positions),
-        A.findFirst(_ => _.abbreviation === positionAbbreviation),
-        O.map(Position.toAbbreviationString),
-        O.getOrElse(() => '-'),
+        ReadonlyArray.findFirst(_ => _.abbreviation === positionAbbreviation),
+        Option.map(Position.toAbbreviationString),
+        Option.getOrElse(() => '-'),
       )})`,
     ),
   ])

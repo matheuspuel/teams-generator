@@ -1,4 +1,5 @@
-import { A, Data, O, constant, flow, pipe } from 'fp'
+import { Data, Option, ReadonlyArray, flow, pipe } from 'effect'
+import { constant } from 'effect/Function'
 import {
   FlatList,
   Header,
@@ -32,17 +33,20 @@ const on = appEvents.group
 export const GroupView = memoizedConst('GroupView')(() => {
   const playersIds = useSelector(s =>
     pipe(
-      O.all({
+      Option.all({
         group: getSelectedGroup(s),
         modality: getActiveModality(s),
       }),
-      O.map(({ group, modality }) =>
+      Option.map(({ group, modality }) =>
         pipe(
-          A.sort(group.players, GroupOrder.toOrder(s.groupOrder)({ modality })),
-          A.map(_ => _.id),
+          ReadonlyArray.sort(
+            group.players,
+            GroupOrder.toOrder(s.groupOrder)({ modality }),
+          ),
+          ReadonlyArray.map(_ => _.id),
         ),
       ),
-      O.getOrElse(() => []),
+      Option.getOrElse(() => []),
       Data.array,
     ),
   )
@@ -50,7 +54,7 @@ export const GroupView = memoizedConst('GroupView')(() => {
     GroupHeader,
     PreRender(
       View({ flex: 1, p: 8, gap: 8 })(
-        A.replicate(3)(
+        ReadonlyArray.replicate(3)(
           View({
             round: 8,
             bg: Colors.opacity(0.125)(Colors.gray),
@@ -104,22 +108,22 @@ const Item = memoized('Player')((id: Id) => {
   const player = useSelector(s =>
     pipe(
       getPlayerFromSelectedGroup({ playerId: id })(s),
-      O.map(player => ({
+      Option.map(player => ({
         ...player,
         position: pipe(
           getActiveModality(s),
-          O.flatMap(m =>
-            A.findFirst(
+          Option.flatMap(m =>
+            ReadonlyArray.findFirst(
               m.positions,
               p => p.abbreviation === player.positionAbbreviation,
             ),
           ),
         ),
       })),
-      O.map(Data.struct),
+      Option.map(Data.struct),
     ),
   )
-  return O.match(player, {
+  return Option.match(player, {
     onNone: () => Nothing,
     onSome: ({ active, name, position, rating }) =>
       Pressable({
@@ -149,7 +153,7 @@ const Item = memoized('Player')((id: Id) => {
             weight: 600,
             includeFontPadding: false,
           })(
-            O.match(position, {
+            Option.match(position, {
               onNone: () => '-',
               onSome: Position.toAbbreviationString,
             }),
@@ -165,12 +169,12 @@ const ShuffleButton = namedConst('ShuffleButton')(() => {
   const numSelected = useSelector(
     flow(
       getSelectedGroup,
-      O.match({
+      Option.match({
         onNone: constant<Array<Player>>([]),
         onSome: g => g.players,
       }),
-      A.filter(p => p.active),
-      A.length,
+      ReadonlyArray.filter(p => p.active),
+      ReadonlyArray.length,
     ),
   )
   return SolidButton({

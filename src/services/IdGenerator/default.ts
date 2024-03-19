@@ -1,8 +1,8 @@
 import { createId } from '@paralleldrive/cuid2'
+import { Effect, Layer } from 'effect'
 import { Id } from 'src/utils/Entity'
-import { F, Layer } from 'src/utils/fp'
 import { IdGeneratorEnv } from '.'
 
 export const IdGeneratorLive = IdGeneratorEnv.context({
-  generate: () => F.sync(() => Id(createId())),
+  generate: () => Effect.sync(() => Id(createId())),
 }).pipe(Layer.succeedContext)

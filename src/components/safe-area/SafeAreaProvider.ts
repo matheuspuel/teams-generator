@@ -1,4 +1,4 @@
-import { F, O, Runtime, pipe } from 'fp'
+import { Effect, Option, Runtime, pipe } from 'effect'
 import React from 'react'
 import { SafeAreaProvider as RawSafeAreaProvider_ } from 'react-native-safe-area-context'
 import {
@@ -36,7 +36,7 @@ const getRawProps = ({
   children: children,
   initialMetrics: pipe(
     SafeAreaService.initialMetrics(),
-    F.map(O.getOrUndefined),
+    Effect.map(Option.getOrUndefined),
     Runtime.runSync(runtime),
   ),
   style: {

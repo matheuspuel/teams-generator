@@ -1,5 +1,5 @@
 import { get } from '@fp-ts/optic'
-import { F, flow, pipe } from 'fp'
+import { Effect, flow, pipe } from 'effect'
 import { GroupOrder, Parameters } from 'src/datatypes'
 import { root } from 'src/model/optic'
 import { Repository } from 'src/services/Repositories'
@@ -9,40 +9,46 @@ import { emptyGroups } from '../groups'
 export const saveState = () =>
   pipe(
     StateRef.query(State.get),
-    F.tap(flow(get(root.at('groups')), Repository.teams.Groups.set)),
-    F.tap(flow(get(root.at('parameters')), Repository.teams.Parameters.set)),
-    F.tap(flow(get(root.at('groupOrder')), Repository.teams.GroupOrder.set)),
-    F.tap(
+    Effect.tap(flow(get(root.at('groups')), Repository.teams.Groups.set)),
+    Effect.tap(
+      flow(get(root.at('parameters')), Repository.teams.Parameters.set),
+    ),
+    Effect.tap(
+      flow(get(root.at('groupOrder')), Repository.teams.GroupOrder.set),
+    ),
+    Effect.tap(
       flow(get(root.at('customModalities')), Repository.teams.Modality.set),
     ),
-    F.catchAll(() => F.unit),
+    Effect.catchAll(() => Effect.unit),
   )
 
-export const hydrate = F.all([
+export const hydrate = Effect.all([
   pipe(
     Repository.teams.Groups.get(),
-    F.catchAll(() => F.succeed(emptyGroups)),
-    F.flatMap(data => StateRef.execute(State.on(root.at('groups')).set(data))),
+    Effect.catchAll(() => Effect.succeed(emptyGroups)),
+    Effect.flatMap(data =>
+      StateRef.execute(State.on(root.at('groups')).set(data)),
+    ),
   ),
   pipe(
     Repository.teams.Parameters.get(),
-    F.catchAll(() => F.succeed(Parameters.initial)),
-    F.flatMap(data =>
+    Effect.catchAll(() => Effect.succeed(Parameters.initial)),
+    Effect.flatMap(data =>
       StateRef.execute(State.on(root.at('parameters')).set(data)),
     ),
   ),
   pipe(
     Repository.teams.GroupOrder.get(),
-    F.catchAll(() => F.succeed(GroupOrder.initial)),
-    F.flatMap(data =>
+    Effect.catchAll(() => Effect.succeed(GroupOrder.initial)),
+    Effect.flatMap(data =>
       StateRef.execute(State.on(root.at('groupOrder')).set(data)),
     ),
   ),
   pipe(
     Repository.teams.Modality.get(),
-    F.catchAll(() => F.succeed([])),
-    F.flatMap(data =>
+    Effect.catchAll(() => Effect.succeed([])),
+    Effect.flatMap(data =>
       StateRef.execute(State.on(root.at('customModalities')).set(data)),
     ),
   ),
-]).pipe(F.asUnit)
+]).pipe(Effect.asUnit)

@@ -1,4 +1,4 @@
-import { O, Option } from 'fp'
+import { Option } from 'effect'
 import {
   MaterialCommunityIcons,
   Nothing,
@@ -25,47 +25,47 @@ export const SortGroupView = namedConst('SortGroupView')(() => {
         onPress: on.sort.by.name(),
         state:
           mainSort._tag === 'name'
-            ? O.some({ reverse: mainSort.reverse })
-            : O.none(),
+            ? Option.some({ reverse: mainSort.reverse })
+            : Option.none(),
       }),
       FilterButton({
         name: t('Position'),
         onPress: on.sort.by.position(),
         state:
           mainSort._tag === 'position'
-            ? O.some({ reverse: mainSort.reverse })
-            : O.none(),
+            ? Option.some({ reverse: mainSort.reverse })
+            : Option.none(),
       }),
       FilterButton({
         name: t('Rating'),
         onPress: on.sort.by.rating(),
         state:
           mainSort._tag === 'rating'
-            ? O.some({ reverse: mainSort.reverse })
-            : O.none(),
+            ? Option.some({ reverse: mainSort.reverse })
+            : Option.none(),
       }),
       FilterButton({
         name: t('Active'),
         onPress: on.sort.by.active(),
         state:
           mainSort._tag === 'active'
-            ? O.some({ reverse: mainSort.reverse })
-            : O.none(),
+            ? Option.some({ reverse: mainSort.reverse })
+            : Option.none(),
       }),
       FilterButton({
         name: t('Date'),
         onPress: on.sort.by.date(),
         state:
           mainSort._tag === 'date'
-            ? O.some({ reverse: mainSort.reverse })
-            : O.none(),
+            ? Option.some({ reverse: mainSort.reverse })
+            : Option.none(),
       }),
     ]),
   ])
 })
 
 const FilterButton = (props: {
-  state: Option<{ reverse: boolean }>
+  state: Option.Option<{ reverse: boolean }>
   onPress: AppEvent
   name: string
 }) =>
@@ -76,7 +76,7 @@ const FilterButton = (props: {
     onPress: props.onPress,
   })([
     View({ w: 36 })([
-      O.match(props.state, {
+      Option.match(props.state, {
         onNone: () => Nothing,
         onSome: ({ reverse }) =>
           MaterialCommunityIcons({

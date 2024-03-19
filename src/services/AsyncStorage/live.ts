@@ -1,14 +1,14 @@
 import RNAsyncStorage from '@react-native-async-storage/async-storage'
-import { F, Layer, O, pipe } from 'fp'
+import { Effect, Layer, Option, pipe } from 'effect'
 import { AsyncStorageEnv } from '.'
 
 export const AsyncStorageLive = AsyncStorageEnv.context({
   getItem: key =>
     pipe(
-      F.tryPromise(() => RNAsyncStorage.getItem(key)),
-      F.map(O.fromNullable),
+      Effect.tryPromise(() => RNAsyncStorage.getItem(key)),
+      Effect.map(Option.fromNullable),
     ),
   setItem: ({ key, value }) =>
-    F.tryPromise(() => RNAsyncStorage.setItem(key, value)),
-  removeItem: key => F.tryPromise(() => RNAsyncStorage.removeItem(key)),
+    Effect.tryPromise(() => RNAsyncStorage.setItem(key, value)),
+  removeItem: key => Effect.tryPromise(() => RNAsyncStorage.removeItem(key)),
 }).pipe(Layer.succeedContext)

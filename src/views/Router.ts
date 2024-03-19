@@ -1,4 +1,4 @@
-import { A, Match, flow, pipe } from 'fp'
+import { Match, ReadonlyArray, flow, pipe } from 'effect'
 import { StatusBar } from 'src/components/expo/StatusBar'
 import { memoizedConst } from 'src/components/hyperscript'
 import { mergeModalsToScreens, modal, screen } from 'src/components/routing'
@@ -28,7 +28,7 @@ export const Router = memoizedConst('Router')(() => {
     StatusBar({ style: 'light' }),
     pipe(
       route,
-      A.map(
+      ReadonlyArray.map(
         Match.valueTags({
           Groups: screen(() => GroupsView),
           Modalities: screen(() => ModalitiesView),
@@ -47,7 +47,7 @@ export const Router = memoizedConst('Router')(() => {
         }),
       ),
       mergeModalsToScreens,
-      A.map(flow(A.of<UIElement>, Screen())),
+      ReadonlyArray.map(flow(ReadonlyArray.of<UIElement>, Screen())),
       ScreenStack(),
     ),
   ])

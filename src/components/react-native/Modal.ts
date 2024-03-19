@@ -1,10 +1,11 @@
-import { A, Runtime, identity } from 'fp'
+import { Runtime, identity } from 'effect'
 import React from 'react'
 import { Modal as RNModal_ } from 'react-native'
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler'
 import { Children, JSXElementsChildren, UIElement } from 'src/components/types'
 import { useRuntime } from 'src/contexts/Runtime'
 import { AppEvent } from 'src/events'
+import { isArray } from 'src/utils/fp/Array'
 import { named2 } from '../hyperscript'
 
 export type ModalStyleProps = { flex?: number }
@@ -32,7 +33,7 @@ export const NativeModal = named2('NativeModal')((props: ModalProps = {}) =>
         children: React.createElement(
           GestureHandlerInModal,
           null,
-          ...(A.isArray(children) ? children : [children]),
+          ...(isArray(children) ? children : [children]),
         ),
         transparent: props.transparent,
         visible: props.visible,
@@ -41,8 +42,10 @@ export const NativeModal = named2('NativeModal')((props: ModalProps = {}) =>
         onRequestClose:
           props.onRequestClose &&
           (() =>
-            props.onRequestClose &&
-            Runtime.runPromise(runtime)(props.onRequestClose)),
+            void (
+              props.onRequestClose &&
+              Runtime.runPromise(runtime)(props.onRequestClose)
+            )),
         style: {
           flex: props?.flex,
         },

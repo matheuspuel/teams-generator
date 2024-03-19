@@ -1,7 +1,7 @@
+import { Context, Effect, absurd } from 'effect'
 import { UIColor } from 'src/components/types'
 import { Color } from 'src/utils/datatypes'
 import { withOpacity } from 'src/utils/datatypes/Color'
-import { Context, Effect, F, absurd } from 'src/utils/fp'
 import { lightTheme } from './light'
 
 type AppTheme_ = typeof lightTheme
@@ -14,10 +14,10 @@ export class AppThemeEnv extends Context.Tag('AppTheme')<
 >() {}
 
 const matchType = <A>(cases: {
-  light: Effect<A, never, AppThemeEnv>
-  dark: Effect<A, never, AppThemeEnv>
-}): Effect<A, never, AppThemeEnv> =>
-  F.flatMap(AppThemeEnv, t =>
+  light: Effect.Effect<A, never, AppThemeEnv>
+  dark: Effect.Effect<A, never, AppThemeEnv>
+}): Effect.Effect<A, never, AppThemeEnv> =>
+  Effect.flatMap(AppThemeEnv, t =>
     t.type === 'light'
       ? cases.light
       : t.type === 'dark'
@@ -30,52 +30,52 @@ export const Theme = {
   matchType,
   colors: {
     opacity: (factor: number): ((color: UIColor) => UIColor) =>
-      F.map(withOpacity(Math.round(factor * 255))),
+      Effect.map(withOpacity(Math.round(factor * 255))),
     toneStatic: (factor: number): ((color: UIColor) => UIColor) =>
-      F.map(
+      Effect.map(
         factor > 0 ? Color.tone(0)(factor) : Color.tone(255)(Math.abs(factor)),
       ),
     tone:
       (factor: number): ((color: UIColor) => UIColor) =>
       c =>
         matchType({
-          light: F.map(
+          light: Effect.map(
             c,
             factor > 0
               ? Color.tone(0)(factor)
               : Color.tone(255)(Math.abs(factor)),
           ),
-          dark: F.map(
+          dark: Effect.map(
             c,
             factor > 0
               ? Color.tone(255)(factor)
               : Color.tone(0)(Math.abs(factor)),
           ),
         }),
-    background: F.map(AppThemeEnv, env => env.colors.background),
-    card: F.map(AppThemeEnv, env => env.colors.card),
-    cardSecondary: F.map(AppThemeEnv, env => env.colors.cardSecondary),
-    header: F.map(AppThemeEnv, env => env.colors.header),
+    background: Effect.map(AppThemeEnv, env => env.colors.background),
+    card: Effect.map(AppThemeEnv, env => env.colors.card),
+    cardSecondary: Effect.map(AppThemeEnv, env => env.colors.cardSecondary),
+    header: Effect.map(AppThemeEnv, env => env.colors.header),
     text: {
-      light: F.map(AppThemeEnv, env => env.colors.text.light),
-      dark: F.map(AppThemeEnv, env => env.colors.text.dark),
-      secondary: F.map(AppThemeEnv, env => env.colors.text.secondary),
-      gray: F.map(AppThemeEnv, env => env.colors.text.gray),
+      light: Effect.map(AppThemeEnv, env => env.colors.text.light),
+      dark: Effect.map(AppThemeEnv, env => env.colors.text.dark),
+      secondary: Effect.map(AppThemeEnv, env => env.colors.text.secondary),
+      gray: Effect.map(AppThemeEnv, env => env.colors.text.gray),
       normal: matchType({
-        light: F.map(AppThemeEnv, env => env.colors.text.dark),
-        dark: F.map(AppThemeEnv, env => env.colors.text.light),
+        light: Effect.map(AppThemeEnv, env => env.colors.text.dark),
+        dark: Effect.map(AppThemeEnv, env => env.colors.text.light),
       }),
       inverted: matchType({
-        light: F.map(AppThemeEnv, env => env.colors.text.light),
-        dark: F.map(AppThemeEnv, env => env.colors.text.dark),
+        light: Effect.map(AppThemeEnv, env => env.colors.text.light),
+        dark: Effect.map(AppThemeEnv, env => env.colors.text.dark),
       }),
     },
-    white: F.map(AppThemeEnv, env => env.colors.white),
-    black: F.map(AppThemeEnv, env => env.colors.black),
-    gray: F.map(AppThemeEnv, env => env.colors.gray),
-    primary: F.map(AppThemeEnv, env => env.colors.primary),
-    success: F.map(AppThemeEnv, env => env.colors.success),
-    error: F.map(AppThemeEnv, env => env.colors.error),
+    white: Effect.map(AppThemeEnv, env => env.colors.white),
+    black: Effect.map(AppThemeEnv, env => env.colors.black),
+    gray: Effect.map(AppThemeEnv, env => env.colors.gray),
+    primary: Effect.map(AppThemeEnv, env => env.colors.primary),
+    success: Effect.map(AppThemeEnv, env => env.colors.success),
+    error: Effect.map(AppThemeEnv, env => env.colors.error),
   },
 }
 

@@ -1,8 +1,8 @@
+import { Schema } from '@effect/schema'
 import { Color } from 'src/utils/datatypes'
-import { S } from 'src/utils/fp'
 import { lightTheme } from './light'
 
-const hex = S.decodeSync(Color.FromHex)
+const hex = Schema.decodeSync(Color.FromHex)
 
 export const darkTheme: typeof lightTheme = {
   type: 'dark',

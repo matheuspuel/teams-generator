@@ -1,18 +1,22 @@
-import { A, flow, identity, pipe } from 'fp'
+import { ReadonlyArray, flow, identity, pipe } from 'effect'
 
 export const getCombinations: (
   n: number,
 ) => <A>(as: Array<A>) => Array<Array<A>> = n => as =>
   n === 0
     ? [[]]
-    : A.length(as) < n
+    : ReadonlyArray.length(as) < n
       ? []
       : pipe(
           as,
-          A.map((a, i) =>
-            pipe(A.drop(i + 1)(as), getCombinations(n - 1), A.map(A.append(a))),
+          ReadonlyArray.map((a, i) =>
+            pipe(
+              ReadonlyArray.drop(i + 1)(as),
+              getCombinations(n - 1),
+              ReadonlyArray.map(ReadonlyArray.append(a)),
+            ),
           ),
-          A.flatten,
+          ReadonlyArray.flatten,
         )
 
 export const getCombinationsIndices =
@@ -23,17 +27,17 @@ export const getCombinationsIndices =
       : n < k
         ? []
         : pipe(
-            A.makeBy(n, identity),
-            A.map(i =>
+            ReadonlyArray.makeBy(n, identity),
+            ReadonlyArray.map(i =>
               pipe(
                 getCombinationsIndices(k - 1)(n - i - 1),
-                A.map(
+                ReadonlyArray.map(
                   flow(
-                    A.map(v => v + i + 1),
-                    A.prepend(i),
+                    ReadonlyArray.map(v => v + i + 1),
+                    ReadonlyArray.prepend(i),
                   ),
                 ),
               ),
             ),
-            A.flatten,
+            ReadonlyArray.flatten,
           )
