@@ -33,3 +33,9 @@ export const appVersionName =
     preview: ' (PREVIEW)',
     development: ' (DEV)',
   })
+
+export const storeUrls = {
+  android:
+    'https://play.google.com/store/apps/details?id=dev.matheuspuel.sorteiotimes',
+  ios: 'https://apps.apple.com/pl/app/teams-generator/id6476064177',
+}

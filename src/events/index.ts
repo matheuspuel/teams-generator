@@ -56,6 +56,7 @@ import { blankPlayerForm, getPlayerFormFromData } from 'src/slices/playerForm'
 import { eraseResult, generateResult } from 'src/slices/result'
 import { Route, goBack, navigate } from 'src/slices/routes'
 import { Id } from 'src/utils/Entity'
+import { storeUrls } from 'src/utils/Metadata'
 import { toNonEmpty } from 'src/utils/fp/Array'
 import { nonEmptyIndex } from 'src/utils/fp/Optic'
 import { appLoaded, back } from './core'
@@ -539,8 +540,11 @@ export const appEvents = {
         }),
         StateRef.query,
         Effect.flatMap(({ result, modality }) =>
-          pipe(Player.teamListToStringSensitive({ modality })(result), _ =>
-            ShareService.shareMessage({ message: _, title: t('Teams') }),
+          pipe(
+            Player.teamListToStringSensitive({ modality })(result),
+            _ =>
+              `${_}\n\n${t('appName')}\nAndroid: ${storeUrls.android}\niOS: ${storeUrls.ios}`,
+            _ => ShareService.shareMessage({ message: _, title: t('Teams') }),
           ),
         ),
         Effect.ignore,

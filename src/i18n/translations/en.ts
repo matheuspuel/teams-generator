@@ -1,4 +1,5 @@
 export const enTranslation = {
+  appName: 'Teams Generator',
   Cancel: 'Cancel',
   Delete: 'Delete',
   Save: 'Save',

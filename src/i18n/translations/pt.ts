@@ -1,6 +1,7 @@
 import { Translation } from '..'
 
 export const ptTranslation: Translation = {
+  appName: 'Sorteio de Times',
   Cancel: 'Cancelar',
   Delete: 'Excluir',
   Save: 'Gravar',
