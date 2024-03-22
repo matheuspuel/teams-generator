@@ -1,9 +1,7 @@
-import { Context, Effect } from 'effect'
+import { Effect } from 'effect'
 
-export type UI = {
+export type UIImplementation = {
   start: () => Effect.Effect<void>
 }
 
-export class UIEnv extends Context.Tag('UI')<UIEnv, UI>() {}
-
-export const UI = Effect.serviceFunctions(UIEnv)
+export class UI extends Effect.Tag('UI')<UI, UIImplementation>() {}

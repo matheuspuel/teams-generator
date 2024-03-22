@@ -1,5 +1,5 @@
 import { Effect } from 'effect'
-import { RepositoryEnv } from '../tag'
+import { Repository } from '..'
 import { GroupOrderRepository } from './GroupOrder'
 import { GroupsRepository } from './Groups'
 import { ModalityRepository } from './Modality'
@@ -12,33 +12,9 @@ export type TeamsRepositories = {
   Modality: ModalityRepository
 }
 
-export const TeamsRepositories = {
-  Parameters: {
-    get: Effect.serviceFunctionEffect(
-      RepositoryEnv,
-      r => r.teams.Parameters.get,
-    ),
-    set: Effect.serviceFunctionEffect(
-      RepositoryEnv,
-      r => r.teams.Parameters.set,
-    ),
-  },
-  Groups: {
-    get: Effect.serviceFunctionEffect(RepositoryEnv, r => r.teams.Groups.get),
-    set: Effect.serviceFunctionEffect(RepositoryEnv, r => r.teams.Groups.set),
-  },
-  GroupOrder: {
-    get: Effect.serviceFunctionEffect(
-      RepositoryEnv,
-      r => r.teams.GroupOrder.get,
-    ),
-    set: Effect.serviceFunctionEffect(
-      RepositoryEnv,
-      r => r.teams.GroupOrder.set,
-    ),
-  },
-  Modality: {
-    get: Effect.serviceFunctionEffect(RepositoryEnv, r => r.teams.Modality.get),
-    set: Effect.serviceFunctionEffect(RepositoryEnv, r => r.teams.Modality.set),
-  },
-}
+export const TeamsRepositories = (Tag: typeof Repository) => ({
+  Parameters: Effect.serviceFunctions(Effect.map(Tag, r => r.teams.Parameters)),
+  Groups: Effect.serviceFunctions(Effect.map(Tag, r => r.teams.Groups)),
+  GroupOrder: Effect.serviceFunctions(Effect.map(Tag, r => r.teams.GroupOrder)),
+  Modality: Effect.serviceFunctions(Effect.map(Tag, r => r.teams.Modality)),
+})

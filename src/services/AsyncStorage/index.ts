@@ -1,7 +1,7 @@
 /* eslint-disable functional/functional-parameters */
-import { Context, Effect, Option } from 'effect'
+import { Effect, Option } from 'effect'
 
-export type AsyncStorage = {
+export type AsyncStorageImplementation = {
   getItem: (key: string) => Effect.Effect<Option.Option<string>, unknown>
   setItem: (args: {
     key: string
@@ -10,9 +10,7 @@ export type AsyncStorage = {
   removeItem: (key: string) => Effect.Effect<void, unknown>
 }
 
-export class AsyncStorageEnv extends Context.Tag('AsyncStorage')<
-  AsyncStorageEnv,
-  AsyncStorage
+export class AsyncStorage extends Effect.Tag('AsyncStorage')<
+  AsyncStorage,
+  AsyncStorageImplementation
 >() {}
-
-export const AsyncStorage = Effect.serviceFunctions(AsyncStorageEnv)

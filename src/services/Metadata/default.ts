@@ -5,9 +5,9 @@ import packageJSON from 'src/../package.json'
 import { preferences } from 'src/i18n'
 import { IdGenerator } from 'src/services/IdGenerator'
 import { IdGeneratorLive } from 'src/services/IdGenerator/default'
-import { Metadata, MetadataServiceEnv } from 'src/services/Metadata'
-import { Repository } from 'src/services/Repositories'
+import { Metadata, MetadataService } from 'src/services/Metadata'
 import { AsyncStorageLive } from '../AsyncStorage/live'
+import { Repository } from '../Repositories'
 import { RepositoryLive } from '../Repositories/live'
 
 const metadataRef = Ref.make<Option.Option<Metadata>>(Option.none()).pipe(
@@ -39,7 +39,7 @@ const getStaticMetadata = Effect.sync(() => ({
   },
 }))
 
-export const MetadataServiceLive = MetadataServiceEnv.context({
+export const MetadataServiceLive = MetadataService.context({
   get: () =>
     pipe(
       Ref.get(metadataRef),

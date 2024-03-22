@@ -4,14 +4,14 @@ import * as React from 'react'
 import { useColorScheme } from 'react-native'
 import { named } from 'src/components/hyperscript'
 import { Children, UIColor } from 'src/components/types'
-import { AppTheme, AppThemeEnv, Colors } from 'src/services/Theme'
+import { Colors, Theme, ThemeImplementation } from 'src/services/Theme'
 import { darkTheme } from 'src/services/Theme/dark'
 import { lightTheme } from 'src/services/Theme/light'
 import { Color } from 'src/utils/datatypes'
 
 export const ThemeContext = React.createContext<{
-  light: AppTheme
-  dark: AppTheme
+  light: ThemeImplementation
+  dark: ThemeImplementation
 }>({ light: lightTheme, dark: darkTheme })
 
 export const ThemeContextProvider = named('ThemeContextProvider')(
@@ -29,9 +29,7 @@ export const useThemeGetRawColor = () => {
   const theme = useTheme()
   const getColorHex = React.useMemo(
     () => (color: UIColor) =>
-      Color.toHex(
-        Effect.runSync(Effect.provideService(color, AppThemeEnv, theme)),
-      ),
+      Color.toHex(Effect.runSync(Effect.provideService(color, Theme, theme))),
     [theme],
   )
   return getColorHex

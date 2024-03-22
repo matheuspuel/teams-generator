@@ -1,8 +1,8 @@
 import { Chunk, Effect, Layer, Option, Stream, pipe } from 'effect'
 import * as ExpoLinking from 'expo-linking'
-import { LinkingEnv } from '.'
+import { Linking } from '.'
 
-export const LinkingLive = LinkingEnv.context({
+export const LinkingLive = Linking.context({
   openURL: url =>
     pipe(
       Effect.tryPromise(() => ExpoLinking.openURL(url)),

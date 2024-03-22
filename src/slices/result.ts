@@ -10,7 +10,7 @@ import { clockWith } from 'effect/Effect'
 import { Player, TeamsGenerator } from 'src/datatypes'
 import { getResultRatingDeviance } from 'src/datatypes/TeamsGenerator'
 import { root } from 'src/model/optic'
-import { Metadata } from 'src/services/Metadata'
+import { MetadataService } from 'src/services/Metadata'
 import { State, StateRef } from 'src/services/StateRef'
 import { Telemetry } from 'src/services/Telemetry'
 import { Timestamp } from 'src/utils/datatypes'
@@ -69,7 +69,7 @@ export const generateResult = pipe(
   ),
   Effect.tap(({ parameters, players, start, end, result }) =>
     pipe(
-      Metadata.get(),
+      MetadataService.get(),
       Effect.flatMap(meta =>
         Telemetry.log([
           {

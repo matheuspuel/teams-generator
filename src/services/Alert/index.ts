@@ -1,6 +1,6 @@
-import { Context, Effect } from 'effect'
+import { Effect } from 'effect'
 
-export type Alert = {
+export type AlertImplementation = {
   alert: (args: {
     type: 'error' | 'success'
     title: string
@@ -9,6 +9,4 @@ export type Alert = {
   dismiss: () => Effect.Effect<void>
 }
 
-export class AlertEnv extends Context.Tag('Alert')<AlertEnv, Alert>() {}
-
-export const Alert = Effect.serviceFunctions(AlertEnv)
+export class Alert extends Effect.Tag('Alert')<Alert, AlertImplementation>() {}

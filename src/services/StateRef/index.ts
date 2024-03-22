@@ -15,18 +15,18 @@ import {
 import { unstable_batchedUpdates } from 'react-native'
 import { RootState } from 'src/model'
 
-export type AppStateRef = {
+export type AppStateRefImplementation = {
   ref: Ref.Ref<RootState>
   subscriptionsRef: Ref.Ref<ReadonlyArray<Subscription>>
 }
 
-export class AppStateRefEnv extends Context.Tag('AppStateRef')<
-  AppStateRefEnv,
-  AppStateRef
+export class AppStateRef extends Effect.Tag('AppStateRef')<
+  AppStateRef,
+  AppStateRefImplementation
 >() {}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export class InternalStateRef<_A> extends Context.Tag('InternalStateRef')<
+export class InternalStateRef<_A> extends Effect.Tag('InternalStateRef')<
   InternalStateRef<never>,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Ref.Ref<any>
@@ -92,7 +92,7 @@ export const State = {
 
 export type Subscription = (state: RootState) => Effect.Effect<void>
 
-const tag = AppStateRefEnv
+const tag = AppStateRef
 
 const subscribe = (f: Subscription) =>
   tag.pipe(
@@ -115,7 +115,7 @@ const subscribe = (f: Subscription) =>
 
 export const StateRef = {
   react: { subscribe: subscribe },
-  changes: Stream.asyncEffect<RootState, never, AppStateRefEnv>(emit =>
+  changes: Stream.asyncEffect<RootState, never, AppStateRef>(emit =>
     subscribe(s => Effect.sync(() => emit(Effect.succeed(Chunk.of(s))))),
   ),
   get: Effect.flatMap(tag, _ => Ref.get(_.ref)),
@@ -124,7 +124,7 @@ export const StateRef = {
   ): Effect.Effect<
     B,
     E,
-    Exclude<R, InternalStateRef<RootState>> | AppStateRefEnv
+    Exclude<R, InternalStateRef<RootState>> | AppStateRef
   > =>
     pipe(
       Effect.all({ stateRef: tag, runtime: Effect.runtime<R>() }),

@@ -1,16 +1,16 @@
 import { Schema } from '@effect/schema'
 import { Effect, Option, ReadonlyArray, pipe } from 'effect'
-import { AsyncStorage, AsyncStorageEnv } from 'src/services/AsyncStorage'
+import { AsyncStorage } from 'src/services/AsyncStorage'
 import { TelemetryLog, TelemetryLogSchema } from 'src/services/Telemetry'
-import { Repository } from '../..'
+import { LogRepository } from '.'
 
 const key = 'log'
 
 const LogSchema = TelemetryLogSchema
 
 export const LogRepositoryLive = Effect.map(
-  Effect.context<AsyncStorageEnv>(),
-  (ctx): Repository['telemetry']['Log'] => ({
+  Effect.context<AsyncStorage>(),
+  (ctx): LogRepository => ({
     get: () =>
       pipe(
         AsyncStorage.getItem(key),

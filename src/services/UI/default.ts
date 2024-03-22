@@ -1,7 +1,7 @@
 import { Effect, Layer } from 'effect'
 import { registerRootComponent } from 'expo'
 import { Element } from 'src/components/types'
-import { UIEnv } from '.'
+import { UI } from '.'
 import { DefaultUIRoot } from './defaultRoot'
 
 const startReactNativeUI = (
@@ -9,6 +9,6 @@ const startReactNativeUI = (
 ): Effect.Effect<void> =>
   Effect.sync(() => registerRootComponent(rootComponent))
 
-export const UILive = UIEnv.context({
+export const UILive = UI.context({
   start: () => startReactNativeUI(DefaultUIRoot),
 }).pipe(Layer.succeedContext)

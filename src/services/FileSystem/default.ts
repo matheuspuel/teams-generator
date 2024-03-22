@@ -1,9 +1,9 @@
 import { Effect, Layer, ReadonlyArray, String, pipe } from 'effect'
 import * as ExpoFileSystem from 'expo-file-system'
 import { enforceErrorInstance } from 'src/utils/Error'
-import { FileSystemEnv, FileSystemError } from '.'
+import { FileSystem, FileSystemError } from '.'
 
-export const FileSystemLive = FileSystemEnv.context({
+export const FileSystemLive = FileSystem.context({
   read: args => read(args),
   write: args =>
     pipe(

@@ -1,6 +1,6 @@
 import { Effect, Layer, Option } from 'effect'
-import { SafeAreaServiceEnv } from '.'
+import { SafeAreaService } from '.'
 
-export const SafeAreaServiceLive = SafeAreaServiceEnv.context({
+export const SafeAreaServiceLive = SafeAreaService.context({
   initialMetrics: () => Effect.succeed(Option.none()),
 }).pipe(Layer.succeedContext)

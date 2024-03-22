@@ -13,11 +13,11 @@ import {
 import { Rating } from 'src/datatypes'
 import { soccer } from 'src/datatypes/Modality'
 import { Player } from 'src/datatypes/Player'
-import { Repository } from 'src/services/Repositories'
 import { GroupsState } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
 import { Timestamp } from 'src/utils/datatypes'
 import { createStorage } from 'src/utils/storage'
+import { Repository } from '..'
 
 const PositionDictV1 = {
   G: null,

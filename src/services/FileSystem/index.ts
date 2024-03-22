@@ -1,6 +1,6 @@
-import { Context, Data, Effect } from 'effect'
+import { Data, Effect } from 'effect'
 
-export type FileSystem = {
+export type FileSystemImplementation = {
   read: (args: { uri: string }) => Effect.Effect<string, FileSystemError>
   write: (args: {
     uri: string
@@ -13,12 +13,10 @@ export type FileSystem = {
   cacheDirectory: () => Effect.Effect<string>
 }
 
-export class FileSystemEnv extends Context.Tag('FileSystem')<
-  FileSystemEnv,
-  FileSystem
+export class FileSystem extends Effect.Tag('FileSystem')<
+  FileSystem,
+  FileSystemImplementation
 >() {}
-
-export const FileSystem = Effect.serviceFunctions(FileSystemEnv)
 
 export class FileSystemError extends Data.TaggedError('FileSystemError')<{
   error: Error

@@ -1,21 +1,11 @@
 import { Effect } from 'effect'
-import { RepositoryEnv } from '../tag'
+import { Repository } from '..'
 import { LogRepository } from './Log'
 
 export type TelemetryRepositories = {
   Log: LogRepository
 }
 
-export const TelemetryRepositories = {
-  Log: {
-    get: Effect.serviceFunctionEffect(RepositoryEnv, r => r.telemetry.Log.get),
-    concat: Effect.serviceFunctionEffect(
-      RepositoryEnv,
-      r => r.telemetry.Log.concat,
-    ),
-    clear: Effect.serviceFunctionEffect(
-      RepositoryEnv,
-      r => r.telemetry.Log.clear,
-    ),
-  },
-}
+export const TelemetryRepositories = (Tag: typeof Repository) => ({
+  Log: Effect.serviceFunctions(Effect.map(Tag, r => r.telemetry.Log)),
+})

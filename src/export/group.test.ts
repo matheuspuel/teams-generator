@@ -5,8 +5,8 @@ import { Effect, Ref, SubscriptionRef } from 'effect'
 import { Group, Modality } from 'src/datatypes'
 import { CustomModality, futsal } from 'src/datatypes/Modality'
 import { RootState, initialAppState } from 'src/model'
-import { IdGenerator, IdGeneratorEnv } from 'src/services/IdGenerator'
-import { AppStateRefEnv, StateRef, Subscription } from 'src/services/StateRef'
+import { IdGenerator } from 'src/services/IdGenerator'
+import { AppStateRef, StateRef, Subscription } from 'src/services/StateRef'
 import { Id } from 'src/utils/Entity'
 import { describe, expect, test } from 'vitest'
 import { _importGroup } from './group'
@@ -159,17 +159,17 @@ describe('importGroup state logic', () => {
       customModalities: [modality0],
     })
     let currentId = 0
-    const idGeneratorSequential: IdGenerator = {
+    const IdGeneratorSequential = IdGenerator.context({
       generate: () => Effect.sync(() => Id((++currentId).toString())),
-    }
+    })
 
     _importGroup({
       ...group1,
       modality: modality1,
     }).pipe(
       StateRef.execute,
-      Effect.provideService(IdGeneratorEnv, idGeneratorSequential),
-      Effect.provideService(AppStateRefEnv, {
+      Effect.provide(IdGeneratorSequential),
+      Effect.provideService(AppStateRef, {
         ref,
         subscriptionsRef: SubscriptionRef.make<ReadonlyArray<Subscription>>(
           [],
@@ -234,17 +234,17 @@ describe('importGroup state logic', () => {
       customModalities: [modality0],
     })
     let currentId = 0
-    const idGeneratorSequential: IdGenerator = {
+    const IdGeneratorSequential = IdGenerator.context({
       generate: () => Effect.sync(() => Id((++currentId).toString())),
-    }
+    })
 
     _importGroup({
       ...group2,
       modality: modality2,
     }).pipe(
       StateRef.execute,
-      Effect.provideService(IdGeneratorEnv, idGeneratorSequential),
-      Effect.provideService(AppStateRefEnv, {
+      Effect.provide(IdGeneratorSequential),
+      Effect.provideService(AppStateRef, {
         ref,
         subscriptionsRef: SubscriptionRef.make<ReadonlyArray<Subscription>>(
           [],
@@ -292,9 +292,9 @@ describe('importGroup state logic', () => {
       customModalities: [modality0],
     })
     let currentId = 0
-    const idGeneratorSequential: IdGenerator = {
+    const IdGeneratorSequential = IdGenerator.context({
       generate: () => Effect.sync(() => Id((++currentId).toString())),
-    }
+    })
     // TODO reuse IdGeneratorTest
 
     _importGroup({
@@ -302,8 +302,8 @@ describe('importGroup state logic', () => {
       modality: { _tag: 'StaticModality', id: futsal.id },
     }).pipe(
       StateRef.execute,
-      Effect.provideService(IdGeneratorEnv, idGeneratorSequential),
-      Effect.provideService(AppStateRefEnv, {
+      Effect.provide(IdGeneratorSequential),
+      Effect.provideService(AppStateRef, {
         ref,
         subscriptionsRef: SubscriptionRef.make<ReadonlyArray<Subscription>>(
           [],

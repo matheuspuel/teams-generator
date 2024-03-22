@@ -1,7 +1,7 @@
-import { Context, Data, Effect } from 'effect'
+import { Data, Effect } from 'effect'
 import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
 
-export type DocumentPicker = {
+export type DocumentPickerImplementation = {
   getDocument: (args?: {
     type?: NonEmptyReadonlyArray<string>
   }) => Effect.Effect<
@@ -10,12 +10,10 @@ export type DocumentPicker = {
   >
 }
 
-export class DocumentPickerEnv extends Context.Tag('DocumentPicker')<
-  DocumentPickerEnv,
-  DocumentPicker
+export class DocumentPicker extends Effect.Tag('DocumentPicker')<
+  DocumentPicker,
+  DocumentPickerImplementation
 >() {}
-
-export const DocumentPicker = Effect.serviceFunctions(DocumentPickerEnv)
 
 export class DocumentPickerError extends Data.TaggedError(
   'DocumentPickerError',

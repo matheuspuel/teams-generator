@@ -1,6 +1,6 @@
 /* eslint-disable functional/functional-parameters */
 import { Schema } from '@effect/schema'
-import { Context, Effect } from 'effect'
+import { Effect } from 'effect'
 import { Timestamp } from 'src/utils/datatypes'
 
 export const TelemetryLogSchema = Schema.struct({
@@ -11,14 +11,12 @@ export const TelemetryLogSchema = Schema.struct({
 
 export type TelemetryLog = Schema.Schema.Type<typeof TelemetryLogSchema>
 
-export type Telemetry = {
+export type TelemetryImplementation = {
   log: (logs: Array<TelemetryLog>) => Effect.Effect<void, unknown>
   send: () => Effect.Effect<void, unknown>
 }
 
-export class TelemetryEnv extends Context.Tag('Telemetry')<
-  TelemetryEnv,
-  Telemetry
+export class Telemetry extends Effect.Tag('Telemetry')<
+  Telemetry,
+  TelemetryImplementation
 >() {}
-
-export const Telemetry = Effect.serviceFunctions(TelemetryEnv)

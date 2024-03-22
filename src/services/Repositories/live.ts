@@ -1,6 +1,6 @@
 import { Effect, Layer } from 'effect'
+import { Repository } from '.'
 import { MetadataRepositoriesLive } from './metadata/live'
-import { RepositoryEnv } from './tag'
 import { TeamsRepositoriesLive } from './teams/live'
 import { TelemetryRepositoriesLive } from './telemetry/live'
 
@@ -9,6 +9,6 @@ export const RepositoryLive = Effect.all({
   teams: Effect.succeed(TeamsRepositoriesLive),
   telemetry: TelemetryRepositoriesLive,
 }).pipe(
-  Effect.map(_ => RepositoryEnv.context(_)),
+  Effect.map(_ => Repository.context(_)),
   Layer.effectContext,
 )

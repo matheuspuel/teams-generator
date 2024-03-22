@@ -2,13 +2,9 @@ import { Effect, Layer, ReadonlyArray, pipe } from 'effect'
 import * as ExpoDocumentPicker from 'expo-document-picker'
 import { enforceErrorInstance } from 'src/utils/Error'
 import { DeepMutable } from 'src/utils/types'
-import {
-  CanceledOperationError,
-  DocumentPickerEnv,
-  DocumentPickerError,
-} from '.'
+import { CanceledOperationError, DocumentPicker, DocumentPickerError } from '.'
 
-export const DocumentPickerLive = DocumentPickerEnv.context({
+export const DocumentPickerLive = DocumentPicker.context({
   getDocument: args =>
     pipe(
       Effect.tryPromise({

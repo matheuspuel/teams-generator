@@ -8,8 +8,8 @@ import {
   pipe,
 } from 'effect'
 import { root } from 'src/model/optic'
-import { AppStateRefEnv, State, StateRef } from 'src/services/StateRef'
-import { AlertEnv } from '.'
+import { AppStateRef, State, StateRef } from 'src/services/StateRef'
+import { Alert } from '.'
 
 const ref = SubscriptionRef.make<void>(undefined).pipe(Effect.runSync)
 
@@ -25,9 +25,9 @@ export const AlertLive = pipe(
   stream,
   Stream.runDrain,
   Effect.forkDaemon,
-  Effect.flatMap(() => Effect.context<AppStateRefEnv>()),
+  Effect.flatMap(() => Effect.context<AppStateRef>()),
   Effect.map(ctx =>
-    AlertEnv.context({
+    Alert.context({
       alert: (args: {
         type: 'error' | 'success'
         title: string

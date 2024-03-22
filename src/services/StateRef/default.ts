@@ -1,8 +1,8 @@
 import { Layer, Ref } from 'effect'
-import { initialAppState, RootState } from 'src/model'
-import { AppStateRefEnv, Subscription } from '.'
+import { RootState, initialAppState } from 'src/model'
+import { AppStateRef, Subscription } from '.'
 
-export const StateRefLive = AppStateRefEnv.context({
+export const StateRefLive = AppStateRef.context({
   ref: Ref.unsafeMake<RootState>(initialAppState),
   subscriptionsRef: Ref.unsafeMake<ReadonlyArray<Subscription>>([]),
 }).pipe(Layer.succeedContext)

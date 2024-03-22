@@ -1,13 +1,11 @@
-import { Context, Effect } from 'effect'
+import { Effect } from 'effect'
 import { Id } from 'src/utils/Entity'
 
-export type IdGenerator = {
+export type IdGeneratorImplementation = {
   generate: () => Effect.Effect<Id>
 }
 
-export class IdGeneratorEnv extends Context.Tag('IdGenerator')<
-  IdGeneratorEnv,
-  IdGenerator
+export class IdGenerator extends Effect.Tag('IdGenerator')<
+  IdGenerator,
+  IdGeneratorImplementation
 >() {}
-
-export const IdGenerator = Effect.serviceFunctions(IdGeneratorEnv)

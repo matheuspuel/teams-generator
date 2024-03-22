@@ -1,6 +1,6 @@
-import { Context, Effect } from 'effect'
+import { Effect } from 'effect'
 
-export type ShareService = {
+export type ShareServiceImplementation = {
   shareMessage: (args: {
     title: string
     message: string
@@ -12,9 +12,7 @@ export type ShareService = {
   }) => Effect.Effect<void>
 }
 
-export class ShareServiceEnv extends Context.Tag('ShareService')<
-  ShareServiceEnv,
-  ShareService
+export class ShareService extends Effect.Tag('ShareService')<
+  ShareService,
+  ShareServiceImplementation
 >() {}
-
-export const ShareService = Effect.serviceFunctions(ShareServiceEnv)

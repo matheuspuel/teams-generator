@@ -1,8 +1,8 @@
 import RNAsyncStorage from '@react-native-async-storage/async-storage'
 import { Effect, Layer, Option, pipe } from 'effect'
-import { AsyncStorageEnv } from '.'
+import { AsyncStorage } from '.'
 
-export const AsyncStorageLive = AsyncStorageEnv.context({
+export const AsyncStorageLive = AsyncStorage.context({
   getItem: key =>
     pipe(
       Effect.tryPromise(() => RNAsyncStorage.getItem(key)),

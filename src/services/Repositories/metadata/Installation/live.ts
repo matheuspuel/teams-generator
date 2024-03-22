@@ -1,9 +1,11 @@
 import { Schema } from '@effect/schema'
 import { createStorage } from 'src/utils/storage'
-import { Repository } from '../..'
+import { InstallationRepository } from '.'
 
-export const InstallationRepositoryLive: Repository['metadata']['Installation'] =
-  createStorage<{ id: string }, { id: string }>({
-    key: 'telemetry/installation',
-    schema: Schema.struct({ id: Schema.string }),
-  })
+export const InstallationRepositoryLive: InstallationRepository = createStorage<
+  { id: string },
+  { id: string }
+>({
+  key: 'telemetry/installation',
+  schema: Schema.struct({ id: Schema.string }),
+})

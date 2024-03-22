@@ -1,4 +1,4 @@
-import { Context, Effect } from 'effect'
+import { Effect } from 'effect'
 
 export type Metadata = {
   installation: { id: string }
@@ -22,13 +22,11 @@ export type Metadata = {
   }
 }
 
-export type MetadataService = {
+export type MetadataServiceImplementation = {
   get: () => Effect.Effect<Metadata>
 }
 
-export class MetadataServiceEnv extends Context.Tag('MetadataService')<
-  MetadataServiceEnv,
-  MetadataService
+export class MetadataService extends Effect.Tag('MetadataService')<
+  MetadataService,
+  MetadataServiceImplementation
 >() {}
-
-export const Metadata = Effect.serviceFunctions(MetadataServiceEnv)

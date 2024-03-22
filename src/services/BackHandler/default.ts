@@ -1,8 +1,8 @@
 import { Chunk, Effect, Layer, Stream } from 'effect'
 import { BackHandler as BackHandler_ } from 'react-native'
-import { BackHandlerEnv } from '.'
+import { BackHandler } from '.'
 
-export const BackHandlerLive = BackHandlerEnv.context({
+export const BackHandlerLive = BackHandler.context({
   exit: () => Effect.sync(() => BackHandler_.exitApp()),
   stream: Stream.async<void>(emit => {
     // eslint-disable-next-line functional/no-expression-statements

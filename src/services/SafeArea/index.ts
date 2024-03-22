@@ -1,13 +1,11 @@
-import { Context, Effect, Option } from 'effect'
+import { Effect, Option } from 'effect'
 import { Metrics } from 'react-native-safe-area-context'
 
-export type SafeAreaService = {
+export type SafeAreaServiceImplementation = {
   initialMetrics: () => Effect.Effect<Option.Option<Metrics>>
 }
 
-export class SafeAreaServiceEnv extends Context.Tag('SafeAreaService')<
-  SafeAreaServiceEnv,
-  SafeAreaService
+export class SafeAreaService extends Effect.Tag('SafeAreaService')<
+  SafeAreaService,
+  SafeAreaServiceImplementation
 >() {}
-
-export const SafeAreaService = Effect.serviceFunctions(SafeAreaServiceEnv)

@@ -1,8 +1,8 @@
 import { Schema } from '@effect/schema'
 import { createStorage } from 'src/utils/storage'
-import { Repository } from '../..'
+import { StorageVersionRepository } from '.'
 
-export const StorageVersionRepositoryLive: Repository['metadata']['StorageVersion'] =
+export const StorageVersionRepositoryLive: StorageVersionRepository =
   createStorage({
     key: 'telemetry/StorageVersion',
     schema: Schema.struct({ version: Schema.number }),

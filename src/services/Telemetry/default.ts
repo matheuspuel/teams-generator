@@ -1,9 +1,8 @@
 import { Effect, Layer, flow, pipe } from 'effect'
 import * as Fetch from 'src/utils/Fetch'
 import * as Metadata from 'src/utils/Metadata'
-import { TelemetryEnv } from '.'
+import { Telemetry } from '.'
 import { Repository } from '../Repositories'
-import { RepositoryEnv } from '../Repositories/tag'
 
 const telemetryServerUrl = Metadata.matchEnv({
   production: 'https://telemetry-production.up.railway.app',
@@ -12,8 +11,8 @@ const telemetryServerUrl = Metadata.matchEnv({
   development: 'http://192.168.3.2:8080',
 })
 
-export const TelemetryLive = Effect.map(Effect.context<RepositoryEnv>(), ctx =>
-  TelemetryEnv.context({
+export const TelemetryLive = Effect.map(Effect.context<Repository>(), ctx =>
+  Telemetry.context({
     log: flow(Repository.telemetry.Log.concat, Effect.provide(ctx)),
     send: () =>
       pipe(
