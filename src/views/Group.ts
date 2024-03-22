@@ -182,6 +182,7 @@ const ShuffleButton = namedConst('ShuffleButton')(() => {
     p: 16,
     round: 0,
     color: Colors.header,
+    isEnabled: numSelected > 1,
   })([
     Txt()(t('Generate teams')),
     Txt({ size: 12 })(
