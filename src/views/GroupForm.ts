@@ -30,7 +30,7 @@ import { Route, navigate } from 'src/slices/routes'
 const on = appEvents.groups.item
 
 export const GroupFormView = memoizedConst('GroupFormView')(() => {
-  const isEnabled = useSelector(s => String.isNonEmpty(s.groupForm.name))
+  const isEnabled = useSelector(s => String.isNonEmpty(s.groupForm.name.trim()))
   return SafeAreaView({ flex: 1, edges: ['bottom'] })([
     KeyboardAvoidingView()([
       ScreenHeader,

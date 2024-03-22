@@ -30,15 +30,22 @@ export const initialModalityForm: ModalityForm = {
 export const validateModalityForm = (f: ModalityForm) =>
   Either.all({
     id: Either.right(f.id),
-    name: Schema.decodeEither(NonEmptyString)(f.name),
+    name: Schema.decodeEither(Schema.compose(Schema.Trim, NonEmptyString))(
+      f.name,
+    ),
     positions: Either.all(
       ReadonlyArray.map(f.positions, p =>
         Either.all({
           oldAbbreviation: Either.right(p.oldAbbreviation),
           abbreviation: Schema.decodeEither(
-            Schema.Lowercase.pipe(Schema.compose(Abbreviation)),
+            Schema.Trim.pipe(
+              Schema.compose(Schema.Lowercase),
+              Schema.compose(Abbreviation),
+            ),
           )(p.abbreviation),
-          name: Schema.decodeEither(NonEmptyString)(p.name),
+          name: Schema.decodeEither(
+            Schema.compose(Schema.Trim, NonEmptyString),
+          )(p.name),
         }).pipe(
           Either.map(_ => ({
             ..._,

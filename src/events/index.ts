@@ -362,6 +362,7 @@ export const appEvents = {
         submit: () =>
           pipe(
             State.with(s => s.groupForm),
+            Effect.map(v => ({ ...v, name: v.name.trim() })),
             Effect.filterOrElse(
               f => not(String.isEmpty)(f.name),
               () => Option.none(),
@@ -508,6 +509,7 @@ export const appEvents = {
         Effect.all({
           form: pipe(
             State.on(root.at('playerForm')).get,
+            Effect.map(v => ({ ...v, name: v.name.trim() })),
             Effect.flatMap(f =>
               pipe(f, Option.liftPredicate(not(() => String.isEmpty(f.name)))),
             ),

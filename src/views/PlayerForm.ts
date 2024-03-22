@@ -40,7 +40,7 @@ export const PlayerView = memoizedConst('PlayerView')(() => {
       ]),
       SolidButton({
         onPress: on.save(),
-        isEnabled: String.isNonEmpty(name),
+        isEnabled: String.isNonEmpty(name.trim()),
         p: 16,
         round: 0,
         color: Colors.header,
