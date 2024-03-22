@@ -76,7 +76,8 @@ const TeamItem = (props: {
   const title = `${t('Team')} ${props.index + 1}`
   const numPlayers = props.players.length
   const totalRating = Player.getRatingTotal(props.players)
-  const avgRating = toFixedLocale(2)(totalRating / numPlayers)
+  const averageRating =
+    numPlayers === 0 ? '-' : toFixedLocale(2)(totalRating / numPlayers)
   return View({
     key: props.key,
     bg: Colors.card,
@@ -91,7 +92,7 @@ const TeamItem = (props: {
     ]),
     TxtContext({ align: 'left', color: Colors.text.secondary, size: 12 })([
       Txt({ align: 'left' })(`${t('Average rating')}: `),
-      Txt()(avgRating),
+      Txt()(averageRating),
     ]),
     TxtContext({ align: 'left', color: Colors.text.secondary, size: 12 })([
       Txt({ align: 'left' })(`${t('Total rating')}: `),

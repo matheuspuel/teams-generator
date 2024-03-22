@@ -43,11 +43,11 @@ const getResultPositionDeviance =
             allPlayers,
             positionCount(pos),
             n => n / teams.length,
-            positionAvg =>
+            positionAverage =>
               pipe(
                 teams,
                 ReadonlyArray.map(
-                  flow(positionCount(pos), deviance(positionAvg)),
+                  flow(positionCount(pos), deviance(positionAverage)),
                 ),
                 sumAll,
               ),
@@ -62,13 +62,24 @@ const fixFloatFactor = 1000000000000
 const fixFloat = (v: number) => Math.round(v * fixFloatFactor) / fixFloatFactor
 
 export const getResultRatingDeviance = (teams: Array<Array<Player>>): number =>
-  pipe(teams, ReadonlyArray.flatten, Player.getRatingAvg, overallAvg =>
-    pipe(
-      teams,
-      ReadonlyArray.map(flow(Player.getRatingAvg, deviance(overallAvg))),
-      sumAll,
-      fixFloat,
-    ),
+  pipe(
+    teams,
+    ReadonlyArray.flatten,
+    Player.getRatingAverage,
+    Option.getOrElse(() => 0),
+    overallAverage =>
+      pipe(
+        teams,
+        ReadonlyArray.map(
+          flow(
+            Player.getRatingAverage,
+            Option.getOrElse(() => 0),
+            deviance(overallAverage),
+          ),
+        ),
+        sumAll,
+        fixFloat,
+      ),
   )
 
 const balanceTeams: (

@@ -16,7 +16,7 @@ import { t } from 'src/i18n'
 import { Id } from 'src/utils/Entity'
 import { normalize } from 'src/utils/String'
 import { Timestamp } from 'src/utils/datatypes'
-import { avg } from 'src/utils/fp/Number'
+import { average } from 'src/utils/fp/Number'
 import { Modality } from './Modality'
 import * as Position from './Position'
 import * as Rating from './Rating'
@@ -153,7 +153,9 @@ export const teamListToStringSensitive =
 export const getRatingTotal: (players: Array<Player>) => number = players =>
   sumAll(ReadonlyArray.map(players, p => p.rating))
 
-export const getRatingAvg: (players: Array<Player>) => number = flow(
+export const getRatingAverage: (
+  players: Array<Player>,
+) => Option.Option<number> = flow(
   ReadonlyArray.map(p => p.rating),
-  avg,
+  average,
 )
