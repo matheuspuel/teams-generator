@@ -35,13 +35,13 @@ export const ResultView = memoizedConst('ResultView')(() => {
             title: t('Result'),
             headerLeft: HeaderButtonRow([
               HeaderButton({
-                onPress: back(),
+                onPress: back,
                 icon: MaterialIcons({ name: 'arrow-back' }),
               }),
             ]),
             headerRight: HeaderButtonRow([
               HeaderButton({
-                onPress: shareResult(),
+                onPress: shareResult,
                 icon: MaterialIcons({ name: 'share' }),
               }),
             ]),

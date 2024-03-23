@@ -44,7 +44,7 @@ export const PlayerView = memoizedConst('PlayerView')(() => {
         View({ flex: 1, p: 4 })([NameField(name), RatingField, PositionField]),
       ]),
       SolidButton({
-        onPress: savePlayer(),
+        onPress: savePlayer,
         isEnabled: String.isNonEmpty(name.trim()),
         p: 16,
         round: 0,
@@ -60,13 +60,13 @@ const ScreenHeader = memoizedConst('Header')(() =>
       title: t('Player'),
       headerLeft: HeaderButtonRow([
         HeaderButton({
-          onPress: back(),
+          onPress: back,
           icon: MaterialIcons({ name: 'arrow-back' }),
         }),
       ]),
       headerRight: HeaderButtonRow([
         HeaderButton({
-          onPress: deletePlayer(),
+          onPress: deletePlayer,
           icon: MaterialIcons({ name: 'delete' }),
         }),
       ]),

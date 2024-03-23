@@ -46,7 +46,7 @@ export const ModalityFormView = memoizedConst('ModalityFormView')(() => {
         contentContainerStyle: { flexGrow: 1 },
       })([View({ flex: 1, p: 4 })([NameField, PositionsField])]),
       SolidButton({
-        onPress: submitModality(),
+        onPress: submitModality,
         isEnabled: isEnabled,
         p: 16,
         round: 0,
@@ -63,13 +63,13 @@ const ScreenHeader = memoizedConst('Header')(() => {
       title: isEdit ? t('Edit modality') : t('New modality'),
       headerLeft: HeaderButtonRow([
         HeaderButton({
-          onPress: back(),
+          onPress: back,
           icon: MaterialIcons({ name: 'arrow-back' }),
         }),
       ]),
       headerRight: HeaderButtonRow([
         HeaderButton({
-          onPress: openRemoveModality(),
+          onPress: openRemoveModality,
           icon: MaterialIcons({ name: 'delete' }),
         }),
       ]),
@@ -103,7 +103,7 @@ const PositionsField = memoizedConst('PositionsField')(() => {
         PositionItem(i),
       ),
     ),
-    GhostButton({ onPress: addModalityPosition(), alignSelf: 'center' })([
+    GhostButton({ onPress: addModalityPosition, alignSelf: 'center' })([
       Row({ align: 'center' })([
         MaterialIcons({ name: 'add' }),
         Txt()(t('New position')),

@@ -13,7 +13,7 @@ import { getSelectedGroup } from 'src/slices/groups'
 
 export const DeleteGroupView = namedConst('DeleteGroupView')(() => {
   const group = useSelector(getSelectedGroup)
-  return CenterModal({ onClose: back(), title: t('Delete group') })([
+  return CenterModal({ onClose: back, title: t('Delete group') })([
     View({ p: 16 })(
       pipe(
         group,
@@ -31,10 +31,8 @@ export const DeleteGroupView = namedConst('DeleteGroupView')(() => {
       [],
     ),
     Row({ p: 16, gap: 8, justify: 'end' })([
-      GhostButton({ onPress: back(), color: Colors.error })([
-        Txt()(t('Cancel')),
-      ]),
-      SolidButton({ onPress: deleteGroup(), color: Colors.error })([
+      GhostButton({ onPress: back, color: Colors.error })([Txt()(t('Cancel'))]),
+      SolidButton({ onPress: deleteGroup, color: Colors.error })([
         Txt()(t('Delete')),
       ]),
     ]),

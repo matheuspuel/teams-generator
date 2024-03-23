@@ -91,17 +91,17 @@ const GroupHeader = memoizedConst('GroupHeader')(() =>
       title: t('Group'),
       headerLeft: HeaderButtonRow([
         HeaderButton({
-          onPress: back(),
+          onPress: back,
           icon: MaterialIcons({ name: 'arrow-back' }),
         }),
       ]),
       headerRight: HeaderButtonRow([
         HeaderButton({
-          onPress: startNewPlayer(),
+          onPress: startNewPlayer,
           icon: MaterialIcons({ name: 'add' }),
         }),
         HeaderButton({
-          onPress: openGroupMenu(),
+          onPress: openGroupMenu,
           icon: MaterialIcons({ name: 'more-vert' }),
         }),
       ]),
@@ -183,7 +183,7 @@ const ShuffleButton = namedConst('ShuffleButton')(() => {
     ),
   )
   return SolidButton({
-    onPress: openParameters(),
+    onPress: openParameters,
     p: 16,
     round: 0,
     color: Colors.header,

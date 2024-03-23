@@ -19,7 +19,7 @@ export const DeleteModalityView = namedConst('DeleteModalityView')(() => {
     ),
   )
   return CenterModal({
-    onClose: back(),
+    onClose: back,
     visible: Option.isSome(modality),
     title: t('Delete modality'),
   })([
@@ -42,10 +42,8 @@ export const DeleteModalityView = namedConst('DeleteModalityView')(() => {
       [],
     ),
     Row({ p: 16, gap: 8, justify: 'end' })([
-      GhostButton({ onPress: back(), color: Colors.error })([
-        Txt()(t('Cancel')),
-      ]),
-      SolidButton({ onPress: removeModality(), color: Colors.error })([
+      GhostButton({ onPress: back, color: Colors.error })([Txt()(t('Cancel'))]),
+      SolidButton({ onPress: removeModality, color: Colors.error })([
         Txt()(t('Delete')),
       ]),
     ]),

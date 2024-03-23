@@ -17,7 +17,7 @@ export const startApp = pipe(
   Effect.flatMap(() =>
     pipe(
       BackHandler.stream,
-      Stream.tap(() => back()),
+      Stream.tap(() => back),
       Stream.runDrain,
       Effect.forkDaemon,
     ),
@@ -34,7 +34,7 @@ export const startApp = pipe(
       Effect.forkDaemon,
     ),
   ),
-  Effect.tap(() => appLoaded()),
+  Effect.tap(() => appLoaded),
   Effect.tap(() =>
     pipe(
       Effect.all([MetadataService.get(), Timestamp.now]),

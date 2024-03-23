@@ -42,7 +42,7 @@ export const GroupFormView = memoizedConst('GroupFormView')(() => {
         contentContainerStyle: { flexGrow: 1 },
       })([View({ flex: 1, p: 4 })([NameField, ModalityField])]),
       SolidButton({
-        onPress: saveGroup(),
+        onPress: saveGroup,
         isEnabled: isEnabled,
         p: 16,
         round: 0,
@@ -59,7 +59,7 @@ const ScreenHeader = memoizedConst('Header')(() => {
       title: isEdit ? t('Edit group') : t('New group'),
       headerLeft: HeaderButtonRow([
         HeaderButton({
-          onPress: back(),
+          onPress: back,
           icon: MaterialIcons({ name: 'arrow-back' }),
         }),
       ]),

@@ -30,38 +30,34 @@ export const changePlayerRating = flow(
   Option.getOrElse(() => Effect.unit),
 )
 
-export const deletePlayer = () =>
-  pipe(
-    State.update(deleteCurrentPlayer),
-    Effect.tap(() => goBack),
-    StateRef.execute,
-  )
+export const deletePlayer = pipe(
+  State.update(deleteCurrentPlayer),
+  Effect.tap(() => goBack),
+  StateRef.execute,
+)
 
-export const savePlayer = () =>
-  pipe(
-    Effect.all({
-      form: pipe(
-        State.on(root.at('playerForm')).get,
-        Effect.map(v => ({ ...v, name: v.name.trim() })),
-        Effect.flatMap(f =>
-          pipe(f, Option.liftPredicate(not(() => String.isEmpty(f.name)))),
-        ),
-      ),
-      groupId: Effect.flatten(
-        State.on(root.at('ui').at('selectedGroupId')).get,
-      ),
-      playerId: State.on(root.at('ui').at('selectedPlayerId')).get,
-    }),
-    Effect.flatMap(({ form, groupId, playerId }) =>
-      pipe(
-        playerId,
-        Option.match({
-          onNone: () => createPlayer({ groupId, player: form }),
-          onSome: id => editPlayer({ groupId, player: { ...form, id } }),
-        }),
-        Effect.flatMap(() => goBack),
+export const savePlayer = pipe(
+  Effect.all({
+    form: pipe(
+      State.on(root.at('playerForm')).get,
+      Effect.map(v => ({ ...v, name: v.name.trim() })),
+      Effect.flatMap(f =>
+        pipe(f, Option.liftPredicate(not(() => String.isEmpty(f.name)))),
       ),
     ),
-    StateRef.execute,
-    Effect.ignore,
-  )
+    groupId: Effect.flatten(State.on(root.at('ui').at('selectedGroupId')).get),
+    playerId: State.on(root.at('ui').at('selectedPlayerId')).get,
+  }),
+  Effect.flatMap(({ form, groupId, playerId }) =>
+    pipe(
+      playerId,
+      Option.match({
+        onNone: () => createPlayer({ groupId, player: form }),
+        onSome: id => editPlayer({ groupId, player: { ...form, id } }),
+      }),
+      Effect.flatMap(() => goBack),
+    ),
+  ),
+  StateRef.execute,
+  Effect.ignore,
+)

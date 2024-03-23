@@ -22,16 +22,16 @@ import { toNonEmpty } from 'src/utils/fp/Array'
 import { nonEmptyIndex } from 'src/utils/fp/Optic'
 import { back } from './core'
 
-export const goToModality = () =>
-  StateRef.execute(Effect.all([goBack, navigate(Route.Modalities())]))
+export const goToModality = StateRef.execute(
+  Effect.all([goBack, navigate(Route.Modalities())]),
+)
 
-export const newModality = () =>
-  StateRef.execute(
-    Effect.all([
-      State.on(root.at('modalityForm')).set(initialModalityForm),
-      navigate(Route.ModalityForm()),
-    ]),
-  )
+export const newModality = StateRef.execute(
+  Effect.all([
+    State.on(root.at('modalityForm')).set(initialModalityForm),
+    navigate(Route.ModalityForm()),
+  ]),
+)
 
 export const openModality = (modality: Modality.Reference) =>
   pipe(
@@ -56,137 +56,131 @@ export const openModality = (modality: Modality.Reference) =>
     Effect.ignore,
   )
 
-export const submitModality = () =>
-  pipe(
-    State.with(s => s.modalityForm),
-    Effect.flatMap(validateModalityForm),
-    Effect.flatMap(f =>
-      Effect.all({
-        _tag: Effect.succeed('CustomModality' as const),
-        id: Effect.orElse(f.id, () => IdGenerator.generate()),
-        name: Effect.succeed(f.name),
-        positions: Effect.succeed(f.positions),
-      }),
-    ),
-    Effect.bindTo('nextModality'),
-    Effect.bind('prevModality', ({ nextModality }) =>
-      State.with(getModality({ _tag: 'CustomModality', id: nextModality.id })),
-    ),
-    Effect.tap(({ nextModality }) =>
-      State.on(root.at('customModalities')).update(ms =>
-        pipe(
-          ReadonlyArray.filter(ms, m => m.id !== nextModality.id),
-          ReadonlyArray.prepend(nextModality),
-        ),
+export const submitModality = pipe(
+  State.with(s => s.modalityForm),
+  Effect.flatMap(validateModalityForm),
+  Effect.flatMap(f =>
+    Effect.all({
+      _tag: Effect.succeed('CustomModality' as const),
+      id: Effect.orElse(f.id, () => IdGenerator.generate()),
+      name: Effect.succeed(f.name),
+      positions: Effect.succeed(f.positions),
+    }),
+  ),
+  Effect.bindTo('nextModality'),
+  Effect.bind('prevModality', ({ nextModality }) =>
+    State.with(getModality({ _tag: 'CustomModality', id: nextModality.id })),
+  ),
+  Effect.tap(({ nextModality }) =>
+    State.on(root.at('customModalities')).update(ms =>
+      pipe(
+        ReadonlyArray.filter(ms, m => m.id !== nextModality.id),
+        ReadonlyArray.prepend(nextModality),
       ),
     ),
-    Effect.tap(({ nextModality, prevModality }) =>
-      pipe(
-        prevModality,
-        Effect.tap(prevModality =>
-          State.on(root.at('groups')).update(
-            ReadonlyRecord.map(g =>
-              g.modality.id === prevModality.id
-                ? {
-                    ...g,
-                    players: ReadonlyArray.map(
-                      g.players,
-                      adjustPlayerPosition({
-                        prevModality: Option.some(prevModality),
-                        nextModality: {
-                          _tag: 'edited',
-                          modality: nextModality,
-                        },
-                      }),
-                    ),
-                  }
-                : g,
-            ),
+  ),
+  Effect.tap(({ nextModality, prevModality }) =>
+    pipe(
+      prevModality,
+      Effect.tap(prevModality =>
+        State.on(root.at('groups')).update(
+          ReadonlyRecord.map(g =>
+            g.modality.id === prevModality.id
+              ? {
+                  ...g,
+                  players: ReadonlyArray.map(
+                    g.players,
+                    adjustPlayerPosition({
+                      prevModality: Option.some(prevModality),
+                      nextModality: {
+                        _tag: 'edited',
+                        modality: nextModality,
+                      },
+                    }),
+                  ),
+                }
+              : g,
           ),
         ),
-        Effect.optionFromOptional,
       ),
+      Effect.optionFromOptional,
     ),
-    StateRef.execute,
-    Effect.tap(() => back()),
-    Effect.ignore,
-  )
+  ),
+  StateRef.execute,
+  Effect.tap(() => back),
+  Effect.ignore,
+)
 
-export const openRemoveModality = () =>
-  pipe(
-    State.with(s => s.modalityForm.id),
-    Effect.flatMap(
-      Option.match({
-        onNone: () => goBack,
-        onSome: () => navigate(Route.DeleteModality()),
-      }),
-    ),
-    StateRef.execute,
-  )
+export const openRemoveModality = pipe(
+  State.with(s => s.modalityForm.id),
+  Effect.flatMap(
+    Option.match({
+      onNone: () => goBack,
+      onSome: () => navigate(Route.DeleteModality()),
+    }),
+  ),
+  StateRef.execute,
+)
 
-export const removeModality = () =>
-  pipe(
-    State.with(s => s.modalityForm.id),
-    Effect.flatten,
-    Effect.flatMap(id =>
-      State.with(getModality({ _tag: 'CustomModality', id })),
+export const removeModality = pipe(
+  State.with(s => s.modalityForm.id),
+  Effect.flatten,
+  Effect.flatMap(id => State.with(getModality({ _tag: 'CustomModality', id }))),
+  Effect.flatten,
+  Effect.bindTo('prevModality'),
+  Effect.tap(({ prevModality }) =>
+    State.on(root.at('customModalities')).update(
+      ReadonlyArray.filter(m => m.id !== prevModality.id),
     ),
-    Effect.flatten,
-    Effect.bindTo('prevModality'),
-    Effect.tap(({ prevModality }) =>
-      State.on(root.at('customModalities')).update(
-        ReadonlyArray.filter(m => m.id !== prevModality.id),
+  ),
+  Effect.bind('nextModality', () =>
+    State.with(s =>
+      ReadonlyArray.head(s.customModalities).pipe(
+        Option.getOrElse(() => soccer),
       ),
     ),
-    Effect.bind('nextModality', () =>
-      State.with(s =>
-        ReadonlyArray.head(s.customModalities).pipe(
-          Option.getOrElse(() => soccer),
-        ),
+  ),
+  Effect.tap(({ nextModality, prevModality }) =>
+    State.on(root.at('groups')).update(
+      ReadonlyRecord.map(g =>
+        g.modality.id === prevModality.id
+          ? {
+              ...g,
+              modality:
+                nextModality._tag === 'CustomModality'
+                  ? { _tag: nextModality._tag, id: nextModality.id }
+                  : { _tag: nextModality._tag, id: nextModality.id },
+              players: ReadonlyArray.map(
+                g.players,
+                adjustPlayerPosition({
+                  prevModality: Option.some(prevModality),
+                  nextModality: {
+                    _tag: 'unchanged',
+                    modality: nextModality,
+                  },
+                }),
+              ),
+            }
+          : g,
       ),
     ),
-    Effect.tap(({ nextModality, prevModality }) =>
-      State.on(root.at('groups')).update(
-        ReadonlyRecord.map(g =>
-          g.modality.id === prevModality.id
-            ? {
-                ...g,
-                modality:
-                  nextModality._tag === 'CustomModality'
-                    ? { _tag: nextModality._tag, id: nextModality.id }
-                    : { _tag: nextModality._tag, id: nextModality.id },
-                players: ReadonlyArray.map(
-                  g.players,
-                  adjustPlayerPosition({
-                    prevModality: Option.some(prevModality),
-                    nextModality: {
-                      _tag: 'unchanged',
-                      modality: nextModality,
-                    },
-                  }),
-                ),
-              }
-            : g,
-        ),
-      ),
-    ),
-    Effect.tap(() => goBack),
-    Effect.tap(() => goBack),
-    StateRef.execute,
-    Effect.ignore,
-  )
+  ),
+  Effect.tap(() => goBack),
+  Effect.tap(() => goBack),
+  StateRef.execute,
+  Effect.ignore,
+)
 
 export const changeModalityName = flow(
   State.on(root.at('modalityForm').at('name')).set,
   StateRef.execute,
 )
 
-export const addModalityPosition = () =>
-  StateRef.execute(
-    State.on(root.at('modalityForm').at('positions')).update(
-      ReadonlyArray.append(blankPositionForm),
-    ),
-  )
+export const addModalityPosition = StateRef.execute(
+  State.on(root.at('modalityForm').at('positions')).update(
+    ReadonlyArray.append(blankPositionForm),
+  ),
+)
 
 export const removeModalityPosition = (index: number) =>
   StateRef.execute(

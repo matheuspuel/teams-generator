@@ -40,7 +40,7 @@ export const GroupsView = memoizedConst('GroupsView')(() => {
       Data.array,
     ),
   )
-  return View({ flex: 1, onLayout: hideSplashScreen() })([
+  return View({ flex: 1, onLayout: hideSplashScreen })([
     ScreenHeader,
     FlatList({
       data: groupsIds,
@@ -63,11 +63,11 @@ const ScreenHeader = memoizedConst('Header')(() =>
       title: t('Groups'),
       headerRight: HeaderButtonRow([
         HeaderButton({
-          onPress: startCreateGroup(),
+          onPress: startCreateGroup,
           icon: MaterialIcons({ name: 'add' }),
         }),
         HeaderButton({
-          onPress: openHomeMenu(),
+          onPress: openHomeMenu,
           icon: MaterialIcons({ name: 'more-vert' }),
         }),
       ]),

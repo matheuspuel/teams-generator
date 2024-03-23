@@ -25,7 +25,7 @@ export const AlertToast = memoizedConst('AlertToast')(() => {
             exiting: SlideOutRight.duration(ANIMATION_DURATION),
           },
           Pressable({
-            onPress: dismissAlert(),
+            onPress: dismissAlert,
             bg: Colors.card,
             m: 16,
             mb: 48,

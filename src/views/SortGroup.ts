@@ -17,11 +17,11 @@ import { Colors } from 'src/services/Theme'
 
 export const SortGroupView = namedConst('SortGroupView')(() => {
   const mainSort = useSelector(s => s.groupOrder[0])
-  return CenterModal({ onClose: back(), title: t('Sorting') })([
+  return CenterModal({ onClose: back, title: t('Sorting') })([
     View({ roundB: 8, overflow: 'hidden' })([
       FilterButton({
         name: t('Name'),
-        onPress: sortPlayersBy.name(),
+        onPress: sortPlayersBy.name,
         state:
           mainSort._tag === 'name'
             ? Option.some({ reverse: mainSort.reverse })
@@ -29,7 +29,7 @@ export const SortGroupView = namedConst('SortGroupView')(() => {
       }),
       FilterButton({
         name: t('Position'),
-        onPress: sortPlayersBy.position(),
+        onPress: sortPlayersBy.position,
         state:
           mainSort._tag === 'position'
             ? Option.some({ reverse: mainSort.reverse })
@@ -37,7 +37,7 @@ export const SortGroupView = namedConst('SortGroupView')(() => {
       }),
       FilterButton({
         name: t('Rating'),
-        onPress: sortPlayersBy.rating(),
+        onPress: sortPlayersBy.rating,
         state:
           mainSort._tag === 'rating'
             ? Option.some({ reverse: mainSort.reverse })
@@ -45,7 +45,7 @@ export const SortGroupView = namedConst('SortGroupView')(() => {
       }),
       FilterButton({
         name: t('Active'),
-        onPress: sortPlayersBy.active(),
+        onPress: sortPlayersBy.active,
         state:
           mainSort._tag === 'active'
             ? Option.some({ reverse: mainSort.reverse })
@@ -53,7 +53,7 @@ export const SortGroupView = namedConst('SortGroupView')(() => {
       }),
       FilterButton({
         name: t('Date'),
-        onPress: sortPlayersBy.date(),
+        onPress: sortPlayersBy.date,
         state:
           mainSort._tag === 'date'
             ? Option.some({ reverse: mainSort.reverse })

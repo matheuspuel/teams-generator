@@ -47,13 +47,13 @@ const ScreenHeader = memoizedConst('ScreenHeader')(() =>
       title: t('Modalities'),
       headerLeft: HeaderButtonRow([
         HeaderButton({
-          onPress: back(),
+          onPress: back,
           icon: MaterialIcons({ name: 'arrow-back' }),
         }),
       ]),
       headerRight: HeaderButtonRow([
         HeaderButton({
-          onPress: newModality(),
+          onPress: newModality,
           icon: MaterialIcons({ name: 'add' }),
         }),
       ]),

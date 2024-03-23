@@ -27,13 +27,13 @@ export const ParametersView = namedConst('ParametersView')(() => {
     SchemaEquivalence.make(Parameters),
   )
   return CenterModal({
-    onClose: back(),
+    onClose: back,
     title: t('Parameters'),
     m: 24,
   })([
     View({ p: 16 })([
       Row({ align: 'center' })([
-        BorderlessButton({ onPress: decrementTeamsCount() })([
+        BorderlessButton({ onPress: decrementTeamsCount })([
           MaterialIcons({ name: 'remove' }),
         ]),
         Txt({ p: 8, weight: 600 })(
@@ -45,11 +45,11 @@ export const ParametersView = namedConst('ParametersView')(() => {
             }),
           ),
         ),
-        BorderlessButton({ onPress: incrementTeamsCount() })([
+        BorderlessButton({ onPress: incrementTeamsCount })([
           MaterialIcons({ name: 'add' }),
         ]),
         GhostButton({
-          onPress: toggleTeamsCountType(),
+          onPress: toggleTeamsCountType,
           flex: 1,
           direction: 'row',
           align: 'center',
@@ -75,7 +75,7 @@ export const ParametersView = namedConst('ParametersView')(() => {
         ]),
       ]),
       Pressable({
-        onPress: togglePositionParameter(),
+        onPress: togglePositionParameter,
         direction: 'row',
         align: 'center',
         p: 8,
@@ -83,13 +83,13 @@ export const ParametersView = namedConst('ParametersView')(() => {
         bg: Colors.opacity(0)(Colors.white),
       })([
         Checkbox({
-          onToggle: togglePositionParameter(),
+          onToggle: togglePositionParameter,
           isSelected: parameters.position,
         }),
         Txt({ ml: 8, size: 14 })(t('Consider positions')),
       ]),
       Pressable({
-        onPress: toggleRatingParameter(),
+        onPress: toggleRatingParameter,
         direction: 'row',
         align: 'center',
         p: 8,
@@ -97,7 +97,7 @@ export const ParametersView = namedConst('ParametersView')(() => {
         bg: Colors.opacity(0)(Colors.white),
       })([
         Checkbox({
-          onToggle: toggleRatingParameter(),
+          onToggle: toggleRatingParameter,
           isSelected: parameters.rating,
         }),
         Txt({ ml: 8, size: 14 })(t('Consider rating')),
@@ -108,8 +108,8 @@ export const ParametersView = namedConst('ParametersView')(() => {
       borderColor: Colors.opacity(0.375)(Colors.gray),
     })([]),
     Row({ p: 16, gap: 8, justify: 'end' })([
-      GhostButton({ onPress: back() })([Txt()(t('Cancel'))]),
-      SolidButton({ onPress: generateResult() })([Txt()(t('Generate teams'))]),
+      GhostButton({ onPress: back })([Txt()(t('Cancel'))]),
+      SolidButton({ onPress: generateResult })([Txt()(t('Generate teams'))]),
     ]),
   ])
 })

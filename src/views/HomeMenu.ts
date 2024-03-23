@@ -8,14 +8,14 @@ import { goToModality } from 'src/events/modality'
 import { t } from 'src/i18n'
 
 export const HomeMenuView = namedConst('HomeMenuView')(() => {
-  return HeaderMenu({ onClose: back() })([
+  return HeaderMenu({ onClose: back })([
     HeaderMenuButton({
-      onPress: importGroup(),
+      onPress: importGroup,
       label: t('Import group'),
       icon: MaterialCommunityIcons({ name: 'import' }),
     }),
     HeaderMenuButton({
-      onPress: goToModality(),
+      onPress: goToModality,
       label: t('Edit modalities'),
       icon: MaterialIcons({ name: 'sports-soccer' }),
     }),
