@@ -4,7 +4,7 @@ import { Modal as RNModal_ } from 'react-native'
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler'
 import { Children, JSXElementsChildren, UIElement } from 'src/components/types'
 import { useRuntime } from 'src/contexts/Runtime'
-import { AppEvent } from 'src/events'
+import { AppEvent } from 'src/runtime'
 import { isArray } from 'src/utils/fp/Array'
 import { named2 } from '../hyperscript'
 

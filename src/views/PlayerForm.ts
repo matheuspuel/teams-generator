@@ -18,14 +18,19 @@ import { SolidButton } from 'src/components/derivative/SolidButton'
 import { memoized, memoizedConst } from 'src/components/hyperscript'
 import { Position, Rating } from 'src/datatypes'
 import { Abbreviation } from 'src/datatypes/Position'
-import { appEvents } from 'src/events'
+import { back } from 'src/events/core'
+import {
+  changePlayerName,
+  changePlayerPosition,
+  changePlayerRating,
+  deletePlayer,
+  savePlayer,
+} from 'src/events/player'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 import { getActiveModality } from 'src/slices/groups'
 import { RatingSlider } from './components/RatingSlider'
-
-const on = appEvents.player
 
 export const PlayerView = memoizedConst('PlayerView')(() => {
   const name = useSelector(s => s.playerForm.name)
@@ -39,7 +44,7 @@ export const PlayerView = memoizedConst('PlayerView')(() => {
         View({ flex: 1, p: 4 })([NameField(name), RatingField, PositionField]),
       ]),
       SolidButton({
-        onPress: on.save(),
+        onPress: savePlayer(),
         isEnabled: String.isNonEmpty(name.trim()),
         p: 16,
         round: 0,
@@ -55,13 +60,13 @@ const ScreenHeader = memoizedConst('Header')(() =>
       title: t('Player'),
       headerLeft: HeaderButtonRow([
         HeaderButton({
-          onPress: appEvents.back(),
+          onPress: back(),
           icon: MaterialIcons({ name: 'arrow-back' }),
         }),
       ]),
       headerRight: HeaderButtonRow([
         HeaderButton({
-          onPress: on.delete(),
+          onPress: deletePlayer(),
           icon: MaterialIcons({ name: 'delete' }),
         }),
       ]),
@@ -75,7 +80,7 @@ const NameField = (name: string) =>
     Input({
       placeholder: t('Ex: Jack'),
       value: name,
-      onChange: on.name.change,
+      onChange: changePlayerName,
       autoFocus: true,
     }),
   ])
@@ -90,7 +95,7 @@ const RatingField = memoizedConst('RatingField')(() => {
     RatingSlider({
       initialPercentage: rating / 10,
       step: 0.05,
-      onChange: on.rating.change,
+      onChange: changePlayerRating,
     }),
   ])
 })
@@ -129,7 +134,7 @@ const PositionItem = memoized('PositionItem')((abbreviation: Abbreviation) => {
     onSome: position =>
       Pressable({
         key: position.abbreviation,
-        onPress: on.position.change(position.abbreviation),
+        onPress: changePlayerPosition(position.abbreviation),
         py: 4,
         px: 12,
         round: 8,

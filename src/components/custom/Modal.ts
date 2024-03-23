@@ -13,7 +13,7 @@ import {
   MarginProps,
   UIColor,
 } from 'src/components/types'
-import { AppEvent } from 'src/events'
+import { AppEvent } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
 import { Pressable } from '../react-native/Pressable'
 import { View } from '../react-native/View'

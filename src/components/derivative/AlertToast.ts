@@ -2,7 +2,7 @@ import { Option, absurd } from 'effect'
 import * as React from 'react'
 import Animated, { SlideInRight, SlideOutRight } from 'react-native-reanimated'
 import { MaterialIcons, Nothing, Pressable, Txt, View } from 'src/components'
-import { appEvents } from 'src/events'
+import { dismissAlert } from 'src/events/core'
 import { useSelector } from 'src/hooks/useSelector'
 import { Colors } from 'src/services/Theme'
 import { memoizedConst } from '../hyperscript'
@@ -25,7 +25,7 @@ export const AlertToast = memoizedConst('AlertToast')(() => {
             exiting: SlideOutRight.duration(ANIMATION_DURATION),
           },
           Pressable({
-            onPress: appEvents.alert.dismiss(),
+            onPress: dismissAlert(),
             bg: Colors.card,
             m: 16,
             mb: 48,

@@ -8,13 +8,12 @@ import {
 } from 'src/components'
 import { CenterModal } from 'src/components/derivative/CenterModal'
 import { namedConst } from 'src/components/hyperscript'
-import { AppEvent, appEvents } from 'src/events'
 import { back } from 'src/events/core'
+import { sortPlayersBy } from 'src/events/group'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
+import { AppEvent } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
-
-const on = appEvents.group
 
 export const SortGroupView = namedConst('SortGroupView')(() => {
   const mainSort = useSelector(s => s.groupOrder[0])
@@ -22,7 +21,7 @@ export const SortGroupView = namedConst('SortGroupView')(() => {
     View({ roundB: 8, overflow: 'hidden' })([
       FilterButton({
         name: t('Name'),
-        onPress: on.sort.by.name(),
+        onPress: sortPlayersBy.name(),
         state:
           mainSort._tag === 'name'
             ? Option.some({ reverse: mainSort.reverse })
@@ -30,7 +29,7 @@ export const SortGroupView = namedConst('SortGroupView')(() => {
       }),
       FilterButton({
         name: t('Position'),
-        onPress: on.sort.by.position(),
+        onPress: sortPlayersBy.position(),
         state:
           mainSort._tag === 'position'
             ? Option.some({ reverse: mainSort.reverse })
@@ -38,7 +37,7 @@ export const SortGroupView = namedConst('SortGroupView')(() => {
       }),
       FilterButton({
         name: t('Rating'),
-        onPress: on.sort.by.rating(),
+        onPress: sortPlayersBy.rating(),
         state:
           mainSort._tag === 'rating'
             ? Option.some({ reverse: mainSort.reverse })
@@ -46,7 +45,7 @@ export const SortGroupView = namedConst('SortGroupView')(() => {
       }),
       FilterButton({
         name: t('Active'),
-        onPress: on.sort.by.active(),
+        onPress: sortPlayersBy.active(),
         state:
           mainSort._tag === 'active'
             ? Option.some({ reverse: mainSort.reverse })
@@ -54,7 +53,7 @@ export const SortGroupView = namedConst('SortGroupView')(() => {
       }),
       FilterButton({
         name: t('Date'),
-        onPress: on.sort.by.date(),
+        onPress: sortPlayersBy.date(),
         state:
           mainSort._tag === 'date'
             ? Option.some({ reverse: mainSort.reverse })

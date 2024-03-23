@@ -4,14 +4,12 @@ import { CenterModal } from 'src/components/derivative/CenterModal'
 import { GhostButton } from 'src/components/derivative/GhostButton'
 import { SolidButton } from 'src/components/derivative/SolidButton'
 import { namedConst } from 'src/components/hyperscript'
-import { appEvents } from 'src/events'
 import { back } from 'src/events/core'
+import { deleteGroup } from 'src/events/group'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 import { getSelectedGroup } from 'src/slices/groups'
-
-const on = appEvents.group
 
 export const DeleteGroupView = namedConst('DeleteGroupView')(() => {
   const group = useSelector(getSelectedGroup)
@@ -36,10 +34,9 @@ export const DeleteGroupView = namedConst('DeleteGroupView')(() => {
       GhostButton({ onPress: back(), color: Colors.error })([
         Txt()(t('Cancel')),
       ]),
-      SolidButton({
-        onPress: on.delete.submit(),
-        color: Colors.error,
-      })([Txt()(t('Delete'))]),
+      SolidButton({ onPress: deleteGroup(), color: Colors.error })([
+        Txt()(t('Delete')),
+      ]),
     ]),
   ])
 })

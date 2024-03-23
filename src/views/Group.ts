@@ -17,7 +17,14 @@ import { PreRender } from 'src/components/derivative/PreRender'
 import { SolidButton } from 'src/components/derivative/SolidButton'
 import { memoized, memoizedConst, namedConst } from 'src/components/hyperscript'
 import { GroupOrder, Player, Position, Rating } from 'src/datatypes'
-import { appEvents } from 'src/events'
+import { back } from 'src/events/core'
+import {
+  openGroupMenu,
+  openParameters,
+  openPlayer,
+  startNewPlayer,
+  togglePlayerActive,
+} from 'src/events/group'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
@@ -27,8 +34,6 @@ import {
   getSelectedGroup,
 } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
-
-const on = appEvents.group
 
 export const GroupView = memoizedConst('GroupView')(() => {
   const playersIds = useSelector(s =>
@@ -86,17 +91,17 @@ const GroupHeader = memoizedConst('GroupHeader')(() =>
       title: t('Group'),
       headerLeft: HeaderButtonRow([
         HeaderButton({
-          onPress: appEvents.back(),
+          onPress: back(),
           icon: MaterialIcons({ name: 'arrow-back' }),
         }),
       ]),
       headerRight: HeaderButtonRow([
         HeaderButton({
-          onPress: on.player.new(),
+          onPress: startNewPlayer(),
           icon: MaterialIcons({ name: 'add' }),
         }),
         HeaderButton({
-          onPress: on.menu.open(),
+          onPress: openGroupMenu(),
           icon: MaterialIcons({ name: 'more-vert' }),
         }),
       ]),
@@ -127,7 +132,7 @@ const Item = memoized('Player')((id: Id) => {
     onNone: () => Nothing,
     onSome: ({ active, name, position, rating }) =>
       Pressable({
-        onPress: on.player.open(id),
+        onPress: openPlayer(id),
         direction: 'row',
         align: 'center',
         gap: 8,
@@ -136,7 +141,7 @@ const Item = memoized('Player')((id: Id) => {
         bg: Colors.card,
       })([
         Checkbox({
-          onToggle: on.player.active.toggle(id),
+          onToggle: togglePlayerActive(id),
           isSelected: active,
           m: 8,
           mr: -8,
@@ -178,7 +183,7 @@ const ShuffleButton = namedConst('ShuffleButton')(() => {
     ),
   )
   return SolidButton({
-    onPress: on.parameters.open(),
+    onPress: openParameters(),
     p: 16,
     round: 0,
     color: Colors.header,

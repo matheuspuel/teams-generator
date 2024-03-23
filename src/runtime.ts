@@ -80,3 +80,5 @@ export const runtime: AppRuntime = pipe(
   Effect.flatten,
   Effect.runSync,
 )
+
+export type AppEvent = Effect.Effect<unknown, never, AppRequirements>

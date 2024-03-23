@@ -15,14 +15,13 @@ import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { memoizedConst } from 'src/components/hyperscript'
 import { Modality, Player, Position, Rating } from 'src/datatypes'
-import { appEvents } from 'src/events'
+import { back } from 'src/events/core'
+import { shareResult } from 'src/events/result'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 import { getActiveModality } from 'src/slices/groups'
 import { toFixedLocale } from 'src/utils/Number'
-
-const on = appEvents.result
 
 export const ResultView = memoizedConst('ResultView')(() => {
   const result = useSelector(s => s.result)
@@ -36,13 +35,13 @@ export const ResultView = memoizedConst('ResultView')(() => {
             title: t('Result'),
             headerLeft: HeaderButtonRow([
               HeaderButton({
-                onPress: appEvents.back(),
+                onPress: back(),
                 icon: MaterialIcons({ name: 'arrow-back' }),
               }),
             ]),
             headerRight: HeaderButtonRow([
               HeaderButton({
-                onPress: on.share(),
+                onPress: shareResult(),
                 icon: MaterialIcons({ name: 'share' }),
               }),
             ]),

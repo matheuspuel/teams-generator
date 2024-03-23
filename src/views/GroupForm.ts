@@ -20,14 +20,17 @@ import { SolidButton } from 'src/components/derivative/SolidButton'
 import { memoizedConst, named } from 'src/components/hyperscript'
 import { Modality } from 'src/datatypes'
 import { staticModalities } from 'src/datatypes/Modality'
-import { appEvents } from 'src/events'
+import { back } from 'src/events/core'
+import {
+  changeGroupModality,
+  changeGroupName,
+  saveGroup,
+} from 'src/events/groups'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { StateRef } from 'src/services/StateRef'
 import { Colors } from 'src/services/Theme'
 import { Route, navigate } from 'src/slices/routes'
-
-const on = appEvents.groups.item
 
 export const GroupFormView = memoizedConst('GroupFormView')(() => {
   const isEnabled = useSelector(s => String.isNonEmpty(s.groupForm.name.trim()))
@@ -39,7 +42,7 @@ export const GroupFormView = memoizedConst('GroupFormView')(() => {
         contentContainerStyle: { flexGrow: 1 },
       })([View({ flex: 1, p: 4 })([NameField, ModalityField])]),
       SolidButton({
-        onPress: on.upsert.submit(),
+        onPress: saveGroup(),
         isEnabled: isEnabled,
         p: 16,
         round: 0,
@@ -56,7 +59,7 @@ const ScreenHeader = memoizedConst('Header')(() => {
       title: isEdit ? t('Edit group') : t('New group'),
       headerLeft: HeaderButtonRow([
         HeaderButton({
-          onPress: appEvents.back(),
+          onPress: back(),
           icon: MaterialIcons({ name: 'arrow-back' }),
         }),
       ]),
@@ -71,7 +74,7 @@ const NameField = memoizedConst('NameField')(() => {
     Input({
       placeholder: t('Ex: Thursday soccer'),
       value: name,
-      onChange: on.upsert.form.name.change,
+      onChange: changeGroupName,
       autoFocus: true,
     }),
   ])
@@ -101,7 +104,7 @@ const ModalityItem = named('ModalityItem')((props: Modality) => {
   const isActive = useSelector(s => s.groupForm.modality.id === props.id)
   return Pressable({
     key: props.id,
-    onPress: on.upsert.form.modality.change(props),
+    onPress: changeGroupModality(props),
     py: 4,
     px: 12,
     round: 8,

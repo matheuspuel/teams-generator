@@ -1,6 +1,6 @@
 import { Pressable, Txt } from 'src/components'
 import { TextStyleContextProvider } from 'src/contexts/TextStyle'
-import { AppEvent } from 'src/events'
+import { AppEvent } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
 import { named } from '../hyperscript'
 import { UIElement } from '../types'

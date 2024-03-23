@@ -4,14 +4,12 @@ import { CenterModal } from 'src/components/derivative/CenterModal'
 import { GhostButton } from 'src/components/derivative/GhostButton'
 import { SolidButton } from 'src/components/derivative/SolidButton'
 import { namedConst } from 'src/components/hyperscript'
-import { appEvents } from 'src/events'
 import { back } from 'src/events/core'
+import { removeModality } from 'src/events/modality'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 import { getModality } from 'src/slices/groups'
-
-const on = appEvents.modality
 
 export const DeleteModalityView = namedConst('DeleteModalityView')(() => {
   const modality = useSelector(s =>
@@ -47,7 +45,7 @@ export const DeleteModalityView = namedConst('DeleteModalityView')(() => {
       GhostButton({ onPress: back(), color: Colors.error })([
         Txt()(t('Cancel')),
       ]),
-      SolidButton({ onPress: on.remove.submit(), color: Colors.error })([
+      SolidButton({ onPress: removeModality(), color: Colors.error })([
         Txt()(t('Delete')),
       ]),
     ]),

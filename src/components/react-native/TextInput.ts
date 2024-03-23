@@ -12,8 +12,7 @@ import {
 } from 'src/components/types'
 import { useRuntime } from 'src/contexts/Runtime'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
-import { AppEvent } from 'src/events'
-import { AppRuntime } from 'src/runtime'
+import { AppEvent, AppRuntime } from 'src/runtime'
 import { named } from '../hyperscript'
 
 export type TextInputStyleProps = PaddingProps &

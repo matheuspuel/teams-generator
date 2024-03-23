@@ -1,5 +1,5 @@
 import { MaterialIcons, Pressable, View } from 'src/components'
-import { AppEvent } from 'src/events'
+import { AppEvent } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
 import { named } from '../hyperscript'
 import { PressableProps } from '../react-native/Pressable'

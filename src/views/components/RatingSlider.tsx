@@ -20,7 +20,7 @@ import { UIElement } from 'src/components/types'
 import { useRuntime } from 'src/contexts/Runtime'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
 import { Rating } from 'src/datatypes'
-import { AppEvent } from 'src/events'
+import { AppEvent } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
 
 export type RatingSliderProps = {

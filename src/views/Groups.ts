@@ -21,14 +21,13 @@ import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { memoized, memoizedConst } from 'src/components/hyperscript'
 import { Group } from 'src/datatypes'
-import { appEvents } from 'src/events'
+import { hideSplashScreen } from 'src/events/core'
+import { openGroup, openHomeMenu, startCreateGroup } from 'src/events/groups'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 import { getGroupById, getModality } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
-
-const on = appEvents.groups
 
 export const GroupsView = memoizedConst('GroupsView')(() => {
   const groupsIds = useSelector(
@@ -41,7 +40,7 @@ export const GroupsView = memoizedConst('GroupsView')(() => {
       Data.array,
     ),
   )
-  return View({ flex: 1, onLayout: appEvents.core.uiMount() })([
+  return View({ flex: 1, onLayout: hideSplashScreen() })([
     ScreenHeader,
     FlatList({
       data: groupsIds,
@@ -64,11 +63,11 @@ const ScreenHeader = memoizedConst('Header')(() =>
       title: t('Groups'),
       headerRight: HeaderButtonRow([
         HeaderButton({
-          onPress: on.item.upsert.new(),
+          onPress: startCreateGroup(),
           icon: MaterialIcons({ name: 'add' }),
         }),
         HeaderButton({
-          onPress: on.menu.open(),
+          onPress: openHomeMenu(),
           icon: MaterialIcons({ name: 'more-vert' }),
         }),
       ]),
@@ -95,7 +94,7 @@ const Item = memoized('Group')(Equal.equivalence(), (id: Id) => {
     onNone: () => Nothing,
     onSome: ({ name, modality }) =>
       Pressable({
-        onPress: on.item.open(id),
+        onPress: openGroup(id),
         p: 12,
         round: 8,
         shadow: 1,

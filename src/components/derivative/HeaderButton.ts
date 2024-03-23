@@ -1,4 +1,4 @@
-import { AppEvent } from 'src/events'
+import { AppEvent } from 'src/runtime'
 import { named } from '../hyperscript'
 import { Pressable } from '../react-native/Pressable'
 import { UIElement } from '../types'

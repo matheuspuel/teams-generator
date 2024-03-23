@@ -14,7 +14,7 @@ import {
 } from 'src/components/types'
 import { useRuntime } from 'src/contexts/Runtime'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
-import { AppEvent } from 'src/events'
+import { AppEvent } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
 import { named2 } from '../hyperscript'
 
