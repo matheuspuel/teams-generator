@@ -7,7 +7,6 @@ import { FileSystem } from 'src/services/FileSystem'
 import { IdGenerator } from 'src/services/IdGenerator'
 import { MetadataService } from 'src/services/Metadata'
 import { ShareService } from 'src/services/Share'
-import { SplashScreenEnv } from 'src/services/SplashScreen'
 import { SplashScreenLive } from 'src/services/SplashScreen/default'
 import { AppStateRef } from 'src/services/StateRef'
 import { StateRefLive } from 'src/services/StateRef/default'
@@ -25,6 +24,7 @@ import { RepositoryLive } from './services/Repositories/live'
 import { SafeAreaService } from './services/SafeArea'
 import { SafeAreaServiceLive } from './services/SafeArea/default'
 import { ShareServiceLive } from './services/Share/default'
+import { SplashScreen } from './services/SplashScreen'
 import { TelemetryLive } from './services/Telemetry/default'
 import { envName } from './utils/Metadata'
 
@@ -32,7 +32,7 @@ const DEV_MINIMUM_LOG_LEVEL = LogLevel.Debug
 
 export type AppRequirements =
   | AppStateRef
-  | SplashScreenEnv
+  | SplashScreen
   | BackHandler
   | Repository
   | Alert

@@ -1,13 +1,11 @@
 import { Effect } from 'effect'
 
-export type SplashScreen = {
+export type SplashScreenImplementation = {
   preventAutoHide: () => Effect.Effect<void>
   hide: () => Effect.Effect<void>
 }
 
-export class SplashScreenEnv extends Effect.Tag('SplashScreen')<
-  SplashScreenEnv,
-  SplashScreen
+export class SplashScreen extends Effect.Tag('SplashScreen')<
+  SplashScreen,
+  SplashScreenImplementation
 >() {}
-
-export const SplashScreen = Effect.serviceFunctions(SplashScreenEnv)
