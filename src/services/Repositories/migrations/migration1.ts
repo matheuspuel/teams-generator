@@ -6,7 +6,6 @@ import {
   Order,
   Record,
   String,
-  Tuple,
   identity,
   pipe,
 } from 'effect'
@@ -19,20 +18,8 @@ import { Timestamp } from 'src/utils/datatypes'
 import { createStorage } from 'src/utils/storage'
 import { Repository } from '..'
 
-const PositionDictV1 = {
-  G: null,
-  Z: null,
-  LE: null,
-  LD: null,
-  M: null,
-  A: null,
-}
-
-type PositionV2 = keyof typeof PositionDictV1
-
-const PositionV2: Schema.Schema<PositionV2> = Schema.Literal(
-  ...pipe(PositionDictV1, Record.toEntries, Array.map(Tuple.getFirst)),
-)
+type PositionV2 = Schema.Schema.Type<typeof PositionV2>
+const PositionV2 = Schema.Literal('G', 'Z', 'LE', 'LD', 'M', 'A')
 
 const GroupsV1 = Schema.Record(
   Id.pipe(Schema.typeSchema),

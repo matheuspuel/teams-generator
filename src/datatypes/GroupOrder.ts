@@ -1,6 +1,5 @@
 import { Schema } from '@effect/schema'
-import { Array, Order, Record, Tuple, absurd, identity, pipe } from 'effect'
-import { NonEmptyReadonlyArray } from 'effect/Array'
+import { Array, Order, absurd, identity, pipe } from 'effect'
 import { Modality, Player } from 'src/datatypes'
 import {
   ActiveOrd,
@@ -10,31 +9,19 @@ import {
   RatingOrd,
 } from 'src/datatypes/Player'
 
-export const GroupOrderTypeDict = {
-  name: null,
-  position: null,
-  rating: null,
-  active: null,
-  date: null,
-}
+export type GroupOrderType = Schema.Schema.Type<typeof GroupOrderType>
+export const GroupOrderType = Schema.Literal(
+  'name',
+  'position',
+  'rating',
+  'active',
+  'date',
+)
 
-export type GroupOrderType = keyof typeof GroupOrderTypeDict
-
-export const GroupOrderTypeSchema: Schema.Schema<GroupOrderType> =
-  Schema.Literal(
-    ...pipe(GroupOrderTypeDict, Record.toEntries, Array.map(Tuple.getFirst)),
-  )
-
-export type GroupOrder = NonEmptyReadonlyArray<
-  Readonly<{
-    _tag: GroupOrderType
-    reverse: boolean
-  }>
->
-
-export const GroupOrder: Schema.Schema<GroupOrder> = Schema.NonEmptyArray(
+export type GroupOrder = Schema.Schema.Type<typeof GroupOrder>
+export const GroupOrder = Schema.NonEmptyArray(
   Schema.Struct({
-    _tag: GroupOrderTypeSchema,
+    _tag: GroupOrderType,
     reverse: Schema.Boolean,
   }),
 )
