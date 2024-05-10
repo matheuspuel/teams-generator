@@ -5,22 +5,6 @@ import { Id } from 'src/utils/Entity'
 import { NonEmptyString } from 'src/utils/datatypes/NonEmptyString'
 import { CustomPosition, StaticPosition } from './Position'
 
-const refineSync =
-  <A, I>(schema: Schema.Schema<A, I>) =>
-  <B extends I>(value: B): A & B => {
-    if (Schema.is(schema)(value)) return value
-    else {
-      // eslint-disable-next-line functional/no-expression-statements
-      Schema.validateSync(schema)(value)
-      // eslint-disable-next-line functional/no-throw-statements
-      throw new Error('Invalid refinement')
-    }
-  }
-
-const pos = <const A extends Schema.Schema.Encoded<typeof StaticPosition>>(
-  _: A,
-) => refineSync(StaticPosition)(_)
-
 export class StaticModality extends Schema.Class<StaticModality>(
   'StaticModality',
 )({
@@ -30,145 +14,181 @@ export class StaticModality extends Schema.Class<StaticModality>(
   positions: Schema.NonEmptyArray(StaticPosition),
 }) {}
 
-export const soccer = refineSync(StaticModality)({
+const pos = Schema.decodeSync(StaticPosition)
+
+export const soccerPositions = {
+  g: pos({
+    abbreviation: 'g',
+    abbreviationLabel: t('Goalkeeper(abv)'),
+    name: t('Goalkeeper'),
+  }),
+  z: pos({
+    abbreviation: 'z',
+    abbreviationLabel: t('Center Back(abv)'),
+    name: t('Center Back'),
+  }),
+  le: pos({
+    abbreviation: 'le',
+    abbreviationLabel: t('Left Back(abv)'),
+    name: t('Left Back'),
+  }),
+  ld: pos({
+    abbreviation: 'ld',
+    abbreviationLabel: t('Right Back(abv)'),
+    name: t('Right Back'),
+  }),
+  v: pos({
+    abbreviation: 'v',
+    abbreviationLabel: t('Defensive Midfielder(abv)'),
+    name: t('Defensive Midfielder'),
+  }),
+  m: pos({
+    abbreviation: 'm',
+    abbreviationLabel: t('Attacking Midfielder(abv)'),
+    name: t('Attacking Midfielder'),
+  }),
+  a: pos({
+    abbreviation: 'a',
+    abbreviationLabel: t('Striker(abv)'),
+    name: t('Striker'),
+  }),
+}
+
+export const soccer = Schema.decodeSync(StaticModality)({
   _tag: 'StaticModality',
   id: 'soccer',
   name: t('Soccer'),
   positions: [
-    pos({
-      abbreviation: 'g',
-      abbreviationLabel: t('Goalkeeper(abv)'),
-      name: t('Goalkeeper'),
-    }),
-    pos({
-      abbreviation: 'z',
-      abbreviationLabel: t('Center Back(abv)'),
-      name: t('Center Back'),
-    }),
-    pos({
-      abbreviation: 'le',
-      abbreviationLabel: t('Left Back(abv)'),
-      name: t('Left Back'),
-    }),
-    pos({
-      abbreviation: 'ld',
-      abbreviationLabel: t('Right Back(abv)'),
-      name: t('Right Back'),
-    }),
-    pos({
-      abbreviation: 'v',
-      abbreviationLabel: t('Defensive Midfielder(abv)'),
-      name: t('Defensive Midfielder'),
-    }),
-    pos({
-      abbreviation: 'm',
-      abbreviationLabel: t('Attacking Midfielder(abv)'),
-      name: t('Attacking Midfielder'),
-    }),
-    pos({
-      abbreviation: 'a',
-      abbreviationLabel: t('Striker(abv)'),
-      name: t('Striker'),
-    }),
+    soccerPositions.g,
+    soccerPositions.z,
+    soccerPositions.le,
+    soccerPositions.ld,
+    soccerPositions.v,
+    soccerPositions.m,
+    soccerPositions.a,
   ],
 } as const)
 
-export const futsal = refineSync(StaticModality)({
+export const futsalPositions = {
+  g: pos({
+    abbreviation: 'g',
+    abbreviationLabel: t('Goalkeeper(abv)'),
+    name: t('Goalkeeper'),
+  }),
+  f: pos({
+    abbreviation: 'f',
+    abbreviationLabel: t('Defender(Futsal)(abv)'),
+    name: t('Defender(Futsal)'),
+  }),
+  ae: pos({
+    abbreviation: 'ae',
+    abbreviationLabel: t('Left Wing(abv)'),
+    name: t('Left Wing'),
+  }),
+  ad: pos({
+    abbreviation: 'ad',
+    abbreviationLabel: t('Right Wing(abv)'),
+    name: t('Right Wing'),
+  }),
+  p: pos({
+    abbreviation: 'p',
+    abbreviationLabel: t('Pivot(abv)'),
+    name: t('Pivot'),
+  }),
+}
+
+export const futsal = Schema.decodeSync(StaticModality)({
   _tag: 'StaticModality',
   id: 'indoorSoccer',
   name: t('Futsal'),
   positions: [
-    pos({
-      abbreviation: 'g',
-      abbreviationLabel: t('Goalkeeper(abv)'),
-      name: t('Goalkeeper'),
-    }),
-    pos({
-      abbreviation: 'f',
-      abbreviationLabel: t('Defender(Futsal)(abv)'),
-      name: t('Defender(Futsal)'),
-    }),
-    pos({
-      abbreviation: 'ae',
-      abbreviationLabel: t('Left Wing(abv)'),
-      name: t('Left Wing'),
-    }),
-    pos({
-      abbreviation: 'ad',
-      abbreviationLabel: t('Right Wing(abv)'),
-      name: t('Right Wing'),
-    }),
-    pos({
-      abbreviation: 'p',
-      abbreviationLabel: t('Pivot(abv)'),
-      name: t('Pivot'),
-    }),
+    futsalPositions.g,
+    futsalPositions.f,
+    futsalPositions.ae,
+    futsalPositions.ad,
+    futsalPositions.p,
   ],
 } as const)
 
-export const volleyball = refineSync(StaticModality)({
+export const volleyballPositions = {
+  l: pos({
+    abbreviation: 'l',
+    abbreviationLabel: t('Setter(abv)'),
+    name: t('Setter'),
+  }),
+  p: pos({
+    abbreviation: 'p',
+    abbreviationLabel: t('Outside Hitter(abv)'),
+    name: t('Outside Hitter'),
+  }),
+  o: pos({
+    abbreviation: 'o',
+    abbreviationLabel: t('Opposite Hitter(abv)'),
+    name: t('Opposite Hitter'),
+  }),
+  c: pos({
+    abbreviation: 'c',
+    abbreviationLabel: t('Middle Blocker(abv)'),
+    name: t('Middle Blocker'),
+  }),
+  li: pos({
+    abbreviation: 'li',
+    abbreviationLabel: t('Libero(abv)'),
+    name: t('Libero'),
+  }),
+}
+
+export const volleyball = Schema.decodeSync(StaticModality)({
   _tag: 'StaticModality',
   id: 'volleyball',
   name: t('Volleyball'),
   positions: [
-    pos({
-      abbreviation: 'l',
-      abbreviationLabel: t('Setter(abv)'),
-      name: t('Setter'),
-    }),
-    pos({
-      abbreviation: 'p',
-      abbreviationLabel: t('Outside Hitter(abv)'),
-      name: t('Outside Hitter'),
-    }),
-    pos({
-      abbreviation: 'o',
-      abbreviationLabel: t('Opposite Hitter(abv)'),
-      name: t('Opposite Hitter'),
-    }),
-    pos({
-      abbreviation: 'c',
-      abbreviationLabel: t('Middle Blocker(abv)'),
-      name: t('Middle Blocker'),
-    }),
-    pos({
-      abbreviation: 'li',
-      abbreviationLabel: t('Libero(abv)'),
-      name: t('Libero'),
-    }),
+    volleyballPositions.l,
+    volleyballPositions.p,
+    volleyballPositions.o,
+    volleyballPositions.c,
+    volleyballPositions.li,
   ],
 } as const)
 
-export const basketball = refineSync(StaticModality)({
+export const basketballPositions = {
+  pg: pos({
+    abbreviation: 'pg',
+    abbreviationLabel: t('Point Guard(abv)'),
+    name: t('Point Guard'),
+  }),
+  sg: pos({
+    abbreviation: 'sg',
+    abbreviationLabel: t('Shooting Guard(abv)'),
+    name: t('Shooting Guard'),
+  }),
+  sf: pos({
+    abbreviation: 'sf',
+    abbreviationLabel: t('Small Forward(abv)'),
+    name: t('Small Forward'),
+  }),
+  pf: pos({
+    abbreviation: 'pf',
+    abbreviationLabel: t('Power Forward(abv)'),
+    name: t('Power Forward'),
+  }),
+  c: pos({
+    abbreviation: 'c',
+    abbreviationLabel: t('Center(abv)'),
+    name: t('Center'),
+  }),
+}
+
+export const basketball = Schema.decodeSync(StaticModality)({
   _tag: 'StaticModality',
   id: 'basketball',
   name: t('Basketball'),
   positions: [
-    pos({
-      abbreviation: 'pg',
-      abbreviationLabel: t('Point Guard(abv)'),
-      name: t('Point Guard'),
-    }),
-    pos({
-      abbreviation: 'sg',
-      abbreviationLabel: t('Shooting Guard(abv)'),
-      name: t('Shooting Guard'),
-    }),
-    pos({
-      abbreviation: 'sf',
-      abbreviationLabel: t('Small Forward(abv)'),
-      name: t('Small Forward'),
-    }),
-    pos({
-      abbreviation: 'pf',
-      abbreviationLabel: t('Power Forward(abv)'),
-      name: t('Power Forward'),
-    }),
-    pos({
-      abbreviation: 'c',
-      abbreviationLabel: t('Center(abv)'),
-      name: t('Center'),
-    }),
+    basketballPositions.pg,
+    basketballPositions.sg,
+    basketballPositions.sf,
+    basketballPositions.pf,
+    basketballPositions.c,
   ],
 } as const)
 

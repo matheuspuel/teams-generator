@@ -1,5 +1,14 @@
 import { Modality, Player, Rating } from 'src/datatypes'
-import { basketball, futsal, soccer, volleyball } from 'src/datatypes/Modality'
+import {
+  basketball,
+  basketballPositions,
+  futsal,
+  futsalPositions,
+  soccer,
+  soccerPositions,
+  volleyball,
+  volleyballPositions,
+} from 'src/datatypes/Modality'
 import { Abbreviation } from 'src/datatypes/Position'
 
 export type PlayerForm = {
@@ -13,13 +22,13 @@ export const blankPlayerForm = (args: { modality: Modality }): PlayerForm => ({
   positionAbbreviation:
     args.modality._tag === 'StaticModality'
       ? args.modality.id === soccer.id
-        ? soccer.positions[6].abbreviation
+        ? soccerPositions.a.abbreviation
         : args.modality.id === futsal.id
-          ? futsal.positions[4].abbreviation
+          ? futsalPositions.p.abbreviation
           : args.modality.id === volleyball.id
-            ? volleyball.positions[0].abbreviation
+            ? volleyballPositions.l.abbreviation
             : args.modality.id === basketball.id
-              ? basketball.positions[4].abbreviation
+              ? basketballPositions.c.abbreviation
               : args.modality.positions[0].abbreviation
       : args.modality.positions[0].abbreviation,
   rating: 5,

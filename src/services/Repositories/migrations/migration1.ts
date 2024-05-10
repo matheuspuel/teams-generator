@@ -10,7 +10,7 @@ import {
   pipe,
 } from 'effect'
 import { Rating } from 'src/datatypes'
-import { soccer } from 'src/datatypes/Modality'
+import { soccer, soccerPositions } from 'src/datatypes/Modality'
 import { Player } from 'src/datatypes/Player'
 import { GroupsState } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
@@ -97,7 +97,7 @@ const schemaWithMigrations = Schema.transform(
               Array.findFirst(
                 pos => pos.abbreviation === p.position.toLowerCase(),
               ),
-              Option.getOrElse(() => soccer.positions[6]),
+              Option.getOrElse(() => soccerPositions.a),
               _ => _.abbreviation,
             ),
           }),

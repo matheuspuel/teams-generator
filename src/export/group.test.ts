@@ -3,7 +3,7 @@
 import { Schema } from '@effect/schema'
 import { Effect, Ref, SubscriptionRef } from 'effect'
 import { Group, Modality } from 'src/datatypes'
-import { CustomModality, futsal } from 'src/datatypes/Modality'
+import { CustomModality, futsal, futsalPositions } from 'src/datatypes/Modality'
 import { RootState, initialAppState } from 'src/model'
 import { IdGenerator } from 'src/services/IdGenerator'
 import { AppStateRef, StateRef, Subscription } from 'src/services/StateRef'
@@ -137,7 +137,7 @@ const group3 = Schema.decodeSync(Group.Group)({
       active: true,
       createdAt: 5,
       name: 'player5',
-      positionAbbreviation: futsal.positions[1].abbreviation,
+      positionAbbreviation: futsalPositions.f.abbreviation,
       rating: 5,
     },
     {
@@ -145,7 +145,7 @@ const group3 = Schema.decodeSync(Group.Group)({
       active: false,
       createdAt: 6,
       name: 'player6',
-      positionAbbreviation: futsal.positions[3].abbreviation,
+      positionAbbreviation: futsalPositions.ad.abbreviation,
       rating: 6,
     },
   ],
@@ -325,7 +325,7 @@ describe('importGroup state logic', () => {
             active: true,
             createdAt: 5,
             name: 'player5',
-            positionAbbreviation: futsal.positions[1].abbreviation,
+            positionAbbreviation: futsalPositions.f.abbreviation,
             rating: 5,
           },
           {
@@ -333,7 +333,7 @@ describe('importGroup state logic', () => {
             active: false,
             createdAt: 6,
             name: 'player6',
-            positionAbbreviation: futsal.positions[3].abbreviation,
+            positionAbbreviation: futsalPositions.ad.abbreviation,
             rating: 6,
           },
         ],

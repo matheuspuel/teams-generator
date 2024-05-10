@@ -7,10 +7,14 @@ import {
   CustomModality,
   StaticModality,
   basketball,
+  basketballPositions,
   futsal,
+  futsalPositions,
   soccer,
+  soccerPositions,
   staticModalities,
   volleyball,
+  volleyballPositions,
 } from 'src/datatypes/Modality'
 import { Abbreviation, Position } from 'src/datatypes/Position'
 import { RootState } from 'src/model'
@@ -242,28 +246,28 @@ const adaptStaticModalitiesPosition =
     args.previous.id === args.next.id
       ? Option.none()
       : args.previous.id === soccer.id && args.next.id === futsal.id
-        ? positionAbbreviation === soccer.positions[1].abbreviation
-          ? Option.some(futsal.positions[1])
-          : positionAbbreviation === soccer.positions[2].abbreviation
-            ? Option.some(futsal.positions[2])
-            : positionAbbreviation === soccer.positions[3].abbreviation
-              ? Option.some(futsal.positions[3])
-              : positionAbbreviation === soccer.positions[4].abbreviation
-                ? Option.some(futsal.positions[1])
-                : positionAbbreviation === soccer.positions[5].abbreviation
-                  ? Option.some(futsal.positions[4])
-                  : positionAbbreviation === soccer.positions[6].abbreviation
-                    ? Option.some(futsal.positions[4])
+        ? positionAbbreviation === soccerPositions.z.abbreviation
+          ? Option.some(futsalPositions.f)
+          : positionAbbreviation === soccerPositions.le.abbreviation
+            ? Option.some(futsalPositions.ae)
+            : positionAbbreviation === soccerPositions.ld.abbreviation
+              ? Option.some(futsalPositions.ad)
+              : positionAbbreviation === soccerPositions.v.abbreviation
+                ? Option.some(futsalPositions.f)
+                : positionAbbreviation === soccerPositions.m.abbreviation
+                  ? Option.some(futsalPositions.p)
+                  : positionAbbreviation === soccerPositions.a.abbreviation
+                    ? Option.some(futsalPositions.p)
                     : Option.none()
         : args.previous.id === futsal.id && args.next.id === soccer.id
-          ? positionAbbreviation === futsal.positions[1].abbreviation
-            ? Option.some(soccer.positions[1])
-            : positionAbbreviation === futsal.positions[2].abbreviation
-              ? Option.some(soccer.positions[2])
-              : positionAbbreviation === futsal.positions[3].abbreviation
-                ? Option.some(soccer.positions[3])
-                : positionAbbreviation === futsal.positions[4].abbreviation
-                  ? Option.some(soccer.positions[6])
+          ? positionAbbreviation === futsalPositions.f.abbreviation
+            ? Option.some(soccerPositions.z)
+            : positionAbbreviation === futsalPositions.ae.abbreviation
+              ? Option.some(soccerPositions.le)
+              : positionAbbreviation === futsalPositions.ad.abbreviation
+                ? Option.some(soccerPositions.ld)
+                : positionAbbreviation === futsalPositions.p.abbreviation
+                  ? Option.some(soccerPositions.a)
                   : Option.none()
           : Option.none()
 
@@ -311,13 +315,13 @@ export const adjustPlayerPosition =
         args.nextModality._tag === 'unchanged' &&
         args.nextModality.modality._tag === 'StaticModality'
           ? args.nextModality.modality.id === soccer.id
-            ? Option.some(soccer.positions[6])
+            ? Option.some(soccerPositions.a)
             : args.nextModality.modality.id === futsal.id
-              ? Option.some(futsal.positions[4])
+              ? Option.some(futsalPositions.p)
               : args.nextModality.modality.id === basketball.id
-                ? Option.some(basketball.positions[4])
+                ? Option.some(basketballPositions.c)
                 : args.nextModality.modality.id === volleyball.id
-                  ? Option.some(volleyball.positions[0])
+                  ? Option.some(volleyballPositions.l)
                   : Option.none()
           : Option.none(),
       ),
