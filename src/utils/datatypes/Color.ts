@@ -4,20 +4,15 @@ import { apply } from 'effect/Function'
 
 type Endomorphism<A> = (_: A) => A
 
-export type Byte = number
+export type Byte = Schema.Schema.Type<typeof Byte>
+const Byte = Schema.Number
 
-export type Color = {
-  red: Byte
-  green: Byte
-  blue: Byte
-  opacity: Byte
-}
-
+export type Color = Schema.Schema.Type<typeof Color>
 export const Color = Schema.Struct({
-  red: Schema.Number,
-  green: Schema.Number,
-  blue: Schema.Number,
-  opacity: Schema.Number,
+  red: Byte,
+  green: Byte,
+  blue: Byte,
+  opacity: Byte,
 })
 
 export type SolidColor = Color & { opacity: 255 }

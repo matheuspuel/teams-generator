@@ -21,18 +21,14 @@ const pos = <const A extends Schema.Schema.Encoded<typeof StaticPosition>>(
   _: A,
 ) => refineSync(StaticPosition)(_)
 
-export interface StaticModality
-  extends Schema.Schema.Type<typeof StaticModality_> {}
-const StaticModality_ = Schema.Struct({
+export class StaticModality extends Schema.Class<StaticModality>(
+  'StaticModality',
+)({
   _tag: Schema.Literal('StaticModality'),
   id: NonEmptyString,
   name: NonEmptyString,
   positions: Schema.NonEmptyArray(StaticPosition),
-})
-export const StaticModality: Schema.Schema<
-  StaticModality,
-  Schema.Schema.Encoded<typeof StaticModality_>
-> = StaticModality_
+}) {}
 
 export const soccer = refineSync(StaticModality)({
   _tag: 'StaticModality',
@@ -183,18 +179,14 @@ export const staticModalities: NonEmptyReadonlyArray<StaticModality> = [
   basketball,
 ]
 
-export interface CustomModality
-  extends Schema.Schema.Type<typeof CustomModality_> {}
-const CustomModality_ = Schema.Struct({
+export class CustomModality extends Schema.Class<CustomModality>(
+  'CustomModality',
+)({
   _tag: Schema.Literal('CustomModality'),
   id: Id,
   name: NonEmptyString,
   positions: Schema.NonEmptyArray(CustomPosition),
-})
-export const CustomModality: Schema.Schema<
-  CustomModality,
-  Schema.Schema.Encoded<typeof CustomModality_>
-> = CustomModality_
+}) {}
 
 export type Modality = StaticModality | CustomModality
 

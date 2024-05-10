@@ -21,19 +21,14 @@ import { Modality } from './Modality'
 import * as Position from './Position'
 import * as Rating from './Rating'
 
-export interface Player extends Schema.Schema.Type<typeof Player_> {}
-const Player_ = Schema.Struct({
+export class Player extends Schema.Class<Player>('Player')({
   id: Id,
   name: Schema.String,
   rating: Rating.Rating,
   positionAbbreviation: Position.Abbreviation,
   active: Schema.Boolean,
   createdAt: Timestamp.Timestamp,
-})
-export const Player: Schema.Schema<
-  Player,
-  Schema.Schema.Encoded<typeof Player_>
-> = Player_
+}) {}
 
 export const isActive = (p: Player) => p.active
 

@@ -2,27 +2,19 @@ import { Schema } from '@effect/schema'
 import * as Optic from '@fp-ts/optic'
 import { Match, pipe } from 'effect'
 
-export type Parameters = {
-  teamsCountMethod: { _tag: 'count' } | { _tag: 'playersRequired' }
-  teamsCount: number
-  playersRequired: number
-  position: boolean
-  rating: boolean
-}
-
-export const SchemaV1 = Schema.Struct({
-  teamsCount: Schema.Number,
-  position: Schema.Boolean,
-  rating: Schema.Boolean,
-})
-
-export const Parameters: Schema.Schema<Parameters> = Schema.Struct({
+export class Parameters extends Schema.Class<Parameters>('Parameters')({
   teamsCountMethod: Schema.Union(
     Schema.Struct({ _tag: Schema.Literal('count') }),
     Schema.Struct({ _tag: Schema.Literal('playersRequired') }),
   ),
   teamsCount: Schema.Number,
   playersRequired: Schema.Number,
+  position: Schema.Boolean,
+  rating: Schema.Boolean,
+}) {}
+
+export const SchemaV1 = Schema.Struct({
+  teamsCount: Schema.Number,
   position: Schema.Boolean,
   rating: Schema.Boolean,
 })

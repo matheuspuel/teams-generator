@@ -10,28 +10,20 @@ export const Abbreviation = pipe(
 )
 export type Abbreviation = Schema.Schema.Type<typeof Abbreviation>
 
-export interface StaticPosition
-  extends Schema.Schema.Type<typeof StaticPosition_> {}
-const StaticPosition_ = Schema.Struct({
+export class StaticPosition extends Schema.Class<StaticPosition>(
+  'StaticPosition',
+)({
   abbreviation: Abbreviation,
   abbreviationLabel: Schema.String,
   name: NonEmptyString,
-})
-export const StaticPosition: Schema.Schema<
-  StaticPosition,
-  Schema.Schema.Encoded<typeof StaticPosition_>
-> = StaticPosition_
+}) {}
 
-export interface CustomPosition
-  extends Schema.Schema.Type<typeof CustomPosition_> {}
-const CustomPosition_ = Schema.Struct({
+export class CustomPosition extends Schema.Class<CustomPosition>(
+  'CustomPosition',
+)({
   abbreviation: Abbreviation,
   name: NonEmptyString,
-})
-export const CustomPosition: Schema.Schema<
-  CustomPosition,
-  Schema.Schema.Encoded<typeof CustomPosition_>
-> = CustomPosition_
+}) {}
 
 export type Position = StaticPosition | CustomPosition
 

@@ -5,17 +5,12 @@ import { normalize } from 'src/utils/String'
 import * as Modality from './Modality'
 import { Player } from './Player'
 
-export interface Group extends Schema.Schema.Type<typeof Group_> {}
-const Group_ = Schema.Struct({
+export class Group extends Schema.Class<Group>('Group')({
   id: Id,
   name: Schema.String,
   players: Schema.Array(Player),
   modality: Modality.Reference,
-})
-export const Group: Schema.Schema<
-  Group,
-  Schema.Schema.Encoded<typeof Group_>
-> = Group_
+}) {}
 
 export const NameOrd: Order.Order<Group> = pipe(
   String.Order,

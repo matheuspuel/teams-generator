@@ -239,8 +239,8 @@ const dataSchema = Group.Group.pipe(
   ),
 )
 
-const lastSupportedVersion = 2 as const
-const currentVersion = 2 as const
+const lastSupportedVersion = 2
+const currentVersion = 2
 
 const schema = Schema.transform(
   Schema.parseJson(
@@ -254,12 +254,13 @@ const schema = Schema.transform(
   dataSchema.pipe(Schema.typeSchema),
   {
     decode: v => v.data,
-    encode: v => ({
-      application: 'sorteio-times' as const,
-      type: 'group' as const,
-      version: currentVersion,
-      data: v,
-    }),
+    encode: v =>
+      ({
+        application: 'sorteio-times' as const,
+        type: 'group' as const,
+        version: currentVersion,
+        data: v,
+      }) as const,
   },
 )
 
