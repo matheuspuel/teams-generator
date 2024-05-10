@@ -1,4 +1,4 @@
-import { Effect, ReadonlyArray, flow, pipe } from 'effect'
+import { Array, Effect, flow, pipe } from 'effect'
 import { GroupOrder } from 'src/datatypes'
 import { GroupOrderType } from 'src/datatypes/GroupOrder'
 import { root } from 'src/model/optic'
@@ -8,14 +8,14 @@ import { goBack } from './routes'
 const selectGroupOrder =
   (option: GroupOrderType) =>
   (state: GroupOrder): GroupOrder =>
-    pipe(state, ReadonlyArray.unprepend, ([a, as]) =>
+    pipe(state, Array.unprepend, ([a, as]) =>
       a._tag === option
-        ? pipe(as, ReadonlyArray.prepend({ _tag: a._tag, reverse: !a.reverse }))
+        ? pipe(as, Array.prepend({ _tag: a._tag, reverse: !a.reverse }))
         : pipe(
             as,
-            ReadonlyArray.filter(b => b._tag !== option),
-            ReadonlyArray.prepend(a),
-            ReadonlyArray.prepend({ _tag: option, reverse: false }),
+            Array.filter(b => b._tag !== option),
+            Array.prepend(a),
+            Array.prepend({ _tag: option, reverse: false }),
           ),
     )
 

@@ -1,11 +1,8 @@
-import { ReadonlyArray as A, Equivalence, Option } from 'effect'
+import { Array as A, Equivalence, Option } from 'effect'
+import { NonEmptyReadonlyArray } from 'effect/Array'
 import { constant, pipe } from 'effect/Function'
-import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
 
-export * from 'effect/ReadonlyArray'
-
-export const isArray = <A>(a: A): a is Extract<A, ReadonlyArray<unknown>> =>
-  Array.isArray(a)
+export * from 'effect/Array'
 
 export const toNonEmpty = <A>(
   array: ReadonlyArray<A>,

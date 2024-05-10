@@ -1,6 +1,6 @@
 import * as Optic from '@fp-ts/optic'
 import { Optional } from '@fp-ts/optic'
-import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
+import { NonEmptyReadonlyArray } from 'effect/Array'
 
 export const nonEmptyIndex = <A>(
   n: number,

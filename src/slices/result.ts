@@ -1,11 +1,4 @@
-import {
-  Effect,
-  Match,
-  Option,
-  ReadonlyArray,
-  ReadonlyRecord,
-  pipe,
-} from 'effect'
+import { Array, Effect, Match, Option, Record, pipe } from 'effect'
 import { clockWith } from 'effect/Effect'
 import { Player, TeamsGenerator } from 'src/datatypes'
 import { getResultRatingDeviance } from 'src/datatypes/TeamsGenerator'
@@ -23,16 +16,12 @@ export const eraseResult = State.on(root.at('result')).set(Option.none())
 export const generateResult = pipe(
   State.get.pipe(
     Effect.flatMap(s =>
-      Option.flatMap(s.ui.selectedGroupId, id =>
-        ReadonlyRecord.get(s.groups, id),
-      ),
+      Option.flatMap(s.ui.selectedGroupId, id => Record.get(s.groups, id)),
     ),
   ),
   Effect.flatMap(group =>
     Effect.all({
-      players: Effect.succeed(
-        ReadonlyArray.filter(group.players, Player.isActive),
-      ),
+      players: Effect.succeed(Array.filter(group.players, Player.isActive)),
       modality: State.with(getModality(group.modality)).pipe(Effect.flatten),
       parameters: State.with(s => s.parameters),
       start: clockWith(c => c.currentTimeMillis),

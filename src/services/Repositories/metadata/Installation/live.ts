@@ -7,5 +7,5 @@ export const InstallationRepositoryLive: InstallationRepository = createStorage<
   { id: string }
 >({
   key: 'telemetry/installation',
-  schema: Schema.struct({ id: Schema.string }),
+  schema: Schema.Struct({ id: Schema.String }),
 })

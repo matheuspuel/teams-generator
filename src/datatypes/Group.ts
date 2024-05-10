@@ -6,10 +6,10 @@ import * as Modality from './Modality'
 import { Player } from './Player'
 
 export interface Group extends Schema.Schema.Type<typeof Group_> {}
-const Group_ = Schema.struct({
+const Group_ = Schema.Struct({
   id: Id,
-  name: Schema.string,
-  players: Schema.array(Player),
+  name: Schema.String,
+  players: Schema.Array(Player),
   modality: Modality.Reference,
 })
 export const Group: Schema.Schema<

@@ -11,18 +11,16 @@ export const ParametersRepositoryLive: ParameterRepository = createStorage<
   >
 >({
   key: 'core/parameters',
-  schema: Schema.union(
+  schema: Schema.Union(
     Parameters.Parameters,
-    Schema.transformOrFail(
-      Parameters.SchemaV1,
-      Parameters.Parameters,
-      v =>
+    Schema.transformOrFail(Parameters.SchemaV1, Parameters.Parameters, {
+      decode: v =>
         PR.succeed({
           ...v,
           teamsCountMethod: { _tag: 'count' as const },
           playersRequired: 11,
         }),
-      (v, _, ast) => PR.fail(new PR.Forbidden(ast, v)),
-    ),
+      encode: (v, _, ast) => PR.fail(new PR.Forbidden(ast, v)),
+    }),
   ),
 })

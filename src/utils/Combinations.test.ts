@@ -1,5 +1,5 @@
 /* eslint-disable functional/no-expression-statements */
-import { ReadonlyArray, flow, pipe } from 'effect'
+import { Array, flow, pipe } from 'effect'
 import * as fc from 'fast-check'
 import { describe, test } from 'vitest'
 import { getCombinationsIndices } from './Combinations'
@@ -14,7 +14,7 @@ describe('getCombinationsIndices', () => {
         (n, k) =>
           pipe(
             getCombinationsIndices(k)(n),
-            ReadonlyArray.every(flow(ReadonlyArray.length, s => s === k)),
+            Array.every(flow(Array.length, s => s === k)),
           ),
       ),
     )
@@ -28,7 +28,7 @@ describe('getCombinationsIndices', () => {
         (n, k) =>
           pipe(
             getCombinationsIndices(k)(n),
-            ReadonlyArray.length,
+            Array.length,
             s =>
               s ===
               (n < k ? 0 : factorial(n) / factorial(k) / factorial(n - k)),

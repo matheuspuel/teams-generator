@@ -1,14 +1,6 @@
 import { Schema } from '@effect/schema'
-import {
-  Order,
-  ReadonlyArray,
-  ReadonlyRecord,
-  Tuple,
-  absurd,
-  identity,
-  pipe,
-} from 'effect'
-import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
+import { Array, Order, Record, Tuple, absurd, identity, pipe } from 'effect'
+import { NonEmptyReadonlyArray } from 'effect/Array'
 import { Modality, Player } from 'src/datatypes'
 import {
   ActiveOrd,
@@ -29,12 +21,8 @@ export const GroupOrderTypeDict = {
 export type GroupOrderType = keyof typeof GroupOrderTypeDict
 
 export const GroupOrderTypeSchema: Schema.Schema<GroupOrderType> =
-  Schema.literal(
-    ...pipe(
-      GroupOrderTypeDict,
-      ReadonlyRecord.toEntries,
-      ReadonlyArray.map(Tuple.getFirst),
-    ),
+  Schema.Literal(
+    ...pipe(GroupOrderTypeDict, Record.toEntries, Array.map(Tuple.getFirst)),
   )
 
 export type GroupOrder = NonEmptyReadonlyArray<
@@ -44,10 +32,10 @@ export type GroupOrder = NonEmptyReadonlyArray<
   }>
 >
 
-export const GroupOrder: Schema.Schema<GroupOrder> = Schema.nonEmptyArray(
-  Schema.struct({
+export const GroupOrder: Schema.Schema<GroupOrder> = Schema.NonEmptyArray(
+  Schema.Struct({
     _tag: GroupOrderTypeSchema,
-    reverse: Schema.boolean,
+    reverse: Schema.Boolean,
   }),
 )
 
@@ -75,7 +63,7 @@ export const toOrder =
   args =>
     pipe(
       order,
-      ReadonlyArray.map(v =>
+      Array.map(v =>
         pipe(typeToOrder(v._tag)(args), v.reverse ? Order.reverse : identity),
       ),
       Order.combineAll,

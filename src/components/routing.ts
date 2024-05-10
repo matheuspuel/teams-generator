@@ -1,4 +1,4 @@
-import { ReadonlyArray } from 'effect'
+import { Array } from 'effect'
 import { Fragment } from 'src/components'
 import { UIElement } from 'src/components/types'
 
@@ -10,7 +10,7 @@ export const modal =
   <A>(f: (args: A) => UIElement) =>
   (args: A) => ({ _tag: 'Modal' as const, modal: f(args) })
 
-export const mergeModalsToScreens = ReadonlyArray.reduce(
+export const mergeModalsToScreens = Array.reduce(
   [],
   (
     acc: Array<UIElement>,
@@ -20,7 +20,7 @@ export const mergeModalsToScreens = ReadonlyArray.reduce(
   ) =>
     v._tag === 'Screen'
       ? [...acc, v.screen]
-      : ReadonlyArray.matchRight(acc, {
+      : Array.matchRight(acc, {
           onEmpty: () => [v.modal],
           onNonEmpty: (init, last) => [...init, Fragment([last, v.modal])],
         }),

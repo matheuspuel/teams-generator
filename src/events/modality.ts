@@ -1,11 +1,4 @@
-import {
-  Effect,
-  Option,
-  ReadonlyArray,
-  ReadonlyRecord,
-  flow,
-  pipe,
-} from 'effect'
+import { Array, Effect, Option, Record, flow, pipe } from 'effect'
 import { Modality } from 'src/datatypes'
 import { soccer } from 'src/datatypes/Modality'
 import { root } from 'src/model/optic'
@@ -44,7 +37,7 @@ export const openModality = (modality: Modality.Reference) =>
       State.on(root.at('modalityForm')).set({
         id: Option.some(m.id),
         name: m.name,
-        positions: ReadonlyArray.map(m.positions, p => ({
+        positions: Array.map(m.positions, p => ({
           abbreviation: p.abbreviation.toUpperCase(),
           name: p.name,
           oldAbbreviation: Option.some(p.abbreviation),
@@ -74,8 +67,8 @@ export const submitModality = pipe(
   Effect.tap(({ nextModality }) =>
     State.on(root.at('customModalities')).update(ms =>
       pipe(
-        ReadonlyArray.filter(ms, m => m.id !== nextModality.id),
-        ReadonlyArray.prepend(nextModality),
+        Array.filter(ms, m => m.id !== nextModality.id),
+        Array.prepend(nextModality),
       ),
     ),
   ),
@@ -84,11 +77,11 @@ export const submitModality = pipe(
       prevModality,
       Effect.tap(prevModality =>
         State.on(root.at('groups')).update(
-          ReadonlyRecord.map(g =>
+          Record.map(g =>
             g.modality.id === prevModality.id
               ? {
                   ...g,
-                  players: ReadonlyArray.map(
+                  players: Array.map(
                     g.players,
                     adjustPlayerPosition({
                       prevModality: Option.some(prevModality),
@@ -130,19 +123,17 @@ export const removeModality = pipe(
   Effect.bindTo('prevModality'),
   Effect.tap(({ prevModality }) =>
     State.on(root.at('customModalities')).update(
-      ReadonlyArray.filter(m => m.id !== prevModality.id),
+      Array.filter(m => m.id !== prevModality.id),
     ),
   ),
   Effect.bind('nextModality', () =>
     State.with(s =>
-      ReadonlyArray.head(s.customModalities).pipe(
-        Option.getOrElse(() => soccer),
-      ),
+      Array.head(s.customModalities).pipe(Option.getOrElse(() => soccer)),
     ),
   ),
   Effect.tap(({ nextModality, prevModality }) =>
     State.on(root.at('groups')).update(
-      ReadonlyRecord.map(g =>
+      Record.map(g =>
         g.modality.id === prevModality.id
           ? {
               ...g,
@@ -150,7 +141,7 @@ export const removeModality = pipe(
                 nextModality._tag === 'CustomModality'
                   ? { _tag: nextModality._tag, id: nextModality.id }
                   : { _tag: nextModality._tag, id: nextModality.id },
-              players: ReadonlyArray.map(
+              players: Array.map(
                 g.players,
                 adjustPlayerPosition({
                   prevModality: Option.some(prevModality),
@@ -178,7 +169,7 @@ export const changeModalityName = flow(
 
 export const addModalityPosition = StateRef.execute(
   State.on(root.at('modalityForm').at('positions')).update(
-    ReadonlyArray.append(blankPositionForm),
+    Array.append(blankPositionForm),
   ),
 )
 
@@ -186,9 +177,9 @@ export const removeModalityPosition = (index: number) =>
   StateRef.execute(
     State.on(root.at('modalityForm').at('positions')).update(
       flow(
-        ReadonlyArray.remove(index),
+        Array.remove(index),
         toNonEmpty,
-        Option.getOrElse(() => ReadonlyArray.of(blankPositionForm)),
+        Option.getOrElse(() => Array.of(blankPositionForm)),
       ),
     ),
   )
@@ -197,12 +188,9 @@ export const liftModalityPosition = (index: number) =>
   StateRef.execute(
     State.on(root.at('modalityForm').at('positions')).update(as =>
       pipe(
-        ReadonlyArray.get(as, index),
+        Array.get(as, index),
         Option.flatMap(a =>
-          pipe(
-            ReadonlyArray.remove(as, index),
-            ReadonlyArray.insertAt(index - 1, a),
-          ),
+          pipe(Array.remove(as, index), Array.insertAt(index - 1, a)),
         ),
         Option.getOrElse(() => as),
       ),

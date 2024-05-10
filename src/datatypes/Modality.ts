@@ -1,5 +1,5 @@
 import { Schema } from '@effect/schema'
-import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
+import { NonEmptyReadonlyArray } from 'effect/Array'
 import { t } from 'src/i18n'
 import { Id } from 'src/utils/Entity'
 import { NonEmptyString } from 'src/utils/datatypes/NonEmptyString'
@@ -23,11 +23,11 @@ const pos = <const A extends Schema.Schema.Encoded<typeof StaticPosition>>(
 
 export interface StaticModality
   extends Schema.Schema.Type<typeof StaticModality_> {}
-const StaticModality_ = Schema.struct({
-  _tag: Schema.literal('StaticModality'),
+const StaticModality_ = Schema.Struct({
+  _tag: Schema.Literal('StaticModality'),
   id: NonEmptyString,
   name: NonEmptyString,
-  positions: Schema.nonEmptyArray(StaticPosition),
+  positions: Schema.NonEmptyArray(StaticPosition),
 })
 export const StaticModality: Schema.Schema<
   StaticModality,
@@ -185,11 +185,11 @@ export const staticModalities: NonEmptyReadonlyArray<StaticModality> = [
 
 export interface CustomModality
   extends Schema.Schema.Type<typeof CustomModality_> {}
-const CustomModality_ = Schema.struct({
-  _tag: Schema.literal('CustomModality'),
+const CustomModality_ = Schema.Struct({
+  _tag: Schema.Literal('CustomModality'),
   id: Id,
   name: NonEmptyString,
-  positions: Schema.nonEmptyArray(CustomPosition),
+  positions: Schema.NonEmptyArray(CustomPosition),
 })
 export const CustomModality: Schema.Schema<
   CustomModality,
@@ -199,9 +199,9 @@ export const CustomModality: Schema.Schema<
 export type Modality = StaticModality | CustomModality
 
 export type Reference = Schema.Schema.Type<typeof Reference_>
-const Reference_ = Schema.union(
-  Schema.struct({ _tag: Schema.literal('StaticModality'), id: NonEmptyString }),
-  Schema.struct({ _tag: Schema.literal('CustomModality'), id: Id }),
+const Reference_ = Schema.Union(
+  Schema.Struct({ _tag: Schema.Literal('StaticModality'), id: NonEmptyString }),
+  Schema.Struct({ _tag: Schema.Literal('CustomModality'), id: Id }),
 )
 export const Reference: Schema.Schema<
   Reference,

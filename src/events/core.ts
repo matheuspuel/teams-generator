@@ -15,7 +15,7 @@ export const hideSplashScreen = SplashScreen.hide()
 export const back = pipe(
   goBack,
   StateRef.execute,
-  Effect.tap(({ isHandled }) => (isHandled ? Effect.unit : BackHandler.exit())),
+  Effect.tap(({ isHandled }) => (isHandled ? Effect.void : BackHandler.exit())),
 )
 
 export const dismissAlert = Alert.dismiss()

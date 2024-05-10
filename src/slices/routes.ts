@@ -1,6 +1,6 @@
 import * as Optic from '@fp-ts/optic'
-import { Data, Effect, ReadonlyArray, flow, pipe } from 'effect'
-import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
+import { Array, Data, Effect, flow, pipe } from 'effect'
+import { NonEmptyReadonlyArray } from 'effect/Array'
 import { RootState } from 'src/model'
 import { root } from 'src/model/optic'
 import { State } from 'src/services/StateRef'
@@ -30,11 +30,11 @@ const isAllowedToGoBack = (_s: RootState): boolean => true
 
 const onNavigation = () =>
   pipe(
-    State.flatWith(flow(Optic.get(route$), ReadonlyArray.last)),
+    State.flatWith(flow(Optic.get(route$), Array.last)),
     Effect.tap(
       flow(
         Match.valueSomeTags({}),
-        Match.orElse(() => Effect.unit),
+        Match.orElse(() => Effect.void),
       ),
     ),
     Effect.ignore,
@@ -48,16 +48,16 @@ const update = flow(
 export const navigate = (screen: Route) =>
   update(
     flow(
-      ReadonlyArray.takeWhile(s => s._tag !== screen._tag),
-      ReadonlyArray.append(screen),
+      Array.takeWhile(s => s._tag !== screen._tag),
+      Array.append(screen),
     ),
   )
 
 export const navigateReplace = (screen: Route) =>
   update(
-    ReadonlyArray.matchRight({
+    Array.matchRight({
       onEmpty: () => [screen],
-      onNonEmpty: init => ReadonlyArray.append(init, screen),
+      onNonEmpty: init => Array.append(init, screen),
     }),
   )
 
@@ -68,9 +68,9 @@ export const goBack = pipe(
   State.with(isAllowedToGoBack),
   Effect.flatMap(isAllowedToGoBack =>
     isAllowedToGoBack
-      ? State.with(flow(Optic.get(route$), ReadonlyArray.initNonEmpty)).pipe(
+      ? State.with(flow(Optic.get(route$), Array.initNonEmpty)).pipe(
           Effect.flatMap(init =>
-            ReadonlyArray.match(init, {
+            Array.match(init, {
               onEmpty: () => Effect.succeed({ isHandled: false }),
               onNonEmpty: init =>
                 Effect.succeed({ isHandled: true }).pipe(

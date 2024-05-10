@@ -10,21 +10,21 @@ export type Parameters = {
   rating: boolean
 }
 
-export const SchemaV1 = Schema.struct({
-  teamsCount: Schema.number,
-  position: Schema.boolean,
-  rating: Schema.boolean,
+export const SchemaV1 = Schema.Struct({
+  teamsCount: Schema.Number,
+  position: Schema.Boolean,
+  rating: Schema.Boolean,
 })
 
-export const Parameters: Schema.Schema<Parameters> = Schema.struct({
-  teamsCountMethod: Schema.union(
-    Schema.struct({ _tag: Schema.literal('count') }),
-    Schema.struct({ _tag: Schema.literal('playersRequired') }),
+export const Parameters: Schema.Schema<Parameters> = Schema.Struct({
+  teamsCountMethod: Schema.Union(
+    Schema.Struct({ _tag: Schema.Literal('count') }),
+    Schema.Struct({ _tag: Schema.Literal('playersRequired') }),
   ),
-  teamsCount: Schema.number,
-  playersRequired: Schema.number,
-  position: Schema.boolean,
-  rating: Schema.boolean,
+  teamsCount: Schema.Number,
+  playersRequired: Schema.Number,
+  position: Schema.Boolean,
+  rating: Schema.Boolean,
 })
 
 export const initial: Parameters = {

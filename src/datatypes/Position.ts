@@ -12,9 +12,9 @@ export type Abbreviation = Schema.Schema.Type<typeof Abbreviation>
 
 export interface StaticPosition
   extends Schema.Schema.Type<typeof StaticPosition_> {}
-const StaticPosition_ = Schema.struct({
+const StaticPosition_ = Schema.Struct({
   abbreviation: Abbreviation,
-  abbreviationLabel: Schema.string,
+  abbreviationLabel: Schema.String,
   name: NonEmptyString,
 })
 export const StaticPosition: Schema.Schema<
@@ -24,7 +24,7 @@ export const StaticPosition: Schema.Schema<
 
 export interface CustomPosition
   extends Schema.Schema.Type<typeof CustomPosition_> {}
-const CustomPosition_ = Schema.struct({
+const CustomPosition_ = Schema.Struct({
   abbreviation: Abbreviation,
   name: NonEmptyString,
 })

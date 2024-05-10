@@ -1,13 +1,13 @@
-import { Effect, Option, Random, ReadonlyArray, pipe } from 'effect'
+import { Array, Effect, Option, Random, pipe } from 'effect'
 
 export const randomizeArray = <A>(as: Array<A>): Effect.Effect<Array<A>> =>
   pipe(
     randomExtractElem(as),
     Effect.flatMap(
       Option.match({
-        onNone: () => Effect.succeed(ReadonlyArray.empty<A>()),
+        onNone: () => Effect.succeed(Array.empty<A>()),
         onSome: ([a, rest]) =>
-          pipe(randomizeArray(rest), Effect.map(ReadonlyArray.append(a))),
+          pipe(randomizeArray(rest), Effect.map(Array.append(a))),
       }),
     ),
   )
@@ -25,5 +25,5 @@ const extractElem =
   <A>(as: Array<A>): Option.Option<[A, Array<A>]> =>
     Option.all([
       Option.fromNullable(as[index]),
-      Option.some(ReadonlyArray.remove(index)(as)),
+      Option.some(Array.remove(index)(as)),
     ])

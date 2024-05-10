@@ -1,5 +1,5 @@
 import { Schema } from '@effect/schema'
-import { Effect, Option, ReadonlyArray, pipe } from 'effect'
+import { Array, Effect, Option, pipe } from 'effect'
 import { AsyncStorage } from 'src/services/AsyncStorage'
 import { TelemetryLog, TelemetryLogSchema } from 'src/services/Telemetry'
 import { LogRepository } from '.'
@@ -16,8 +16,8 @@ export const LogRepositoryLive = Effect.map(
         AsyncStorage.getItem(key),
         Effect.flatMap(
           Option.match({
-            onNone: () => Effect.succeed(ReadonlyArray.empty<TelemetryLog>()),
-            onSome: Schema.decode(Schema.parseJson(Schema.array(LogSchema))),
+            onNone: () => Effect.succeed(Array.empty<TelemetryLog>()),
+            onSome: Schema.decode(Schema.parseJson(Schema.Array(LogSchema))),
           }),
         ),
         Effect.provide(ctx),
@@ -27,13 +27,13 @@ export const LogRepositoryLive = Effect.map(
         AsyncStorage.getItem(key),
         Effect.flatMap(
           Option.match({
-            onNone: () => Effect.succeed(ReadonlyArray.empty<TelemetryLog>()),
-            onSome: Schema.decode(Schema.parseJson(Schema.array(LogSchema))),
+            onNone: () => Effect.succeed(Array.empty<TelemetryLog>()),
+            onSome: Schema.decode(Schema.parseJson(Schema.Array(LogSchema))),
           }),
         ),
-        Effect.map(ReadonlyArray.appendAll(vs)),
+        Effect.map(Array.appendAll(vs)),
         Effect.flatMap(
-          Schema.encode(Schema.parseJson(Schema.array(LogSchema))),
+          Schema.encode(Schema.parseJson(Schema.Array(LogSchema))),
         ),
         Effect.flatMap(value => AsyncStorage.setItem({ key, value })),
         Effect.provide(ctx),

@@ -5,5 +5,5 @@ import { StorageVersionRepository } from '.'
 export const StorageVersionRepositoryLive: StorageVersionRepository =
   createStorage({
     key: 'telemetry/StorageVersion',
-    schema: Schema.struct({ version: Schema.number }),
+    schema: Schema.Struct({ version: Schema.Number }),
   })

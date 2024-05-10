@@ -1,4 +1,4 @@
-import { ReadonlyArray, pipe } from 'effect'
+import { Array, pipe } from 'effect'
 import { constUndefined } from 'effect/Function'
 import * as React from 'react'
 import { FlatList as RNFlatList_ } from 'react-native'
@@ -46,7 +46,7 @@ const getRawProps = <A>({
   renderItem: ({ item, index }) => props.renderItem(item, index),
   ListEmptyComponent: pipe(
     props.data,
-    ReadonlyArray.match({
+    Array.match({
       onEmpty: () => props.ListEmptyComponent,
       onNonEmpty: constUndefined,
     }),

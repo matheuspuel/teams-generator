@@ -9,7 +9,7 @@ import {
   pipe,
 } from 'effect'
 
-export const Timestamp = pipe(Schema.number, Schema.brand('Timestamp'))
+export const Timestamp = pipe(Schema.Number, Schema.brand('Timestamp'))
 
 export type Timestamp = Schema.Schema.Type<typeof Timestamp>
 

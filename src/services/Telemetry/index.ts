@@ -3,10 +3,10 @@ import { Schema } from '@effect/schema'
 import { Effect } from 'effect'
 import { Timestamp } from 'src/utils/datatypes'
 
-export const TelemetryLogSchema = Schema.struct({
+export const TelemetryLogSchema = Schema.Struct({
   timestamp: Timestamp.Timestamp,
-  event: Schema.string,
-  data: Schema.unknown,
+  event: Schema.String,
+  data: Schema.Unknown,
 })
 
 export type TelemetryLog = Schema.Schema.Type<typeof TelemetryLogSchema>

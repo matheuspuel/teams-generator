@@ -5,5 +5,5 @@ import { ModalityRepository } from '.'
 
 export const ModalityRepositoryLive: ModalityRepository = createStorage({
   key: 'core/Modality',
-  schema: Schema.array(Modality.CustomModality),
+  schema: Schema.Array(Modality.CustomModality),
 })

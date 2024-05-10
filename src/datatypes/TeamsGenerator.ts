@@ -1,16 +1,16 @@
 import {
+  Array,
   Effect,
   Match,
   Number,
   Option,
   Order,
-  ReadonlyArray,
   flow,
   identity,
   pipe,
 } from 'effect'
+import { NonEmptyReadonlyArray } from 'effect/Array'
 import { sumAll } from 'effect/Number'
-import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
 import * as Player from 'src/datatypes/Player'
 import * as Position from 'src/datatypes/Position'
 import { randomizeArray } from 'src/utils/Random'
@@ -24,21 +24,21 @@ const getFitOrdByDevianceFns = (
 ): Order.Order<Array<Array<Player>>> =>
   pipe(
     fns,
-    ReadonlyArray.map(f => Order.mapInput(f)(Number.Order)),
+    Array.map(f => Order.mapInput(f)(Number.Order)),
     Order.combineAll<Array<Array<Player>>>,
   )
 
 const getResultPositionDeviance =
   (args: { modality: Modality }) =>
   (teams: Array<Array<Player>>): number =>
-    pipe(teams, ReadonlyArray.flatten, allPlayers =>
+    pipe(teams, Array.flatten, allPlayers =>
       pipe(
         identity<
           NonEmptyReadonlyArray<
             Position.StaticPosition | Position.CustomPosition
           >
         >(args.modality.positions),
-        ReadonlyArray.map(pos =>
+        Array.map(pos =>
           pipe(
             allPlayers,
             positionCount(pos),
@@ -46,9 +46,7 @@ const getResultPositionDeviance =
             positionAverage =>
               pipe(
                 teams,
-                ReadonlyArray.map(
-                  flow(positionCount(pos), deviance(positionAverage)),
-                ),
+                Array.map(flow(positionCount(pos), deviance(positionAverage))),
                 sumAll,
               ),
           ),
@@ -64,13 +62,13 @@ const fixFloat = (v: number) => Math.round(v * fixFloatFactor) / fixFloatFactor
 export const getResultRatingDeviance = (teams: Array<Array<Player>>): number =>
   pipe(
     teams,
-    ReadonlyArray.flatten,
+    Array.flatten,
     Player.getRatingAverage,
     Option.getOrElse(() => 0),
     overallAverage =>
       pipe(
         teams,
-        ReadonlyArray.map(
+        Array.map(
           flow(
             Player.getRatingAverage,
             Option.getOrElse(() => 0),
@@ -87,17 +85,17 @@ const balanceTeams: (
 ) => (teams: Array<Array<Player>>) => Array<Array<Player>> = fitOrd => teams =>
   pipe(
     teams,
-    ReadonlyArray.findFirst((team, i) =>
+    Array.findFirst((team, i) =>
       pipe(
         teams,
-        ReadonlyArray.findFirst((otherTeam, j) =>
+        Array.findFirst((otherTeam, j) =>
           j > i
             ? pipe(
                 team,
-                ReadonlyArray.findFirst((_, k) =>
+                Array.findFirst((_, k) =>
                   pipe(
                     otherTeam,
-                    ReadonlyArray.findFirst((_, l) =>
+                    Array.findFirst((_, l) =>
                       pipe(changePlayers(i)(k)(j)(l)(teams), nextState =>
                         Order.lessThan(fitOrd)(teams)(nextState)
                           ? Option.some(balanceTeams(fitOrd)(nextState))
@@ -121,10 +119,8 @@ const positionCount =
   (players: Array<Player>): number =>
     pipe(
       players,
-      ReadonlyArray.filter(
-        p => p.positionAbbreviation === position.abbreviation,
-      ),
-      ReadonlyArray.length,
+      Array.filter(p => p.positionAbbreviation === position.abbreviation),
+      Array.length,
     )
 
 const changePlayers =
@@ -135,39 +131,24 @@ const changePlayers =
   (teams: Array<Array<Player>>): Array<Array<Player>> =>
     pipe(
       Option.Do,
-      Option.bind('team', () => pipe(teams, ReadonlyArray.get(teamIndex))),
-      Option.bind('otherTeam', () =>
-        pipe(teams, ReadonlyArray.get(otherTeamIndex)),
-      ),
-      Option.bind('player', ({ team }) =>
-        pipe(team, ReadonlyArray.get(playerIndex)),
-      ),
+      Option.bind('team', () => pipe(teams, Array.get(teamIndex))),
+      Option.bind('otherTeam', () => pipe(teams, Array.get(otherTeamIndex))),
+      Option.bind('player', ({ team }) => pipe(team, Array.get(playerIndex))),
       Option.bind('otherPlayer', ({ otherTeam }) =>
-        pipe(otherTeam, ReadonlyArray.get(otherPlayerIndex)),
+        pipe(otherTeam, Array.get(otherPlayerIndex)),
       ),
       Option.let('nextTeam', ({ team, otherPlayer }) =>
-        pipe(
-          team,
-          ReadonlyArray.remove(playerIndex),
-          ReadonlyArray.append(otherPlayer),
-        ),
+        pipe(team, Array.remove(playerIndex), Array.append(otherPlayer)),
       ),
       Option.let('nextOtherTeam', ({ otherTeam, player }) =>
-        pipe(
-          otherTeam,
-          ReadonlyArray.remove(otherPlayerIndex),
-          ReadonlyArray.append(player),
-        ),
+        pipe(otherTeam, Array.remove(otherPlayerIndex), Array.append(player)),
       ),
       Option.flatMap(({ nextTeam, nextOtherTeam }) =>
         pipe(
           teams,
-          ReadonlyArray.replaceOption<Array<Player>>(teamIndex, nextTeam),
+          Array.replaceOption<Array<Player>>(teamIndex, nextTeam),
           Option.flatMap(
-            ReadonlyArray.replaceOption<Array<Player>>(
-              otherTeamIndex,
-              nextOtherTeam,
-            ),
+            Array.replaceOption<Array<Player>>(otherTeamIndex, nextOtherTeam),
           ),
         ),
       ),
@@ -181,11 +162,11 @@ export const divideTeamsWithEqualNumberOfPlayers =
       ? []
       : pipe(
           players,
-          ReadonlyArray.splitAt(Math.floor(players.length / numOfTeams)),
+          Array.splitAt(Math.floor(players.length / numOfTeams)),
           ([as, bs]) =>
             pipe(
               divideTeamsWithEqualNumberOfPlayers(numOfTeams - 1)(bs),
-              ReadonlyArray.append(as),
+              Array.append(as),
             ),
         )
 
@@ -194,10 +175,10 @@ export const divideTeamsWithFixedNumberOfPlayers =
   (players: Array<Player>): Array<Array<Player>> =>
     players.length === 0
       ? []
-      : pipe(players, ReadonlyArray.splitAt(numOfPlayers), ([as, bs]) =>
+      : pipe(players, Array.splitAt(numOfPlayers), ([as, bs]) =>
           pipe(
             divideTeamsWithFixedNumberOfPlayers(numOfPlayers)(bs),
-            ReadonlyArray.prepend(as),
+            Array.prepend(as),
           ),
         )
 
@@ -230,7 +211,7 @@ export const getFitOrdFromCriteria =
           : Option.none(),
         criteria.rating ? Option.some(getResultRatingDeviance) : Option.none(),
       ],
-      ReadonlyArray.getSomes,
+      Array.getSomes,
       getFitOrdByDevianceFns,
     )
 

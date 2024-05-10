@@ -1,7 +1,7 @@
 /* eslint-disable functional/no-expression-statements */
 import { Arbitrary } from '@effect/schema'
 import { Semigroup } from '@effect/typeclass'
-import { Equivalence, Match, ReadonlyArray, identity, pipe } from 'effect'
+import { Array, Equivalence, Match, identity, pipe } from 'effect'
 import { constant } from 'effect/Function'
 import * as fc from 'fast-check'
 import { playersMock } from 'src/mocks/Player'
@@ -26,22 +26,22 @@ const getAllCombinationsOfSubListsWithEqualLength =
       ? [[as]]
       : pipe(
           getCombinationsIndices(Math.floor(as.length / numOfLists))(
-            ReadonlyArray.length(as),
+            Array.length(as),
           ),
-          ReadonlyArray.map(is =>
+          Array.map(is =>
             pipe(
               as,
-              ReadonlyArray.partition((_, i) => is.includes(i)),
+              Array.partition((_, i) => is.includes(i)),
               ([cs, bs]) =>
                 pipe(
                   getAllCombinationsOfSubListsWithEqualLength(numOfLists - 1)(
                     cs,
                   ),
-                  ReadonlyArray.map(ReadonlyArray.prepend(bs)),
+                  Array.map(Array.prepend(bs)),
                 ),
             ),
           ),
-          ReadonlyArray.flatten,
+          Array.flatten,
         )
 
 const getAllCombinationsOfSubListsWithFixedLength =
@@ -51,14 +51,14 @@ const getAllCombinationsOfSubListsWithFixedLength =
       ? [[as]]
       : pipe(
           getCombinationsIndices(listLength)(as.length),
-          ReadonlyArray.flatMap(is =>
+          Array.flatMap(is =>
             pipe(
               as,
-              ReadonlyArray.partition((_, i) => is.includes(i)),
+              Array.partition((_, i) => is.includes(i)),
               ([bs, as]) =>
                 pipe(
                   getAllCombinationsOfSubListsWithFixedLength(listLength)(bs),
-                  ReadonlyArray.map(ReadonlyArray.prepend(as)),
+                  Array.map(Array.prepend(as)),
                 ),
             ),
           ),
@@ -76,7 +76,7 @@ const distributeTeamsUsingCombinations: typeof distributeTeams =
             players,
           ),
       }),
-      ReadonlyArray.match({
+      Array.match({
         onEmpty: constant([]),
         onNonEmpty: combineAllNonEmpty(
           Semigroup.min(getFitOrdFromCriteria(args)(params)),
@@ -127,7 +127,7 @@ describe('Balance teams', () => {
   })
   const balanceTeamsArb = fc.record({
     params: paramsArb,
-    players: fc.array(Arbitrary.make(Player.Player)(fc)),
+    players: fc.array(Arbitrary.make(Player.Player)),
   })
 
   test.skip('should return the optimal solution', () => {
@@ -176,7 +176,7 @@ describe('Balance teams', () => {
     fc.assert(
       fc.property(
         paramsArb,
-        fc.array(Arbitrary.make(Player.Player)(fc), {
+        fc.array(Arbitrary.make(Player.Player), {
           minLength: 1,
           maxLength: 8,
         }),
@@ -206,10 +206,8 @@ describe('Balance teams', () => {
   test('should return the same players', () => {
     fc.assert(
       fc.property(balanceTeamsArb, ({ params, players }) =>
-        pipe(
-          distributeTeams({ modality })(params)(players),
-          ReadonlyArray.flatten,
-          _ => getUnorderedEquivalence(Equivalence.strict())(_, players),
+        pipe(distributeTeams({ modality })(params)(players), Array.flatten, _ =>
+          getUnorderedEquivalence(Equivalence.strict())(_, players),
         ),
       ),
     )
@@ -277,7 +275,7 @@ describe('Balance teams', () => {
                   ) ||
                   pipe(
                     modality.positions,
-                    ReadonlyArray.every(
+                    Array.every(
                       pos =>
                         Math.abs(
                           a.filter(

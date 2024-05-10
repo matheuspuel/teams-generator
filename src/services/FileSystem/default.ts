@@ -1,4 +1,4 @@
-import { Effect, Layer, ReadonlyArray, String, pipe } from 'effect'
+import { Array, Effect, Layer, String, pipe } from 'effect'
 import * as ExpoFileSystem from 'expo-file-system'
 import { enforceErrorInstance } from 'src/utils/Error'
 import { FileSystem, FileSystemError } from '.'
@@ -44,9 +44,4 @@ const makeDirectory = (args: { uri: string }) =>
   )
 
 const getParentDirectoryUri = (uri: string) =>
-  pipe(
-    uri,
-    String.split('/'),
-    ReadonlyArray.dropRight(1),
-    ReadonlyArray.join('/'),
-  )
+  pipe(uri, String.split('/'), Array.dropRight(1), Array.join('/'))

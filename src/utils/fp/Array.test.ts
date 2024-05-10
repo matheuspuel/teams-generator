@@ -1,5 +1,5 @@
 /* eslint-disable functional/no-expression-statements */
-import { ReadonlyArray, flow, pipe } from 'effect'
+import { Array, flow, pipe } from 'effect'
 import * as fc from 'fast-check'
 import { describe, test } from 'vitest'
 import { factorial } from '../Math'
@@ -11,9 +11,7 @@ describe('getPermutations', () => {
       fc.property(fc.array(fc.anything(), { maxLength: 6 }), as =>
         pipe(
           getPermutations(as),
-          ReadonlyArray.every(
-            flow(ReadonlyArray.length, s => s === ReadonlyArray.length(as)),
-          ),
+          Array.every(flow(Array.length, s => s === Array.length(as))),
         ),
       ),
     )
@@ -24,8 +22,8 @@ describe('getPermutations', () => {
       fc.property(fc.array(fc.anything(), { maxLength: 6 }), as =>
         pipe(
           getPermutations(as),
-          ReadonlyArray.length,
-          s => s === factorial(ReadonlyArray.length(as)),
+          Array.length,
+          s => s === factorial(Array.length(as)),
         ),
       ),
     )

@@ -13,11 +13,11 @@ export type Color = {
   opacity: Byte
 }
 
-export const Color = Schema.struct({
-  red: Schema.number,
-  green: Schema.number,
-  blue: Schema.number,
-  opacity: Schema.number,
+export const Color = Schema.Struct({
+  red: Schema.Number,
+  green: Schema.Number,
+  blue: Schema.Number,
+  opacity: Schema.Number,
 })
 
 export type SolidColor = Color & { opacity: 255 }
@@ -79,34 +79,37 @@ const parseByte = (v: string): Option.Option<Byte> =>
   )
 
 export const FromHex: Schema.Schema<Color, string> = Schema.transformOrFail(
-  Schema.string,
+  Schema.String,
   Color,
-  (v: string) =>
-    !v.startsWith('#')
-      ? ParseResult.fail(new ParseResult.Type(Color.ast, v))
-      : pipe(
-          Option.all([
-            parseByte(String.slice(1, 3)(v)),
-            parseByte(String.slice(3, 5)(v)),
-            parseByte(String.slice(5, 7)(v)),
-          ]),
-          Option.map(([r, g, b]) => color(r, g, b)),
-          Option.map(c =>
-            pipe(
-              parseByte(String.slice(7, 9)(v)),
-              Option.match({
-                onNone: () => identity<Color>,
-                onSome: withOpacity,
-              }),
-              apply(c),
+  {
+    decode: (v: string) =>
+      !v.startsWith('#')
+        ? ParseResult.fail(new ParseResult.Type(Color.ast, v))
+        : pipe(
+            Option.all([
+              parseByte(String.slice(1, 3)(v)),
+              parseByte(String.slice(3, 5)(v)),
+              parseByte(String.slice(5, 7)(v)),
+            ]),
+            Option.map(([r, g, b]) => color(r, g, b)),
+            Option.map(c =>
+              pipe(
+                parseByte(String.slice(7, 9)(v)),
+                Option.match({
+                  onNone: () => identity<Color>,
+                  onSome: withOpacity,
+                }),
+                apply(c),
+              ),
             ),
+            Option.match({
+              onNone: () =>
+                ParseResult.fail(new ParseResult.Type(Color.ast, v)),
+              onSome: ParseResult.succeed,
+            }),
           ),
-          Option.match({
-            onNone: () => ParseResult.fail(new ParseResult.Type(Color.ast, v)),
-            onSome: ParseResult.succeed,
-          }),
-        ),
-  flow(toHex, ParseResult.succeed),
+    encode: flow(toHex, ParseResult.succeed),
+  },
 )
 
 const toneByte =

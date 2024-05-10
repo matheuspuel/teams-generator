@@ -8,7 +8,7 @@ export const List = [
 
 export type Rating = (typeof List)[number]
 
-export const Rating: Schema.Schema<Rating> = Schema.literal(...List)
+export const Rating: Schema.Schema<Rating> = Schema.Literal(...List)
 
 export const toString: (rating: Rating) => string = r =>
   r === 10 ? r.toString() : toFixedLocale(1)(r)

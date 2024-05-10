@@ -1,11 +1,11 @@
 import * as Optic from '@fp-ts/optic'
 import {
+  Array,
   Chunk,
   Context,
   Effect,
   Exit,
   Option,
-  ReadonlyArray,
   Ref,
   Runtime,
   Stream,
@@ -98,13 +98,13 @@ const subscribe = (f: Subscription) =>
   tag.pipe(
     Effect.flatMap(stateRef =>
       pipe(
-        Ref.update(stateRef.subscriptionsRef, ReadonlyArray.append(f)),
+        Ref.update(stateRef.subscriptionsRef, Array.append(f)),
         Effect.map(() => ({
           unsubscribe: () =>
             Ref.update(stateRef.subscriptionsRef, ss =>
               pipe(
-                ReadonlyArray.findFirstIndex(ss, s => s === f),
-                Option.map(i => ReadonlyArray.remove(ss, i)),
+                Array.findFirstIndex(ss, s => s === f),
+                Option.map(i => Array.remove(ss, i)),
                 Option.getOrElse(() => ss),
               ),
             ),

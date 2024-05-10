@@ -2,7 +2,7 @@ import { Schema } from '@effect/schema'
 import { pipe } from 'effect'
 
 export const NonEmptyString = pipe(
-  Schema.string,
+  Schema.String,
   Schema.nonEmpty(),
   Schema.brand('NonEmptyString'),
 )

@@ -1,4 +1,4 @@
-import { Effect, Option, ReadonlyArray, String, flow, pipe } from 'effect'
+import { Array, Effect, Option, String, flow, pipe } from 'effect'
 import { not } from 'effect/Predicate'
 import { soccer } from 'src/datatypes/Modality'
 import { importGroupFromDocumentPicker } from 'src/export/group'
@@ -28,7 +28,7 @@ export const openGroup = (id: Id) =>
 
 export const startCreateGroup = pipe(
   State.with(s =>
-    ReadonlyArray.head(s.customModalities).pipe(Option.getOrElse(() => soccer)),
+    Array.head(s.customModalities).pipe(Option.getOrElse(() => soccer)),
   ),
   Effect.flatMap(m =>
     State.on(root.at('groupForm')).set({

@@ -1,5 +1,5 @@
-import { Option, ReadonlyArray } from 'effect'
-import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
+import { Array, Option } from 'effect'
+import { NonEmptyReadonlyArray } from 'effect/Array'
 import { GroupOrder, Modality, Parameters } from 'src/datatypes'
 import { CustomModality, soccer } from 'src/datatypes/Modality'
 import { Abbreviation } from 'src/datatypes/Position'
@@ -40,7 +40,7 @@ export const initialAppState: RootState = {
   core: { isLoaded: false },
   alert: Option.none(),
   groups: emptyGroups,
-  customModalities: ReadonlyArray.empty(),
+  customModalities: Array.empty(),
   parameters: Parameters.initial,
   playerForm: { name: '', positionAbbreviation: Abbreviation('a'), rating: 5 },
   groupForm: { id: Option.none(), name: '', modality: soccer },

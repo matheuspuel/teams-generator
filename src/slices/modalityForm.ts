@@ -1,6 +1,6 @@
 import { Schema } from '@effect/schema'
-import { Either, Option, ReadonlyArray } from 'effect'
-import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
+import { Array, Either, Option } from 'effect'
+import { NonEmptyReadonlyArray } from 'effect/Array'
 import { Abbreviation } from 'src/datatypes/Position'
 import { Id } from 'src/utils/Entity'
 import { NonEmptyString } from 'src/utils/datatypes/NonEmptyString'
@@ -34,7 +34,7 @@ export const validateModalityForm = (f: ModalityForm) =>
       f.name,
     ),
     positions: Either.all(
-      ReadonlyArray.map(f.positions, p =>
+      Array.map(f.positions, p =>
         Either.all({
           oldAbbreviation: Either.right(p.oldAbbreviation),
           abbreviation: Schema.decodeEither(

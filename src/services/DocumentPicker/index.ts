@@ -1,5 +1,5 @@
 import { Data, Effect } from 'effect'
-import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
+import { NonEmptyReadonlyArray } from 'effect/Array'
 
 export type DocumentPickerImplementation = {
   getDocument: (args?: {

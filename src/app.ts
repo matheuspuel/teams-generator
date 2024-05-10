@@ -42,7 +42,7 @@ export const startApp = pipe(
         Telemetry.log([{ timestamp: t, event: 'start', data: m }]),
       ),
       Effect.flatMap(() => Telemetry.send()),
-      Effect.catchAll(() => Effect.unit),
+      Effect.catchAll(() => Effect.void),
     ),
   ),
   Effect.tap(() =>

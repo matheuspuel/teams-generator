@@ -1,5 +1,5 @@
-import { Option, ReadonlyArray, pipe } from 'effect'
-import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
+import { Array, Option, pipe } from 'effect'
+import { NonEmptyReadonlyArray } from 'effect/Array'
 import { getCalendars, getLocales } from 'expo-localization'
 import { enTranslation } from './translations/en'
 import { ptTranslation } from './translations/pt'
@@ -20,23 +20,20 @@ const getPreferences = () => {
   const calendars = getCalendars()
   return pipe(
     locales,
-    ReadonlyArray.findFirst(l =>
+    Array.findFirst(l =>
       translations.some(t => t.languageCode === l.languageCode),
     ),
     Option.flatMap(l =>
       pipe(
-        ReadonlyArray.findFirst(
-          translations,
-          t => t.languageCode === l.languageCode,
-        ),
+        Array.findFirst(translations, t => t.languageCode === l.languageCode),
         Option.map(t => ({ translation: t, location: Option.some(l) })),
       ),
     ),
     Option.getOrElse(() => ({
       translation: translations[0],
-      location: ReadonlyArray.head(locales),
+      location: Array.head(locales),
     })),
-    _ => ({ ..._, calendar: ReadonlyArray.head(calendars) }),
+    _ => ({ ..._, calendar: Array.head(calendars) }),
   )
 }
 

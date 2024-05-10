@@ -6,11 +6,11 @@ export const SplashScreenLive = SplashScreen.context({
   preventAutoHide: () =>
     pipe(
       Effect.tryPromise(() => SplashScreen_.preventAutoHideAsync()),
-      Effect.catchAll(() => Effect.unit),
+      Effect.catchAll(() => Effect.void),
     ),
   hide: () =>
     pipe(
       Effect.tryPromise(() => SplashScreen_.hideAsync()),
-      Effect.catchAll(() => Effect.unit),
+      Effect.catchAll(() => Effect.void),
     ),
 }).pipe(Layer.succeedContext)

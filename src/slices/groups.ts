@@ -1,14 +1,7 @@
 import { Schema } from '@effect/schema'
 import * as Optic from '@fp-ts/optic'
-import {
-  Effect,
-  Option,
-  ReadonlyArray,
-  ReadonlyRecord,
-  flow,
-  pipe,
-} from 'effect'
-import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
+import { Array, Effect, Option, Record, flow, pipe } from 'effect'
+import { NonEmptyReadonlyArray } from 'effect/Array'
 import { Group, Modality, Player } from 'src/datatypes'
 import {
   CustomModality,
@@ -28,7 +21,7 @@ import { Id } from 'src/utils/Entity'
 import { Timestamp } from 'src/utils/datatypes'
 
 export type GroupsState = { [groupId: Id]: Group }
-const GroupsState_ = Schema.record(Id.pipe(Schema.typeSchema), Group.Group)
+const GroupsState_ = Schema.Record(Id.pipe(Schema.typeSchema), Group.Group)
 export const GroupsState: Schema.Schema<
   GroupsState,
   Schema.Schema.Encoded<typeof GroupsState_>
@@ -40,8 +33,7 @@ const refOnGroups = State.on(root.at('groups'))
 
 export const getGroupsRecord = Optic.get(root.at('groups'))
 
-export const getGroupById = (id: Id) =>
-  flow(getGroupsRecord, ReadonlyRecord.get(id))
+export const getGroupById = (id: Id) => flow(getGroupsRecord, Record.get(id))
 
 export const getSelectedGroup = (s: RootState) =>
   pipe(
@@ -53,11 +45,8 @@ export const getModality =
   (modality: Modality.Reference) =>
   (state: RootState): Option.Option<Modality> =>
     modality._tag === 'StaticModality'
-      ? ReadonlyArray.findFirst(staticModalities, _ => _.id === modality.id)
-      : ReadonlyArray.findFirst(
-          state.customModalities,
-          _ => _.id === modality.id,
-        )
+      ? Array.findFirst(staticModalities, _ => _.id === modality.id)
+      : Array.findFirst(state.customModalities, _ => _.id === modality.id)
 
 export const getActiveModality = (s: RootState) =>
   pipe(
@@ -70,7 +59,7 @@ export const getPlayerFromSelectedGroup =
     pipe(
       getSelectedGroup(s),
       Option.map(g => g.players),
-      Option.flatMap(ReadonlyArray.findFirst(p => p.id === args.playerId)),
+      Option.flatMap(Array.findFirst(p => p.id === args.playerId)),
     )
 
 const addGroup = (group: Group) =>
@@ -102,7 +91,7 @@ export const editGroup = (args: {
     Effect.bind('prevModality', () =>
       State.with(s =>
         pipe(
-          ReadonlyRecord.get(s.groups, args.id),
+          Record.get(s.groups, args.id),
           Option.flatMap(prevGroup => getModality(prevGroup.modality)(s)),
         ),
       ),
@@ -114,14 +103,14 @@ export const editGroup = (args: {
       refOnGroups.update(s =>
         pipe(
           s,
-          ReadonlyRecord.modifyOption(args.id, g => ({
+          Record.modifyOption(args.id, g => ({
             id: g.id,
             name: args.name,
             modality: args.modality,
             players:
               args.modality.id === g.modality.id
                 ? g.players
-                : ReadonlyArray.map(
+                : Array.map(
                     g.players,
                     adjustPlayerPosition({
                       prevModality,
@@ -145,17 +134,15 @@ export const addImportedGroup = (group: Omit<Group, 'id'>) =>
   )
 
 export const deleteGroup = (args: { id: Id }) =>
-  refOnGroups.update(ReadonlyRecord.remove(args.id))
+  refOnGroups.update(Record.remove(args.id))
 
 const addPlayer = (args: { groupId: Id; player: Omit<Player, 'active'> }) =>
   refOnGroups.update(s =>
     pipe(
       s,
-      ReadonlyRecord.modifyOption(args.groupId, g => ({
+      Record.modifyOption(args.groupId, g => ({
         ...g,
-        players: ReadonlyArray.append({ ...args.player, active: true })(
-          g.players,
-        ),
+        players: Array.append({ ...args.player, active: true })(g.players),
       })),
       Option.getOrElse(() => s),
     ),
@@ -182,11 +169,11 @@ export const editPlayer = (p: {
   refOnGroups.update(s =>
     pipe(
       s,
-      ReadonlyRecord.modifyOption(p.groupId, g => ({
+      Record.modifyOption(p.groupId, g => ({
         ...g,
         players: pipe(
           g.players,
-          ReadonlyArray.map(a =>
+          Array.map(a =>
             a.id === p.player.id
               ? { ...p.player, active: a.active, createdAt: a.createdAt }
               : a,
@@ -205,7 +192,7 @@ export const deleteCurrentPlayer = (s: RootState) =>
     }),
     Option.map(({ groupId, playerId }) =>
       Optic.modify(root.at('groups').key(groupId).at('players'))(
-        ReadonlyArray.filter(p => p.id !== playerId),
+        Array.filter(p => p.id !== playerId),
       )(s),
     ),
     Option.getOrElse(() => s),
@@ -231,17 +218,17 @@ export const togglePlayerActive = ({ playerId }: { playerId: Id }) =>
 export const toggleAllPlayersActive = (s: RootState) =>
   pipe(
     s.ui.selectedGroupId,
-    Option.flatMap(id => pipe(s.groups, ReadonlyRecord.get(id))),
+    Option.flatMap(id => pipe(s.groups, Record.get(id))),
     Option.match({
       onNone: () => s,
       onSome: g =>
         pipe(
           g.players,
-          ReadonlyArray.every(p => p.active),
+          Array.every(p => p.active),
           allActive =>
             pipe(
               g.players,
-              ReadonlyArray.map(p => ({ ...p, active: !allActive })),
+              Array.map(p => ({ ...p, active: !allActive })),
             ),
           Optic.replace(root.at('groups').key(g.id).at('players')),
           f => f(s),
@@ -300,7 +287,7 @@ export const adjustPlayerPosition =
       args.prevModality,
       Option.flatMap(prevModality =>
         args.nextModality._tag === 'edited'
-          ? ReadonlyArray.findFirst(args.nextModality.modality.positions, pos =>
+          ? Array.findFirst(args.nextModality.modality.positions, pos =>
               Option.match(pos.oldAbbreviation, {
                 onNone: () => false,
                 onSome: _ => _ === player.positionAbbreviation,
@@ -315,7 +302,7 @@ export const adjustPlayerPosition =
             : Option.none(),
       ),
       Option.orElse(() =>
-        ReadonlyArray.findFirst(
+        Array.findFirst(
           args.nextModality.modality.positions,
           pos => pos.abbreviation === player.positionAbbreviation,
         ),

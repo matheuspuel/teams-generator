@@ -19,7 +19,7 @@ export const saveState = () =>
     Effect.tap(
       flow(get(root.at('customModalities')), Repository.teams.Modality.set),
     ),
-    Effect.catchAll(() => Effect.unit),
+    Effect.catchAll(() => Effect.void),
   )
 
 export const hydrate = Effect.all([
@@ -51,4 +51,4 @@ export const hydrate = Effect.all([
       StateRef.execute(State.on(root.at('customModalities')).set(data)),
     ),
   ),
-]).pipe(Effect.asUnit)
+]).pipe(Effect.asVoid)

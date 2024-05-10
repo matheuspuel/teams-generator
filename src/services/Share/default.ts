@@ -6,7 +6,7 @@ import { ShareService } from '.'
 export const ShareServiceLive = ShareService.context({
   shareMessage: args =>
     Effect.tryPromise(() => RNShare.share(args)).pipe(
-      Effect.catchAll(() => Effect.unit),
+      Effect.catchAll(() => Effect.void),
     ),
   shareFile: args =>
     Effect.tryPromise(() =>
@@ -14,5 +14,5 @@ export const ShareServiceLive = ShareService.context({
         dialogTitle: args.title,
         mimeType: args.mimeType,
       }),
-    ).pipe(Effect.catchAll(() => Effect.unit)),
+    ).pipe(Effect.catchAll(() => Effect.void)),
 }).pipe(Layer.succeedContext)

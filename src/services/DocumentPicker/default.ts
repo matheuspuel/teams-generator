@@ -1,4 +1,4 @@
-import { Effect, Layer, ReadonlyArray, pipe } from 'effect'
+import { Array, Effect, Layer, pipe } from 'effect'
 import * as ExpoDocumentPicker from 'expo-document-picker'
 import { enforceErrorInstance } from 'src/utils/Error'
 import { DeepMutable } from 'src/utils/types'
@@ -25,7 +25,7 @@ export const DocumentPickerLive = DocumentPicker.context({
       ),
       Effect.map(r => r.assets),
       Effect.flatMap(as =>
-        ReadonlyArray.head(as).pipe(
+        Array.head(as).pipe(
           Effect.orElseFail(
             () =>
               new DocumentPickerError({

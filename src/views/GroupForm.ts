@@ -1,4 +1,4 @@
-import { Option, ReadonlyArray, String } from 'effect'
+import { Array, Option, String } from 'effect'
 import {
   Header,
   Input,
@@ -96,7 +96,7 @@ const ModalityField = memoizedConst('ModalityField')(() => {
         ]),
       ]),
     ]),
-    View()(ReadonlyArray.map(modalities, m => ModalityItem(m))),
+    View()(Array.map(modalities, m => ModalityItem(m))),
   ])
 })
 

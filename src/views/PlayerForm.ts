@@ -1,4 +1,4 @@
-import { Option, ReadonlyArray, String, pipe } from 'effect'
+import { Array, Option, String, pipe } from 'effect'
 import {
   Header,
   Input,
@@ -105,12 +105,12 @@ const PositionField = memoizedConst('PositionField')(() => {
     pipe(
       getActiveModality(s),
       Option.map(m => m.positions),
-      Option.getOrElse(() => ReadonlyArray.empty()),
+      Option.getOrElse(() => Array.empty()),
     ),
   )
   return View({ p: 4 })([
     FormLabel()(t('Position')),
-    View()(ReadonlyArray.map(positions, p => PositionItem(p.abbreviation))),
+    View()(Array.map(positions, p => PositionItem(p.abbreviation))),
   ])
 })
 
@@ -119,10 +119,7 @@ const PositionItem = memoized('PositionItem')((abbreviation: Abbreviation) => {
     pipe(
       getActiveModality(s),
       Option.flatMap(m =>
-        ReadonlyArray.findFirst(
-          m.positions,
-          _ => _.abbreviation === abbreviation,
-        ),
+        Array.findFirst(m.positions, _ => _.abbreviation === abbreviation),
       ),
     ),
   )

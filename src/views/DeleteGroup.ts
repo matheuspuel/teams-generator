@@ -1,4 +1,4 @@
-import { Option, ReadonlyArray, pipe } from 'effect'
+import { Array, Option, pipe } from 'effect'
 import { Row, Txt, TxtContext, View } from 'src/components'
 import { CenterModal } from 'src/components/derivative/CenterModal'
 import { GhostButton } from 'src/components/derivative/GhostButton'
@@ -24,7 +24,7 @@ export const DeleteGroupView = namedConst('DeleteGroupView')(() => {
             Txt()(` ${t('and all its players?')}`),
           ]),
         ),
-        ReadonlyArray.fromOption,
+        Array.fromOption,
       ),
     ),
     View({ borderWidthT: 1, borderColor: Colors.opacity(0.375)(Colors.gray) })(

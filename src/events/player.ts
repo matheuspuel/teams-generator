@@ -27,7 +27,7 @@ export const changePlayerRating = flow(
   Option.map(
     flow(State.on(root.at('playerForm').at('rating')).set, StateRef.execute),
   ),
-  Option.getOrElse(() => Effect.unit),
+  Option.getOrElse(() => Effect.void),
 )
 
 export const deletePlayer = pipe(

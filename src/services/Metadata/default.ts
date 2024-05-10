@@ -57,7 +57,7 @@ export const MetadataServiceLive = MetadataService.context({
                   Effect.tap(
                     flow(
                       Repository.metadata.Installation.set,
-                      Effect.catchAll(() => Effect.unit),
+                      Effect.catchAll(() => Effect.void),
                     ),
                   ),
                   Effect.map(_ => ({ ..._, isFirstLaunch: true })),

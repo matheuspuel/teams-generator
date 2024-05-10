@@ -1,4 +1,4 @@
-import { Either, Option, ReadonlyArray } from 'effect'
+import { Array, Either, Option } from 'effect'
 import { Platform } from 'react-native'
 import {
   Header,
@@ -99,7 +99,7 @@ const PositionsField = memoizedConst('PositionsField')(() => {
       View()([FormLabel({ size: 12 })(t('Name'))]),
     ]),
     View()(
-      ReadonlyArray.map(ReadonlyArray.replicate(positionCount)(null), (_, i) =>
+      Array.map(Array.replicate(positionCount)(null), (_, i) =>
         PositionItem(i),
       ),
     ),
@@ -130,7 +130,7 @@ const PositionAbbreviationField = memoized('PositionAbbreviationField')((
   index: number,
 ) => {
   const abbreviation = useSelector(s =>
-    ReadonlyArray.get(s.modalityForm.positions, index).pipe(
+    Array.get(s.modalityForm.positions, index).pipe(
       Option.map(_ => _.abbreviation),
     ),
   )
@@ -150,9 +150,7 @@ const PositionAbbreviationField = memoized('PositionAbbreviationField')((
 
 const PositionNameField = memoized('PositionNameField')((index: number) => {
   const name = useSelector(s =>
-    ReadonlyArray.get(s.modalityForm.positions, index).pipe(
-      Option.map(_ => _.name),
-    ),
+    Array.get(s.modalityForm.positions, index).pipe(Option.map(_ => _.name)),
   )
   return View({ flex: 1, p: 4 })([
     Input({

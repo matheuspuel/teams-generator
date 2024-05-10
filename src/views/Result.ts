@@ -1,5 +1,5 @@
-import { Option, Order, ReadonlyArray, identity, pipe } from 'effect'
-import { NonEmptyReadonlyArray } from 'effect/ReadonlyArray'
+import { Array, Option, Order, identity, pipe } from 'effect'
+import { NonEmptyReadonlyArray } from 'effect/Array'
 import {
   ActivityIndicator,
   Header,
@@ -56,7 +56,7 @@ export const ResultView = memoizedConst('ResultView')(() => {
                   ActivityIndicator({ color: Colors.primary }),
                 ]),
               ],
-              onSome: ReadonlyArray.map((t, i) =>
+              onSome: Array.map((t, i) =>
                 TeamItem({ key: i.toString(), index: i, players: t, modality }),
               ),
             }),
@@ -99,12 +99,12 @@ const TeamItem = (props: {
     ]),
     ...pipe(
       props.players,
-      ReadonlyArray.sortBy(
+      Array.sortBy(
         Player.PositionOrd({ modality: props.modality }),
         Order.reverse(Player.RatingOrd),
         Player.NameOrd,
       ),
-      ReadonlyArray.map(p =>
+      Array.map(p =>
         PlayerItem({ key: p.id, player: p, modality: props.modality }),
       ),
     ),
@@ -130,7 +130,7 @@ const PlayerItem = ({
             Position.StaticPosition | Position.CustomPosition
           >
         >(modality.positions),
-        ReadonlyArray.findFirst(_ => _.abbreviation === positionAbbreviation),
+        Array.findFirst(_ => _.abbreviation === positionAbbreviation),
         Option.map(Position.toAbbreviationString),
         Option.getOrElse(() => '-'),
       )})`,

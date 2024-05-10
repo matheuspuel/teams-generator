@@ -1,13 +1,4 @@
-import {
-  Data,
-  Equal,
-  Option,
-  ReadonlyArray,
-  ReadonlyRecord,
-  Tuple,
-  flow,
-  pipe,
-} from 'effect'
+import { Array, Data, Equal, Option, Record, Tuple, flow, pipe } from 'effect'
 import {
   FlatList,
   Header,
@@ -33,10 +24,10 @@ export const GroupsView = memoizedConst('GroupsView')(() => {
   const groupsIds = useSelector(
     flow(
       s => s.groups,
-      ReadonlyRecord.toEntries,
-      ReadonlyArray.map(Tuple.getSecond),
-      ReadonlyArray.sort(Group.NameOrd),
-      ReadonlyArray.map(_ => _.id),
+      Record.toEntries,
+      Array.map(Tuple.getSecond),
+      Array.sort(Group.NameOrd),
+      Array.map(_ => _.id),
       Data.array,
     ),
   )

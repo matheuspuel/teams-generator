@@ -1,10 +1,10 @@
 import { Schema } from '@effect/schema'
 import {
+  Array,
   Data,
   Effect,
   Match,
   Option,
-  ReadonlyArray,
   Stream,
   String,
   flow,
@@ -85,10 +85,7 @@ export const _importGroup = (
 ) =>
   data.modality._tag === 'StaticModality'
     ? pipe(
-        ReadonlyArray.findFirst(
-          staticModalities,
-          m => m.id === data.modality.id,
-        ),
+        Array.findFirst(staticModalities, m => m.id === data.modality.id),
         Option.getOrElse(() => soccer),
         modality =>
           pipe(
@@ -102,7 +99,7 @@ export const _importGroup = (
                 pipe(
                   Effect.all({
                     id: IdGenerator.generate(),
-                    positionAbbreviation: ReadonlyArray.findFirst(
+                    positionAbbreviation: Array.findFirst(
                       modality.positions,
                       pos => pos.abbreviation === p.positionAbbreviation,
                     ).pipe(
@@ -126,7 +123,7 @@ export const _importGroup = (
         Effect.succeed({ modality: data.modality }),
         Effect.bind('existingModality', ({ modality }) =>
           State.with(s =>
-            ReadonlyArray.findFirst(
+            Array.findFirst(
               s.customModalities,
               m =>
                 m.name === modality.name &&
@@ -146,14 +143,14 @@ export const _importGroup = (
           Option.match(existingModality, {
             onNone: () =>
               State.on(root.at('customModalities')).update(
-                ReadonlyArray.append({
+                Array.append({
                   _tag: 'CustomModality' as const,
                   id: nextModalityId,
                   name: modality.name,
                   positions: modality.positions,
                 }),
               ),
-            onSome: () => Effect.unit,
+            onSome: () => Effect.void,
           }),
         ),
         Effect.tap(({ nextModalityId }) =>
@@ -230,10 +227,10 @@ const importGroupFromFile = (args: { url: string }) =>
 const dataSchema = Group.Group.pipe(
   Schema.omit('modality'),
   Schema.extend(
-    Schema.struct({
-      modality: Schema.union(
-        Schema.struct({
-          _tag: Schema.literal('StaticModality'),
+    Schema.Struct({
+      modality: Schema.Union(
+        Schema.Struct({
+          _tag: Schema.Literal('StaticModality'),
           id: NonEmptyString,
         }),
         Modality.CustomModality,
@@ -247,26 +244,28 @@ const currentVersion = 2 as const
 
 const schema = Schema.transform(
   Schema.parseJson(
-    Schema.struct({
-      application: Schema.literal('sorteio-times'),
-      type: Schema.literal('group'),
-      version: Schema.literal(currentVersion),
+    Schema.Struct({
+      application: Schema.Literal('sorteio-times'),
+      type: Schema.Literal('group'),
+      version: Schema.Literal(currentVersion),
       data: dataSchema,
     }),
   ),
   dataSchema.pipe(Schema.typeSchema),
-  v => v.data,
-  v => ({
-    application: 'sorteio-times' as const,
-    type: 'group' as const,
-    version: currentVersion,
-    data: v,
-  }),
+  {
+    decode: v => v.data,
+    encode: v => ({
+      application: 'sorteio-times' as const,
+      type: 'group' as const,
+      version: currentVersion,
+      data: v,
+    }),
+  },
 )
 
-const anyVersionSchema = Schema.struct({
-  application: Schema.literal('sorteio-times'),
-  type: Schema.literal('group'),
+const anyVersionSchema = Schema.Struct({
+  application: Schema.Literal('sorteio-times'),
+  type: Schema.Literal('group'),
   version: Schema.JsonNumber,
 })
 

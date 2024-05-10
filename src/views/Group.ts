@@ -1,4 +1,4 @@
-import { Data, Option, ReadonlyArray, flow, pipe } from 'effect'
+import { Array, Data, Option, flow, pipe } from 'effect'
 import { constant } from 'effect/Function'
 import {
   FlatList,
@@ -44,11 +44,11 @@ export const GroupView = memoizedConst('GroupView')(() => {
       }),
       Option.map(({ group, modality }) =>
         pipe(
-          ReadonlyArray.sort(
+          Array.sort(
             group.players,
             GroupOrder.toOrder(s.groupOrder)({ modality }),
           ),
-          ReadonlyArray.map(_ => _.id),
+          Array.map(_ => _.id),
         ),
       ),
       Option.getOrElse(() => []),
@@ -59,7 +59,7 @@ export const GroupView = memoizedConst('GroupView')(() => {
     GroupHeader,
     PreRender(
       View({ flex: 1, p: 8, gap: 8 })(
-        ReadonlyArray.replicate(3)(
+        Array.replicate(3)(
           View({
             round: 8,
             bg: Colors.opacity(0.125)(Colors.gray),
@@ -118,7 +118,7 @@ const Item = memoized('Player')((id: Id) => {
         position: pipe(
           getActiveModality(s),
           Option.flatMap(m =>
-            ReadonlyArray.findFirst(
+            Array.findFirst(
               m.positions,
               p => p.abbreviation === player.positionAbbreviation,
             ),
@@ -178,8 +178,8 @@ const ShuffleButton = namedConst('ShuffleButton')(() => {
         onNone: constant<Array<Player>>([]),
         onSome: g => g.players,
       }),
-      ReadonlyArray.filter(p => p.active),
-      ReadonlyArray.length,
+      Array.filter(p => p.active),
+      Array.length,
     ),
   )
   return SolidButton({

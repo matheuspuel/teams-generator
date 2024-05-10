@@ -2,7 +2,7 @@
 import { Arbitrary } from '@effect/schema'
 import { Semigroup } from '@effect/typeclass'
 import * as Benchmark from 'benchmark'
-import { Match, ReadonlyArray, pipe } from 'effect'
+import { Array, Match, pipe } from 'effect'
 import { constant } from 'effect/Function'
 import * as fc from 'fast-check'
 import { Player } from 'src/datatypes'
@@ -17,7 +17,7 @@ import { combineAllNonEmpty } from 'src/utils/fp/Semigroup'
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const sample1 = fc.sample(
-  fc.array(Arbitrary.make(Player.Player)(fc), { minLength: 8, maxLength: 8 }),
+  fc.array(Arbitrary.make(Player.Player), { minLength: 8, maxLength: 8 }),
   1,
 )[0]!
 
@@ -28,22 +28,22 @@ const getAllCombinationsOfSubListsWithEqualLength =
       ? [[as]]
       : pipe(
           getCombinationsIndices(Math.floor(as.length / numOfLists))(
-            ReadonlyArray.length(as),
+            Array.length(as),
           ),
-          ReadonlyArray.map(is =>
+          Array.map(is =>
             pipe(
               as,
-              ReadonlyArray.partition((_, i) => is.includes(i)),
+              Array.partition((_, i) => is.includes(i)),
               ([cs, bs]) =>
                 pipe(
                   getAllCombinationsOfSubListsWithEqualLength(numOfLists - 1)(
                     cs,
                   ),
-                  ReadonlyArray.map(ReadonlyArray.prepend(bs)),
+                  Array.map(Array.prepend(bs)),
                 ),
             ),
           ),
-          ReadonlyArray.flatten,
+          Array.flatten,
         )
 
 const getAllCombinationsOfSubListsWithFixedLength =
@@ -53,14 +53,14 @@ const getAllCombinationsOfSubListsWithFixedLength =
       ? [[as]]
       : pipe(
           getCombinationsIndices(listLength)(as.length),
-          ReadonlyArray.flatMap(is =>
+          Array.flatMap(is =>
             pipe(
               as,
-              ReadonlyArray.partition((_, i) => is.includes(i)),
+              Array.partition((_, i) => is.includes(i)),
               ([bs, as]) =>
                 pipe(
                   getAllCombinationsOfSubListsWithFixedLength(listLength)(bs),
-                  ReadonlyArray.map(ReadonlyArray.prepend(as)),
+                  Array.map(Array.prepend(as)),
                 ),
             ),
           ),
@@ -78,7 +78,7 @@ const distributeTeamsUsingCombinations: typeof distributeTeams =
             players,
           ),
       }),
-      ReadonlyArray.match({
+      Array.match({
         onEmpty: constant([]),
         onNonEmpty: combineAllNonEmpty(
           Semigroup.min(getFitOrdFromCriteria(args)(params)),

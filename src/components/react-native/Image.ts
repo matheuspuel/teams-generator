@@ -51,7 +51,7 @@ export const Image = named('Image')((props: ImageProps) => {
               onSuccess: () => Effect.sync(() => setStatus('success')),
             }),
           ),
-        _: () => Effect.unit,
+        _: () => Effect.void,
       }),
       Runtime.runPromise(runtime),
     )
