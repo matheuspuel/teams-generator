@@ -1,0 +1,13 @@
+diff --git a/CleverAdsWidget.tsx b/CleverAdsWidget.tsx
+index c00add510b0c68551c75c440d938060d66e7fd94..9e5c85720f732699e18ea10ffe52aa61078ca29e 100644
+--- a/CleverAdsWidget.tsx
++++ b/CleverAdsWidget.tsx
+@@ -109,7 +109,7 @@ const Widget = ({ scriptId, width, height, counter, verbose }: WidgetProps) => {
+           }
+           return false;
+         }}
+-        style={{ width: width, height: height }}
++        style={{ width: width, height: height, backgroundColor: 'transparent' }}
+       />
+     </View>
+   );

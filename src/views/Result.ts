@@ -11,6 +11,7 @@ import {
   TxtContext,
   View,
 } from 'src/components'
+import { AdBanner } from 'src/components/derivative/AdBanner'
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { memoizedConst } from 'src/components/hyperscript'
@@ -62,6 +63,7 @@ export const ResultView = memoizedConst('ResultView')(() => {
             }),
           ),
         ),
+        AdBanner,
       ]),
   })
 })
