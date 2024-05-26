@@ -40,7 +40,7 @@ export const exportGroup = () =>
     Effect.flatten,
     Effect.bindTo('group'),
     Effect.bind('modality', ({ group }) =>
-      State.with(getModality(group.modality)).pipe(Effect.flatten),
+      State.flatWith(getModality(group.modality)),
     ),
     StateRef.query,
     Effect.bind('fileUri', ({ group }) => makeFileUri(group)),

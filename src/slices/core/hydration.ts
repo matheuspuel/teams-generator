@@ -14,6 +14,9 @@ export const saveState = () =>
       flow(get(root.at('parameters')), Repository.teams.Parameters.set),
     ),
     Effect.tap(
+      flow(get(root.at('preferences')), Repository.teams.Preferences.set),
+    ),
+    Effect.tap(
       flow(get(root.at('groupOrder')), Repository.teams.GroupOrder.set),
     ),
     Effect.tap(
@@ -35,6 +38,13 @@ export const hydrate = Effect.all([
     Effect.catchAll(() => Effect.succeed(Parameters.initial)),
     Effect.flatMap(data =>
       StateRef.execute(State.on(root.at('parameters')).set(data)),
+    ),
+  ),
+  pipe(
+    Repository.teams.Preferences.get(),
+    Effect.catchAll(() => Effect.succeed({ isRatingVisible: true })),
+    Effect.flatMap(data =>
+      StateRef.execute(State.on(root.at('preferences')).set(data)),
     ),
   ),
   pipe(

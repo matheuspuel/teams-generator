@@ -101,7 +101,7 @@ export const editGroup = (args: {
       ),
     ),
     Effect.bind('nextModality', () =>
-      State.with(getModality(args.modality)).pipe(Effect.flatten),
+      State.flatWith(getModality(args.modality)),
     ),
     Effect.flatMap(({ prevModality, nextModality }) =>
       refOnGroups.update(s =>

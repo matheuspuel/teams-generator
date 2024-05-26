@@ -90,7 +90,7 @@ export const startNewPlayer = pipe(
   Effect.tap(() =>
     State.on(root.at('ui').at('selectedPlayerId')).set(Option.none()),
   ),
-  Effect.flatMap(() => State.with(getActiveModality).pipe(Effect.flatten)),
+  Effect.flatMap(() => State.flatWith(getActiveModality)),
   Effect.tap(m =>
     State.on(root.at('playerForm')).set(blankPlayerForm({ modality: m })),
   ),
@@ -101,7 +101,7 @@ export const openPlayer = (playerId: Id) =>
   pipe(
     navigate(Route.Player()),
     Effect.flatMap(() =>
-      State.with(getPlayerFromSelectedGroup({ playerId })).pipe(Effect.flatten),
+      State.flatWith(getPlayerFromSelectedGroup({ playerId })),
     ),
     Effect.flatMap(v =>
       pipe(

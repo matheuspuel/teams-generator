@@ -17,7 +17,7 @@ import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { memoizedConst } from 'src/components/hyperscript'
 import { Modality, Player, Position, Rating } from 'src/datatypes'
 import { back } from 'src/events/core'
-import { shareResult } from 'src/events/result'
+import { shareResult, toggleRatingVisibility } from 'src/events/result'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
@@ -27,6 +27,7 @@ import { toFixedLocale } from 'src/utils/Number'
 export const ResultView = memoizedConst('ResultView')(() => {
   const result = useSelector(s => s.result)
   const modality = useSelector(s => getActiveModality(s))
+  const isRatingVisible = useSelector(s => s.preferences.isRatingVisible)
   return Option.match(modality, {
     onNone: () => Nothing,
     onSome: modality =>
@@ -41,6 +42,12 @@ export const ResultView = memoizedConst('ResultView')(() => {
               }),
             ]),
             headerRight: HeaderButtonRow([
+              HeaderButton({
+                onPress: toggleRatingVisibility,
+                icon: MaterialIcons({
+                  name: isRatingVisible ? 'visibility' : 'visibility-off',
+                }),
+              }),
               HeaderButton({
                 onPress: shareResult,
                 icon: MaterialIcons({ name: 'share' }),
@@ -58,7 +65,13 @@ export const ResultView = memoizedConst('ResultView')(() => {
                 ]),
               ],
               onSome: Array.map((t, i) =>
-                TeamItem({ key: i.toString(), index: i, players: t, modality }),
+                TeamItem({
+                  key: i.toString(),
+                  index: i,
+                  players: t,
+                  modality,
+                  isRatingVisible,
+                }),
               ),
             }),
           ),
@@ -73,6 +86,7 @@ const TeamItem = (props: {
   index: number
   players: Array<Player>
   modality: Modality
+  isRatingVisible: boolean
 }) => {
   const title = `${t('Team')} ${props.index + 1}`
   const numPlayers = props.players.length
@@ -83,33 +97,55 @@ const TeamItem = (props: {
     key: props.key,
     bg: Colors.card,
     p: 8,
+    gap: 8,
     round: 8,
     shadow: 1,
   })([
     Txt({ size: 16, weight: 600 })(title),
-    TxtContext({ align: 'left', color: Colors.text.secondary, size: 12 })([
-      Txt({ align: 'left' })(`${t('Number of players')}: `),
-      Txt()(numPlayers.toString()),
+    View()([
+      TxtContext({ align: 'left', color: Colors.text.secondary, size: 12 })([
+        Txt({ align: 'left' })(`${t('Number of players')}: `),
+        Txt()(numPlayers.toString()),
+      ]),
+      ...(props.isRatingVisible
+        ? [
+            TxtContext({
+              align: 'left',
+              color: Colors.text.secondary,
+              size: 12,
+            })([
+              Txt({ align: 'left' })(`${t('Average rating')}: `),
+              Txt()(averageRating),
+            ]),
+            TxtContext({
+              align: 'left',
+              color: Colors.text.secondary,
+              size: 12,
+            })([
+              Txt({ align: 'left' })(`${t('Total rating')}: `),
+              Txt()(totalRating.toString()),
+            ]),
+          ]
+        : []),
     ]),
-    TxtContext({ align: 'left', color: Colors.text.secondary, size: 12 })([
-      Txt({ align: 'left' })(`${t('Average rating')}: `),
-      Txt()(averageRating),
-    ]),
-    TxtContext({ align: 'left', color: Colors.text.secondary, size: 12 })([
-      Txt({ align: 'left' })(`${t('Total rating')}: `),
-      Txt()(totalRating.toString()),
-    ]),
-    ...pipe(
-      props.players,
-      Array.sortBy(
-        Player.PositionOrd({ modality: props.modality }),
-        Order.reverse(Player.RatingOrd),
-        Player.NameOrd,
+    View({ gap: 4 })([
+      ...pipe(
+        props.players,
+        Array.sortBy(
+          Player.PositionOrd({ modality: props.modality }),
+          Order.reverse(Player.RatingOrd),
+          Player.NameOrd,
+        ),
+        Array.map(p =>
+          PlayerItem({
+            key: p.id,
+            player: p,
+            modality: props.modality,
+            isRatingVisible: props.isRatingVisible,
+          }),
+        ),
       ),
-      Array.map(p =>
-        PlayerItem({ key: p.id, player: p, modality: props.modality }),
-      ),
-    ),
+    ]),
   ])
 }
 
@@ -117,14 +153,18 @@ const PlayerItem = ({
   key,
   player: { name, positionAbbreviation, rating },
   modality,
+  isRatingVisible,
 }: {
   key: string
   player: Player
   modality: Modality
+  isRatingVisible: boolean
 }) =>
-  Row({ key: key, p: 4 })([
-    Txt({ weight: 600 })(Rating.toString(rating)),
-    Txt({ numberOfLines: 1 })(` - ${name}`),
+  Row({ key: key })([
+    ...(isRatingVisible
+      ? [Txt({ weight: 600 })(Rating.toString(rating)), Txt()(` - `)]
+      : []),
+    Txt({ numberOfLines: 1 })(name),
     Txt()(
       ` (${pipe(
         identity<

@@ -19,6 +19,7 @@ export type RootState = {
   }>
   parameters: Parameters
   groupOrder: GroupOrder
+  preferences: { isRatingVisible: boolean }
   groups: GroupsState
   customModalities: ReadonlyArray<CustomModality>
   result: Option.Option<GeneratedResult>
@@ -47,6 +48,7 @@ export const initialAppState: RootState = {
   modalityForm: initialModalityForm,
   result: Option.none(),
   groupOrder: GroupOrder.initial,
+  preferences: { isRatingVisible: true },
   ui: {
     selectedGroupId: Option.none(),
     selectedPlayerId: Option.none(),

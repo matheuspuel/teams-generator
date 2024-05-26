@@ -22,7 +22,7 @@ export const generateResult = pipe(
   Effect.flatMap(group =>
     Effect.all({
       players: Effect.succeed(Array.filter(group.players, Player.isActive)),
-      modality: State.with(getModality(group.modality)).pipe(Effect.flatten),
+      modality: State.flatWith(getModality(group.modality)),
       parameters: State.with(s => s.parameters),
       start: clockWith(c => c.currentTimeMillis),
     }),
