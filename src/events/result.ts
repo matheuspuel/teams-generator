@@ -4,7 +4,6 @@ import { t } from 'src/i18n'
 import { ShareService } from 'src/services/Share'
 import { State, StateRef } from 'src/services/StateRef'
 import { getActiveModality } from 'src/slices/groups'
-import { storeUrls } from 'src/utils/Metadata'
 
 export const shareResult = pipe(
   Effect.all({
@@ -15,8 +14,8 @@ export const shareResult = pipe(
   Effect.flatMap(({ result, modality }) =>
     pipe(
       Player.teamListToStringSensitive({ modality })(result),
-      _ =>
-        `${_}\n\n${t('appName')}\nAndroid: ${storeUrls.android}\niOS: ${storeUrls.ios}`,
+      // _ =>
+      //   `${_}\n\n${t('appName')}\nAndroid: ${storeUrls.android}\niOS: ${storeUrls.ios}`,
       _ => ShareService.shareMessage({ message: _, title: t('Teams') }),
     ),
   ),
