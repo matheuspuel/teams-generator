@@ -17,7 +17,7 @@ export const toggleRating = State.on(params.at('rating')).update(toggle)
 
 const teamsCountClamp = Order.clamp(Number.Order)({
   minimum: MINIMUM_NUMBER_OF_TEAMS,
-  maximum: 9,
+  maximum: 99,
 })
 
 const playersRequiredClamp = Order.clamp(Number.Order)({
