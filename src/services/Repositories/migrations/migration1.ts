@@ -67,7 +67,7 @@ const oldGroupsSchema = Schema.Union(
           Array.sort(Order.mapInput(String.Order, (p: { id: string }) => p.id)),
           Array.map((p, i) => ({
             ...p,
-            createdAt: Timestamp.Timestamp(i),
+            createdAt: Timestamp.Timestamp.make(i),
           })),
         ),
       })),

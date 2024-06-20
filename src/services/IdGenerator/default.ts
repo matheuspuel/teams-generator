@@ -4,5 +4,5 @@ import { Id } from 'src/utils/Entity'
 import { IdGenerator } from '.'
 
 export const IdGeneratorLive = IdGenerator.context({
-  generate: () => Effect.sync(() => Id(createId())),
+  generate: () => Effect.sync(() => Id.make(createId())),
 }).pipe(Layer.succeedContext)

@@ -43,7 +43,11 @@ export const initialAppState: RootState = {
   groups: emptyGroups,
   customModalities: Array.empty(),
   parameters: Parameters.initial,
-  playerForm: { name: '', positionAbbreviation: Abbreviation('a'), rating: 5 },
+  playerForm: {
+    name: '',
+    positionAbbreviation: Abbreviation.make('a'),
+    rating: 5,
+  },
   groupForm: { id: Option.none(), name: '', modality: soccer },
   modalityForm: initialModalityForm,
   result: Option.none(),

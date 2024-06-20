@@ -160,7 +160,7 @@ describe('importGroup state logic', () => {
     })
     let currentId = 0
     const IdGeneratorSequential = IdGenerator.context({
-      generate: () => Effect.sync(() => Id((++currentId).toString())),
+      generate: () => Effect.sync(() => Id.make((++currentId).toString())),
     })
 
     _importGroup({
@@ -181,7 +181,7 @@ describe('importGroup state logic', () => {
     const state = Ref.get(ref).pipe(Effect.runSync)
     expect(state.groups).toStrictEqual<typeof state.groups>({
       [group0.id]: group0,
-      [Id('4')]: Schema.decodeSync(Group.Group)({
+      [Id.make('4')]: Schema.decodeSync(Group.Group)({
         id: '4',
         name: 'group1',
         modality: { _tag: 'CustomModality', id: '1' },
@@ -235,7 +235,7 @@ describe('importGroup state logic', () => {
     })
     let currentId = 0
     const IdGeneratorSequential = IdGenerator.context({
-      generate: () => Effect.sync(() => Id((++currentId).toString())),
+      generate: () => Effect.sync(() => Id.make((++currentId).toString())),
     })
 
     _importGroup({
@@ -256,7 +256,7 @@ describe('importGroup state logic', () => {
     const state = Ref.get(ref).pipe(Effect.runSync)
     expect(state.groups).toStrictEqual<typeof state.groups>({
       [group0.id]: group0,
-      [Id('3')]: Schema.decodeSync(Group.Group)({
+      [Id.make('3')]: Schema.decodeSync(Group.Group)({
         id: '3',
         name: 'group2',
         modality: { _tag: 'CustomModality', id: 'm0' },
@@ -293,7 +293,7 @@ describe('importGroup state logic', () => {
     })
     let currentId = 0
     const IdGeneratorSequential = IdGenerator.context({
-      generate: () => Effect.sync(() => Id((++currentId).toString())),
+      generate: () => Effect.sync(() => Id.make((++currentId).toString())),
     })
     // TODO reuse IdGeneratorTest
 
@@ -315,7 +315,7 @@ describe('importGroup state logic', () => {
     const state = Ref.get(ref).pipe(Effect.runSync)
     expect(state.groups).toStrictEqual<typeof state.groups>({
       [group0.id]: group0,
-      [Id('3')]: Schema.decodeSync(Group.Group)({
+      [Id.make('3')]: Schema.decodeSync(Group.Group)({
         id: '3',
         name: 'group3',
         modality: { _tag: 'StaticModality', id: futsal.id },
