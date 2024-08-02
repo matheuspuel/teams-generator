@@ -9,34 +9,34 @@
       "developmentClient": true,
       "distribution": "internal",
       "node": "20.10.0",
-      "pnpm": "9.1.3"
+      "pnpm": "9.6.0"
     },
     "development-simulator": {
       "developmentClient": true,
       "distribution": "internal",
       "ios": { "simulator": true },
       "node": "20.10.0",
-      "pnpm": "9.1.3"
+      "pnpm": "9.6.0"
     },
     "preview": {
       "channel": "preview",
       "env": { "APP_VARIANT": "preview" },
       "distribution": "internal",
       "node": "20.10.0",
-      "pnpm": "9.1.3"
+      "pnpm": "9.6.0"
     },
     "staging": {
       "env": { "APP_VARIANT": "staging" },
       "distribution": "internal",
       "node": "20.10.0",
-      "pnpm": "9.1.3"
+      "pnpm": "9.6.0"
     },
     "production": {
       "env": { "APP_VARIANT": "production" },
       "distribution": "store",
       "autoIncrement": true,
       "node": "20.10.0",
-      "pnpm": "9.1.3"
+      "pnpm": "9.6.0"
     }
   },
   "submit": {
