@@ -25,7 +25,10 @@ import { Id } from 'src/utils/Entity'
 import { Timestamp } from 'src/utils/datatypes'
 
 export type GroupsState = { [groupId: Id]: Group }
-const GroupsState_ = Schema.Record(Id.pipe(Schema.typeSchema), Group.Group)
+const GroupsState_ = Schema.Record({
+  key: Id.pipe(Schema.typeSchema),
+  value: Group.Group,
+})
 export const GroupsState: Schema.Schema<
   GroupsState,
   Schema.Schema.Encoded<typeof GroupsState_>

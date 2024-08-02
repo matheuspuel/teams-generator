@@ -21,9 +21,9 @@ import { Repository } from '..'
 type PositionV2 = Schema.Schema.Type<typeof PositionV2>
 const PositionV2 = Schema.Literal('G', 'Z', 'LE', 'LD', 'M', 'A')
 
-const GroupsV1 = Schema.Record(
-  Id.pipe(Schema.typeSchema),
-  Schema.Struct({
+const GroupsV1 = Schema.Record({
+  key: Id.pipe(Schema.typeSchema),
+  value: Schema.Struct({
     id: Id,
     name: Schema.String,
     players: Schema.Array(
@@ -36,11 +36,11 @@ const GroupsV1 = Schema.Record(
       }),
     ),
   }),
-).pipe(Schema.encodedSchema)
+}).pipe(Schema.encodedSchema)
 
-const GroupsV2 = Schema.Record(
-  Id.pipe(Schema.typeSchema),
-  Schema.Struct({
+const GroupsV2 = Schema.Record({
+  key: Id.pipe(Schema.typeSchema),
+  value: Schema.Struct({
     id: Id,
     name: Schema.String,
     players: Schema.Array(
@@ -54,7 +54,7 @@ const GroupsV2 = Schema.Record(
       }),
     ),
   }),
-)
+})
 
 const oldGroupsSchema = Schema.Union(
   GroupsV2,
