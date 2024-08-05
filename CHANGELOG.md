@@ -1,5 +1,19 @@
 # teams-generator
 
+## 1.4.0
+
+### Minor Changes
+
+- upgrade to expo sdk 51
+
+### Patch Changes
+
+- increase maximum number of teams to 99
+- replace NaN with a dash in result
+- block shuffle button if there is less than 2 players selected
+- trim before saving user input
+- toggle ratings visibility on result
+
 ## 1.3.4
 
 ### Patch Changes
