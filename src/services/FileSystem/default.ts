@@ -17,19 +17,19 @@ export const FileSystemLive = FileSystem.context({
 const read = (args: { uri: string }) =>
   Effect.tryPromise({
     try: () => ExpoFileSystem.readAsStringAsync(args.uri),
-    catch: e => new FileSystemError({ error: enforceErrorInstance(e) }),
+    catch: e => new FileSystemError({ cause: enforceErrorInstance(e) }),
   })
 
 const write = (args: { uri: string; data: string }) =>
   Effect.tryPromise({
     try: () => ExpoFileSystem.writeAsStringAsync(args.uri, args.data),
-    catch: e => new FileSystemError({ error: enforceErrorInstance(e) }),
+    catch: e => new FileSystemError({ cause: enforceErrorInstance(e) }),
   })
 
 const copy = (args: { from: string; to: string }) =>
   Effect.tryPromise({
     try: () => ExpoFileSystem.copyAsync(args),
-    catch: e => new FileSystemError({ error: enforceErrorInstance(e) }),
+    catch: e => new FileSystemError({ cause: enforceErrorInstance(e) }),
   })
 
 const makeDirectory = (args: { uri: string }) =>
@@ -38,7 +38,7 @@ const makeDirectory = (args: { uri: string }) =>
       Effect.tryPromise({
         try: () =>
           ExpoFileSystem.makeDirectoryAsync(args.uri, { intermediates: true }),
-        catch: e => new FileSystemError({ error: enforceErrorInstance(e) }),
+        catch: e => new FileSystemError({ cause: enforceErrorInstance(e) }),
       }),
     ),
   )

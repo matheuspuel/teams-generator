@@ -19,5 +19,5 @@ export class FileSystem extends Effect.Tag('FileSystem')<
 >() {}
 
 export class FileSystemError extends Data.TaggedError('FileSystemError')<{
-  error: Error
+  cause: Error
 }> {}

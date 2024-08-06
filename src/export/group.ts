@@ -58,7 +58,7 @@ export const exportGroup = () =>
       }),
     ),
     Effect.tapError(e =>
-      Effect.logError(e._tag === 'FileSystemError' ? e.error.message : e),
+      Effect.logError(e._tag === 'FileSystemError' ? e.cause.message : e),
     ),
   )
 
@@ -173,9 +173,9 @@ export const _importGroup = (
 const importGroupFromFile = (args: { url: string }) =>
   pipe(
     temporaryImportUri,
-    Effect.tap(() => Effect.logDebug(args.url)),
+    Effect.tap(() => Effect.log(args.url)),
     Effect.tap(tempUri => FileSystem.copy({ from: args.url, to: tempUri })),
-    Effect.tapError(e => Effect.logError(e.error)),
+    Effect.tapErrorCause(_ => Effect.logError(_)),
     Effect.flatMap(tempUri => FileSystem.read({ uri: tempUri })),
     Effect.flatMap(data =>
       pipe(
