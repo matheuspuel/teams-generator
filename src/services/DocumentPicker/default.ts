@@ -16,7 +16,7 @@ export const DocumentPickerLive = DocumentPicker.context({
             multiple: false,
             copyToCacheDirectory: false,
           }),
-        catch: e => new DocumentPickerError({ error: enforceErrorInstance(e) }),
+        catch: e => new DocumentPickerError({ cause: enforceErrorInstance(e) }),
       }),
       Effect.flatMap(r =>
         r.canceled
@@ -29,7 +29,7 @@ export const DocumentPickerLive = DocumentPicker.context({
           Effect.orElseFail(
             () =>
               new DocumentPickerError({
-                error: new Error('No assets received'),
+                cause: new Error('No assets received'),
               }),
           ),
         ),

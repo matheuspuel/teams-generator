@@ -17,7 +17,7 @@ export class DocumentPicker extends Effect.Tag('DocumentPicker')<
 
 export class DocumentPickerError extends Data.TaggedError(
   'DocumentPickerError',
-)<{ error: Error }> {}
+)<{ cause: Error }> {}
 
 export class CanceledOperationError extends Data.TaggedError(
   'CanceledOperationError',

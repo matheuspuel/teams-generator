@@ -13,15 +13,15 @@ export type HttpMethod =
   | 'TRACE'
 
 export class EncodingError extends Data.TaggedError('EncodingError')<{
-  error: unknown
+  cause: unknown
 }> {}
 
 export class FetchingError extends Data.TaggedError('FetchingError')<{
-  error: unknown
+  cause: unknown
 }> {}
 
 export class BodyParsingError extends Data.TaggedError('BodyParsingError')<{
-  error: unknown
+  cause: unknown
 }> {}
 
 export const bare = (args: {
@@ -38,7 +38,7 @@ export const bare = (args: {
           body: args.bodyString,
           headers: args.headers,
         }),
-      catch: e => new FetchingError({ error: e }),
+      catch: e => new FetchingError({ cause: e }),
     }),
     Effect.map(r => ({
       status: r.status,
@@ -46,7 +46,7 @@ export const bare = (args: {
       getBodyString: () =>
         Effect.tryPromise({
           try: () => r.text(),
-          catch: e => new BodyParsingError({ error: e }),
+          catch: e => new BodyParsingError({ cause: e }),
         }),
     })),
   )
@@ -62,7 +62,7 @@ export const json = (args: {
       ? Effect.succeed(undefined)
       : Schema.encode(Schema.parseJson())(args.body),
     _ => Unify.unify(_),
-    Effect.mapError(e => new EncodingError({ error: e })),
+    Effect.mapError(e => new EncodingError({ cause: e })),
     Effect.flatMap(bodyString =>
       bare({
         method: args.method,
