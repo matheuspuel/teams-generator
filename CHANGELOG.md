@@ -1,5 +1,11 @@
 # teams-generator
 
+## 1.5.0
+
+### Minor Changes
+
+- 70b61d0: downgrade expo sdk to 50
+
 ## 1.4.0
 
 ### Minor Changes
