@@ -1,9 +1,6 @@
-/* eslint-env node */
-
-// eslint-disable-next-line functional/no-expression-statements, functional/immutable-data
 module.exports = {
   root: true,
-  ignorePatterns: ['/dist/**'],
+  ignorePatterns: ['/*', '!/src'],
   env: { es2021: true },
   extends: [
     'eslint:recommended',

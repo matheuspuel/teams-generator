@@ -1,4 +1,3 @@
-/* eslint-disable functional/functional-parameters */
 import { Effect, Option } from 'effect'
 
 export type AsyncStorageImplementation = {

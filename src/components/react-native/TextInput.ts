@@ -67,16 +67,12 @@ const getRawProps =
     onFocus: () => {
       // eslint-disable-next-line functional/no-expression-statements
       state.setIsFocused(true)
-      // eslint-disable-next-line functional/no-expression-statements
-      props.onFocus
-        ? void Runtime.runPromise(runtime)(props.onFocus)
-        : undefined
+      if (props.onFocus) return void Runtime.runPromise(runtime)(props.onFocus)
     },
     onBlur: () => {
       // eslint-disable-next-line functional/no-expression-statements
       state.setIsFocused(false)
-      // eslint-disable-next-line functional/no-expression-statements
-      props.onBlur ? void Runtime.runPromise(runtime)(props.onBlur) : undefined
+      if (props.onBlur) return void Runtime.runPromise(runtime)(props.onBlur)
     },
     ref: props.ref,
     autoFocus: props.autoFocus,

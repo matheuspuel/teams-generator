@@ -1,4 +1,4 @@
-import {
+import type {
   getCalendars as getCalendars_,
   getLocales as getLocales_,
 } from 'expo-localization'

@@ -1,4 +1,3 @@
-/* eslint-disable functional/functional-parameters */
 import { Schema } from '@effect/schema'
 import { Effect } from 'effect'
 import { Timestamp } from 'src/utils/datatypes'

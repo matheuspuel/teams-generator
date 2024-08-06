@@ -1,5 +1,5 @@
 import { Effect } from 'effect'
-import { Repository } from '..'
+import type { Repository } from '..'
 import { GroupOrderRepository } from './GroupOrder'
 import { GroupsRepository } from './Groups'
 import { ModalityRepository } from './Modality'

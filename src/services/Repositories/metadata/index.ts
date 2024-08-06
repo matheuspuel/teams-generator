@@ -1,5 +1,5 @@
 import { Effect } from 'effect'
-import { Repository } from '..'
+import type { Repository } from '..'
 import { InstallationRepository } from './Installation'
 import { StorageVersionRepository } from './StorageVersion'
 

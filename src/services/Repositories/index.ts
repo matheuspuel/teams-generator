@@ -1,4 +1,3 @@
-/* eslint-disable functional/functional-parameters */
 import { Context } from 'effect'
 import { MetadataRepositories } from './metadata'
 import { TeamsRepositories } from './teams'

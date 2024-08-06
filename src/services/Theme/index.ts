@@ -2,10 +2,11 @@ import { Context, Effect, absurd } from 'effect'
 import { UIColor } from 'src/components/types'
 import { Color } from 'src/utils/datatypes'
 import { withOpacity } from 'src/utils/datatypes/Color'
-import { lightTheme } from './light'
+import type { lightTheme } from './light'
 
 type AppTheme_ = typeof lightTheme
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface ThemeImplementation extends AppTheme_ {}
 
 export class Theme extends Context.Tag('Theme')<Theme, ThemeImplementation>() {

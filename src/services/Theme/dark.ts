@@ -1,6 +1,6 @@
 import { Schema } from '@effect/schema'
 import { Color } from 'src/utils/datatypes'
-import { lightTheme } from './light'
+import type { lightTheme } from './light'
 
 const hex = Schema.decodeSync(Color.FromHex)
 
