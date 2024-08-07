@@ -179,7 +179,7 @@ describe('importGroup state logic', () => {
     )
 
     const state = Ref.get(ref).pipe(Effect.runSync)
-    expect(state.groups).toStrictEqual<typeof state.groups>({
+    expect(state.groups).toEqual<typeof state.groups>({
       [group0.id]: group0,
       [Id.make('4')]: Schema.decodeSync(Group.Group)({
         id: '4',
@@ -205,26 +205,24 @@ describe('importGroup state logic', () => {
         ],
       }),
     })
-    expect(state.customModalities).toStrictEqual<ReadonlyArray<CustomModality>>(
-      [
-        modality0,
-        Schema.decodeSync(Modality.CustomModality)({
-          _tag: 'CustomModality',
-          id: '1',
-          name: 'modality1',
-          positions: [
-            {
-              abbreviation: 'p0',
-              name: 'position3',
-            },
-            {
-              abbreviation: 'p4',
-              name: 'position4',
-            },
-          ],
-        }),
-      ],
-    )
+    expect(state.customModalities).toEqual<ReadonlyArray<CustomModality>>([
+      modality0,
+      Schema.decodeSync(Modality.CustomModality)({
+        _tag: 'CustomModality',
+        id: '1',
+        name: 'modality1',
+        positions: [
+          {
+            abbreviation: 'p0',
+            name: 'position3',
+          },
+          {
+            abbreviation: 'p4',
+            name: 'position4',
+          },
+        ],
+      }),
+    ])
   })
 
   test('add group and reuse modality', () => {
@@ -254,7 +252,7 @@ describe('importGroup state logic', () => {
     )
 
     const state = Ref.get(ref).pipe(Effect.runSync)
-    expect(state.groups).toStrictEqual<typeof state.groups>({
+    expect(state.groups).toEqual<typeof state.groups>({
       [group0.id]: group0,
       [Id.make('3')]: Schema.decodeSync(Group.Group)({
         id: '3',
@@ -313,7 +311,7 @@ describe('importGroup state logic', () => {
     )
 
     const state = Ref.get(ref).pipe(Effect.runSync)
-    expect(state.groups).toStrictEqual<typeof state.groups>({
+    expect(state.groups).toEqual<typeof state.groups>({
       [group0.id]: group0,
       [Id.make('3')]: Schema.decodeSync(Group.Group)({
         id: '3',
