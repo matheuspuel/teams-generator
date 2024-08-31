@@ -107,7 +107,16 @@ const getConfig = (): ExpoConfig => ({
     envName,
     eas: { projectId: '3bb86839-e6c3-4a30-8246-440f8517683d' },
   },
-  plugins: ['expo-localization'],
+  plugins: [
+    'expo-localization',
+    [
+      'react-native-google-mobile-ads',
+      {
+        androidAppId: 'ca-app-pub-7021594781994811~2254475974',
+        iosAppId: 'ca-app-pub-7021594781994811~6911043889',
+      },
+    ],
+  ],
 })
 
 // Helpers

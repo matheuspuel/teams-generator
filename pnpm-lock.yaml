@@ -92,6 +92,9 @@ importers:
       react-native-gesture-handler:
         specifier: ~2.14.1
         version: 2.14.1(react-native@0.73.6(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(react@18.2.0))(react@18.2.0)
+      react-native-google-mobile-ads:
+        specifier: ^14.2.3
+        version: 14.2.3(expo@50.0.19(@babel/core@7.25.2)(@react-native/babel-preset@0.74.85(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))))(react@18.2.0)
       react-native-reanimated:
         specifier: ~3.6.3
         version: 3.6.3(@babel/core@7.25.2)(@babel/plugin-proposal-nullish-coalescing-operator@7.18.6(@babel/core@7.25.2))(@babel/plugin-proposal-optional-chaining@7.21.0(@babel/core@7.25.2))(@babel/plugin-transform-arrow-functions@7.24.7(@babel/core@7.25.2))(@babel/plugin-transform-shorthand-properties@7.24.7(@babel/core@7.25.2))(@babel/plugin-transform-template-literals@7.24.7(@babel/core@7.25.2))(react-native@0.73.6(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(react@18.2.0))(react@18.2.0)
@@ -1302,6 +1305,9 @@ packages:
     resolution: {integrity: sha512-93zYdMES/c1D69yZiKDBj0V24vqNzB/koF26KPaagAfd3P/4gUlh3Dys5ogAK+Exi9QyzlD8x/08Zt7wIKcDcA==}
     deprecated: Use @eslint/object-schema instead
 
+  '@iabtcf/core@1.5.6':
+    resolution: {integrity: sha512-u2q9thI9vLurYZdGtyJsDYOqoeLc4EgQsYGSc+UVibYII61B/ENJPZS6eFlML1F0hSoTR/goptpo5nGRDkKd2w==}
+
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
     engines: {node: '>=12'}
@@ -2444,6 +2450,10 @@ packages:
   deprecated-react-native-prop-types@5.0.0:
     resolution: {integrity: sha512-cIK8KYiiGVOFsKdPMmm1L3tA/Gl+JopXL6F5+C7x39MyPsQYnP57Im/D6bNUzcborD7fcMwiwZqcBdBXXZucYQ==}
     engines: {node: '>=18'}
+
+  dequal@2.0.3:
+    resolution: {integrity: sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==}
+    engines: {node: '>=6'}
 
   destroy@1.2.0:
     resolution: {integrity: sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg==}
@@ -4505,6 +4515,14 @@ packages:
       react: '*'
       react-native: '*'
 
+  react-native-google-mobile-ads@14.2.3:
+    resolution: {integrity: sha512-sPrjUlX1yLCWvf4klma9IgVLrvBrqTk4aib/04Zdf6qYv6T7qqxR1Kaewv6YrooQZ5/NrN3bQLyKpZDkph4H+A==}
+    peerDependencies:
+      expo: '>=47.0.0'
+    peerDependenciesMeta:
+      expo:
+        optional: true
+
   react-native-reanimated@3.6.3:
     resolution: {integrity: sha512-2KkkPozoIvDbJcHuf8qeyoLROXQxizSi+2CTCkuNVkVZOxxY4B0Omvgq61aOQhSZUh/649x1YHoAaTyGMGDJUw==}
     peerDependencies:
@@ -5285,6 +5303,12 @@ packages:
 
   url-join@4.0.0:
     resolution: {integrity: sha512-EGXjXJZhIHiQMK2pQukuFcL303nskqIRzWvPvV5O8miOfwoUb9G+a/Cld60kUyeaybEI94wvVClT10DtfeAExA==}
+
+  use-deep-compare-effect@1.8.1:
+    resolution: {integrity: sha512-kbeNVZ9Zkc0RFGpfMN3MNfaKNvcLNyxOAAd9O4CBZ+kCBXXscn9s/4I+8ytUER4RDpEYs5+O6Rs4PqiZ+rHr5Q==}
+    engines: {node: '>=10', npm: '>=6'}
+    peerDependencies:
+      react: '>=16.13'
 
   use-latest-callback@0.2.1:
     resolution: {integrity: sha512-QWlq8Is8BGWBf883QOEQP5HWYX/kMI+JTbJ5rdtvJLmXTIh9XoHIO3PQcmQl8BU44VKxow1kbQUHa6mQSMALDQ==}
@@ -7150,6 +7174,8 @@ snapshots:
 
   '@humanwhocodes/object-schema@2.0.3': {}
 
+  '@iabtcf/core@1.5.6': {}
+
   '@isaacs/cliui@8.0.2':
     dependencies:
       string-width: 5.1.2
@@ -8680,6 +8706,8 @@ snapshots:
       '@react-native/normalize-colors': 0.73.2
       invariant: 2.2.4
       prop-types: 15.8.1
+
+  dequal@2.0.3: {}
 
   destroy@1.2.0: {}
 
@@ -11036,6 +11064,15 @@ snapshots:
       react: 18.2.0
       react-native: 0.73.6(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(react@18.2.0)
 
+  react-native-google-mobile-ads@14.2.3(expo@50.0.19(@babel/core@7.25.2)(@react-native/babel-preset@0.74.85(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))))(react@18.2.0):
+    dependencies:
+      '@iabtcf/core': 1.5.6
+      use-deep-compare-effect: 1.8.1(react@18.2.0)
+    optionalDependencies:
+      expo: 50.0.19(@babel/core@7.25.2)(@react-native/babel-preset@0.74.85(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2)))
+    transitivePeerDependencies:
+      - react
+
   react-native-reanimated@3.6.3(@babel/core@7.25.2)(@babel/plugin-proposal-nullish-coalescing-operator@7.18.6(@babel/core@7.25.2))(@babel/plugin-proposal-optional-chaining@7.21.0(@babel/core@7.25.2))(@babel/plugin-transform-arrow-functions@7.24.7(@babel/core@7.25.2))(@babel/plugin-transform-shorthand-properties@7.24.7(@babel/core@7.25.2))(@babel/plugin-transform-template-literals@7.24.7(@babel/core@7.25.2))(react-native@0.73.6(@babel/core@7.25.2)(@babel/preset-env@7.25.3(@babel/core@7.25.2))(react@18.2.0))(react@18.2.0):
     dependencies:
       '@babel/core': 7.25.2
@@ -11892,6 +11929,12 @@ snapshots:
       punycode: 2.3.1
 
   url-join@4.0.0: {}
+
+  use-deep-compare-effect@1.8.1(react@18.2.0):
+    dependencies:
+      '@babel/runtime': 7.25.0
+      dequal: 2.0.3
+      react: 18.2.0
 
   use-latest-callback@0.2.1(react@18.2.0):
     dependencies:
