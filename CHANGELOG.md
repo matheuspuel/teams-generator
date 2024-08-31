@@ -1,5 +1,11 @@
 # teams-generator
 
+## 1.5.1
+
+### Patch Changes
+
+- 174b720: add AdMob ads to android
+
 ## 1.5.0
 
 ### Minor Changes
