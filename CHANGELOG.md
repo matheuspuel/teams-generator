@@ -1,5 +1,11 @@
 # teams-generator
 
+## 1.5.2
+
+### Patch Changes
+
+- e0060fe: close ad button
+
 ## 1.5.1
 
 ### Patch Changes
