@@ -8,6 +8,7 @@ import {
   Txt,
   View,
 } from 'src/components'
+import { BannerAd } from 'src/components/custom/BannerAd'
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { memoized, memoizedConst } from 'src/components/hyperscript'
@@ -45,6 +46,7 @@ export const GroupsView = memoizedConst('GroupsView')(() => {
       contentContainerStyle: { flexGrow: 1, p: 8, gap: 8 },
       initialNumToRender: 16,
     }),
+    BannerAd,
   ])
 })
 

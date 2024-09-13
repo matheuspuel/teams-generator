@@ -1,9 +1,8 @@
 import { Effect } from 'effect'
 import { BannerAdSize, TestIds } from 'react-native-google-mobile-ads'
-import { MaterialIcons, Nothing, Pressable, View } from 'src/components'
+import { Nothing, View } from 'src/components'
 import { namedConst } from 'src/components/hyperscript'
 import { useState } from 'src/hooks/useState'
-import { Colors } from 'src/services/Theme'
 import { matchEnv } from 'src/utils/Metadata'
 import { RNGMABannerAd } from '../react-native-google-mobile-ads/BannerAd'
 
@@ -25,10 +24,10 @@ export const BannerAd = namedConst('BannerAd')(() => {
           size: BannerAdSize.ANCHORED_ADAPTIVE_BANNER,
           onAdLoaded: () => isLoaded.set(true).pipe(Effect.runSync),
         }),
-        Pressable({
-          onPress: isDismissed.set(true),
-          absolute: { top: 0, right: 0 },
-          p: 2,
-        })([MaterialIcons({ name: 'close', color: Colors.gray, size: 18 })]),
+        // Pressable({
+        //   onPress: isDismissed.set(true),
+        //   absolute: { top: 0, right: 0 },
+        //   p: 2,
+        // })([MaterialIcons({ name: 'close', color: Colors.gray, size: 18 })]),
       ])
 })

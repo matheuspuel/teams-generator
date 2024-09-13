@@ -22,7 +22,6 @@ import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 import { getActiveModality } from 'src/slices/groups'
 import { toFixedLocale } from 'src/utils/Number'
-import { BannerAd } from '../components/custom/BannerAd'
 
 export const ResultView = memoizedConst('ResultView')(() => {
   const result = useSelector(s => s.result)
@@ -76,7 +75,6 @@ export const ResultView = memoizedConst('ResultView')(() => {
             }),
           ),
         ),
-        BannerAd,
       ]),
   })
 })
