@@ -1,5 +1,11 @@
 # teams-generator
 
+## 1.5.3
+
+### Patch Changes
+
+- 8c98341: move banner ad to home and remove close button
+
 ## 1.5.2
 
 ### Patch Changes
