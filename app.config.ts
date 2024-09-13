@@ -73,6 +73,7 @@ const getConfig = (): ExpoConfig => ({
         category: ['DEFAULT'],
       },
     ],
+    permissions: ['com.google.android.gms.permission.AD_ID'],
   },
   ios: {
     supportsTablet: true,
