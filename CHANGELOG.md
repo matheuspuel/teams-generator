@@ -1,5 +1,11 @@
 # teams-generator
 
+## 1.5.4
+
+### Patch Changes
+
+- 78d243c: add AD_ID android permission
+
 ## 1.5.3
 
 ### Patch Changes
