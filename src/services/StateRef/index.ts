@@ -29,28 +29,34 @@ export class AppStateRef extends Effect.Tag('AppStateRef')<
 export class InternalStateRef<_A> extends Effect.Tag('InternalStateRef')<
   InternalStateRef<never>,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Ref.Ref<any>
+  { ref: Ref.Ref<any> }
 >() {}
 const stateTag = <A = never>(): Context.TagClass<
   InternalStateRef<A>,
   'InternalStateRef',
-  Ref.Ref<A>
+  { ref: Ref.Ref<A> }
 > => InternalStateRef<A>
+
+const stateRef = <A = never>(): Effect.Effect<
+  Ref.Ref<A>,
+  never,
+  InternalStateRef<A>
+> => Effect.map(stateTag<A>(), _ => _.ref)
 
 const preparedStateOperations = <A>() => ({
   with: <B>(
     selector: (rootState: A) => B,
   ): Effect.Effect<B, never, InternalStateRef<A>> =>
-    Effect.flatMap(stateTag<A>(), Ref.get).pipe(Effect.map(selector)),
+    Effect.flatMap(stateRef<A>(), Ref.get).pipe(Effect.map(selector)),
   flatWith: <R, E, B>(
     effect: (rootState: A) => Effect.Effect<B, E, R>,
   ): Effect.Effect<B, E, InternalStateRef<A> | R> =>
-    Effect.flatMap(stateTag<A>(), Ref.get).pipe(Effect.flatMap(effect)),
-  get: Effect.flatMap(stateTag<A>(), Ref.get),
-  set: (a: A) => Effect.flatMap(stateTag<A>(), Ref.set(a)),
-  update: (f: (a: A) => A) => Effect.flatMap(stateTag<A>(), Ref.update(f)),
+    Effect.flatMap(stateRef<A>(), Ref.get).pipe(Effect.flatMap(effect)),
+  get: Effect.flatMap(stateRef<A>(), Ref.get),
+  set: (a: A) => Effect.flatMap(stateRef<A>(), Ref.set(a)),
+  update: (f: (a: A) => A) => Effect.flatMap(stateRef<A>(), Ref.update(f)),
   modify: <B>(f: (a: A) => readonly [B, A]) =>
-    Effect.flatMap(stateTag<A>(), Ref.modify(f)),
+    Effect.flatMap(stateRef<A>(), Ref.modify(f)),
 })
 
 const State_ = preparedStateOperations<RootState>()
@@ -135,7 +141,7 @@ export const StateRef = {
             Effect.flatMap(ref =>
               pipe(
                 Effect.all([effect, Ref.get(ref)]),
-                Effect.provideService(stateTag<RootState>(), ref),
+                Effect.provideService(stateTag<RootState>(), { ref }),
               ),
             ),
             Effect.exit,
@@ -185,7 +191,7 @@ export const StateRef = {
       Effect.flatMap(s =>
         Ref.make(s).pipe(
           Effect.flatMap(ref =>
-            pipe(effect, Effect.provideService(stateTag<RootState>(), ref)),
+            pipe(effect, Effect.provideService(stateTag<RootState>(), { ref })),
           ),
         ),
       ),
