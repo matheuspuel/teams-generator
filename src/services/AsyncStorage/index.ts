@@ -1,15 +1,20 @@
-import { Effect, Option } from 'effect'
+import RNAsyncStorage from '@react-native-async-storage/async-storage'
+import { Effect, Option, pipe } from 'effect'
 
-export type AsyncStorageImplementation = {
-  getItem: (key: string) => Effect.Effect<Option.Option<string>, unknown>
-  setItem: (args: {
-    key: string
-    value: string
-  }) => Effect.Effect<void, unknown>
-  removeItem: (key: string) => Effect.Effect<void, unknown>
-}
-
-export class AsyncStorage extends Effect.Tag('AsyncStorage')<
-  AsyncStorage,
-  AsyncStorageImplementation
->() {}
+export class AsyncStorage extends Effect.Service<AsyncStorage>()(
+  'AsyncStorage',
+  {
+    accessors: true,
+    succeed: {
+      getItem: (key: string) =>
+        pipe(
+          Effect.tryPromise(() => RNAsyncStorage.getItem(key)),
+          Effect.map(Option.fromNullable),
+        ),
+      setItem: ({ key, value }: { key: string; value: string }) =>
+        Effect.tryPromise(() => RNAsyncStorage.setItem(key, value)),
+      removeItem: (key: string) =>
+        Effect.tryPromise(() => RNAsyncStorage.removeItem(key)),
+    },
+  },
+) {}

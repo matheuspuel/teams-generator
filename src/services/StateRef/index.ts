@@ -26,7 +26,7 @@ export class AppStateRef extends Effect.Tag('AppStateRef')<
 >() {}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export class InternalStateRef<_A> extends Effect.Tag('InternalStateRef')<
+class InternalStateRef<_A> extends Effect.Tag('InternalStateRef')<
   InternalStateRef<never>,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   { ref: Ref.Ref<any> }

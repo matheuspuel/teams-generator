@@ -1,21 +1,35 @@
-import { Context, Effect, Option, Stream } from 'effect'
+import { Chunk, Effect, Option, Stream, pipe } from 'effect'
+import * as ExpoLinking from 'expo-linking'
 
-export type LinkingImplementation = {
-  openURL: (url: string) => Effect.Effect<void>
-  getInitialURL: () => Effect.Effect<Option.Option<string>>
-  startLinkingStream: () => Stream.Stream<string>
-}
-
-export class Linking extends Context.Tag('Linking')<
-  Linking,
-  LinkingImplementation
->() {
-  static openURL = Effect.serviceFunctionEffect(Linking, s => s.openURL)
+export class Linking extends Effect.Service<Linking>()('Linking', {
+  succeed: {
+    openURL: (url: string) =>
+      pipe(
+        Effect.tryPromise(() => ExpoLinking.openURL(url)),
+        Effect.ignore,
+      ),
+    getInitialURL: () =>
+      pipe(
+        Effect.tryPromise(() => ExpoLinking.getInitialURL()),
+        Effect.map(Option.fromNullable),
+        Effect.orElseSucceed(() => Option.none()),
+      ),
+    startLinkingStream: () =>
+      Stream.async<string>(
+        emit =>
+          void ExpoLinking.addEventListener(
+            'url',
+            e => void emit(Effect.succeed(Chunk.of(e.url))),
+          ),
+      ),
+  },
+}) {
+  static openURL = Effect.serviceFunctionEffect(Linking, _ => _.openURL)
   static getInitialURL = Effect.serviceFunctionEffect(
     Linking,
-    s => s.getInitialURL,
+    _ => _.getInitialURL,
   )
   static startLinkingStream = (
-    ...args: Parameters<LinkingImplementation['startLinkingStream']>
-  ) => Stream.flatMap(Linking, env => env.startLinkingStream(...args))
+    ...args: Parameters<Linking['startLinkingStream']>
+  ) => Stream.flatMap(Linking, _ => _.startLinkingStream(...args))
 }

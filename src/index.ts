@@ -3,10 +3,10 @@ import 'fast-text-encoding'
 import { Effect, Layer, Runtime, pipe } from 'effect'
 import { startApp } from 'src/app'
 import { runtime } from './runtime'
-import { UILive } from './services/UI/default'
+import { UI } from './services/UI'
 
 const appLayerWithUI = Layer.succeedContext(runtime.context).pipe(
-  Layer.provideMerge(UILive),
+  Layer.provideMerge(UI.Default),
 )
 
 const runtimeWithUI = pipe(

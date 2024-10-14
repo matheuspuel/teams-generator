@@ -16,6 +16,10 @@ export default defineConfig({
         __dirname,
         'src/mocks/libs/expo-localization.ts',
       ),
+      'expo-document-picker': path.join(
+        __dirname,
+        'src/mocks/libs/expo-document-picker.ts',
+      ),
     },
   },
 })

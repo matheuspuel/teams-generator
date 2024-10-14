@@ -1,32 +1,21 @@
 import { Context, Effect, Layer, LogLevel, Logger, Runtime, pipe } from 'effect'
 import { Alert } from 'src/services/Alert'
+import { AsyncStorage } from 'src/services/AsyncStorage'
 import { BackHandler } from 'src/services/BackHandler'
-import { BackHandlerLive } from 'src/services/BackHandler/default'
 import { DocumentPicker } from 'src/services/DocumentPicker'
 import { FileSystem } from 'src/services/FileSystem'
 import { IdGenerator } from 'src/services/IdGenerator'
+import { Linking } from 'src/services/Linking'
 import { MetadataService } from 'src/services/Metadata'
+import { Repository } from 'src/services/Repositories'
+import { SafeAreaService } from 'src/services/SafeArea'
 import { ShareService } from 'src/services/Share'
-import { SplashScreenLive } from 'src/services/SplashScreen/default'
+import { SplashScreen } from 'src/services/SplashScreen'
 import { AppStateRef } from 'src/services/StateRef'
-import { StateRefLive } from 'src/services/StateRef/default'
 import { Telemetry } from 'src/services/Telemetry'
-import { AlertLive } from './services/Alert/default'
-import { AsyncStorageLive } from './services/AsyncStorage/live'
-import { DocumentPickerLive } from './services/DocumentPicker/default'
-import { FileSystemLive } from './services/FileSystem/default'
-import { IdGeneratorLive } from './services/IdGenerator/default'
-import { Linking } from './services/Linking'
-import { LinkingLive } from './services/Linking/default'
-import { MetadataServiceLive } from './services/Metadata/default'
-import { Repository } from './services/Repositories'
-import { RepositoryLive } from './services/Repositories/live'
-import { SafeAreaService } from './services/SafeArea'
-import { SafeAreaServiceLive } from './services/SafeArea/default'
-import { ShareServiceLive } from './services/Share/default'
-import { SplashScreen } from './services/SplashScreen'
-import { TelemetryLive } from './services/Telemetry/default'
-import { envName } from './utils/Metadata'
+import { envName } from 'src/utils/Metadata'
+import { RepositoryDefault } from './services/Repositories/default'
+import { AppStateRefDefault } from './services/StateRef/default'
 
 const DEV_MINIMUM_LOG_LEVEL = LogLevel.Debug
 
@@ -49,21 +38,21 @@ const appLayer = pipe(
   Layer.succeedContext(Context.empty()),
   Layer.provideMerge(
     Layer.mergeAll(
-      FileSystemLive,
-      DocumentPickerLive,
-      LinkingLive,
-      MetadataServiceLive,
-      TelemetryLive,
-      IdGeneratorLive,
-      AlertLive,
-      ShareServiceLive,
-      BackHandlerLive,
-      SplashScreenLive,
-      SafeAreaServiceLive,
+      FileSystem.Default,
+      DocumentPicker.Default,
+      Linking.Default,
+      MetadataService.Default,
+      Telemetry.Default,
+      IdGenerator.Default,
+      Alert.Default,
+      ShareService.Default,
+      BackHandler.Default,
+      SplashScreen.Default,
+      SafeAreaService.Default,
     ),
   ),
-  Layer.provideMerge(Layer.mergeAll(RepositoryLive, StateRefLive)),
-  Layer.provideMerge(AsyncStorageLive),
+  Layer.provideMerge(Layer.mergeAll(RepositoryDefault, AppStateRefDefault)),
+  Layer.provideMerge(AsyncStorage.Default),
   Layer.provideMerge(
     Logger.minimumLogLevel(
       envName === 'development' ? DEV_MINIMUM_LOG_LEVEL : LogLevel.Info,

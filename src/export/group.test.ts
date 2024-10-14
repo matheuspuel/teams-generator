@@ -160,6 +160,7 @@ describe('importGroup state logic', () => {
     })
     let currentId = 0
     const IdGeneratorSequential = IdGenerator.context({
+      _tag: 'IdGenerator',
       generate: () => Effect.sync(() => Id.make((++currentId).toString())),
     })
 
@@ -233,6 +234,7 @@ describe('importGroup state logic', () => {
     })
     let currentId = 0
     const IdGeneratorSequential = IdGenerator.context({
+      _tag: 'IdGenerator',
       generate: () => Effect.sync(() => Id.make((++currentId).toString())),
     })
 
@@ -291,6 +293,7 @@ describe('importGroup state logic', () => {
     })
     let currentId = 0
     const IdGeneratorSequential = IdGenerator.context({
+      _tag: 'IdGenerator',
       generate: () => Effect.sync(() => Id.make((++currentId).toString())),
     })
     // TODO reuse IdGeneratorTest

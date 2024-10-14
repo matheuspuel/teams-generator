@@ -10,7 +10,7 @@ type AppTheme_ = typeof lightTheme
 export interface ThemeImplementation extends AppTheme_ {}
 
 export class Theme extends Context.Tag('Theme')<Theme, ThemeImplementation>() {
-  static type = Effect.map(Theme, env => env.type)
+  static type = Effect.map(Theme, _ => _.type)
   static matchType = <A>(cases: {
     light: Effect.Effect<A, never, Theme>
     dark: Effect.Effect<A, never, Theme>
@@ -46,30 +46,30 @@ export class Theme extends Context.Tag('Theme')<Theme, ThemeImplementation>() {
               : Color.tone(0)(Math.abs(factor)),
           ),
         }),
-    background: Effect.map(Theme, env => env.colors.background),
-    card: Effect.map(Theme, env => env.colors.card),
-    cardSecondary: Effect.map(Theme, env => env.colors.cardSecondary),
-    header: Effect.map(Theme, env => env.colors.header),
+    background: Effect.map(Theme, _ => _.colors.background),
+    card: Effect.map(Theme, _ => _.colors.card),
+    cardSecondary: Effect.map(Theme, _ => _.colors.cardSecondary),
+    header: Effect.map(Theme, _ => _.colors.header),
     text: {
-      light: Effect.map(Theme, env => env.colors.text.light),
-      dark: Effect.map(Theme, env => env.colors.text.dark),
-      secondary: Effect.map(Theme, env => env.colors.text.secondary),
-      gray: Effect.map(Theme, env => env.colors.text.gray),
+      light: Effect.map(Theme, _ => _.colors.text.light),
+      dark: Effect.map(Theme, _ => _.colors.text.dark),
+      secondary: Effect.map(Theme, _ => _.colors.text.secondary),
+      gray: Effect.map(Theme, _ => _.colors.text.gray),
       normal: Theme.matchType({
-        light: Effect.map(Theme, env => env.colors.text.dark),
-        dark: Effect.map(Theme, env => env.colors.text.light),
+        light: Effect.map(Theme, _ => _.colors.text.dark),
+        dark: Effect.map(Theme, _ => _.colors.text.light),
       }),
       inverted: Theme.matchType({
-        light: Effect.map(Theme, env => env.colors.text.light),
-        dark: Effect.map(Theme, env => env.colors.text.dark),
+        light: Effect.map(Theme, _ => _.colors.text.light),
+        dark: Effect.map(Theme, _ => _.colors.text.dark),
       }),
     },
-    white: Effect.map(Theme, env => env.colors.white),
-    black: Effect.map(Theme, env => env.colors.black),
-    gray: Effect.map(Theme, env => env.colors.gray),
-    primary: Effect.map(Theme, env => env.colors.primary),
-    success: Effect.map(Theme, env => env.colors.success),
-    error: Effect.map(Theme, env => env.colors.error),
+    white: Effect.map(Theme, _ => _.colors.white),
+    black: Effect.map(Theme, _ => _.colors.black),
+    gray: Effect.map(Theme, _ => _.colors.gray),
+    primary: Effect.map(Theme, _ => _.colors.primary),
+    success: Effect.map(Theme, _ => _.colors.success),
+    error: Effect.map(Theme, _ => _.colors.error),
   }
 }
 

@@ -2,6 +2,7 @@ import { Effect, Layer, Option } from 'effect'
 import { SafeAreaService } from '.'
 
 export const SafeAreaServiceTest = SafeAreaService.context({
+  _tag: 'SafeAreaService',
   initialMetrics: () =>
     Effect.succeed(
       Option.some({

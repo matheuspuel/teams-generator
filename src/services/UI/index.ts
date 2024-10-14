@@ -1,7 +1,16 @@
 import { Effect } from 'effect'
+import { registerRootComponent } from 'expo'
+import { Element } from 'src/components/types'
+import { DefaultUIRoot } from './defaultRoot'
 
-export type UIImplementation = {
-  start: () => Effect.Effect<void>
-}
+export class UI extends Effect.Service<UI>()('UI', {
+  accessors: true,
+  succeed: {
+    start: () => startReactNativeUI(DefaultUIRoot),
+  },
+}) {}
 
-export class UI extends Effect.Tag('UI')<UI, UIImplementation>() {}
+const startReactNativeUI = (
+  rootComponent: () => Element,
+): Effect.Effect<void> =>
+  Effect.sync(() => registerRootComponent(rootComponent))
