@@ -133,7 +133,7 @@ const versionWithZeroPatch = (version: string) => {
     : fatal('invalid version string')
 }
 
-const APP_VARIANT = process.env.APP_VARIANT
+const APP_VARIANT: unknown = process.env.APP_VARIANT
 
 const envName =
   APP_VARIANT === 'production'
