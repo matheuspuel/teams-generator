@@ -8,35 +8,35 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "node": "20.10.0",
-      "pnpm": "9.6.0"
+      "node": "22.17.1",
+      "pnpm": "10.13.1"
     },
     "development-simulator": {
       "developmentClient": true,
       "distribution": "internal",
       "ios": { "simulator": true },
-      "node": "20.10.0",
-      "pnpm": "9.6.0"
+      "node": "22.17.1",
+      "pnpm": "10.13.1"
     },
     "preview": {
       "channel": "preview",
       "env": { "APP_VARIANT": "preview" },
       "distribution": "internal",
-      "node": "20.10.0",
-      "pnpm": "9.6.0"
+      "node": "22.17.1",
+      "pnpm": "10.13.1"
     },
     "staging": {
       "env": { "APP_VARIANT": "staging" },
       "distribution": "internal",
-      "node": "20.10.0",
-      "pnpm": "9.6.0"
+      "node": "22.17.1",
+      "pnpm": "10.13.1"
     },
     "production": {
       "env": { "APP_VARIANT": "production" },
       "distribution": "store",
       "autoIncrement": true,
-      "node": "20.10.0",
-      "pnpm": "9.6.0"
+      "node": "22.17.1",
+      "pnpm": "10.13.1"
     }
   },
   "submit": {
