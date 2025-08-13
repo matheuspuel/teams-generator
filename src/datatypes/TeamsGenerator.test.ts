@@ -1,7 +1,6 @@
 /* eslint-disable functional/no-expression-statements */
-import { Arbitrary } from '@effect/schema'
 import { Semigroup } from '@effect/typeclass'
-import { Array, Equivalence, Match, identity, pipe } from 'effect'
+import { Arbitrary, Array, Equivalence, Match, identity, pipe } from 'effect'
 import { constant } from 'effect/Function'
 import * as fc from 'fast-check'
 import { playersMock } from 'src/mocks/Player'

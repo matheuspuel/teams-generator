@@ -13,7 +13,7 @@
         "reveal": "never",
         "group": "tsc:watch",
       },
-      "icon": { "id": "eye-watch" },
+      "icon": { "id": "eye-watch", "color": "terminal.ansiYellow" },
     },
     {
       "label": "Client Packager",

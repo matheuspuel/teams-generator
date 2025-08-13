@@ -1,4 +1,4 @@
-import { Schema } from '@effect/schema'
+import { Schema } from 'effect'
 import { toFixedLocale } from 'src/utils/Number'
 
 export const List = [

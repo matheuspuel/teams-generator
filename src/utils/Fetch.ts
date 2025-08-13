@@ -1,5 +1,4 @@
-import { Schema } from '@effect/schema'
-import { Data, Effect, Unify, pipe } from 'effect'
+import { Data, Effect, Schema, Unify, pipe } from 'effect'
 
 export type HttpMethod =
   | 'POST'

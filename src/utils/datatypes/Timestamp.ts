@@ -1,4 +1,3 @@
-import { Schema } from '@effect/schema'
 import {
   Clock,
   Duration,
@@ -6,6 +5,7 @@ import {
   Number,
   Order as Order_,
   Predicate,
+  Schema,
   pipe,
 } from 'effect'
 

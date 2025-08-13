@@ -1,5 +1,12 @@
-import { ParseResult, Schema } from '@effect/schema'
-import { Option, String, flow, identity, pipe } from 'effect'
+import {
+  Option,
+  ParseResult,
+  Schema,
+  String,
+  flow,
+  identity,
+  pipe,
+} from 'effect'
 import { apply } from 'effect/Function'
 
 type Endomorphism<A> = (_: A) => A

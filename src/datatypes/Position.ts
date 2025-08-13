@@ -1,5 +1,4 @@
-import { Schema } from '@effect/schema'
-import { pipe } from 'effect'
+import { pipe, Schema } from 'effect'
 import { NonEmptyString } from 'src/utils/datatypes/NonEmptyString'
 
 export const Abbreviation = pipe(

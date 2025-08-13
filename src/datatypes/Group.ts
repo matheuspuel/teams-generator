@@ -1,5 +1,4 @@
-import { Schema } from '@effect/schema'
-import { Order, String, flow, pipe } from 'effect'
+import { Order, Schema, String, flow, pipe } from 'effect'
 import { Id } from 'src/utils/Entity'
 import { normalize } from 'src/utils/String'
 import * as Modality from './Modality'

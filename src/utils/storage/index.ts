@@ -1,5 +1,4 @@
-import { Schema } from '@effect/schema'
-import { Effect, Option, flow, identity, pipe } from 'effect'
+import { Effect, Option, Schema, flow, identity, pipe } from 'effect'
 import { SimpleStorage } from './simpleStorage'
 
 export type Storage<A> = {

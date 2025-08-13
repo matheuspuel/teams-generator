@@ -1,6 +1,5 @@
-import { Schema } from '@effect/schema'
 import * as Optic from '@fp-ts/optic'
-import { Match, pipe } from 'effect'
+import { Match, pipe, Schema } from 'effect'
 
 export class Parameters extends Schema.Class<Parameters>('Parameters')({
   teamsCountMethod: Schema.Union(

@@ -1,5 +1,4 @@
-import { Schema } from '@effect/schema'
-import { Array, Effect, Option, pipe } from 'effect'
+import { Array, Effect, Option, pipe, Schema } from 'effect'
 import { AsyncStorage } from 'src/services/AsyncStorage'
 import { TelemetryLog } from 'src/services/Telemetry'
 import { LogRepository } from '.'

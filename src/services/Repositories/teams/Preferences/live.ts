@@ -1,4 +1,4 @@
-import { Schema } from '@effect/schema'
+import { Schema } from 'effect'
 import { createStorage } from 'src/utils/storage'
 import { PreferencesRepository } from '.'
 

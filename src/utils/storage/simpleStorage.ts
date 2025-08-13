@@ -1,5 +1,4 @@
-import { Schema } from '@effect/schema'
-import { Effect, Option, flow } from 'effect'
+import { Effect, Option, Schema, flow } from 'effect'
 import { AsyncStorageFP } from './wrapper'
 
 const get: (key: string) => Effect.Effect<unknown, unknown> = flow(

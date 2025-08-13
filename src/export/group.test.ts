@@ -1,7 +1,6 @@
 /* eslint-disable functional/no-expression-statements */
 /* eslint-disable functional/no-let */
-import { Schema } from '@effect/schema'
-import { Effect, Ref, SubscriptionRef } from 'effect'
+import { Effect, Ref, Schema, SubscriptionRef } from 'effect'
 import { Group, Modality } from 'src/datatypes'
 import { CustomModality, futsal, futsalPositions } from 'src/datatypes/Modality'
 import { RootState, initialAppState } from 'src/model'

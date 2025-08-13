@@ -1,10 +1,10 @@
-import { Schema } from '@effect/schema'
 import {
   Array,
   Boolean,
   Number,
   Option,
   Order,
+  Schema,
   String,
   flow,
   identity,

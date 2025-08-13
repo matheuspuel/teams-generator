@@ -1,5 +1,4 @@
-import { Schema } from '@effect/schema'
-import { pipe } from 'effect'
+import { pipe, Schema } from 'effect'
 
 export const NonEmptyString = pipe(
   Schema.NonEmptyString,

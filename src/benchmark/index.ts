@@ -1,8 +1,7 @@
 /* eslint-disable functional/no-expression-statements */
-import { Arbitrary } from '@effect/schema'
 import { Semigroup } from '@effect/typeclass'
 import * as Benchmark from 'benchmark'
-import { Array, Match, pipe } from 'effect'
+import { Arbitrary, Array, Match, pipe } from 'effect'
 import { constant } from 'effect/Function'
 import * as fc from 'fast-check'
 import { Player } from 'src/datatypes'

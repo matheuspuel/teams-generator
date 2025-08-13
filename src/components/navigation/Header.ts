@@ -1,4 +1,4 @@
-import RawHeader_ from '@react-navigation/elements/src/Header/Header'
+import { Header as RawHeader_ } from '@react-navigation/elements'
 import { pipe } from 'effect'
 import { constant } from 'effect/Function'
 import * as React from 'react'

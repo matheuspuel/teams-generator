@@ -1,4 +1,4 @@
-import { Schema } from '@effect/schema'
+import { Schema } from 'effect'
 import { NonEmptyReadonlyArray } from 'effect/Array'
 import { t } from 'src/i18n'
 import { Id } from 'src/utils/Entity'

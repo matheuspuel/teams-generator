@@ -1,5 +1,4 @@
-import { Schema } from '@effect/schema'
-import * as PR from '@effect/schema/ParseResult'
+import { ParseResult, Schema } from 'effect'
 import { Parameters } from 'src/datatypes'
 import { createStorage } from 'src/utils/storage'
 import { ParameterRepository } from '.'
@@ -15,12 +14,13 @@ export const ParametersRepositoryLive: ParameterRepository = createStorage<
     Parameters.Parameters,
     Schema.transformOrFail(Parameters.SchemaV1, Parameters.Parameters, {
       decode: v =>
-        PR.succeed({
+        ParseResult.succeed({
           ...v,
           teamsCountMethod: { _tag: 'count' as const },
           playersRequired: 11,
         }),
-      encode: (v, _, ast) => PR.fail(new PR.Forbidden(ast, v)),
+      encode: (v, _, ast) =>
+        ParseResult.fail(new ParseResult.Forbidden(ast, v)),
     }),
   ),
 })

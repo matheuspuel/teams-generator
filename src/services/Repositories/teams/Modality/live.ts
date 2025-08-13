@@ -1,4 +1,4 @@
-import { Schema } from '@effect/schema'
+import { Schema } from 'effect'
 import { Modality } from 'src/datatypes'
 import { createStorage } from 'src/utils/storage'
 import { ModalityRepository } from '.'

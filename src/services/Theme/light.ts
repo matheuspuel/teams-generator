@@ -1,4 +1,4 @@
-import { Schema } from '@effect/schema'
+import { Schema } from 'effect'
 import { Color } from 'src/utils/datatypes'
 
 const hex = Schema.decodeSync(Color.FromHex)

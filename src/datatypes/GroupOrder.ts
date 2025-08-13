@@ -1,5 +1,4 @@
-import { Schema } from '@effect/schema'
-import { Array, Order, absurd, identity, pipe } from 'effect'
+import { Array, Order, Schema, absurd, identity, pipe } from 'effect'
 import { Modality, Player } from 'src/datatypes'
 import {
   ActiveOrd,

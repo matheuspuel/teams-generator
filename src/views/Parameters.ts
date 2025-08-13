@@ -1,5 +1,4 @@
-import { Equivalence as SchemaEquivalence } from '@effect/schema'
-import { Match, pipe } from 'effect'
+import { Match, pipe, Schema } from 'effect'
 import { MaterialIcons, Pressable, Row, Txt, View } from 'src/components'
 import { BorderlessButton } from 'src/components/derivative/BorderlessButton'
 import { CenterModal } from 'src/components/derivative/CenterModal'
@@ -24,7 +23,7 @@ import { Colors } from 'src/services/Theme'
 export const ParametersView = namedConst('ParametersView')(() => {
   const parameters = useSelector(
     s => s.parameters,
-    SchemaEquivalence.make(Parameters),
+    Schema.equivalence(Parameters),
   )
   return CenterModal({
     onClose: back,

@@ -1,6 +1,5 @@
-import { Schema } from '@effect/schema'
 import * as Optic from '@fp-ts/optic'
-import { Array, Effect, Option, Record, flow, pipe } from 'effect'
+import { Array, Effect, Option, Record, Schema, flow, pipe } from 'effect'
 import { NonEmptyReadonlyArray } from 'effect/Array'
 import { Group, Modality, Player } from 'src/datatypes'
 import {

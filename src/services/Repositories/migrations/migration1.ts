@@ -1,10 +1,10 @@
-import { Schema } from '@effect/schema'
 import {
   Array,
   Effect,
   Option,
   Order,
   Record,
+  Schema,
   String,
   identity,
   pipe,

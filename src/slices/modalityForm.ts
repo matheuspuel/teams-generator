@@ -1,5 +1,4 @@
-import { Schema } from '@effect/schema'
-import { Array, Either, Option } from 'effect'
+import { Array, Either, Option, Schema } from 'effect'
 import { NonEmptyReadonlyArray } from 'effect/Array'
 import { Abbreviation } from 'src/datatypes/Position'
 import { Id } from 'src/utils/Entity'

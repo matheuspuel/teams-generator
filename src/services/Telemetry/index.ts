@@ -1,5 +1,4 @@
-import { Schema } from '@effect/schema'
-import { Effect, flow, pipe } from 'effect'
+import { Effect, flow, pipe, Schema } from 'effect'
 import { Timestamp } from 'src/utils/datatypes'
 import * as Fetch from 'src/utils/Fetch'
 import * as Metadata from 'src/utils/Metadata'

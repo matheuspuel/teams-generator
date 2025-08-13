@@ -1,5 +1,4 @@
-import { Schema } from '@effect/schema'
-import { Effect, Option, String, flow, pipe } from 'effect'
+import { Effect, Option, Schema, String, flow, pipe } from 'effect'
 import { not } from 'effect/Predicate'
 import { Rating } from 'src/datatypes'
 import { root } from 'src/model/optic'
