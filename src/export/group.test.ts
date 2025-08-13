@@ -174,6 +174,7 @@ describe('importGroup state logic', () => {
         subscriptionsRef: SubscriptionRef.make<ReadonlyArray<Subscription>>(
           [],
         ).pipe(Effect.runSync),
+        batchedUpdates: <A>(f: () => A) => f(),
       }),
       Effect.runSync,
     )
@@ -248,6 +249,7 @@ describe('importGroup state logic', () => {
         subscriptionsRef: SubscriptionRef.make<ReadonlyArray<Subscription>>(
           [],
         ).pipe(Effect.runSync),
+        batchedUpdates: <A>(f: () => A) => f(),
       }),
       Effect.runSync,
     )
@@ -308,6 +310,7 @@ describe('importGroup state logic', () => {
         subscriptionsRef: SubscriptionRef.make<ReadonlyArray<Subscription>>(
           [],
         ).pipe(Effect.runSync),
+        batchedUpdates: <A>(f: () => A) => f(),
       }),
       Effect.runSync,
     )

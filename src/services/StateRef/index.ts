@@ -12,12 +12,12 @@ import {
   flow,
   pipe,
 } from 'effect'
-import { unstable_batchedUpdates } from 'react-native'
 import { RootState } from 'src/model'
 
 export type AppStateRefImplementation = {
   ref: Ref.Ref<RootState>
   subscriptionsRef: Ref.Ref<ReadonlyArray<Subscription>>
+  batchedUpdates: <R>(callback: () => R) => R
 }
 
 export class AppStateRef extends Effect.Tag('AppStateRef')<
@@ -170,7 +170,7 @@ export const StateRef = {
               Ref.get(stateRef.subscriptionsRef),
               Effect.tap(ss =>
                 Effect.sync(() =>
-                  unstable_batchedUpdates(() => {
+                  stateRef.batchedUpdates(() => {
                     // eslint-disable-next-line functional/no-expression-statements
                     Effect.all(ss.map(f => f(s))).pipe(Effect.runSync)
                   }),

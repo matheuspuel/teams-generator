@@ -1,5 +1,5 @@
 import { Effect, Option } from 'effect'
-import { Metrics } from 'react-native-safe-area-context'
+import type { Metrics } from 'react-native-safe-area-context'
 
 export class SafeAreaService extends Effect.Service<SafeAreaService>()(
   'SafeAreaService',
