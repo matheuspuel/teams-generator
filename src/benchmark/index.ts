@@ -1,7 +1,7 @@
 /* eslint-disable functional/no-expression-statements */
 import { Semigroup } from '@effect/typeclass'
 import * as Benchmark from 'benchmark'
-import { Arbitrary, Array, Match, pipe } from 'effect'
+import { Arbitrary, Array, Effect, Match, pipe } from 'effect'
 import { constant } from 'effect/Function'
 import * as fc from 'fast-check'
 import { Player } from 'src/datatypes'
@@ -66,22 +66,24 @@ const getAllCombinationsOfSubListsWithFixedLength =
         )
 
 const distributeTeamsUsingCombinations: typeof distributeTeams = args =>
-  pipe(
-    args.criteria.distribution,
-    Match.valueTags({
-      numOfTeams: ({ numOfTeams }) =>
-        getAllCombinationsOfSubListsWithEqualLength(numOfTeams)(args.players),
-      fixedNumberOfPlayers: ({ fixedNumberOfPlayers }) =>
-        getAllCombinationsOfSubListsWithFixedLength(fixedNumberOfPlayers)(
-          args.players,
+  Effect.sync(() =>
+    pipe(
+      args.criteria.distribution,
+      Match.valueTags({
+        numOfTeams: ({ numOfTeams }) =>
+          getAllCombinationsOfSubListsWithEqualLength(numOfTeams)(args.players),
+        fixedNumberOfPlayers: ({ fixedNumberOfPlayers }) =>
+          getAllCombinationsOfSubListsWithFixedLength(fixedNumberOfPlayers)(
+            args.players,
+          ),
+      }),
+      Array.match({
+        onEmpty: constant([]),
+        onNonEmpty: combineAllNonEmpty(
+          Semigroup.min(getFitOrdFromCriteria(args)),
         ),
-    }),
-    Array.match({
-      onEmpty: constant([]),
-      onNonEmpty: combineAllNonEmpty(
-        Semigroup.min(getFitOrdFromCriteria(args)),
-      ),
-    }),
+      }),
+    ),
   )
 
 const criteria1: Criteria = {
@@ -101,14 +103,18 @@ void (async () => {
   await new Promise(resolve => {
     new Benchmark.Suite()
       .add('balanceTeamsBySwappingPlayers1', function (this: unknown) {
-        distributeTeams({ players: sample1, modality, criteria: criteria1 })
+        distributeTeams({
+          players: sample1,
+          modality,
+          criteria: criteria1,
+        }).pipe(Effect.runSync)
       })
       .add('balanceTeamsUsingCombinations1', function (this: unknown) {
         distributeTeamsUsingCombinations({
           players: sample1,
           modality,
           criteria: criteria1,
-        })
+        }).pipe(Effect.runSync)
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .on('cycle', function (event: any) {
@@ -127,14 +133,18 @@ void (async () => {
   await new Promise(resolve => {
     new Benchmark.Suite()
       .add('balanceTeamsBySwappingPlayers2', function (this: unknown) {
-        distributeTeams({ players: sample1, modality, criteria: criteria2 })
+        distributeTeams({
+          players: sample1,
+          modality,
+          criteria: criteria2,
+        }).pipe(Effect.runSync)
       })
       .add('balanceTeamsUsingCombinations2', function (this: unknown) {
         distributeTeamsUsingCombinations({
           players: sample1,
           modality,
           criteria: criteria2,
-        })
+        }).pipe(Effect.runSync)
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .on('cycle', function (event: any) {

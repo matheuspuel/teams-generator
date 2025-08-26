@@ -1,4 +1,4 @@
-import { Array, Option } from 'effect'
+import { Array, Fiber, Option } from 'effect'
 import { NonEmptyReadonlyArray } from 'effect/Array'
 import { GroupOrder, Modality, Parameters } from 'src/datatypes'
 import { CustomModality, soccer } from 'src/datatypes/Modality'
@@ -22,7 +22,7 @@ export type RootState = {
   preferences: { isRatingVisible: boolean }
   groups: GroupsState
   customModalities: ReadonlyArray<CustomModality>
-  result: Option.Option<GeneratedResult>
+  result: Fiber.Fiber<GeneratedResult>
   playerForm: PlayerForm
   groupForm: {
     id: Option.Option<Id>
@@ -50,7 +50,7 @@ export const initialAppState: RootState = {
   },
   groupForm: { id: Option.none(), name: '', modality: soccer },
   modalityForm: initialModalityForm,
-  result: Option.none(),
+  result: Fiber.never,
   groupOrder: GroupOrder.initial,
   preferences: { isRatingVisible: true },
   ui: {

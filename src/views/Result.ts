@@ -1,5 +1,15 @@
-import { Array, Option, Order, identity, pipe } from 'effect'
+import {
+  Array,
+  Effect,
+  Exit,
+  Option,
+  Order,
+  Runtime,
+  identity,
+  pipe,
+} from 'effect'
 import { NonEmptyReadonlyArray } from 'effect/Array'
+import * as React from 'react'
 import {
   ActivityIndicator,
   Header,
@@ -14,8 +24,10 @@ import {
 import { HeaderButton } from 'src/components/derivative/HeaderButton'
 import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { memoizedConst } from 'src/components/hyperscript'
+import { useRuntime } from 'src/contexts/Runtime'
 import { Modality, Player, Position, Rating } from 'src/datatypes'
 import { back } from 'src/events/core'
+import { interruptResultGeneration } from 'src/events/group'
 import { shareResult, toggleRatingVisibility } from 'src/events/result'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
@@ -24,9 +36,14 @@ import { getActiveModality } from 'src/slices/groups'
 import { toFixedLocale } from 'src/utils/Number'
 
 export const ResultView = memoizedConst('ResultView')(() => {
+  const runtime = useRuntime()
   const result = useSelector(s => s.result)
   const modality = useSelector(s => getActiveModality(s))
   const isRatingVisible = useSelector(s => s.preferences.isRatingVisible)
+  // eslint-disable-next-line functional/no-expression-statements
+  React.useEffect(() => {
+    return () => void interruptResultGeneration.pipe(Runtime.runFork(runtime))
+  }, [])
   return Option.match(modality, {
     onNone: () => Nothing,
     onSome: modality =>
@@ -56,14 +73,17 @@ export const ResultView = memoizedConst('ResultView')(() => {
         ]),
         ScrollView({ contentContainerStyle: { flexGrow: 1, gap: 8, p: 8 } })(
           pipe(
-            result,
-            Option.match({
-              onNone: () => [
+            result.poll,
+            Effect.runSync,
+            Exit.fromOption,
+            Exit.flatten,
+            Exit.match({
+              onFailure: () => [
                 View({ flex: 1, justify: 'center' })([
                   ActivityIndicator({ color: Colors.primary }),
                 ]),
               ],
-              onSome: Array.map((t, i) =>
+              onSuccess: Array.map((t, i) =>
                 TeamItem({
                   key: i.toString(),
                   index: i,

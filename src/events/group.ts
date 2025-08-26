@@ -1,4 +1,4 @@
-import { Effect, Option, pipe } from 'effect'
+import { Effect, Fiber, Option, pipe } from 'effect'
 import { Parameters as Parameters_ } from 'src/datatypes'
 import { exportGroup as exportGroup_ } from 'src/export/group'
 import { root } from 'src/model/optic'
@@ -19,10 +19,7 @@ import {
   toggleRating,
 } from 'src/slices/parameters'
 import { blankPlayerForm, getPlayerFormFromData } from 'src/slices/playerForm'
-import {
-  eraseResult,
-  generateResult as generateResult_,
-} from 'src/slices/result'
+import { generateResult as generateResult_ } from 'src/slices/result'
 import { Route, goBack, navigate } from 'src/slices/routes'
 import { Id } from 'src/utils/Entity'
 
@@ -56,9 +53,14 @@ export const togglePositionParameter = StateRef.execute(togglePosition)
 
 export const toggleRatingParameter = StateRef.execute(toggleRating)
 
+export const interruptResultGeneration = Effect.gen(function* () {
+  yield* (yield* StateRef.get).result.pipe(Fiber.interruptFork)
+})
+
 export const generateResult = Effect.gen(function* () {
+  yield* interruptResultGeneration
   yield* Effect.gen(function* () {
-    yield* eraseResult
+    yield* State.on(root.at('result')).set(Fiber.never)
     yield* goBack
     yield* navigate(Route.Result())
   }).pipe(StateRef.execute)

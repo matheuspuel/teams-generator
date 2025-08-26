@@ -82,24 +82,31 @@ export const getResultRatingDeviance = (teams: Array<Array<Player>>): number =>
 
 const balanceTeams: (
   fitOrd: Order.Order<Array<Array<Player>>>,
-) => (teams: Array<Array<Player>>) => Array<Array<Player>> = fitOrd => teams =>
-  Array.findFirst(teams, (team, i) =>
-    Array.findFirst(teams, (otherTeam, j) =>
-      j > i
-        ? Array.findFirst(team, (_, k) =>
-            Array.findFirst(otherTeam, (_, l) => {
-              const nextState = changePlayers(
-                { teamIndex: i, playerIndex: k },
-                { teamIndex: j, playerIndex: l },
-              )(teams)
-              return Order.lessThan(fitOrd)(teams)(nextState)
-                ? Option.some(balanceTeams(fitOrd)(nextState))
-                : Option.none()
-            }),
-          )
-        : Option.none(),
-    ),
-  ).pipe(Option.getOrElse(() => teams))
+) => (teams: Array<Array<Player>>) => Effect.Effect<Array<Array<Player>>> =
+  fitOrd => teams =>
+    Effect.promise(async () =>
+      Array.findFirst(teams, (team, i) =>
+        Array.findFirst(teams, (otherTeam, j) =>
+          j > i
+            ? Array.findFirst(team, (_, k) =>
+                Array.findFirst(otherTeam, (_, l) => {
+                  const nextState = changePlayers(
+                    { teamIndex: i, playerIndex: k },
+                    { teamIndex: j, playerIndex: l },
+                  )(teams)
+                  return Order.lessThan(fitOrd)(teams)(nextState)
+                    ? Option.some(
+                        Effect.runPromise(
+                          balanceTeams(fitOrd)(nextState).pipe(Effect.delay(0)),
+                        ),
+                      )
+                    : Option.none()
+                }),
+              )
+            : Option.none(),
+        ),
+      ).pipe(Option.getOrElse(() => teams)),
+    )
 
 const deviance = (b: number) => (a: number) => Math.pow(Math.abs(a - b), 2)
 
@@ -234,5 +241,5 @@ export const generateRandomBalancedTeams = (args: {
 }): Effect.Effect<Array<Array<Player>>> =>
   pipe(
     randomizeArray(args.players),
-    Effect.map(players => distributeTeams({ ...args, players })),
+    Effect.flatMap(players => distributeTeams({ ...args, players })),
   )

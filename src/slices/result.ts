@@ -1,12 +1,10 @@
-import { Array, Effect, Match, Option, Record, pipe } from 'effect'
+import { Array, Effect, Fiber, Match, Option, Record, pipe } from 'effect'
 import { Player, TeamsGenerator } from 'src/datatypes'
 import { root } from 'src/model/optic'
 import { State, StateRef } from 'src/services/StateRef'
 import { getModality } from './groups'
 
 export type GeneratedResult = Array<Array<Player>>
-
-export const eraseResult = State.on(root.at('result')).set(Option.none())
 
 export const generateResult = Effect.gen(function* () {
   const state = yield* StateRef.get
@@ -16,7 +14,7 @@ export const generateResult = Effect.gen(function* () {
   const players = Array.filter(group.players, Player.isActive)
   const modality = yield* getModality(group.modality)(state)
   const parameters = state.parameters
-  const result = yield* TeamsGenerator.generateRandomBalancedTeams({
+  const resultFiber = yield* TeamsGenerator.generateRandomBalancedTeams({
     players,
     modality,
     criteria: {
@@ -36,9 +34,13 @@ export const generateResult = Effect.gen(function* () {
         }),
       ),
     },
-  })
-  yield* State.on(root.at('result'))
-    .set(Option.some(result))
-    .pipe(StateRef.execute)
-  return result
+  }).pipe(Effect.forkDaemon)
+  yield* State.on(root.at('result')).set(resultFiber).pipe(StateRef.execute)
+  yield* Effect.gen(function* () {
+    yield* resultFiber
+    yield* State.on(root.at('result'))
+      .set(Fiber.map(resultFiber, _ => _))
+      .pipe(StateRef.execute)
+  }).pipe(Effect.forkDaemon)
+  return resultFiber
 })
