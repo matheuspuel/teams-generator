@@ -65,25 +65,24 @@ const getAllCombinationsOfSubListsWithFixedLength =
           ),
         )
 
-const distributeTeamsUsingCombinations: typeof distributeTeams =
-  args => params => players =>
-    pipe(
-      params.distribution,
-      Match.valueTags({
-        numOfTeams: ({ numOfTeams }) =>
-          getAllCombinationsOfSubListsWithEqualLength(numOfTeams)(players),
-        fixedNumberOfPlayers: ({ fixedNumberOfPlayers }) =>
-          getAllCombinationsOfSubListsWithFixedLength(fixedNumberOfPlayers)(
-            players,
-          ),
-      }),
-      Array.match({
-        onEmpty: constant([]),
-        onNonEmpty: combineAllNonEmpty(
-          Semigroup.min(getFitOrdFromCriteria(args)(params)),
+const distributeTeamsUsingCombinations: typeof distributeTeams = args =>
+  pipe(
+    args.criteria.distribution,
+    Match.valueTags({
+      numOfTeams: ({ numOfTeams }) =>
+        getAllCombinationsOfSubListsWithEqualLength(numOfTeams)(args.players),
+      fixedNumberOfPlayers: ({ fixedNumberOfPlayers }) =>
+        getAllCombinationsOfSubListsWithFixedLength(fixedNumberOfPlayers)(
+          args.players,
         ),
-      }),
-    )
+    }),
+    Array.match({
+      onEmpty: constant([]),
+      onNonEmpty: combineAllNonEmpty(
+        Semigroup.min(getFitOrdFromCriteria(args)),
+      ),
+    }),
+  )
 
 const criteria1: Criteria = {
   position: true,
@@ -102,10 +101,14 @@ void (async () => {
   await new Promise(resolve => {
     new Benchmark.Suite()
       .add('balanceTeamsBySwappingPlayers1', function (this: unknown) {
-        distributeTeams({ modality })(criteria1)(sample1)
+        distributeTeams({ players: sample1, modality, criteria: criteria1 })
       })
       .add('balanceTeamsUsingCombinations1', function (this: unknown) {
-        distributeTeamsUsingCombinations({ modality })(criteria1)(sample1)
+        distributeTeamsUsingCombinations({
+          players: sample1,
+          modality,
+          criteria: criteria1,
+        })
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .on('cycle', function (event: any) {
@@ -124,10 +127,14 @@ void (async () => {
   await new Promise(resolve => {
     new Benchmark.Suite()
       .add('balanceTeamsBySwappingPlayers2', function (this: unknown) {
-        distributeTeams({ modality })(criteria2)(sample1)
+        distributeTeams({ players: sample1, modality, criteria: criteria2 })
       })
       .add('balanceTeamsUsingCombinations2', function (this: unknown) {
-        distributeTeamsUsingCombinations({ modality })(criteria2)(sample1)
+        distributeTeamsUsingCombinations({
+          players: sample1,
+          modality,
+          criteria: criteria2,
+        })
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .on('cycle', function (event: any) {

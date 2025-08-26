@@ -36,21 +36,15 @@ import {
 import { Id } from 'src/utils/Entity'
 
 export const GroupView = memoizedConst('GroupView')(() => {
-  const playersIds = useSelector(s =>
-    pipe(
-      Option.all({
-        group: getSelectedGroup(s),
-        modality: getActiveModality(s),
-      }),
-      Option.map(({ group, modality }) =>
-        pipe(
-          Array.sort(
-            group.players,
-            GroupOrder.toOrder(s.groupOrder)({ modality }),
-          ),
-          Array.map(_ => _.id),
-        ),
-      ),
+  const playersIds = useSelector(_ =>
+    Option.gen(function* () {
+      const group = yield* getSelectedGroup(_)
+      const modality = yield* getActiveModality(_)
+      return Array.sort(
+        group.players,
+        GroupOrder.toOrder(_.groupOrder)({ modality }),
+      ).map(_ => _.id)
+    }).pipe(
       Option.getOrElse(() => []),
       Data.array,
     ),

@@ -56,12 +56,15 @@ export const togglePositionParameter = StateRef.execute(togglePosition)
 
 export const toggleRatingParameter = StateRef.execute(toggleRating)
 
-export const generateResult = pipe(
-  Effect.all([eraseResult, goBack, navigate(Route.Result())]),
-  StateRef.execute,
-  Effect.tap(() => Effect.sleep(0)),
-  Effect.flatMap(() => generateResult_),
-).pipe(Effect.ignore)
+export const generateResult = Effect.gen(function* () {
+  yield* Effect.gen(function* () {
+    yield* eraseResult
+    yield* goBack
+    yield* navigate(Route.Result())
+  }).pipe(StateRef.execute)
+  yield* Effect.sleep(100)
+  yield* generateResult_
+}).pipe(Effect.ignore)
 
 export const exportGroup = pipe(
   goBack,

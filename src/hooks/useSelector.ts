@@ -1,9 +1,8 @@
-/* eslint-disable functional/no-expression-statements */
-import { Effect, Equal, Equivalence, Runtime, flow } from 'effect'
-import * as React from 'react'
+import { Effect, Equal, Equivalence, Runtime } from 'effect'
 import { useRuntime } from 'src/contexts/Runtime'
 import { RootState } from 'src/model'
 import { AppRuntime } from 'src/runtime'
+import { useSyncExternalStoreWithSelector } from 'use-sync-external-store/with-selector'
 import { StateRef } from '../services/StateRef'
 
 export const useSelector = <A>(
@@ -26,21 +25,16 @@ export const useSelectorComplete = <A>({
   selector: (state: RootState) => A
   equivalence: Equivalence.Equivalence<A>
   runtime: AppRuntime
-}): A => {
-  const [state, setState] = React.useState<A>(() =>
-    selector(StateRef.get.pipe(Runtime.runSync(runtime))),
+}) =>
+  useSyncExternalStoreWithSelector<RootState, A>(
+    onChange => {
+      const subscription = StateRef.react
+        .subscribe(() => Effect.sync(onChange))
+        .pipe(Runtime.runSync(runtime))
+      return () => subscription.unsubscribe().pipe(Runtime.runSync(runtime))
+    },
+    () => StateRef.get.pipe(Runtime.runSync(runtime)),
+    undefined,
+    selector,
+    equivalence,
   )
-  React.useEffect(() => {
-    const subscription = StateRef.react
-      .subscribe(
-        flow(selector, s =>
-          Effect.sync(() =>
-            setState(state => (equivalence(state, s) ? state : s)),
-          ),
-        ),
-      )
-      .pipe(Runtime.runSync(runtime))
-    return () => subscription.unsubscribe().pipe(Runtime.runSync(runtime))
-  }, [selector, equivalence, runtime])
-  return state
-}

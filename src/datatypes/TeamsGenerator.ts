@@ -83,34 +83,23 @@ export const getResultRatingDeviance = (teams: Array<Array<Player>>): number =>
 const balanceTeams: (
   fitOrd: Order.Order<Array<Array<Player>>>,
 ) => (teams: Array<Array<Player>>) => Array<Array<Player>> = fitOrd => teams =>
-  pipe(
-    teams,
-    Array.findFirst((team, i) =>
-      pipe(
-        teams,
-        Array.findFirst((otherTeam, j) =>
-          j > i
-            ? pipe(
-                team,
-                Array.findFirst((_, k) =>
-                  pipe(
-                    otherTeam,
-                    Array.findFirst((_, l) =>
-                      pipe(changePlayers(i)(k)(j)(l)(teams), nextState =>
-                        Order.lessThan(fitOrd)(teams)(nextState)
-                          ? Option.some(balanceTeams(fitOrd)(nextState))
-                          : Option.none(),
-                      ),
-                    ),
-                  ),
-                ),
-              )
-            : Option.none(),
-        ),
-      ),
+  Array.findFirst(teams, (team, i) =>
+    Array.findFirst(teams, (otherTeam, j) =>
+      j > i
+        ? Array.findFirst(team, (_, k) =>
+            Array.findFirst(otherTeam, (_, l) => {
+              const nextState = changePlayers(
+                { teamIndex: i, playerIndex: k },
+                { teamIndex: j, playerIndex: l },
+              )(teams)
+              return Order.lessThan(fitOrd)(teams)(nextState)
+                ? Option.some(balanceTeams(fitOrd)(nextState))
+                : Option.none()
+            }),
+          )
+        : Option.none(),
     ),
-    Option.getOrElse(() => teams),
-  )
+  ).pipe(Option.getOrElse(() => teams))
 
 const deviance = (b: number) => (a: number) => Math.pow(Math.abs(a - b), 2)
 
@@ -124,74 +113,83 @@ const positionCount =
     )
 
 const changePlayers =
-  (teamIndex: number) =>
-  (playerIndex: number) =>
-  (otherTeamIndex: number) =>
-  (otherPlayerIndex: number) =>
+  (
+    first: { teamIndex: number; playerIndex: number },
+    second: { teamIndex: number; playerIndex: number },
+  ) =>
   (teams: Array<Array<Player>>): Array<Array<Player>> =>
-    pipe(
-      Option.Do,
-      Option.bind('team', () => pipe(teams, Array.get(teamIndex))),
-      Option.bind('otherTeam', () => pipe(teams, Array.get(otherTeamIndex))),
-      Option.bind('player', ({ team }) => pipe(team, Array.get(playerIndex))),
-      Option.bind('otherPlayer', ({ otherTeam }) =>
-        pipe(otherTeam, Array.get(otherPlayerIndex)),
-      ),
-      Option.let('nextTeam', ({ team, otherPlayer }) =>
-        pipe(team, Array.remove(playerIndex), Array.append(otherPlayer)),
-      ),
-      Option.let('nextOtherTeam', ({ otherTeam, player }) =>
-        pipe(otherTeam, Array.remove(otherPlayerIndex), Array.append(player)),
-      ),
-      Option.flatMap(({ nextTeam, nextOtherTeam }) =>
-        pipe(
-          teams,
-          Array.replaceOption<Array<Player>>(teamIndex, nextTeam),
-          Option.flatMap(
-            Array.replaceOption<Array<Player>>(otherTeamIndex, nextOtherTeam),
-          ),
+    Option.gen(function* () {
+      const firstTeam = yield* Array.get(teams, first.teamIndex)
+      const secondTeam = yield* Array.get(teams, second.teamIndex)
+      const firstPlayer = yield* Array.get(firstTeam, first.playerIndex)
+      const secondPlayer = yield* Array.get(secondTeam, second.playerIndex)
+      const nextFirstTeam = pipe(
+        firstTeam,
+        Array.remove(first.playerIndex),
+        Array.append(secondPlayer),
+      )
+      const nextSecondTeam = pipe(
+        secondTeam,
+        Array.remove(second.playerIndex),
+        Array.append(firstPlayer),
+      )
+      return yield* pipe(
+        teams,
+        Array.replaceOption<Array<Player>>(first.teamIndex, nextFirstTeam),
+        Option.flatMap(
+          Array.replaceOption<Array<Player>>(second.teamIndex, nextSecondTeam),
         ),
-      ),
-      Option.getOrElse(() => teams),
-    )
+      )
+    }).pipe(Option.getOrElse(() => teams))
 
-export const divideTeamsWithEqualNumberOfPlayers =
-  (numOfTeams: number) =>
-  (players: Array<Player>): Array<Array<Player>> =>
-    numOfTeams <= 0
-      ? []
-      : pipe(
-          players,
-          Array.splitAt(Math.floor(players.length / numOfTeams)),
-          ([as, bs]) =>
-            pipe(
-              divideTeamsWithEqualNumberOfPlayers(numOfTeams - 1)(bs),
-              Array.append(as),
-            ),
-        )
-
-export const divideTeamsWithFixedNumberOfPlayers =
-  (numOfPlayers: number) =>
-  (players: Array<Player>): Array<Array<Player>> =>
-    players.length === 0
-      ? []
-      : pipe(players, Array.splitAt(numOfPlayers), ([as, bs]) =>
+export const divideTeamsWithEqualNumberOfPlayers = (args: {
+  players: Array<Player>
+  numOfTeams: number
+}): Array<Array<Player>> =>
+  args.numOfTeams <= 0
+    ? []
+    : pipe(
+        args.players,
+        Array.splitAt(Math.floor(args.players.length / args.numOfTeams)),
+        ([as, bs]) =>
           pipe(
-            divideTeamsWithFixedNumberOfPlayers(numOfPlayers)(bs),
-            Array.prepend(as),
+            divideTeamsWithEqualNumberOfPlayers({
+              players: bs,
+              numOfTeams: args.numOfTeams - 1,
+            }),
+            Array.append(as),
           ),
-        )
+      )
 
-const divideTeams = (criteria: Criteria) =>
-  pipe(
-    criteria.distribution,
-    Match.valueTags({
-      numOfTeams: ({ numOfTeams }) =>
-        divideTeamsWithEqualNumberOfPlayers(numOfTeams),
-      fixedNumberOfPlayers: ({ fixedNumberOfPlayers }) =>
-        divideTeamsWithFixedNumberOfPlayers(fixedNumberOfPlayers),
-    }),
-  )
+export const divideTeamsWithFixedNumberOfPlayers = (args: {
+  players: Array<Player>
+  numOfPlayers: number
+}): Array<Array<Player>> =>
+  args.players.length === 0
+    ? []
+    : pipe(args.players, Array.splitAt(args.numOfPlayers), ([as, bs]) =>
+        pipe(
+          divideTeamsWithFixedNumberOfPlayers({
+            players: bs,
+            numOfPlayers: args.numOfPlayers,
+          }),
+          Array.prepend(as),
+        ),
+      )
+
+const divideTeams = (args: { players: Array<Player>; criteria: Criteria }) =>
+  Match.valueTags(args.criteria.distribution, {
+    numOfTeams: ({ numOfTeams }) =>
+      divideTeamsWithEqualNumberOfPlayers({
+        players: args.players,
+        numOfTeams,
+      }),
+    fixedNumberOfPlayers: ({ fixedNumberOfPlayers }) =>
+      divideTeamsWithFixedNumberOfPlayers({
+        players: args.players,
+        numOfPlayers: fixedNumberOfPlayers,
+      }),
+  })
 
 export type Criteria = {
   position: boolean
@@ -201,29 +199,40 @@ export type Criteria = {
     | { _tag: 'fixedNumberOfPlayers'; fixedNumberOfPlayers: number }
 }
 
-export const getFitOrdFromCriteria =
-  (args: { modality: Modality }) =>
-  (criteria: Criteria): Order.Order<Array<Array<Player>>> =>
-    pipe(
-      [
-        criteria.position
-          ? Option.some(getResultPositionDeviance(args))
-          : Option.none(),
-        criteria.rating ? Option.some(getResultRatingDeviance) : Option.none(),
-      ],
-      Array.getSomes,
-      getFitOrdByDevianceFns,
-    )
+export const getFitOrdFromCriteria = (args: {
+  modality: Modality
+  criteria: Criteria
+}): Order.Order<Array<Array<Player>>> =>
+  pipe(
+    [
+      args.criteria.position
+        ? Option.some(getResultPositionDeviance(args))
+        : Option.none(),
+      args.criteria.rating
+        ? Option.some(getResultRatingDeviance)
+        : Option.none(),
+    ],
+    Array.getSomes,
+    getFitOrdByDevianceFns,
+  )
 
-export const balanceTeamsByCriteria = (args: { modality: Modality }) =>
-  flow(getFitOrdFromCriteria(args), balanceTeams)
+export const balanceTeamsByCriteria = (args: {
+  modality: Modality
+  criteria: Criteria
+}) => pipe(getFitOrdFromCriteria(args), balanceTeams)
 
-export const distributeTeams =
-  (args: { modality: Modality }) => (criteria: Criteria) =>
-    flow(divideTeams(criteria), balanceTeamsByCriteria(args)(criteria))
+export const distributeTeams = (args: {
+  players: Array<Player>
+  modality: Modality
+  criteria: Criteria
+}) => pipe(divideTeams(args), balanceTeamsByCriteria(args))
 
-export const generateRandomBalancedTeams =
-  (args: { modality: Modality }) =>
-  (criteria: Criteria) =>
-  (players: Array<Player>): Effect.Effect<Array<Array<Player>>> =>
-    pipe(randomizeArray(players), Effect.map(distributeTeams(args)(criteria)))
+export const generateRandomBalancedTeams = (args: {
+  players: Array<Player>
+  modality: Modality
+  criteria: Criteria
+}): Effect.Effect<Array<Array<Player>>> =>
+  pipe(
+    randomizeArray(args.players),
+    Effect.map(players => distributeTeams({ ...args, players })),
+  )

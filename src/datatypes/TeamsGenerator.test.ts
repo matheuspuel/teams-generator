@@ -63,25 +63,24 @@ const getAllCombinationsOfSubListsWithFixedLength =
           ),
         )
 
-const distributeTeamsUsingCombinations: typeof distributeTeams =
-  args => params => players =>
-    pipe(
-      params.distribution,
-      Match.valueTags({
-        numOfTeams: ({ numOfTeams }) =>
-          getAllCombinationsOfSubListsWithEqualLength(numOfTeams)(players),
-        fixedNumberOfPlayers: ({ fixedNumberOfPlayers }) =>
-          getAllCombinationsOfSubListsWithFixedLength(fixedNumberOfPlayers)(
-            players,
-          ),
-      }),
-      Array.match({
-        onEmpty: constant([]),
-        onNonEmpty: combineAllNonEmpty(
-          Semigroup.min(getFitOrdFromCriteria(args)(params)),
+const distributeTeamsUsingCombinations: typeof distributeTeams = args =>
+  pipe(
+    args.criteria.distribution,
+    Match.valueTags({
+      numOfTeams: ({ numOfTeams }) =>
+        getAllCombinationsOfSubListsWithEqualLength(numOfTeams)(args.players),
+      fixedNumberOfPlayers: ({ fixedNumberOfPlayers }) =>
+        getAllCombinationsOfSubListsWithFixedLength(fixedNumberOfPlayers)(
+          args.players,
         ),
-      }),
-    )
+    }),
+    Array.match({
+      onEmpty: constant([]),
+      onNonEmpty: combineAllNonEmpty(
+        Semigroup.min(getFitOrdFromCriteria(args)),
+      ),
+    }),
+  )
 
 describe('test utils', () => {
   test('getAllCombinationsOfSubListsWithFixedLength', () => {
@@ -110,7 +109,7 @@ describe('test utils', () => {
 })
 
 describe('Balance teams', () => {
-  const paramsArb = fc.record({
+  const criteriaArb = fc.record({
     position: fc.boolean(),
     rating: fc.boolean(),
     distribution: fc.oneof(
@@ -125,7 +124,7 @@ describe('Balance teams', () => {
     ),
   })
   const balanceTeamsArb = fc.record({
-    params: paramsArb,
+    criteria: criteriaArb,
     players: fc.array(Arbitrary.make(Player.Player)),
   })
 
@@ -174,16 +173,16 @@ describe('Balance teams', () => {
     ]
     fc.assert(
       fc.property(
-        paramsArb,
+        criteriaArb,
         fc.array(Arbitrary.make(Player.Player), {
           minLength: 1,
           maxLength: 8,
         }),
-        (params, players) =>
-          pipe(getFitOrdFromCriteria({ modality })(params), fitOrd =>
+        (criteria, players) =>
+          pipe(getFitOrdFromCriteria({ modality, criteria }), fitOrd =>
             toEquivalence(fitOrd)(
-              distributeTeams({ modality })(params)(players),
-              distributeTeamsUsingCombinations({ modality })(params)(players),
+              distributeTeams({ players, modality, criteria }),
+              distributeTeamsUsingCombinations({ players, modality, criteria }),
             ),
           ),
       ),
@@ -204,9 +203,11 @@ describe('Balance teams', () => {
 
   test('should return the same players', () => {
     fc.assert(
-      fc.property(balanceTeamsArb, ({ params, players }) =>
-        pipe(distributeTeams({ modality })(params)(players), Array.flatten, _ =>
-          getUnorderedEquivalence(Equivalence.strict())(_, players),
+      fc.property(balanceTeamsArb, ({ players, criteria }) =>
+        pipe(
+          distributeTeams({ players, modality, criteria }),
+          Array.flatten,
+          _ => getUnorderedEquivalence(Equivalence.strict())(_, players),
         ),
       ),
     )
@@ -216,10 +217,10 @@ describe('Balance teams', () => {
     fc.assert(
       fc.property(
         balanceTeamsArb,
-        ({ params, players }) =>
-          distributeTeams({ modality })(params)(players).length ===
+        ({ criteria, players }) =>
+          distributeTeams({ players, modality, criteria }).length ===
           pipe(
-            params.distribution,
+            criteria.distribution,
             Match.valueTags({
               numOfTeams: ({ numOfTeams }) => numOfTeams,
               fixedNumberOfPlayers: ({ fixedNumberOfPlayers }) =>
@@ -232,12 +233,12 @@ describe('Balance teams', () => {
 
   test('should return the correct number of players each team', () => {
     fc.assert(
-      fc.property(balanceTeamsArb, ({ params, players }) =>
-        distributeTeams({ modality })(params)(players).every(
+      fc.property(balanceTeamsArb, ({ players, criteria }) =>
+        distributeTeams({ players, modality, criteria }).every(
           (t, i, ts) =>
             t.length ===
             pipe(
-              params.distribution,
+              criteria.distribution,
               Match.valueTags({
                 numOfTeams: ({ numOfTeams }) =>
                   Math.floor(players.length / numOfTeams) +
@@ -256,15 +257,19 @@ describe('Balance teams', () => {
 
   test('should not have teams with player count difference higher than one in any position', () => {
     fc.assert(
-      fc.property(balanceTeamsArb, ({ params, players }) =>
+      fc.property(balanceTeamsArb, ({ criteria, players }) =>
         pipe(
-          distributeTeams({ modality })({ ...params, position: true })(players),
+          distributeTeams({
+            players,
+            modality,
+            criteria: { ...criteria, position: true },
+          }),
           teams =>
             teams.every(a =>
               teams.every(
                 b =>
                   pipe(
-                    params.distribution,
+                    criteria.distribution,
                     Match.valueTags({
                       fixedNumberOfPlayers: ({ fixedNumberOfPlayers }) =>
                         a.length !== fixedNumberOfPlayers ||
@@ -295,18 +300,29 @@ describe('Balance teams', () => {
 
   test('should return a balanced team', () => {
     expect(
-      distributeTeams({ modality })({
-        position: true,
-        rating: true,
-        distribution: { _tag: 'numOfTeams', numOfTeams: 3 },
-      })(playersMock),
+      distributeTeams({
+        players: playersMock,
+        modality,
+        criteria: {
+          position: true,
+          rating: true,
+          distribution: { _tag: 'numOfTeams', numOfTeams: 3 },
+        },
+      }),
     ).toMatchSnapshot()
     expect(
-      distributeTeams({ modality })({
-        position: true,
-        rating: true,
-        distribution: { _tag: 'fixedNumberOfPlayers', fixedNumberOfPlayers: 7 },
-      })(playersMock),
+      distributeTeams({
+        players: playersMock,
+        modality,
+        criteria: {
+          position: true,
+          rating: true,
+          distribution: {
+            _tag: 'fixedNumberOfPlayers',
+            fixedNumberOfPlayers: 7,
+          },
+        },
+      }),
     ).toMatchSnapshot()
   })
 })

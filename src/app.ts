@@ -4,12 +4,9 @@ import { StateRef } from 'src/services/StateRef'
 import { hydrate, saveState } from 'src/slices/core/hydration'
 import { appLoaded, back } from './events/core'
 import { setupReceiveURLHandler } from './export/group'
-import { MetadataService } from './services/Metadata'
 import { runMigrations } from './services/Repositories/migrations'
 import { SplashScreen } from './services/SplashScreen'
-import { Telemetry } from './services/Telemetry'
 import { UI } from './services/UI'
-import { Timestamp } from './utils/datatypes'
 
 export const startApp = pipe(
   UI.start(),
@@ -35,16 +32,6 @@ export const startApp = pipe(
     ),
   ),
   Effect.tap(() => appLoaded),
-  Effect.tap(() =>
-    pipe(
-      Effect.all([MetadataService.get(), Timestamp.now]),
-      Effect.flatMap(([m, t]) =>
-        Telemetry.log([{ timestamp: t, event: 'start', data: m }]),
-      ),
-      Effect.flatMap(() => Telemetry.send()),
-      Effect.catchAll(() => Effect.void),
-    ),
-  ),
   Effect.tap(() =>
     setupReceiveURLHandler().pipe(Stream.runDrain, Effect.forkDaemon),
   ),
