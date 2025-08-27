@@ -1,10 +1,12 @@
 import {
   Array,
   Effect,
+  Iterable,
   Match,
   Number,
   Option,
   Order,
+  Tuple,
   flow,
   identity,
   pipe,
@@ -80,33 +82,36 @@ export const getResultRatingDeviance = (teams: Array<Array<Player>>): number =>
       ),
   )
 
-const balanceTeams: (
-  fitOrd: Order.Order<Array<Array<Player>>>,
-) => (teams: Array<Array<Player>>) => Effect.Effect<Array<Array<Player>>> =
-  fitOrd => teams =>
-    Effect.promise(async () =>
-      Array.findFirst(teams, (team, i) =>
-        Array.findFirst(teams, (otherTeam, j) =>
-          j > i
-            ? Array.findFirst(team, (_, k) =>
-                Array.findFirst(otherTeam, (_, l) => {
-                  const nextState = changePlayers(
-                    { teamIndex: i, playerIndex: k },
-                    { teamIndex: j, playerIndex: l },
-                  )(teams)
-                  return Order.lessThan(fitOrd)(teams)(nextState)
-                    ? Option.some(
-                        Effect.runPromise(
-                          balanceTeams(fitOrd)(nextState).pipe(Effect.delay(0)),
-                        ),
-                      )
-                    : Option.none()
-                }),
-              )
-            : Option.none(),
-        ),
-      ).pipe(Option.getOrElse(() => teams)),
-    )
+const balanceTeams = (args: {
+  teams: Array<Array<Player>>
+  fitOrder: Order.Order<Array<Array<Player>>>
+}): Effect.Effect<Array<Array<Player>>> =>
+  Effect.sync(() => {
+    const isMoreBalanced = Order.lessThan(args.fitOrder)
+    let teams = args.teams
+    // eslint-disable-next-line no-constant-condition
+    repeatTryingAllPossibleSimpleChanges: while (true) {
+      for (const [team1, team1Index] of Iterable.map(teams, Tuple.make)) {
+        for (const [team2, team2Index] of Iterable.map(teams, Tuple.make)) {
+          if (team2Index <= team1Index) continue
+          for (const player1Index of Iterable.map(team1, (_, i) => i)) {
+            for (const player2Index of Iterable.map(team2, (_, i) => i)) {
+              const changedTeams = changePlayers(
+                { teamIndex: team1Index, playerIndex: player1Index },
+                { teamIndex: team2Index, playerIndex: player2Index },
+              )(teams)
+              if (isMoreBalanced(changedTeams, teams)) {
+                teams = changedTeams
+                continue repeatTryingAllPossibleSimpleChanges
+              }
+            }
+          }
+        }
+      }
+      break
+    }
+    return teams
+  })
 
 const deviance = (b: number) => (a: number) => Math.pow(Math.abs(a - b), 2)
 
@@ -224,22 +229,25 @@ export const getFitOrdFromCriteria = (args: {
   )
 
 export const balanceTeamsByCriteria = (args: {
+  teams: Array<Array<Player>>
   modality: Modality
   criteria: Criteria
-}) => pipe(getFitOrdFromCriteria(args), balanceTeams)
+}) => balanceTeams({ teams: args.teams, fitOrder: getFitOrdFromCriteria(args) })
 
 export const distributeTeams = (args: {
   players: Array<Player>
   modality: Modality
   criteria: Criteria
-}) => pipe(divideTeams(args), balanceTeamsByCriteria(args))
+}) => balanceTeamsByCriteria({ ...args, teams: divideTeams(args) })
 
 export const generateRandomBalancedTeams = (args: {
   players: Array<Player>
   modality: Modality
   criteria: Criteria
 }): Effect.Effect<Array<Array<Player>>> =>
-  pipe(
-    randomizeArray(args.players),
-    Effect.flatMap(players => distributeTeams({ ...args, players })),
-  )
+  Effect.gen(function* () {
+    return yield* distributeTeams({
+      ...args,
+      players: yield* randomizeArray(args.players),
+    })
+  })

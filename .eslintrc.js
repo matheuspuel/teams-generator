@@ -9,9 +9,6 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'plugin:@typescript-eslint/strict',
-    'plugin:functional/external-typescript-recommended',
-    'plugin:functional/recommended',
-    'plugin:functional/stylistic',
     'plugin:import/recommended',
     'plugin:import/typescript',
   ],
@@ -23,7 +20,7 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module',
   },
-  plugins: ['react', '@typescript-eslint', 'functional'],
+  plugins: ['react', '@typescript-eslint'],
   settings: {
     react: { version: 'detect' },
     'import/parsers': { '@typescript-eslint/parser': ['.ts', '.tsx'] },
@@ -47,19 +44,6 @@ module.exports = {
     '@typescript-eslint/no-unsafe-argument': 'warn',
     '@typescript-eslint/no-unsafe-member-access': 'warn',
     '@typescript-eslint/no-unsafe-assignment': 'warn',
-    'functional/no-promise-reject': 'error',
-    'functional/prefer-immutable-types': 'off',
-    'functional/functional-parameters': [
-      'error',
-      { allowRestParameter: true, enforceParameterCount: false },
-    ],
-    'functional/no-mixed-types': 'off',
-    'functional/no-return-void': ['off'],
-    // sometimes it is necessary for using functions before defining them in the same file
-    'functional/prefer-tacit': 'off',
-    // effect use classes to create services
-    'functional/no-classes': 'off',
-    // turn on to find unused code
     'import/no-unused-modules': [
       'off',
       {
