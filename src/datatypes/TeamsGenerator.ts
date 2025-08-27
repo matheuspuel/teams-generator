@@ -86,7 +86,7 @@ const balanceTeams = (args: {
   teams: Array<Array<Player>>
   fitOrder: Order.Order<Array<Array<Player>>>
 }): Effect.Effect<Array<Array<Player>>> =>
-  Effect.sync(() => {
+  Effect.gen(function* () {
     const isMoreBalanced = Order.lessThan(args.fitOrder)
     let teams = args.teams
     // eslint-disable-next-line no-constant-condition
@@ -96,6 +96,7 @@ const balanceTeams = (args: {
           if (team2Index <= team1Index) continue
           for (const player1Index of Iterable.map(team1, (_, i) => i)) {
             for (const player2Index of Iterable.map(team2, (_, i) => i)) {
+              yield* Effect.yieldNow()
               const changedTeams = changePlayers(
                 { teamIndex: team1Index, playerIndex: player1Index },
                 { teamIndex: team2Index, playerIndex: player2Index },
