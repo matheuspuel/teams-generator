@@ -10,7 +10,6 @@ import { useSelector } from 'src/hooks/useSelector'
 import { Router } from './Router'
 
 export const UIRoot = namedConst('UIRoot')(() => {
-  // eslint-disable-next-line functional/no-expression-statements
   useAdjustRootColor()
   const isLoaded = useSelector(s => s.core.isLoaded)
   return GestureHandlerRootView([

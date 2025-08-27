@@ -5,9 +5,7 @@ import { BackHandler } from '.'
 export const BackHandlerDefault = BackHandler.context({
   exit: () => Effect.sync(() => BackHandler_.exitApp()),
   stream: Stream.async<void>(emit => {
-    // eslint-disable-next-line functional/no-expression-statements
     BackHandler_.addEventListener('hardwareBackPress', () => {
-      // eslint-disable-next-line functional/no-expression-statements
       void emit(Effect.succeed(Chunk.of(undefined)))
       return true
     })

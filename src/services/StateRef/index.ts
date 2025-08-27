@@ -171,7 +171,6 @@ export const StateRef = {
               Effect.tap(ss =>
                 Effect.sync(() =>
                   stateRef.batchedUpdates(() => {
-                    // eslint-disable-next-line functional/no-expression-statements
                     Effect.all(ss.map(f => f(s))).pipe(Effect.runSync)
                   }),
                 ),

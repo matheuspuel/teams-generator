@@ -1,4 +1,3 @@
-/* eslint-disable functional/no-expression-statements */
 import { Array, flow, pipe } from 'effect'
 import * as fc from 'fast-check'
 import { describe, test } from 'vitest'

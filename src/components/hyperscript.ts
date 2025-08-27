@@ -97,7 +97,6 @@ export const nameFunction =
   (name: string) =>
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   <F extends Function>(f: F) =>
-    // eslint-disable-next-line functional/immutable-data
     Object.defineProperty(f, 'name', { value: name, writable: false })
 
 export const namedConst =

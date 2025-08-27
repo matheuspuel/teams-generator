@@ -1,5 +1,3 @@
-/* eslint-disable functional/no-expression-statements */
-/* eslint-disable functional/no-let */
 import { Effect, Ref, Schema, SubscriptionRef } from 'effect'
 import { Group, Modality } from 'src/datatypes'
 import { CustomModality, futsal, futsalPositions } from 'src/datatypes/Modality'

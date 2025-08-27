@@ -17,5 +17,4 @@ const runtimeWithUI = pipe(
   Effect.runSync,
 )
 
-// eslint-disable-next-line functional/no-expression-statements
 void Runtime.runPromiseExit(runtimeWithUI)(startApp)

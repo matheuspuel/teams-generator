@@ -1,4 +1,3 @@
-/* eslint-disable functional/no-expression-statements */
 import { Semigroup } from '@effect/typeclass'
 import * as Benchmark from 'benchmark'
 import { Arbitrary, Array, Effect, Match, pipe } from 'effect'

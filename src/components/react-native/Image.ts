@@ -33,9 +33,7 @@ export const Image = named('Image')((props: ImageProps) => {
   const runtime = useRuntime()
   const getThemeRawColor = useThemeGetRawColor()
   const [status, setStatus] = React.useState<ImageStatus>('loading')
-  // eslint-disable-next-line functional/no-expression-statements
   React.useEffect(() => {
-    // eslint-disable-next-line functional/no-expression-statements
     void pipe(
       props.src,
       Match.valueTagsOrElse({

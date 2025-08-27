@@ -37,9 +37,7 @@ export const useThemeGetRawColor = () => {
 
 export const useAdjustRootColor = () => {
   const getRawColor = useThemeGetRawColor()
-  // eslint-disable-next-line functional/no-expression-statements
   React.useEffect(() => {
-    // eslint-disable-next-line functional/no-expression-statements
     void SystemUI.setBackgroundColorAsync(getRawColor(Colors.background))
   }, [getRawColor])
 }

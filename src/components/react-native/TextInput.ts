@@ -65,12 +65,10 @@ const getRawProps =
     value: props.value,
     onChangeText: t => void Runtime.runSync(runtime)(props.onChange(t)),
     onFocus: () => {
-      // eslint-disable-next-line functional/no-expression-statements
       state.setIsFocused(true)
       if (props.onFocus) return void Runtime.runPromise(runtime)(props.onFocus)
     },
     onBlur: () => {
-      // eslint-disable-next-line functional/no-expression-statements
       state.setIsFocused(false)
       if (props.onBlur) return void Runtime.runPromise(runtime)(props.onBlur)
     },

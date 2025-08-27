@@ -40,7 +40,6 @@ export const ResultView = memoizedConst('ResultView')(() => {
   const result = useSelector(s => s.result)
   const modality = useSelector(s => getActiveModality(s))
   const isRatingVisible = useSelector(s => s.preferences.isRatingVisible)
-  // eslint-disable-next-line functional/no-expression-statements
   React.useEffect(() => {
     return () => void interruptResultGeneration.pipe(Runtime.runFork(runtime))
   }, [])
