@@ -1,3 +1,5 @@
 {
-  "CFBundleDisplayName": "Teams Generator"
+  "ios": {
+    "CFBundleDisplayName": "Teams Generator"
+  }
 }

@@ -1,3 +1,5 @@
 {
-  "CFBundleDisplayName": "Sorteio de Times"
+  "ios": {
+    "CFBundleDisplayName": "Sorteio de Times"
+  }
 }
