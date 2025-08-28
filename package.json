@@ -1,7 +1,7 @@
 {
   "name": "teams-generator",
   "private": true,
-  "version": "1.5.4",
+  "version": "1.6.0",
   "scripts": {
     "start": "cross-env APP_VARIANT=development expo start",
     "android": "cross-env APP_VARIANT=development expo run:android",
