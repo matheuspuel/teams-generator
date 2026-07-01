@@ -1,6 +1,5 @@
 import { Effect } from 'effect'
 import { registerRootComponent } from 'expo'
-import { Element } from 'src/components/types'
 import { DefaultUIRoot } from './defaultRoot'
 
 export class UI extends Effect.Service<UI>()('UI', {
@@ -11,6 +10,6 @@ export class UI extends Effect.Service<UI>()('UI', {
 }) {}
 
 const startReactNativeUI = (
-  rootComponent: () => Element,
+  rootComponent: () => React.ReactNode,
 ): Effect.Effect<void> =>
   Effect.sync(() => registerRootComponent(rootComponent))

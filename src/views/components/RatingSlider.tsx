@@ -1,4 +1,4 @@
-import { Array, Runtime, pipe } from 'effect'
+import { Runtime } from 'effect'
 import * as React from 'react'
 import { View as View_ } from 'react-native'
 import {
@@ -13,8 +13,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated'
-import { Fragment, Txt, View } from 'src/components'
-import { UIElement } from 'src/components/types'
+import { Txt, View } from 'src/components'
 import { useRuntime } from 'src/contexts/Runtime'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
 import { Rating } from 'src/datatypes'
@@ -27,7 +26,7 @@ export type RatingSliderProps = {
   onChange: (percentage: number) => AppEvent
 }
 
-const RatingSlider_ = ({
+export const RatingSlider = ({
   initialPercentage,
   step,
   onChange: onChange_,
@@ -102,41 +101,35 @@ const RatingSlider_ = ({
             backgroundColor: getRawColor(trackColor),
           }}
         >
-          {pipe(
-            Rating.List,
-            Array.map(r =>
-              View({
-                key: r.toString(),
-                absolute: {
-                  top: 0,
-                  left: (r / 10) * width + (trackWidth + tickWidth) / 2,
-                },
-              })([
-                View({
-                  absolute: { top: trackWidth, left: 0, right: 0 },
-                  align: 'center',
-                })([
-                  View({
-                    h: r % 1 === 0 ? 9 : 5,
-                    w: tickWidth,
-                    bg: trackColor,
-                    roundT: 0,
-                    roundB: tickWidth,
-                  })([]),
-                  ...(r % 1 === 0
-                    ? [
-                        View({ w: 40 })([
-                          Txt({ size: 12, color: trackColor, weight: 900 })(
-                            r.toString(),
-                          ),
-                        ]),
-                      ]
-                    : []),
-                ]),
-              ]),
-            ),
-            Fragment,
-          )}
+          {Rating.List.map(r => (
+            <View
+              key={r.toString()}
+              absolute={{
+                top: 0,
+                left: (r / 10) * width + (trackWidth + tickWidth) / 2,
+              }}
+            >
+              <View
+                absolute={{ top: trackWidth, left: 0, right: 0 }}
+                align="center"
+              >
+                <View
+                  h={r % 1 === 0 ? 9 : 5}
+                  w={tickWidth}
+                  bg={trackColor}
+                  roundT={0}
+                  roundB={tickWidth}
+                />
+                {r % 1 === 0 ? (
+                  <View w={40}>
+                    <Txt size={12} color={trackColor} weight={900}>
+                      {r.toString()}
+                    </Txt>
+                  </View>
+                ) : null}
+              </View>
+            </View>
+          ))}
           <Animated.View
             style={[
               {
@@ -155,7 +148,3 @@ const RatingSlider_ = ({
     </GestureDetector>
   )
 }
-
-export const RatingSlider = (props: RatingSliderProps): UIElement =>
-  // eslint-disable-next-line react/display-name
-  React.createElement(RatingSlider_, props)
