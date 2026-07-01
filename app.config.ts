@@ -109,6 +109,10 @@ const getConfig = (): ExpoConfig => ({
     eas: { projectId: '3bb86839-e6c3-4a30-8246-440f8517683d' },
   },
   plugins: [
+    'expo-sharing',
+    'expo-font',
+    'expo-status-bar',
+    'expo-splash-screen',
     ['expo-localization', { supportedLocales: ['en', 'pt'] }],
     [
       'react-native-google-mobile-ads',

@@ -25,17 +25,11 @@ export type StatusBarArgs = {
 
 const getRawProps = ({
   x: props,
-  getRawColor,
 }: StatusBarArgs): React.ComponentProps<typeof RawStatusBar_> => ({
   animated: props.animated,
-  backgroundColor: props.backgroundColor
-    ? getRawColor(props.backgroundColor)
-    : undefined,
   hidden: props.hidden,
   hideTransitionAnimation: props.hideTransitionAnimation,
-  networkActivityIndicatorVisible: props.networkActivityIndicatorVisible,
   style: props.style,
-  translucent: props.translucent,
 })
 
 const StatusBar_ = (args: StatusBarArgs) =>

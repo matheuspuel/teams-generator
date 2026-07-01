@@ -11,7 +11,7 @@ export const FileSystemDefault = FileSystem.context({
       Effect.tap(() => write(args)),
     ),
   copy: (args: { from: string; to: string }) => copy(args),
-  cacheDirectory: () => Effect.succeed(ExpoFileSystem.cacheDirectory ?? ''),
+  cacheDirectory: () => Effect.succeed(ExpoFileSystem.Paths.cache.uri ?? ''),
 }).pipe(Layer.succeedContext)
 
 const read = (args: { uri: string }) =>

@@ -1,5 +1,6 @@
 {
-  "task.allowAutomaticTasks": "on",
-  "files.exclude": { ".expo": true },
-  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "files.exclude": {
+    ".expo": true,
+  },
+  "js/ts.tsdk.path": "node_modules\\typescript\\lib",
 }
