@@ -1,25 +1,23 @@
-import { Array, Data, Option, Record, Tuple, flow, pipe } from 'effect'
-import {
-  FlatList,
-  Header,
-  MaterialIcons,
-  Pressable,
-  Txt,
-  View,
-} from 'src/components'
+import AddIcon from '@expo/material-symbols/add.xml'
+import DownloadIcon from '@expo/material-symbols/download.xml'
+import MoreVertIcon from '@expo/material-symbols/more_vert.xml'
+import SportsSoccerIcon from '@expo/material-symbols/sports_soccer.xml'
+import { Array, Data, flow, Option, pipe, Record, Runtime, Tuple } from 'effect'
+import { router, Stack } from 'expo-router'
+import { FlatList, Pressable, Txt, View } from 'src/components'
 import { BannerAd } from 'src/components/custom/BannerAd'
-import { HeaderButton } from 'src/components/derivative/HeaderButton'
-import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { Group } from 'src/datatypes'
 import { hideSplashScreen } from 'src/events/core'
-import { openGroup, openHomeMenu, startCreateGroup } from 'src/events/groups'
+import { openGroup, startCreateGroup } from 'src/events/groups'
+import { importGroupFromDocumentPicker } from 'src/export/group'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
+import { runtime } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
 import { getGroupById, getModality } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
 
-export const GroupsView = () => {
+export default function GroupListScreen() {
   const groupsIds = useSelector(
     flow(
       s => s.groups,
@@ -32,7 +30,31 @@ export const GroupsView = () => {
   )
   return (
     <View flex={1} onLayout={hideSplashScreen}>
-      <ScreenHeader />
+      <Stack.Title>{t('Groups')}</Stack.Title>
+      <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Button
+          onPress={() => startCreateGroup.pipe(Runtime.runPromiseExit(runtime))}
+          icon={AddIcon}
+        />
+        <Stack.Toolbar.Menu icon={MoreVertIcon}>
+          <Stack.Toolbar.MenuAction
+            onPress={() =>
+              importGroupFromDocumentPicker().pipe(
+                Runtime.runPromiseExit(runtime),
+              )
+            }
+            icon={DownloadIcon}
+          >
+            {t('Import group')}
+          </Stack.Toolbar.MenuAction>
+          <Stack.Toolbar.MenuAction
+            onPress={() => router.navigate(`/modalities`)}
+            icon={SportsSoccerIcon}
+          >
+            {t('Edit modalities')}
+          </Stack.Toolbar.MenuAction>
+        </Stack.Toolbar.Menu>
+      </Stack.Toolbar>
       <FlatList
         data={groupsIds}
         keyExtractor={id => id}
@@ -51,26 +73,6 @@ export const GroupsView = () => {
     </View>
   )
 }
-
-const ScreenHeader = () => (
-  <View>
-    <Header
-      title={t('Groups')}
-      headerRight={
-        <HeaderButtonRow>
-          <HeaderButton
-            onPress={startCreateGroup}
-            icon={<MaterialIcons name="add" />}
-          />
-          <HeaderButton
-            onPress={openHomeMenu}
-            icon={<MaterialIcons name="more-vert" />}
-          />
-        </HeaderButtonRow>
-      }
-    />
-  </View>
-)
 
 const Item = ({ id }: { id: Id }) => {
   const group = useSelector(s =>

@@ -1,20 +1,10 @@
 import 'fast-text-encoding'
+import 'react-native-gesture-handler'
 
-import { Effect, Layer, Runtime, pipe } from 'effect'
+import { Runtime } from 'effect'
 import { startApp } from 'src/app'
 import { runtime } from './runtime'
-import { UI } from './services/UI'
 
-const appLayerWithUI = Layer.succeedContext(runtime.context).pipe(
-  Layer.provideMerge(UI.Default),
-)
+void Runtime.runPromiseExit(runtime)(startApp)
 
-const runtimeWithUI = pipe(
-  Layer.toRuntime(appLayerWithUI),
-  Effect.scoped,
-  Effect.cached,
-  Effect.flatten,
-  Effect.runSync,
-)
-
-void Runtime.runPromiseExit(runtimeWithUI)(startApp)
+import 'expo-router/entry'

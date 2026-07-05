@@ -1,30 +1,29 @@
-import { Data, Option } from 'effect'
-import {
-  FlatList,
-  Header,
-  MaterialIcons,
-  Pressable,
-  Txt,
-  View,
-} from 'src/components'
-import { HeaderButton } from 'src/components/derivative/HeaderButton'
-import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
+import AddIcon from '@expo/material-symbols/add.xml'
+import { Data, Option, Runtime } from 'effect'
+import { Stack } from 'expo-router'
+import { FlatList, MaterialIcons, Pressable, Txt, View } from 'src/components'
 import { Modality } from 'src/datatypes'
 import { staticModalities } from 'src/datatypes/Modality'
-import { back } from 'src/events/core'
 import { newModality, openModality } from 'src/events/modality'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
+import { runtime } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
 import { getModality } from 'src/slices/groups'
 
-export const ModalitiesView = () => {
+export default function ModalityListScreen() {
   const modalities = useSelector(s =>
     Data.array([...s.customModalities, ...staticModalities]),
   )
   return (
     <View flex={1}>
-      <ScreenHeader />
+      <Stack.Title>{t('Modalities')}</Stack.Title>
+      <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Button
+          onPress={() => newModality.pipe(Runtime.runPromiseExit(runtime))}
+          icon={AddIcon}
+        />
+      </Stack.Toolbar>
       <FlatList
         data={modalities}
         keyExtractor={m => m.id}
@@ -42,30 +41,6 @@ export const ModalitiesView = () => {
     </View>
   )
 }
-
-const ScreenHeader = () => (
-  <View>
-    <Header
-      title={t('Modalities')}
-      headerLeft={
-        <HeaderButtonRow>
-          <HeaderButton
-            onPress={back}
-            icon={<MaterialIcons name="arrow-back" />}
-          />
-        </HeaderButtonRow>
-      }
-      headerRight={
-        <HeaderButtonRow>
-          <HeaderButton
-            onPress={newModality}
-            icon={<MaterialIcons name="add" />}
-          />
-        </HeaderButtonRow>
-      }
-    />
-  </View>
-)
 
 const Item = ({ modality }: { modality: Modality.Reference }) => {
   const name = useSelector(s =>

@@ -1,3 +1,6 @@
+import ShareIcon from '@expo/material-symbols/share.xml'
+import VisibilityIcon from '@expo/material-symbols/visibility.xml'
+import VisibilityOffIcon from '@expo/material-symbols/visibility_off.xml'
 import {
   Array,
   Effect,
@@ -9,22 +12,18 @@ import {
   pipe,
 } from 'effect'
 import { NonEmptyReadonlyArray } from 'effect/Array'
+import { Stack } from 'expo-router'
 import * as React from 'react'
 import {
   ActivityIndicator,
-  Header,
-  MaterialIcons,
   Row,
   ScrollView,
   Txt,
   TxtContext,
   View,
 } from 'src/components'
-import { HeaderButton } from 'src/components/derivative/HeaderButton'
-import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { useRuntime } from 'src/contexts/Runtime'
 import { Modality, Player, Position, Rating } from 'src/datatypes'
-import { back } from 'src/events/core'
 import { interruptResultGeneration } from 'src/events/group'
 import { shareResult, toggleRatingVisibility } from 'src/events/result'
 import { useSelector } from 'src/hooks/useSelector'
@@ -33,7 +32,7 @@ import { Colors } from 'src/services/Theme'
 import { getActiveModality } from 'src/slices/groups'
 import { toFixedLocale } from 'src/utils/Number'
 
-export const ResultView = () => {
+export default function ResultScreen() {
   const runtime = useRuntime()
   const result = useSelector(s => s.result)
   const modality = useSelector(s => getActiveModality(s))
@@ -45,35 +44,19 @@ export const ResultView = () => {
     onNone: () => null,
     onSome: modality => (
       <View flex={1}>
-        <View>
-          <Header
-            title={t('Result')}
-            headerLeft={
-              <HeaderButtonRow>
-                <HeaderButton
-                  onPress={back}
-                  icon={<MaterialIcons name="arrow-back" />}
-                />
-              </HeaderButtonRow>
+        <Stack.Title>{t('Result')}</Stack.Title>
+        <Stack.Toolbar placement="right">
+          <Stack.Toolbar.Button
+            onPress={() =>
+              toggleRatingVisibility.pipe(Runtime.runFork(runtime))
             }
-            headerRight={
-              <HeaderButtonRow>
-                <HeaderButton
-                  onPress={toggleRatingVisibility}
-                  icon={
-                    <MaterialIcons
-                      name={isRatingVisible ? 'visibility' : 'visibility-off'}
-                    />
-                  }
-                />
-                <HeaderButton
-                  onPress={shareResult}
-                  icon={<MaterialIcons name="share" />}
-                />
-              </HeaderButtonRow>
-            }
+            icon={isRatingVisible ? VisibilityIcon : VisibilityOffIcon}
           />
-        </View>
+          <Stack.Toolbar.Button
+            onPress={() => shareResult.pipe(Runtime.runFork(runtime))}
+            icon={ShareIcon}
+          />
+        </Stack.Toolbar>
         <ScrollView contentContainerStyle={{ flexGrow: 1, gap: 8, p: 8 }}>
           {pipe(
             result.poll,

@@ -1,25 +1,15 @@
 import { Array, Effect, Option, String, flow, pipe } from 'effect'
 import { not } from 'effect/Predicate'
+import { router } from 'expo-router'
 import { soccer } from 'src/datatypes/Modality'
-import { importGroupFromDocumentPicker } from 'src/export/group'
 import { root } from 'src/model/optic'
 import { State, StateRef } from 'src/services/StateRef'
 import { createGroup, editGroup, getSelectedGroup } from 'src/slices/groups'
-import { Route, goBack, navigate } from 'src/slices/routes'
 import { Id } from 'src/utils/Entity'
-
-export const openHomeMenu = StateRef.execute(navigate(Route.HomeMenu()))
-
-export const importGroup = pipe(
-  goBack,
-  StateRef.execute,
-  Effect.tap(() => importGroupFromDocumentPicker()),
-  Effect.ignore,
-)
 
 export const openGroup = (id: Id) =>
   pipe(
-    navigate(Route.Group()),
+    Effect.sync(() => router.navigate(`/groups/${id}`)),
     Effect.tap(() =>
       State.on(root.at('ui').at('selectedGroupId')).set(Option.some(id)),
     ),
@@ -37,22 +27,21 @@ export const startCreateGroup = pipe(
       modality: m,
     }),
   ),
-  Effect.tap(() => navigate(Route.GroupForm())),
+  Effect.tap(() => router.navigate(`/groups/create`)),
   StateRef.execute,
 )
 
 export const startEditGroup = pipe(
   State.with(getSelectedGroup),
   Effect.flatten,
-  Effect.flatMap(g =>
+  Effect.tap(g =>
     State.on(root.at('groupForm')).set({
       id: Option.some(g.id),
       name: g.name,
       modality: g.modality,
     }),
   ),
-  Effect.tap(goBack),
-  Effect.tap(() => navigate(Route.GroupForm())),
+  Effect.tap(_ => Effect.sync(() => router.navigate(`/groups/${_.id}/edit`))),
   StateRef.execute,
   Effect.ignore,
 )
@@ -80,7 +69,7 @@ export const saveGroup = pipe(
       onSome: id => editGroup({ ...g, id }),
     }),
   ),
-  Effect.tap(() => goBack),
+  Effect.tap(() => Effect.sync(() => router.back())),
   StateRef.execute,
   Effect.ignore,
 )

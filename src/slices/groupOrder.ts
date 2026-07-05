@@ -1,9 +1,9 @@
 import { Array, Effect, flow, pipe } from 'effect'
+import { router } from 'expo-router'
 import { GroupOrder } from 'src/datatypes'
 import { GroupOrderType } from 'src/datatypes/GroupOrder'
 import { root } from 'src/model/optic'
 import { State } from 'src/services/StateRef'
-import { goBack } from './routes'
 
 const selectGroupOrder =
   (option: GroupOrderType) =>
@@ -22,5 +22,5 @@ const selectGroupOrder =
 export const onSelectGroupOrder = flow(
   selectGroupOrder,
   State.on(root.at('groupOrder')).update,
-  Effect.tap(goBack),
+  Effect.tap(Effect.sync(() => router.back())),
 )

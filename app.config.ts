@@ -44,6 +44,8 @@ const getConfig = (): ExpoConfig => ({
   packagerOpts: {
     config: 'metro.config.js',
   },
+  experiments: { typedRoutes: true },
+  scheme: 'teams-generator',
   android: {
     package:
       'dev.matheuspuel.sorteiotimes' +
@@ -112,6 +114,7 @@ const getConfig = (): ExpoConfig => ({
     'expo-sharing',
     'expo-font',
     'expo-status-bar',
+    'expo-router',
     'expo-splash-screen',
     ['expo-localization', { supportedLocales: ['en', 'pt'] }],
     [

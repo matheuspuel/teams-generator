@@ -1,6 +1,5 @@
 import { Effect, Layer, LogLevel, Logger, Runtime, pipe } from 'effect'
 import { Alert } from 'src/services/Alert'
-import { BackHandler } from 'src/services/BackHandler'
 import { DocumentPicker } from 'src/services/DocumentPicker'
 import { FileSystem } from 'src/services/FileSystem'
 import { IdGenerator } from 'src/services/IdGenerator'
@@ -12,7 +11,6 @@ import { SplashScreen } from 'src/services/SplashScreen'
 import { AppStateRef } from 'src/services/StateRef'
 import { envName } from 'src/utils/Metadata'
 import { AsyncStorageDefault } from './services/AsyncStorage/default'
-import { BackHandlerDefault } from './services/BackHandler/default'
 import { DocumentPickerDefault } from './services/DocumentPicker/default'
 import { FileSystemDefault } from './services/FileSystem/default'
 import { LinkingDefault } from './services/Linking/default'
@@ -26,7 +24,6 @@ const DEV_MINIMUM_LOG_LEVEL = LogLevel.Debug
 export type AppRequirements =
   | AppStateRef
   | SplashScreen
-  | BackHandler
   | Repository
   | Alert
   | DocumentPicker
@@ -46,7 +43,6 @@ const appLayer = pipe(
       IdGenerator.Default,
       Alert.Default,
       ShareServiceDefault,
-      BackHandlerDefault,
       SplashScreenDefault,
       SafeAreaService.Default,
     ),

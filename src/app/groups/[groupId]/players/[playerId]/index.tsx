@@ -1,6 +1,7 @@
-import { Array, Option, String, pipe } from 'effect'
+import DeleteIcon from '@expo/material-symbols/delete.xml'
+import { Array, Option, Runtime, String, pipe } from 'effect'
+import { Stack } from 'expo-router'
 import {
-  Header,
   Input,
   KeyboardAvoidingView,
   MaterialIcons,
@@ -11,12 +12,9 @@ import {
   View,
 } from 'src/components'
 import { FormLabel } from 'src/components/derivative/FormLabel'
-import { HeaderButton } from 'src/components/derivative/HeaderButton'
-import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { SolidButton } from 'src/components/derivative/SolidButton'
 import { Position, Rating } from 'src/datatypes'
 import { Abbreviation } from 'src/datatypes/Position'
-import { back } from 'src/events/core'
 import {
   changePlayerName,
   changePlayerPosition,
@@ -26,16 +24,23 @@ import {
 } from 'src/events/player'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
+import { runtime } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
 import { getActiveModality } from 'src/slices/groups'
-import { RatingSlider } from './components/RatingSlider'
+import { RatingSlider } from '../../../../../components/custom/RatingSlider'
 
-export const PlayerView = () => {
+export default function PlayerScreen() {
   const name = useSelector(s => s.playerForm.name)
   return (
     <SafeAreaView flex={1} edges={['bottom']}>
       <KeyboardAvoidingView>
-        <ScreenHeader />
+        <Stack.Title>{t('Player')}</Stack.Title>
+        <Stack.Toolbar placement="right">
+          <Stack.Toolbar.Button
+            onPress={() => deletePlayer.pipe(Runtime.runPromiseExit(runtime))}
+            icon={DeleteIcon}
+          />
+        </Stack.Toolbar>
         <ScrollView
           keyboardShouldPersistTaps="always"
           contentContainerStyle={{ flexGrow: 1 }}
@@ -59,30 +64,6 @@ export const PlayerView = () => {
     </SafeAreaView>
   )
 }
-
-const ScreenHeader = () => (
-  <View>
-    <Header
-      title={t('Player')}
-      headerLeft={
-        <HeaderButtonRow>
-          <HeaderButton
-            onPress={back}
-            icon={<MaterialIcons name="arrow-back" />}
-          />
-        </HeaderButtonRow>
-      }
-      headerRight={
-        <HeaderButtonRow>
-          <HeaderButton
-            onPress={deletePlayer}
-            icon={<MaterialIcons name="delete" />}
-          />
-        </HeaderButtonRow>
-      }
-    />
-  </View>
-)
 
 const NameField = ({ name }: { name: string }) => (
   <View p={4}>

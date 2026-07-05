@@ -1,30 +1,31 @@
-import { Array, Data, Option, flow, pipe } from 'effect'
+import AddIcon from '@expo/material-symbols/add.xml'
+import CheckBoxIcon from '@expo/material-symbols/check_box.xml'
+import DeleteIcon from '@expo/material-symbols/delete.xml'
+import EditIcon from '@expo/material-symbols/edit.xml'
+import MoreVertIcon from '@expo/material-symbols/more_vert.xml'
+import SortIcon from '@expo/material-symbols/sort.xml'
+import UploadIcon from '@expo/material-symbols/upload.xml'
+import { Array, Data, flow, Option, pipe, Runtime } from 'effect'
 import { constant } from 'effect/Function'
-import {
-  FlatList,
-  Header,
-  MaterialIcons,
-  Pressable,
-  SafeAreaView,
-  Txt,
-  View,
-} from 'src/components'
+import { router, Stack, useLocalSearchParams } from 'expo-router'
+import { FlatList, Pressable, SafeAreaView, Txt, View } from 'src/components'
 import { Checkbox } from 'src/components/derivative/Checkbox'
-import { HeaderButton } from 'src/components/derivative/HeaderButton'
-import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { PreRender } from 'src/components/derivative/PreRender'
 import { SolidButton } from 'src/components/derivative/SolidButton'
 import { GroupOrder, Player, Position, Rating } from 'src/datatypes'
-import { back } from 'src/events/core'
 import {
-  openGroupMenu,
+  openDeleteGroup,
   openParameters,
   openPlayer,
   startNewPlayer,
+  toggleAllPlayers,
   togglePlayerActive,
 } from 'src/events/group'
+import { startEditGroup } from 'src/events/groups'
+import { exportGroup } from 'src/export/group'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
+import { runtime } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
 import {
   getActiveModality,
@@ -33,7 +34,8 @@ import {
 } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
 
-export const GroupView = () => {
+export default function GroupScreen() {
+  const { groupId } = useLocalSearchParams<{ groupId: Id }>()
   const playersIds = useSelector(_ =>
     Option.gen(function* () {
       const group = yield* getSelectedGroup(_)
@@ -49,7 +51,53 @@ export const GroupView = () => {
   )
   return (
     <SafeAreaView flex={1} edges={['bottom']}>
-      <GroupHeader />
+      <Stack.Title>{t('Group')}</Stack.Title>
+      <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Button
+          onPress={() =>
+            startNewPlayer({ group: { id: groupId } }).pipe(
+              Runtime.runPromiseExit(runtime),
+            )
+          }
+          icon={AddIcon}
+        />
+        <Stack.Toolbar.Menu icon={MoreVertIcon}>
+          <Stack.Toolbar.MenuAction
+            onPress={() =>
+              toggleAllPlayers.pipe(Runtime.runPromiseExit(runtime))
+            }
+            icon={CheckBoxIcon}
+          >
+            {t('Select all')}
+          </Stack.Toolbar.MenuAction>
+          <Stack.Toolbar.MenuAction
+            onPress={() => router.navigate(`/groups/sort`)}
+            icon={SortIcon}
+          >
+            {t('Sort')}
+          </Stack.Toolbar.MenuAction>
+          <Stack.Toolbar.MenuAction
+            onPress={() => exportGroup().pipe(Runtime.runPromiseExit(runtime))}
+            icon={UploadIcon}
+          >
+            {t('Export group')}
+          </Stack.Toolbar.MenuAction>
+          <Stack.Toolbar.MenuAction
+            onPress={() => startEditGroup.pipe(Runtime.runPromiseExit(runtime))}
+            icon={EditIcon}
+          >
+            {t('Edit group')}
+          </Stack.Toolbar.MenuAction>
+          <Stack.Toolbar.MenuAction
+            onPress={() =>
+              openDeleteGroup.pipe(Runtime.runPromiseExit(runtime))
+            }
+            icon={DeleteIcon}
+          >
+            {t('Delete group')}
+          </Stack.Toolbar.MenuAction>
+        </Stack.Toolbar.Menu>
+      </Stack.Toolbar>
       <PreRender
         initial={
           <View flex={1} p={8} gap={8}>
@@ -67,7 +115,7 @@ export const GroupView = () => {
         <FlatList
           data={playersIds}
           keyExtractor={id => id}
-          renderItem={id => <Item id={id} />}
+          renderItem={id => <Item groupId={groupId} playerId={id} />}
           ListEmptyComponent={
             <View flex={1} justify="center">
               <Txt size={16} color={Colors.opacity(0.625)(Colors.gray)}>
@@ -84,38 +132,10 @@ export const GroupView = () => {
   )
 }
 
-const GroupHeader = () => (
-  <View>
-    <Header
-      title={t('Group')}
-      headerLeft={
-        <HeaderButtonRow>
-          <HeaderButton
-            onPress={back}
-            icon={<MaterialIcons name="arrow-back" />}
-          />
-        </HeaderButtonRow>
-      }
-      headerRight={
-        <HeaderButtonRow>
-          <HeaderButton
-            onPress={startNewPlayer}
-            icon={<MaterialIcons name="add" />}
-          />
-          <HeaderButton
-            onPress={openGroupMenu}
-            icon={<MaterialIcons name="more-vert" />}
-          />
-        </HeaderButtonRow>
-      }
-    />
-  </View>
-)
-
-const Item = ({ id }: { id: Id }) => {
+const Item = ({ groupId, playerId }: { groupId: Id; playerId: Id }) => {
   const player = useSelector(s =>
     pipe(
-      getPlayerFromSelectedGroup({ playerId: id })(s),
+      getPlayerFromSelectedGroup({ playerId })(s),
       Option.map(player => ({
         ...player,
         position: pipe(
@@ -135,7 +155,10 @@ const Item = ({ id }: { id: Id }) => {
     onNone: () => <></>,
     onSome: ({ active, name, position, rating }) => (
       <Pressable
-        onPress={openPlayer(id)}
+        onPress={openPlayer({
+          group: { id: groupId },
+          player: { id: playerId },
+        })}
         direction="row"
         align="center"
         gap={8}
@@ -144,7 +167,7 @@ const Item = ({ id }: { id: Id }) => {
         bg={Colors.card}
       >
         <Checkbox
-          onToggle={togglePlayerActive(id)}
+          onToggle={togglePlayerActive(playerId)}
           isSelected={active}
           m={8}
           mr={-8}

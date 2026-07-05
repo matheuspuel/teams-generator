@@ -1,5 +1,3 @@
-export { Modal } from './custom/Modal'
-export { Header } from './derivative/Header'
 export { Input } from './derivative/Input'
 export { Row } from './derivative/Row'
 export { MaterialCommunityIcons } from './icons/MaterialCommunityIcons'

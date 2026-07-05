@@ -1,4 +1,5 @@
 import { Array, Effect, Option, Record, flow, pipe } from 'effect'
+import { router } from 'expo-router'
 import { Modality } from 'src/datatypes'
 import { soccer } from 'src/datatypes/Modality'
 import { root } from 'src/model/optic'
@@ -10,19 +11,20 @@ import {
   initialModalityForm,
   validateModalityForm,
 } from 'src/slices/modalityForm'
-import { Route, goBack, navigate } from 'src/slices/routes'
 import { toNonEmpty } from 'src/utils/fp/Array'
 import { nonEmptyIndex } from 'src/utils/fp/Optic'
-import { back } from './core'
 
 export const goToModality = StateRef.execute(
-  Effect.all([goBack, navigate(Route.Modalities())]),
+  Effect.all([
+    Effect.sync(() => router.back()),
+    Effect.sync(() => router.navigate(`/modalities`)),
+  ]),
 )
 
 export const newModality = StateRef.execute(
   Effect.all([
     State.on(root.at('modalityForm')).set(initialModalityForm),
-    navigate(Route.ModalityForm()),
+    Effect.sync(() => router.navigate(`/modalities/create`)),
   ]),
 )
 
@@ -44,7 +46,9 @@ export const openModality = (modality: Modality.Reference) =>
         })),
       }),
     ),
-    Effect.tap(() => navigate(Route.ModalityForm())),
+    Effect.tap(() =>
+      Effect.sync(() => router.navigate(`/modalities/${modality.id}`)),
+    ),
     StateRef.execute,
     Effect.ignore,
   )
@@ -100,7 +104,7 @@ export const submitModality = pipe(
     ),
   ),
   StateRef.execute,
-  Effect.tap(() => back),
+  Effect.tap(() => Effect.sync(() => router.back())),
   Effect.ignore,
 )
 
@@ -108,8 +112,9 @@ export const openRemoveModality = pipe(
   State.with(s => s.modalityForm.id),
   Effect.flatMap(
     Option.match({
-      onNone: () => goBack,
-      onSome: () => navigate(Route.DeleteModality()),
+      onNone: () => Effect.sync(() => router.back()),
+      onSome: id =>
+        Effect.sync(() => router.navigate(`/modalities/${id}/delete`)),
     }),
   ),
   StateRef.execute,
@@ -156,8 +161,8 @@ export const removeModality = pipe(
       ),
     ),
   ),
-  Effect.tap(() => goBack),
-  Effect.tap(() => goBack),
+  Effect.tap(() => Effect.sync(() => router.back())),
+  Effect.tap(() => Effect.sync(() => router.back())),
   StateRef.execute,
   Effect.ignore,
 )

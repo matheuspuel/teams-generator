@@ -1,5 +1,4 @@
 import { Array, Fiber, Option } from 'effect'
-import { NonEmptyReadonlyArray } from 'effect/Array'
 import { GroupOrder, Modality, Parameters } from 'src/datatypes'
 import { CustomModality, soccer } from 'src/datatypes/Modality'
 import { Abbreviation } from 'src/datatypes/Position'
@@ -7,7 +6,6 @@ import { GroupsState, emptyGroups } from 'src/slices/groups'
 import { ModalityForm, initialModalityForm } from 'src/slices/modalityForm'
 import { PlayerForm } from 'src/slices/playerForm'
 import { GeneratedResult } from 'src/slices/result'
-import { Route } from 'src/slices/routes'
 import { Id } from 'src/utils/Entity'
 
 export type RootState = {
@@ -34,7 +32,6 @@ export type RootState = {
     selectedGroupId: Option.Option<Id>
     selectedPlayerId: Option.Option<Id>
   }
-  route: NonEmptyReadonlyArray<Route>
 }
 
 export const initialAppState: RootState = {
@@ -57,5 +54,4 @@ export const initialAppState: RootState = {
     selectedGroupId: Option.none(),
     selectedPlayerId: Option.none(),
   },
-  route: [Route.Groups()],
 }

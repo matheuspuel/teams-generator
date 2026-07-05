@@ -1,17 +1,16 @@
 import { Option } from 'effect'
 import { MaterialCommunityIcons, Pressable, Txt, View } from 'src/components'
 import { CenterModal } from 'src/components/derivative/CenterModal'
-import { back } from 'src/events/core'
 import { sortPlayersBy } from 'src/events/group'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { AppEvent } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
 
-export const SortGroupView = () => {
+export default function SortGroupScreen() {
   const mainSort = useSelector(s => s.groupOrder[0])
   return (
-    <CenterModal onClose={back} title={t('Sorting')}>
+    <CenterModal title={t('Sorting')}>
       <View roundB={8} overflow="hidden">
         <FilterButton
           name={t('Name')}

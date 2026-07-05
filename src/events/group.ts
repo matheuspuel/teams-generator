@@ -1,6 +1,6 @@
 import { Effect, Fiber, Option, pipe } from 'effect'
+import { router } from 'expo-router'
 import { Parameters as Parameters_ } from 'src/datatypes'
-import { exportGroup as exportGroup_ } from 'src/export/group'
 import { root } from 'src/model/optic'
 import { State, StateRef } from 'src/services/StateRef'
 import { onSelectGroupOrder } from 'src/slices/groupOrder'
@@ -20,16 +20,10 @@ import {
 } from 'src/slices/parameters'
 import { blankPlayerForm, getPlayerFormFromData } from 'src/slices/playerForm'
 import { generateResult as generateResult_ } from 'src/slices/result'
-import { Route, goBack, navigate } from 'src/slices/routes'
 import { Id } from 'src/utils/Entity'
 
-export const openGroupMenu = StateRef.execute(navigate(Route.GroupMenu()))
-
-export const openGroupSort = pipe(
-  goBack,
-  Effect.tap(navigate(Route.SortGroup())),
-  StateRef.execute,
-)
+export const openGroupMenu = (group: { id: Id }) =>
+  Effect.sync(() => router.navigate(`/groups/${group.id}/menu`))
 
 export const sortPlayersBy = {
   name: StateRef.execute(onSelectGroupOrder('name')),
@@ -39,7 +33,7 @@ export const sortPlayersBy = {
   date: StateRef.execute(onSelectGroupOrder('date')),
 }
 
-export const openParameters = StateRef.execute(navigate(Route.Parameters()))
+export const openParameters = Effect.sync(() => router.navigate(`/parameters`))
 
 export const decrementTeamsCount = StateRef.execute(decrementTeamsCount_)
 
@@ -61,59 +55,60 @@ export const generateResult = Effect.gen(function* () {
   yield* interruptResultGeneration
   yield* Effect.gen(function* () {
     yield* State.on(root.at('result')).set(Fiber.never)
-    yield* goBack
-    yield* navigate(Route.Result())
+    const groupId = yield* yield* State.on(root.at('ui').at('selectedGroupId'))
+      .get
+    yield* Effect.sync(() => router.back())
+    yield* Effect.sync(() => router.navigate(`/groups/${groupId}/result`))
   }).pipe(StateRef.execute)
   yield* Effect.sleep(100)
   yield* generateResult_
 }).pipe(Effect.ignore)
 
-export const exportGroup = pipe(
-  goBack,
-  StateRef.execute,
-  Effect.tap(() => exportGroup_()),
-  Effect.ignore,
-)
-
-export const openDeleteGroup = StateRef.execute(
-  Effect.all([goBack, navigate(Route.DeleteGroup())]),
-)
+export const openDeleteGroup = Effect.gen(function* () {
+  const group = yield* State.flatWith(getSelectedGroup).pipe(StateRef.execute)
+  router.navigate(`/groups/${group.id}/delete`)
+}).pipe(Effect.ignore)
 
 export const deleteGroup = pipe(
   State.with(getSelectedGroup),
   Effect.flatten,
   Effect.flatMap(({ id }) => deleteGroup_({ id })),
-  Effect.tap(goBack),
-  Effect.tap(goBack),
-  Effect.tap(goBack),
+  Effect.tap(() => Effect.sync(() => router.back())),
+  Effect.tap(() => Effect.sync(() => router.back())),
+  Effect.tap(() => Effect.sync(() => router.back())),
   StateRef.execute,
   Effect.ignore,
 )
 
-export const startNewPlayer = pipe(
-  navigate(Route.Player()),
-  Effect.tap(() =>
-    State.on(root.at('ui').at('selectedPlayerId')).set(Option.none()),
-  ),
-  Effect.flatMap(() => State.flatWith(getActiveModality)),
-  Effect.tap(m =>
-    State.on(root.at('playerForm')).set(blankPlayerForm({ modality: m })),
-  ),
-  StateRef.execute,
-).pipe(Effect.ignore)
-
-export const openPlayer = (playerId: Id) =>
+export const startNewPlayer = (args: { group: { id: Id } }) =>
   pipe(
-    navigate(Route.Player()),
+    Effect.sync(() =>
+      router.navigate(`/groups/${args.group.id}/players/create`),
+    ),
+    Effect.tap(() =>
+      State.on(root.at('ui').at('selectedPlayerId')).set(Option.none()),
+    ),
+    Effect.flatMap(() => State.flatWith(getActiveModality)),
+    Effect.tap(m =>
+      State.on(root.at('playerForm')).set(blankPlayerForm({ modality: m })),
+    ),
+    StateRef.execute,
+  ).pipe(Effect.ignore)
+
+export const openPlayer = (args: { group: { id: Id }; player: { id: Id } }) =>
+  pipe(
+    Effect.sync(() =>
+      router.navigate(`/groups/${args.group.id}/players/${args.player.id}`),
+    ),
     Effect.flatMap(() =>
-      State.flatWith(getPlayerFromSelectedGroup({ playerId })),
+      State.flatWith(getPlayerFromSelectedGroup({ playerId: args.player.id })),
     ),
     Effect.flatMap(v =>
       pipe(
         State.on(root.at('playerForm')).set(getPlayerFormFromData(v)),
         Effect.tap(() =>
           State.on(root.at('ui').at('selectedPlayerId')).set(
-            Option.some(playerId),
+            Option.some(args.player.id),
           ),
         ),
       ),
@@ -127,6 +122,5 @@ export const togglePlayerActive = (id: Id) =>
 
 export const toggleAllPlayers = pipe(
   State.update(toggleAllPlayersActive),
-  Effect.tap(goBack),
   StateRef.execute,
 )

@@ -1,6 +1,6 @@
-import { Option, String } from 'effect'
+import { Effect, Option, String } from 'effect'
+import { router, Stack } from 'expo-router'
 import {
-  Header,
   Input,
   KeyboardAvoidingView,
   MaterialIcons,
@@ -13,12 +13,9 @@ import {
 } from 'src/components'
 import { FormLabel } from 'src/components/derivative/FormLabel'
 import { GhostButton } from 'src/components/derivative/GhostButton'
-import { HeaderButton } from 'src/components/derivative/HeaderButton'
-import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { SolidButton } from 'src/components/derivative/SolidButton'
 import { Modality } from 'src/datatypes'
 import { staticModalities } from 'src/datatypes/Modality'
-import { back } from 'src/events/core'
 import {
   changeGroupModality,
   changeGroupName,
@@ -26,16 +23,15 @@ import {
 } from 'src/events/groups'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
-import { StateRef } from 'src/services/StateRef'
 import { Colors } from 'src/services/Theme'
-import { Route, navigate } from 'src/slices/routes'
 
-export const GroupFormView = () => {
+export default function GroupEditScreen() {
   const isEnabled = useSelector(s => String.isNonEmpty(s.groupForm.name.trim()))
+  const isEdit = useSelector(s => Option.isSome(s.groupForm.id))
   return (
     <SafeAreaView flex={1} edges={['bottom']}>
       <KeyboardAvoidingView>
-        <ScreenHeader />
+        <Stack.Title>{isEdit ? t('Edit group') : t('New group')}</Stack.Title>
         <ScrollView
           keyboardShouldPersistTaps="always"
           contentContainerStyle={{ flexGrow: 1 }}
@@ -56,25 +52,6 @@ export const GroupFormView = () => {
         </SolidButton>
       </KeyboardAvoidingView>
     </SafeAreaView>
-  )
-}
-
-const ScreenHeader = () => {
-  const isEdit = useSelector(s => Option.isSome(s.groupForm.id))
-  return (
-    <View>
-      <Header
-        title={isEdit ? t('Edit group') : t('New group')}
-        headerLeft={
-          <HeaderButtonRow>
-            <HeaderButton
-              onPress={back}
-              icon={<MaterialIcons name="arrow-back" />}
-            />
-          </HeaderButtonRow>
-        }
-      />
-    </View>
   )
 }
 
@@ -101,7 +78,7 @@ const ModalityField = () => {
       <Row justify="space-between" align="center">
         <FormLabel>{t('Modality/Sport')}</FormLabel>
         <GhostButton
-          onPress={StateRef.execute(navigate(Route.Modalities()))}
+          onPress={Effect.sync(() => router.navigate(`/modalities`))}
           alignSelf="center"
         >
           <Row align="center" gap={8}>

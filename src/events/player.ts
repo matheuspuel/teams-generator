@@ -1,5 +1,6 @@
 import { Effect, Option, Schema, String, flow, pipe } from 'effect'
 import { not } from 'effect/Predicate'
+import { router } from 'expo-router'
 import { Rating } from 'src/datatypes'
 import { root } from 'src/model/optic'
 import { State, StateRef } from 'src/services/StateRef'
@@ -8,7 +9,6 @@ import {
   deleteCurrentPlayer,
   editPlayer,
 } from 'src/slices/groups'
-import { goBack } from 'src/slices/routes'
 
 export const changePlayerName = flow(
   State.on(root.at('playerForm').at('name')).set,
@@ -31,7 +31,7 @@ export const changePlayerRating = flow(
 
 export const deletePlayer = pipe(
   State.update(deleteCurrentPlayer),
-  Effect.tap(() => goBack),
+  Effect.tap(() => Effect.sync(() => router.back())),
   StateRef.execute,
 )
 
@@ -54,7 +54,7 @@ export const savePlayer = pipe(
         onNone: () => createPlayer({ groupId, player: form }),
         onSome: id => editPlayer({ groupId, player: { ...form, id } }),
       }),
-      Effect.flatMap(() => goBack),
+      Effect.flatMap(() => Effect.sync(() => router.back())),
     ),
   ),
   StateRef.execute,

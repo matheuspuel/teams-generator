@@ -1,23 +1,33 @@
 allowBuilds:
   esbuild: true
 minimumReleaseAgeExclude:
-  - '@expo/cli@57.0.2 || 57.0.3'
-  - '@expo/fingerprint@0.20.1'
+  - '@expo/cli@57.0.2 || 57.0.3 || 57.0.4'
+  - '@expo/fingerprint@0.20.1 || 0.20.2'
   - '@expo/inline-modules@0.1.1'
-  - '@expo/local-build-cache-provider@57.0.1'
-  - '@expo/metro-config@57.0.2'
-  - '@expo/prebuild-config@57.0.2 || 57.0.3'
+  - '@expo/local-build-cache-provider@57.0.1 || 57.0.2'
+  - '@expo/metro-config@57.0.2 || 57.0.3'
+  - '@expo/prebuild-config@57.0.2 || 57.0.3 || 57.0.4'
   - '@expo/router-server@57.0.1'
   - babel-preset-expo@57.0.1
-  - expo-asset@57.0.2
-  - expo-constants@57.0.2
-  - expo-modules-autolinking@57.0.2 || 57.0.3
-  - expo@57.0.0 || 57.0.1
+  - expo-asset@57.0.2 || 57.0.3
+  - expo-constants@57.0.2 || 57.0.3
+  - expo-modules-autolinking@57.0.2 || 57.0.3 || 57.0.4
+  - expo@57.0.0 || 57.0.1 || 57.0.2
   - expo-linking@57.0.1
-  - expo-splash-screen@57.0.1
-  - expo-updates@57.0.3 || 57.0.4
-  - expo-modules-core@57.0.1
-  - expo-dev-client@57.0.3
-  - expo-dev-launcher@57.0.3
-  - expo-dev-menu@57.0.3
+  - expo-splash-screen@57.0.1 || 57.0.2
+  - expo-updates@57.0.3 || 57.0.4 || 57.0.6
+  - expo-modules-core@57.0.1 || 57.0.2
+  - expo-dev-client@57.0.3 || 57.0.5
+  - expo-dev-launcher@57.0.3 || 57.0.5
+  - expo-dev-menu@57.0.3 || 57.0.5
   - expo-build-properties@57.0.2
+  - '@expo/env@2.4.1'
+  - '@expo/metro-runtime@57.0.3'
+  - '@expo/schema-utils@57.0.1'
+  - '@expo/ui@57.0.3'
+  - expo-router@57.0.3
+  - '@expo/config-plugins@57.0.2'
+  - '@expo/config@57.0.2'
+  - '@expo/image-utils@0.11.1'
+  - '@expo/require-utils@57.0.1'
+  - expo-sharing@57.0.2

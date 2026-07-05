@@ -1,7 +1,8 @@
-import { Array, Either, Option } from 'effect'
+import DeleteIcon from '@expo/material-symbols/delete.xml'
+import { Array, Either, Option, Runtime } from 'effect'
+import { Stack } from 'expo-router'
 import { Platform } from 'react-native'
 import {
-  Header,
   Input,
   KeyboardAvoidingView,
   MaterialIcons,
@@ -14,10 +15,7 @@ import {
 import { BorderlessButton } from 'src/components/derivative/BorderlessButton'
 import { FormLabel } from 'src/components/derivative/FormLabel'
 import { GhostButton } from 'src/components/derivative/GhostButton'
-import { HeaderButton } from 'src/components/derivative/HeaderButton'
-import { HeaderButtonRow } from 'src/components/derivative/HeaderButtonRow'
 import { SolidButton } from 'src/components/derivative/SolidButton'
-import { back } from 'src/events/core'
 import {
   addModalityPosition,
   changeModalityName,
@@ -30,17 +28,29 @@ import {
 } from 'src/events/modality'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
+import { runtime } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
 import { validateModalityForm } from 'src/slices/modalityForm'
 
-export const ModalityFormView = () => {
+export default function ModalityScreen() {
   const isEnabled = useSelector(s =>
     Either.isRight(validateModalityForm(s.modalityForm)),
   )
+  const isEdit = useSelector(s => Option.isSome(s.modalityForm.id))
   return (
     <SafeAreaView flex={1} edges={['bottom']}>
       <KeyboardAvoidingView>
-        <ScreenHeader />
+        <Stack.Title>
+          {isEdit ? t('Edit modality') : t('New modality')}
+        </Stack.Title>
+        <Stack.Toolbar placement="right">
+          <Stack.Toolbar.Button
+            onPress={() =>
+              openRemoveModality.pipe(Runtime.runPromiseExit(runtime))
+            }
+            icon={DeleteIcon}
+          />
+        </Stack.Toolbar>
         <ScrollView
           keyboardShouldPersistTaps="always"
           contentContainerStyle={{ flexGrow: 1 }}
@@ -61,33 +71,6 @@ export const ModalityFormView = () => {
         </SolidButton>
       </KeyboardAvoidingView>
     </SafeAreaView>
-  )
-}
-
-const ScreenHeader = () => {
-  const isEdit = useSelector(s => Option.isSome(s.modalityForm.id))
-  return (
-    <View>
-      <Header
-        title={isEdit ? t('Edit modality') : t('New modality')}
-        headerLeft={
-          <HeaderButtonRow>
-            <HeaderButton
-              onPress={back}
-              icon={<MaterialIcons name="arrow-back" />}
-            />
-          </HeaderButtonRow>
-        }
-        headerRight={
-          <HeaderButtonRow>
-            <HeaderButton
-              onPress={openRemoveModality}
-              icon={<MaterialIcons name="delete" />}
-            />
-          </HeaderButtonRow>
-        }
-      />
-    </View>
   )
 }
 

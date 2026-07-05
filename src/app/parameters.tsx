@@ -1,4 +1,5 @@
-import { Match, pipe, Schema } from 'effect'
+import { Effect, Match, pipe, Schema } from 'effect'
+import { router } from 'expo-router'
 import { MaterialIcons, Pressable, Row, Txt, View } from 'src/components'
 import { BorderlessButton } from 'src/components/derivative/BorderlessButton'
 import { CenterModal } from 'src/components/derivative/CenterModal'
@@ -6,7 +7,6 @@ import { Checkbox } from 'src/components/derivative/Checkbox'
 import { GhostButton } from 'src/components/derivative/GhostButton'
 import { SolidButton } from 'src/components/derivative/SolidButton'
 import { Parameters } from 'src/datatypes/Parameters'
-import { back } from 'src/events/core'
 import {
   decrementTeamsCount,
   generateResult,
@@ -19,13 +19,13 @@ import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 
-export const ParametersView = () => {
+export default function ParametersScreen() {
   const parameters = useSelector(
     s => s.parameters,
     Schema.equivalence(Parameters),
   )
   return (
-    <CenterModal onClose={back} title={t('Parameters')} m={24}>
+    <CenterModal title={t('Parameters')} m={24}>
       <View p={16}>
         <Row align="center">
           <BorderlessButton onPress={decrementTeamsCount}>
@@ -100,7 +100,7 @@ export const ParametersView = () => {
       </View>
       <View borderWidthT={1} borderColor={Colors.opacity(0.375)(Colors.gray)} />
       <Row p={16} gap={8} justify="end">
-        <GhostButton onPress={back}>
+        <GhostButton onPress={Effect.sync(() => router.back())}>
           <Txt>{t('Cancel')}</Txt>
         </GhostButton>
         <SolidButton onPress={generateResult}>
