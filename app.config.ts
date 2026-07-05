@@ -23,11 +23,6 @@ const getConfig = (): ExpoConfig => ({
     barStyle: 'light-content',
     backgroundColor: brandColor,
   },
-  splash: {
-    image: './assets/splash.png',
-    resizeMode: 'contain',
-    backgroundColor: brandColor,
-  },
   updates: matchEnv({
     development: false,
     preview: true,
@@ -41,9 +36,6 @@ const getConfig = (): ExpoConfig => ({
       }
     : { enabled: false },
   assetBundlePatterns: ['**/*'],
-  packagerOpts: {
-    config: 'metro.config.js',
-  },
   experiments: { typedRoutes: true },
   scheme: 'teams-generator',
   android: {
@@ -115,7 +107,14 @@ const getConfig = (): ExpoConfig => ({
     'expo-font',
     'expo-status-bar',
     'expo-router',
-    'expo-splash-screen',
+    [
+      'expo-splash-screen',
+      {
+        image: './assets/splash.png',
+        backgroundColor: brandColor,
+        resizeMode: 'contain',
+      },
+    ],
     ['expo-localization', { supportedLocales: ['en', 'pt'] }],
     [
       'react-native-google-mobile-ads',

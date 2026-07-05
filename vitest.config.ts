@@ -1,12 +1,12 @@
 import * as path from 'node:path'
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
   test: {
     include: ['**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     fakeTimers: { toFake: undefined },
     pool: 'forks',
-    poolOptions: { threads: { isolate: false }, forks: { isolate: false } },
+    isolate: false,
   },
   resolve: {
     alias: {

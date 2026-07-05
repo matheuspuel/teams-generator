@@ -1,8 +1,7 @@
 import { Semigroup } from '@effect/typeclass'
 import * as Benchmark from 'benchmark'
-import { Arbitrary, Array, Effect, Match, pipe } from 'effect'
+import { Arbitrary, Array, Effect, FastCheck, Match, pipe } from 'effect'
 import { constant } from 'effect/Function'
-import * as fc from 'fast-check'
 import { Player } from 'src/datatypes'
 import { soccer } from 'src/datatypes/Modality'
 import {
@@ -14,8 +13,11 @@ import { getCombinationsIndices } from 'src/utils/Combinations'
 import { combineAllNonEmpty } from 'src/utils/fp/Semigroup'
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const sample1 = fc.sample(
-  fc.array(Arbitrary.make(Player.Player), { minLength: 8, maxLength: 8 }),
+const sample1 = FastCheck.sample(
+  FastCheck.array(Arbitrary.make(Player.Player), {
+    minLength: 8,
+    maxLength: 8,
+  }),
   1,
 )[0]!
 

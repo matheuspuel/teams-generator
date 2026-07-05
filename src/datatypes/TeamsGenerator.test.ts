@@ -4,12 +4,12 @@ import {
   Array,
   Effect,
   Equivalence,
+  FastCheck,
   Match,
   identity,
   pipe,
 } from 'effect'
 import { constant } from 'effect/Function'
-import * as fc from 'fast-check'
 import { playersMock } from 'src/mocks/Player'
 import { getCombinationsIndices } from 'src/utils/Combinations'
 import { Id } from 'src/utils/Entity'
@@ -118,23 +118,23 @@ describe('test utils', () => {
 })
 
 describe('Balance teams', () => {
-  const criteriaArb = fc.record({
-    position: fc.boolean(),
-    rating: fc.boolean(),
-    distribution: fc.oneof(
-      fc.record({
-        _tag: fc.constant('numOfTeams' as const),
-        numOfTeams: fc.integer({ min: 2, max: 9 }),
+  const criteriaArb = FastCheck.record({
+    position: FastCheck.boolean(),
+    rating: FastCheck.boolean(),
+    distribution: FastCheck.oneof(
+      FastCheck.record({
+        _tag: FastCheck.constant('numOfTeams' as const),
+        numOfTeams: FastCheck.integer({ min: 2, max: 9 }),
       }),
-      fc.record({
-        _tag: fc.constant('fixedNumberOfPlayers' as const),
-        fixedNumberOfPlayers: fc.integer({ min: 1, max: 20 }),
+      FastCheck.record({
+        _tag: FastCheck.constant('fixedNumberOfPlayers' as const),
+        fixedNumberOfPlayers: FastCheck.integer({ min: 1, max: 20 }),
       }),
     ),
   })
-  const balanceTeamsArb = fc.record({
+  const balanceTeamsArb = FastCheck.record({
     criteria: criteriaArb,
-    players: fc.array(Arbitrary.make(Player.Player)),
+    players: FastCheck.array(Arbitrary.make(Player.Player)),
   })
 
   test.skip('should return the optimal solution', async () => {
@@ -180,10 +180,10 @@ describe('Balance teams', () => {
         createdAt: Timestamp.Timestamp.make(0),
       },
     ]
-    await fc.assert(
-      fc.asyncProperty(
+    await FastCheck.assert(
+      FastCheck.asyncProperty(
         criteriaArb,
-        fc.array(Arbitrary.make(Player.Player), {
+        FastCheck.array(Arbitrary.make(Player.Player), {
           minLength: 1,
           maxLength: 8,
         }),
@@ -217,8 +217,8 @@ describe('Balance teams', () => {
   })
 
   test('should return the same players', async () => {
-    await fc.assert(
-      fc.asyncProperty(balanceTeamsArb, async ({ players, criteria }) =>
+    await FastCheck.assert(
+      FastCheck.asyncProperty(balanceTeamsArb, async ({ players, criteria }) =>
         pipe(
           await distributeTeams({ players, modality, criteria }).pipe(
             Effect.runPromise,
@@ -231,8 +231,8 @@ describe('Balance teams', () => {
   })
 
   test('should return the correct number of teams', async () => {
-    await fc.assert(
-      fc.asyncProperty(
+    await FastCheck.assert(
+      FastCheck.asyncProperty(
         balanceTeamsArb,
         async ({ criteria, players }) =>
           (
@@ -253,8 +253,8 @@ describe('Balance teams', () => {
   })
 
   test('should return the correct number of players each team', async () => {
-    await fc.assert(
-      fc.asyncProperty(balanceTeamsArb, async ({ players, criteria }) =>
+    await FastCheck.assert(
+      FastCheck.asyncProperty(balanceTeamsArb, async ({ players, criteria }) =>
         (
           await distributeTeams({ players, modality, criteria }).pipe(
             Effect.runPromise,
@@ -281,8 +281,8 @@ describe('Balance teams', () => {
   })
 
   test('should not have teams with player count difference higher than one in any position', async () => {
-    await fc.assert(
-      fc.asyncProperty(balanceTeamsArb, async ({ criteria, players }) =>
+    await FastCheck.assert(
+      FastCheck.asyncProperty(balanceTeamsArb, async ({ criteria, players }) =>
         pipe(
           await distributeTeams({
             players,
