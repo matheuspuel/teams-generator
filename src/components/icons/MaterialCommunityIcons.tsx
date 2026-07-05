@@ -1,4 +1,4 @@
-import RawIcons_ from '@expo/vector-icons/MaterialCommunityIcons'
+import RawIcons_ from "@react-native-vector-icons/material-design-icons"
 import * as React from 'react'
 import { useTextStyle } from 'src/contexts/TextStyle'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
