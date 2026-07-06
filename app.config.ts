@@ -1,4 +1,10 @@
 import { ExpoConfig } from '@expo/config-types'
+import ExpoFont from 'expo-font/plugin'
+import ExpoLocalization from 'expo-localization/plugin'
+import ExpoRouter from 'expo-router/plugin'
+import ExpoSharing from 'expo-sharing/plugin'
+import ExpoSplashScreen from 'expo-splash-screen/plugin'
+import ExpoStatusBar from 'expo-status-bar/plugin'
 import packageJSON from './package.json'
 
 const brandColor = '#136d15'
@@ -103,19 +109,17 @@ const getConfig = (): ExpoConfig => ({
     eas: { projectId: '3bb86839-e6c3-4a30-8246-440f8517683d' },
   },
   plugins: [
-    'expo-sharing',
-    'expo-font',
-    'expo-status-bar',
-    'expo-router',
-    [
-      'expo-splash-screen',
-      {
-        image: './assets/splash.png',
-        backgroundColor: brandColor,
-        resizeMode: 'contain',
-      },
-    ],
-    ['expo-localization', { supportedLocales: ['en', 'pt'] }],
+    ExpoSharing(),
+    ExpoFont(),
+    ExpoStatusBar(),
+    ExpoRouter(),
+    ExpoSplashScreen({
+      image: './assets/splash-icon.png',
+      backgroundColor: brandColor,
+      imageWidth: 200,
+      resizeMode: 'contain',
+    }),
+    ExpoLocalization({ supportedLocales: ['en', 'pt'] }),
     [
       'react-native-google-mobile-ads',
       {
