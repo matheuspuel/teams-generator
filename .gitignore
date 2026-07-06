@@ -1,5 +1,6 @@
 .react/
 .idea/
+.vscode/
 tmp/
 temp/
 coverage/
