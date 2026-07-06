@@ -1,5 +1,3 @@
-import { Redirect } from 'expo-router'
+import GroupListScreen from './groups'
 
-export default function IndexScreen() {
-  return <Redirect href="/groups" />
-}
+export default GroupListScreen
