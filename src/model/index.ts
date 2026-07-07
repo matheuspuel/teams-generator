@@ -28,10 +28,6 @@ export type RootState = {
     modality: Modality.Reference
   }
   modalityForm: ModalityForm
-  ui: {
-    selectedGroupId: Option.Option<Id>
-    selectedPlayerId: Option.Option<Id>
-  }
 }
 
 export const initialAppState: RootState = {
@@ -50,8 +46,4 @@ export const initialAppState: RootState = {
   result: Fiber.never,
   groupOrder: GroupOrder.initial,
   preferences: { isRatingVisible: true },
-  ui: {
-    selectedGroupId: Option.none(),
-    selectedPlayerId: Option.none(),
-  },
 }

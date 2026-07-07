@@ -1,5 +1,5 @@
 import { Effect, Match, pipe, Schema } from 'effect'
-import { router } from 'expo-router'
+import { router, useLocalSearchParams } from 'expo-router'
 import { MaterialIcons, Pressable, Row, Txt, View } from 'src/components'
 import { BorderlessButton } from 'src/components/derivative/BorderlessButton'
 import { CenterModal } from 'src/components/derivative/CenterModal'
@@ -18,8 +18,10 @@ import {
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
+import { Id } from 'src/utils/Entity'
 
 export default function ParametersScreen() {
+  const { groupId } = useLocalSearchParams<{ groupId: Id }>()
   const parameters = useSelector(
     s => s.parameters,
     Schema.equivalence(Parameters),
@@ -103,7 +105,7 @@ export default function ParametersScreen() {
         <GhostButton onPress={Effect.sync(() => router.back())}>
           <Txt>{t('Cancel')}</Txt>
         </GhostButton>
-        <SolidButton onPress={generateResult}>
+        <SolidButton onPress={generateResult({ group: { id: groupId } })}>
           <Txt>{t('Generate teams')}</Txt>
         </SolidButton>
       </Row>

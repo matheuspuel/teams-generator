@@ -24,19 +24,15 @@ import { IdGenerator } from 'src/services/IdGenerator'
 import { Linking } from 'src/services/Linking'
 import { ShareService } from 'src/services/Share'
 import { State, StateRef } from 'src/services/StateRef'
-import { addImportedGroup, getGroupById, getModality } from 'src/slices/groups'
+import { addImportedGroup, getGroup, getModality } from 'src/slices/groups'
+import { Id } from 'src/utils/Entity'
 import { normalize } from 'src/utils/String'
 import { NonEmptyString } from 'src/utils/datatypes/NonEmptyString'
 
-export const exportGroup = () =>
+export const exportGroup = (group: { id: Id }) =>
   pipe(
-    State.on(root.at('ui').at('selectedGroupId')).get,
-    Effect.flatMap(
-      Option.match({
-        onNone: () => Effect.succeed(Option.none()),
-        onSome: id => pipe(State.get, Effect.map(getGroupById(id))),
-      }),
-    ),
+    State.get,
+    Effect.map(getGroup(group)),
     Effect.flatten,
     Effect.bindTo('group'),
     Effect.bind('modality', ({ group }) =>

@@ -2,19 +2,29 @@ import AddIcon from '@expo/material-symbols/add.xml'
 import DownloadIcon from '@expo/material-symbols/download.xml'
 import MoreVertIcon from '@expo/material-symbols/more_vert.xml'
 import SportsSoccerIcon from '@expo/material-symbols/sports_soccer.xml'
-import { Array, Data, flow, Option, pipe, Record, Runtime, Tuple } from 'effect'
+import {
+  Array,
+  Data,
+  Effect,
+  flow,
+  Option,
+  pipe,
+  Record,
+  Runtime,
+  Tuple,
+} from 'effect'
 import { router, Stack } from 'expo-router'
 import { FlatList, Pressable, Txt, View } from 'src/components'
 import { BannerAd } from 'src/components/custom/BannerAd'
 import { Group } from 'src/datatypes'
 import { hideSplashScreen } from 'src/events/core'
-import { openGroup, startCreateGroup } from 'src/events/groups'
+import { startCreateGroup } from 'src/events/groups'
 import { importGroupFromDocumentPicker } from 'src/export/group'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { runtime } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
-import { getGroupById, getModality } from 'src/slices/groups'
+import { getGroup, getModality } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
 
 export default function GroupListScreen() {
@@ -77,7 +87,7 @@ export default function GroupListScreen() {
 const Item = ({ id }: { id: Id }) => {
   const group = useSelector(s =>
     pipe(
-      getGroupById(id)(s),
+      getGroup({ id })(s),
       Option.map(({ name, modality }) =>
         Data.struct({
           name,
@@ -93,7 +103,7 @@ const Item = ({ id }: { id: Id }) => {
     onNone: () => <></>,
     onSome: ({ name, modality }) => (
       <Pressable
-        onPress={openGroup(id)}
+        onPress={Effect.sync(() => router.navigate(`/groups/${id}`))}
         p={12}
         round={8}
         shadow={1}

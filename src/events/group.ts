@@ -1,4 +1,4 @@
-import { Effect, Fiber, Option, pipe } from 'effect'
+import { Effect, Fiber, pipe } from 'effect'
 import { router } from 'expo-router'
 import { Parameters as Parameters_ } from 'src/datatypes'
 import { root } from 'src/model/optic'
@@ -6,9 +6,8 @@ import { State, StateRef } from 'src/services/StateRef'
 import { onSelectGroupOrder } from 'src/slices/groupOrder'
 import {
   deleteGroup as deleteGroup_,
-  getActiveModality,
-  getPlayerFromSelectedGroup,
-  getSelectedGroup,
+  getGroupModality,
+  getPlayer,
   toggleAllPlayersActive,
   togglePlayerActive as togglePlayerActive_,
 } from 'src/slices/groups'
@@ -51,44 +50,36 @@ export const interruptResultGeneration = Effect.gen(function* () {
   yield* (yield* StateRef.get).result.pipe(Fiber.interruptFork)
 })
 
-export const generateResult = Effect.gen(function* () {
-  yield* interruptResultGeneration
-  yield* Effect.gen(function* () {
-    yield* State.on(root.at('result')).set(Fiber.never)
-    const groupId = yield* yield* State.on(root.at('ui').at('selectedGroupId'))
-      .get
-    yield* Effect.sync(() => router.back())
-    yield* Effect.sync(() => router.navigate(`/groups/${groupId}/result`))
-  }).pipe(StateRef.execute)
-  yield* Effect.sleep(100)
-  yield* generateResult_
-}).pipe(Effect.ignore)
+export const generateResult = (args: { group: { id: Id } }) =>
+  Effect.gen(function* () {
+    yield* interruptResultGeneration
+    yield* Effect.gen(function* () {
+      yield* State.on(root.at('result')).set(Fiber.never)
+      yield* Effect.sync(() => router.back())
+      yield* Effect.sync(() =>
+        router.navigate(`/groups/${args.group.id}/result`),
+      )
+    }).pipe(StateRef.execute)
+    yield* Effect.sleep(100)
+    yield* generateResult_(args)
+  }).pipe(Effect.ignore)
 
-export const openDeleteGroup = Effect.gen(function* () {
-  const group = yield* State.flatWith(getSelectedGroup).pipe(StateRef.execute)
-  router.navigate(`/groups/${group.id}/delete`)
-}).pipe(Effect.ignore)
-
-export const deleteGroup = pipe(
-  State.with(getSelectedGroup),
-  Effect.flatten,
-  Effect.flatMap(({ id }) => deleteGroup_({ id })),
-  Effect.tap(() => Effect.sync(() => router.back())),
-  Effect.tap(() => Effect.sync(() => router.back())),
-  Effect.tap(() => Effect.sync(() => router.back())),
-  StateRef.execute,
-  Effect.ignore,
-)
+export const deleteGroup = (group: { id: Id }) =>
+  pipe(
+    deleteGroup_(group),
+    StateRef.execute,
+    Effect.tap(() => Effect.sync(() => router.back())),
+    Effect.tap(() => Effect.sync(() => router.back())),
+    Effect.tap(() => Effect.sync(() => router.back())),
+    Effect.ignore,
+  )
 
 export const startNewPlayer = (args: { group: { id: Id } }) =>
   pipe(
     Effect.sync(() =>
       router.navigate(`/groups/${args.group.id}/players/create`),
     ),
-    Effect.tap(() =>
-      State.on(root.at('ui').at('selectedPlayerId')).set(Option.none()),
-    ),
-    Effect.flatMap(() => State.flatWith(getActiveModality)),
+    Effect.flatMap(() => State.flatWith(getGroupModality(args))),
     Effect.tap(m =>
       State.on(root.at('playerForm')).set(blankPlayerForm({ modality: m })),
     ),
@@ -100,27 +91,18 @@ export const openPlayer = (args: { group: { id: Id }; player: { id: Id } }) =>
     Effect.sync(() =>
       router.navigate(`/groups/${args.group.id}/players/${args.player.id}`),
     ),
-    Effect.flatMap(() =>
-      State.flatWith(getPlayerFromSelectedGroup({ playerId: args.player.id })),
-    ),
+    Effect.flatMap(() => State.flatWith(getPlayer(args))),
     Effect.flatMap(v =>
-      pipe(
-        State.on(root.at('playerForm')).set(getPlayerFormFromData(v)),
-        Effect.tap(() =>
-          State.on(root.at('ui').at('selectedPlayerId')).set(
-            Option.some(args.player.id),
-          ),
-        ),
-      ),
+      State.on(root.at('playerForm')).set(getPlayerFormFromData(v)),
     ),
     StateRef.execute,
     Effect.ignore,
   )
 
-export const togglePlayerActive = (id: Id) =>
-  StateRef.execute(togglePlayerActive_({ playerId: id }))
+export const togglePlayerActive = (args: {
+  group: { id: Id }
+  player: { id: Id }
+}) => StateRef.execute(togglePlayerActive_(args))
 
-export const toggleAllPlayers = pipe(
-  State.update(toggleAllPlayersActive),
-  StateRef.execute,
-)
+export const toggleAllPlayers = (args: { group: { id: Id } }) =>
+  pipe(State.update(toggleAllPlayersActive(args)), StateRef.execute)

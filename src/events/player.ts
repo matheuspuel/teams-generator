@@ -1,14 +1,13 @@
-import { Effect, Option, Schema, String, flow, pipe } from 'effect'
+import * as Optic from '@fp-ts/optic'
+import { Array, Effect, Option, Schema, String, flow, pipe } from 'effect'
 import { not } from 'effect/Predicate'
 import { router } from 'expo-router'
 import { Rating } from 'src/datatypes'
+import { RootState } from 'src/model'
 import { root } from 'src/model/optic'
 import { State, StateRef } from 'src/services/StateRef'
-import {
-  createPlayer,
-  deleteCurrentPlayer,
-  editPlayer,
-} from 'src/slices/groups'
+import { createPlayer, editPlayer } from 'src/slices/groups'
+import { Id } from 'src/utils/Entity'
 
 export const changePlayerName = flow(
   State.on(root.at('playerForm').at('name')).set,
@@ -29,34 +28,34 @@ export const changePlayerRating = flow(
   Option.getOrElse(() => Effect.void),
 )
 
-export const deletePlayer = pipe(
-  State.update(deleteCurrentPlayer),
-  Effect.tap(() => Effect.sync(() => router.back())),
-  StateRef.execute,
-)
+export const deletePlayer = (args: { group: { id: Id }; player: { id: Id } }) =>
+  StateRef.execute(
+    State.update((s: RootState) =>
+      Optic.modify(root.at('groups').key(args.group.id).at('players'))(
+        Array.filter(p => p.id !== args.player.id),
+      )(s),
+    ),
+  )
 
-export const savePlayer = pipe(
-  Effect.all({
-    form: pipe(
-      State.on(root.at('playerForm')).get,
-      Effect.map(v => ({ ...v, name: v.name.trim() })),
-      Effect.flatMap(f =>
-        pipe(f, Option.liftPredicate(not(() => String.isEmpty(f.name)))),
-      ),
+export const savePlayer = (args: {
+  player: { id: Id } | null
+  group: { id: Id }
+}) =>
+  pipe(
+    State.on(root.at('playerForm')).get,
+    Effect.map(v => ({ ...v, name: v.name.trim() })),
+    Effect.flatMap(f =>
+      pipe(f, Option.liftPredicate(not(() => String.isEmpty(f.name)))),
     ),
-    groupId: Effect.flatten(State.on(root.at('ui').at('selectedGroupId')).get),
-    playerId: State.on(root.at('ui').at('selectedPlayerId')).get,
-  }),
-  Effect.flatMap(({ form, groupId, playerId }) =>
-    pipe(
-      playerId,
-      Option.match({
-        onNone: () => createPlayer({ groupId, player: form }),
-        onSome: id => editPlayer({ groupId, player: { ...form, id } }),
-      }),
-      Effect.flatMap(() => Effect.sync(() => router.back())),
+    Effect.flatMap(form =>
+      args.player?.id
+        ? editPlayer({
+            group: args.group,
+            player: { ...form, id: args.player.id },
+          })
+        : createPlayer({ group: args.group, player: form }),
     ),
-  ),
-  StateRef.execute,
-  Effect.ignore,
-)
+    StateRef.execute,
+    Effect.flatMap(() => Effect.sync(() => router.back())),
+    Effect.ignore,
+  )

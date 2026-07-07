@@ -1,6 +1,6 @@
 import DeleteIcon from '@expo/material-symbols/delete.xml'
-import { Array, Option, Runtime, String, pipe } from 'effect'
-import { Stack } from 'expo-router'
+import { Array, Option, pipe, Runtime, String } from 'effect'
+import { router, Stack, useLocalSearchParams } from 'expo-router'
 import {
   Input,
   KeyboardAvoidingView,
@@ -26,10 +26,15 @@ import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { runtime } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
-import { getActiveModality } from 'src/slices/groups'
+import { getGroupModality } from 'src/slices/groups'
+import { Id } from 'src/utils/Entity'
 import { RatingSlider } from '../../../../../components/custom/RatingSlider'
 
 export default function PlayerScreen() {
+  const { groupId, playerId } = useLocalSearchParams<{
+    groupId: Id
+    playerId?: Id
+  }>()
   const name = useSelector(s => s.playerForm.name)
   return (
     <SafeAreaView flex={1} edges={['bottom']}>
@@ -37,7 +42,15 @@ export default function PlayerScreen() {
         <Stack.Title>{t('Player')}</Stack.Title>
         <Stack.Toolbar placement="right">
           <Stack.Toolbar.Button
-            onPress={() => deletePlayer.pipe(Runtime.runPromiseExit(runtime))}
+            onPress={() => {
+              if (playerId) {
+                deletePlayer({
+                  group: { id: groupId },
+                  player: { id: playerId },
+                }).pipe(Runtime.runPromiseExit(runtime))
+              }
+              router.back()
+            }}
             icon={DeleteIcon}
           />
         </Stack.Toolbar>
@@ -52,7 +65,10 @@ export default function PlayerScreen() {
           </View>
         </ScrollView>
         <SolidButton
-          onPress={savePlayer}
+          onPress={savePlayer({
+            group: { id: groupId },
+            player: playerId ? { id: playerId } : null,
+          })}
           isEnabled={String.isNonEmpty(name.trim())}
           p={16}
           round={0}
@@ -95,9 +111,10 @@ const RatingField = () => {
 }
 
 const PositionField = () => {
+  const { groupId } = useLocalSearchParams<{ groupId: Id }>()
   const positions = useSelector(s =>
     pipe(
-      getActiveModality(s),
+      getGroupModality({ group: { id: groupId } })(s),
       Option.map(m => m.positions),
       Option.getOrElse(() => Array.empty()),
     ),
@@ -115,9 +132,10 @@ const PositionField = () => {
 }
 
 const PositionItem = ({ abbreviation }: { abbreviation: Abbreviation }) => {
+  const { groupId } = useLocalSearchParams<{ groupId: Id }>()
   const position = useSelector(s =>
     pipe(
-      getActiveModality(s),
+      getGroupModality({ group: { id: groupId } })(s),
       Option.flatMap(m =>
         Array.findFirst(m.positions, _ => _.abbreviation === abbreviation),
       ),

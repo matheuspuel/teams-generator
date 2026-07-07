@@ -12,7 +12,7 @@ import {
   pipe,
 } from 'effect'
 import { NonEmptyReadonlyArray } from 'effect/Array'
-import { Stack } from 'expo-router'
+import { Stack, useLocalSearchParams } from 'expo-router'
 import * as React from 'react'
 import {
   ActivityIndicator,
@@ -29,13 +29,17 @@ import { shareResult, toggleRatingVisibility } from 'src/events/result'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
-import { getActiveModality } from 'src/slices/groups'
+import { getGroupModality } from 'src/slices/groups'
+import { Id } from 'src/utils/Entity'
 import { toFixedLocale } from 'src/utils/Number'
 
 export default function ResultScreen() {
+  const { groupId } = useLocalSearchParams<{ groupId: Id }>()
   const runtime = useRuntime()
   const result = useSelector(s => s.result)
-  const modality = useSelector(s => getActiveModality(s))
+  const modality = useSelector(s =>
+    getGroupModality({ group: { id: groupId } })(s),
+  )
   const isRatingVisible = useSelector(s => s.preferences.isRatingVisible)
   React.useEffect(() => {
     return () => void interruptResultGeneration.pipe(Runtime.runFork(runtime))
@@ -53,7 +57,11 @@ export default function ResultScreen() {
             icon={isRatingVisible ? VisibilityIcon : VisibilityOffIcon}
           />
           <Stack.Toolbar.Button
-            onPress={() => shareResult.pipe(Runtime.runFork(runtime))}
+            onPress={() =>
+              shareResult({ group: { id: groupId } }).pipe(
+                Runtime.runFork(runtime),
+              )
+            }
             icon={ShareIcon}
           />
         </Stack.Toolbar>

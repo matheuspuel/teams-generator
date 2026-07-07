@@ -39,13 +39,8 @@ const refOnGroups = State.on(root.at('groups'))
 
 export const getGroupsRecord = Optic.get(root.at('groups'))
 
-export const getGroupById = (id: Id) => flow(getGroupsRecord, Record.get(id))
-
-export const getSelectedGroup = (s: RootState) =>
-  pipe(
-    s.ui.selectedGroupId,
-    Option.flatMap(id => getGroupById(id)(s)),
-  )
+export const getGroup = (group: { id: Id }) =>
+  flow(getGroupsRecord, Record.get(group.id))
 
 export const getModality =
   (modality: Modality.Reference) =>
@@ -54,18 +49,19 @@ export const getModality =
       ? Array.findFirst(staticModalities, _ => _.id === modality.id)
       : Array.findFirst(state.customModalities, _ => _.id === modality.id)
 
-export const getActiveModality = (s: RootState) =>
-  pipe(
-    getSelectedGroup(s),
-    Option.flatMap(g => getModality(g.modality)(s)),
-  )
-
-export const getPlayerFromSelectedGroup =
-  (args: { playerId: Id }) => (s: RootState) =>
+export const getGroupModality =
+  (args: { group: { id: Id } }) => (s: RootState) =>
     pipe(
-      getSelectedGroup(s),
+      getGroup(args.group)(s),
+      Option.flatMap(g => getModality(g.modality)(s)),
+    )
+
+export const getPlayer =
+  (args: { player: { id: Id }; group: { id: Id } }) => (s: RootState) =>
+    pipe(
+      getGroup(args.group)(s),
       Option.map(g => g.players),
-      Option.flatMap(Array.findFirst(p => p.id === args.playerId)),
+      Option.flatMap(Array.findFirst(p => p.id === args.player.id)),
     )
 
 const addGroup = (group: Group) =>
@@ -142,11 +138,14 @@ export const addImportedGroup = (group: Omit<Group, 'id'>) =>
 export const deleteGroup = (args: { id: Id }) =>
   refOnGroups.update(Record.remove(args.id))
 
-const addPlayer = (args: { groupId: Id; player: Omit<Player, 'active'> }) =>
+const addPlayer = (args: {
+  group: { id: Id }
+  player: Omit<Player, 'active'>
+}) =>
   refOnGroups.update(s =>
     pipe(
       s,
-      Record.modifyOption(args.groupId, g => ({
+      Record.modifyOption(args.group.id, g => ({
         ...g,
         players: Array.append({ ...args.player, active: true })(g.players),
       })),
@@ -155,27 +154,27 @@ const addPlayer = (args: { groupId: Id; player: Omit<Player, 'active'> }) =>
   )
 
 export const createPlayer = ({
-  groupId,
+  group,
   player,
 }: {
-  groupId: Id
+  group: { id: Id }
   player: Omit<Player, 'active' | 'id' | 'createdAt'>
 }) =>
   pipe(
     Effect.all({ id: IdGenerator.generate(), time: Timestamp.now }),
     Effect.flatMap(({ id, time }) =>
-      addPlayer({ groupId, player: { ...player, id, createdAt: time } }),
+      addPlayer({ group, player: { ...player, id, createdAt: time } }),
     ),
   )
 
 export const editPlayer = (p: {
-  groupId: Id
+  group: { id: Id }
   player: Omit<Player, 'active' | 'createdAt'>
 }) =>
   refOnGroups.update(s =>
     pipe(
       s,
-      Record.modifyOption(p.groupId, g => ({
+      Record.modifyOption(p.group.id, g => ({
         ...g,
         players: pipe(
           g.players,
@@ -190,57 +189,43 @@ export const editPlayer = (p: {
     ),
   )
 
-export const deleteCurrentPlayer = (s: RootState) =>
+export const togglePlayerActive = (args: {
+  group: { id: Id }
+  player: { id: Id }
+}) =>
   pipe(
-    Option.all({
-      groupId: s.ui.selectedGroupId,
-      playerId: s.ui.selectedPlayerId,
-    }),
-    Option.map(({ groupId, playerId }) =>
-      Optic.modify(root.at('groups').key(groupId).at('players'))(
-        Array.filter(p => p.id !== playerId),
-      )(s),
-    ),
-    Option.getOrElse(() => s),
-  )
-
-export const togglePlayerActive = ({ playerId }: { playerId: Id }) =>
-  pipe(
-    State.on(root.at('ui').at('selectedGroupId')).get,
-    Effect.flatten,
-    Effect.flatMap(groupId =>
-      State.onOption(
-        root
-          .at('groups')
-          .key(groupId)
-          .at('players')
-          .compose(Optic.findFirst(p => p.id === playerId))
-          .at('active'),
-      ).update(a => !a),
-    ),
+    State.onOption(
+      root
+        .at('groups')
+        .key(args.group.id)
+        .at('players')
+        .compose(Optic.findFirst(p => p.id === args.player.id))
+        .at('active'),
+    ).update(a => !a),
     Effect.ignore,
   )
 
-export const toggleAllPlayersActive = (s: RootState) =>
-  pipe(
-    s.ui.selectedGroupId,
-    Option.flatMap(id => pipe(s.groups, Record.get(id))),
-    Option.match({
-      onNone: () => s,
-      onSome: g =>
-        pipe(
-          g.players,
-          Array.every(p => p.active),
-          allActive =>
-            pipe(
-              g.players,
-              Array.map(p => ({ ...p, active: !allActive })),
-            ),
-          Optic.replace(root.at('groups').key(g.id).at('players')),
-          f => f(s),
-        ),
-    }),
-  )
+export const toggleAllPlayersActive =
+  (args: { group: { id: Id } }) => (s: RootState) =>
+    pipe(
+      s.groups,
+      Record.get(args.group.id),
+      Option.match({
+        onNone: () => s,
+        onSome: g =>
+          pipe(
+            g.players,
+            Array.every(p => p.active),
+            allActive =>
+              pipe(
+                g.players,
+                Array.map(p => ({ ...p, active: !allActive })),
+              ),
+            Optic.replace(root.at('groups').key(g.id).at('players')),
+            f => f(s),
+          ),
+      }),
+    )
 
 const adaptStaticModalitiesPosition =
   (args: { previous: StaticModality; next: StaticModality }) =>

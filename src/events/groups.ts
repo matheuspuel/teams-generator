@@ -4,17 +4,8 @@ import { router } from 'expo-router'
 import { soccer } from 'src/datatypes/Modality'
 import { root } from 'src/model/optic'
 import { State, StateRef } from 'src/services/StateRef'
-import { createGroup, editGroup, getSelectedGroup } from 'src/slices/groups'
+import { createGroup, editGroup, getGroup } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
-
-export const openGroup = (id: Id) =>
-  pipe(
-    Effect.sync(() => router.navigate(`/groups/${id}`)),
-    Effect.tap(() =>
-      State.on(root.at('ui').at('selectedGroupId')).set(Option.some(id)),
-    ),
-    StateRef.execute,
-  )
 
 export const startCreateGroup = pipe(
   State.with(s =>
@@ -31,20 +22,21 @@ export const startCreateGroup = pipe(
   StateRef.execute,
 )
 
-export const startEditGroup = pipe(
-  State.with(getSelectedGroup),
-  Effect.flatten,
-  Effect.tap(g =>
-    State.on(root.at('groupForm')).set({
-      id: Option.some(g.id),
-      name: g.name,
-      modality: g.modality,
-    }),
-  ),
-  Effect.tap(_ => Effect.sync(() => router.navigate(`/groups/${_.id}/edit`))),
-  StateRef.execute,
-  Effect.ignore,
-)
+export const startEditGroup = (group: { id: Id }) =>
+  pipe(
+    State.with(getGroup(group)),
+    Effect.flatten,
+    Effect.tap(g =>
+      State.on(root.at('groupForm')).set({
+        id: Option.some(g.id),
+        name: g.name,
+        modality: g.modality,
+      }),
+    ),
+    Effect.tap(_ => Effect.sync(() => router.navigate(`/groups/${_.id}/edit`))),
+    StateRef.execute,
+    Effect.ignore,
+  )
 
 export const changeGroupName = flow(
   State.on(root.at('groupForm').at('name')).set,

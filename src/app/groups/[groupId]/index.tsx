@@ -14,7 +14,6 @@ import { PreRender } from 'src/components/derivative/PreRender'
 import { SolidButton } from 'src/components/derivative/SolidButton'
 import { GroupOrder, Player, Position, Rating } from 'src/datatypes'
 import {
-  openDeleteGroup,
   openParameters,
   openPlayer,
   startNewPlayer,
@@ -27,19 +26,15 @@ import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { runtime } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
-import {
-  getActiveModality,
-  getPlayerFromSelectedGroup,
-  getSelectedGroup,
-} from 'src/slices/groups'
+import { getGroup, getGroupModality, getPlayer } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
 
 export default function GroupScreen() {
   const { groupId } = useLocalSearchParams<{ groupId: Id }>()
   const playersIds = useSelector(_ =>
     Option.gen(function* () {
-      const group = yield* getSelectedGroup(_)
-      const modality = yield* getActiveModality(_)
+      const group = yield* getGroup({ id: groupId })(_)
+      const modality = yield* getGroupModality({ group: { id: groupId } })(_)
       return Array.sort(
         group.players,
         GroupOrder.toOrder(_.groupOrder)({ modality }),
@@ -64,7 +59,9 @@ export default function GroupScreen() {
         <Stack.Toolbar.Menu icon={MoreVertIcon}>
           <Stack.Toolbar.MenuAction
             onPress={() =>
-              toggleAllPlayers.pipe(Runtime.runPromiseExit(runtime))
+              toggleAllPlayers({ group: { id: groupId } }).pipe(
+                Runtime.runPromiseExit(runtime),
+              )
             }
             icon={CheckBoxIcon}
           >
@@ -77,21 +74,25 @@ export default function GroupScreen() {
             {t('Sort')}
           </Stack.Toolbar.MenuAction>
           <Stack.Toolbar.MenuAction
-            onPress={() => exportGroup().pipe(Runtime.runPromiseExit(runtime))}
+            onPress={() =>
+              exportGroup({ id: groupId }).pipe(Runtime.runPromiseExit(runtime))
+            }
             icon={UploadIcon}
           >
             {t('Export group')}
           </Stack.Toolbar.MenuAction>
           <Stack.Toolbar.MenuAction
-            onPress={() => startEditGroup.pipe(Runtime.runPromiseExit(runtime))}
+            onPress={() =>
+              startEditGroup({ id: groupId }).pipe(
+                Runtime.runPromiseExit(runtime),
+              )
+            }
             icon={EditIcon}
           >
             {t('Edit group')}
           </Stack.Toolbar.MenuAction>
           <Stack.Toolbar.MenuAction
-            onPress={() =>
-              openDeleteGroup.pipe(Runtime.runPromiseExit(runtime))
-            }
+            onPress={() => router.navigate(`/groups/${groupId}/delete`)}
             icon={DeleteIcon}
           >
             {t('Delete group')}
@@ -135,11 +136,11 @@ export default function GroupScreen() {
 const Item = ({ groupId, playerId }: { groupId: Id; playerId: Id }) => {
   const player = useSelector(s =>
     pipe(
-      getPlayerFromSelectedGroup({ playerId })(s),
+      getPlayer({ group: { id: groupId }, player: { id: playerId } })(s),
       Option.map(player => ({
         ...player,
         position: pipe(
-          getActiveModality(s),
+          getGroupModality({ group: { id: groupId } })(s),
           Option.flatMap(m =>
             Array.findFirst(
               m.positions,
@@ -167,7 +168,10 @@ const Item = ({ groupId, playerId }: { groupId: Id; playerId: Id }) => {
         bg={Colors.card}
       >
         <Checkbox
-          onToggle={togglePlayerActive(playerId)}
+          onToggle={togglePlayerActive({
+            group: { id: groupId },
+            player: { id: playerId },
+          })}
           isSelected={active}
           m={8}
           mr={-8}
@@ -197,9 +201,10 @@ const Item = ({ groupId, playerId }: { groupId: Id; playerId: Id }) => {
 }
 
 const ShuffleButton = () => {
+  const { groupId } = useLocalSearchParams<{ groupId: Id }>()
   const numSelected = useSelector(
     flow(
-      getSelectedGroup,
+      getGroup({ id: groupId }),
       Option.match({
         onNone: constant<Array<Player>>([]),
         onSome: g => g.players,

@@ -1,5 +1,5 @@
 import { Effect, Option, pipe } from 'effect'
-import { router } from 'expo-router'
+import { router, useLocalSearchParams } from 'expo-router'
 import { Row, Txt, TxtContext, View } from 'src/components'
 import { CenterModal } from 'src/components/derivative/CenterModal'
 import { GhostButton } from 'src/components/derivative/GhostButton'
@@ -8,10 +8,12 @@ import { deleteGroup } from 'src/events/group'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
-import { getSelectedGroup } from 'src/slices/groups'
+import { getGroup } from 'src/slices/groups'
+import { Id } from 'src/utils/Entity'
 
 export default function GroupDeleteScreen() {
-  const group = useSelector(getSelectedGroup)
+  const { groupId } = useLocalSearchParams<{ groupId: Id }>()
+  const group = useSelector(getGroup({ id: groupId }))
   return (
     <CenterModal title={t('Delete group')}>
       <View p={16}>
@@ -35,7 +37,10 @@ export default function GroupDeleteScreen() {
         >
           <Txt>{t('Cancel')}</Txt>
         </GhostButton>
-        <SolidButton onPress={deleteGroup} color={Colors.error}>
+        <SolidButton
+          onPress={deleteGroup({ id: groupId })}
+          color={Colors.error}
+        >
           <Txt>{t('Delete')}</Txt>
         </SolidButton>
       </Row>
