@@ -1,4 +1,4 @@
-import { Array, Fiber, Option } from 'effect'
+import { Array, Fiber } from 'effect'
 import { GroupOrder, Modality, Parameters } from 'src/datatypes'
 import { CustomModality, soccer } from 'src/datatypes/Modality'
 import { Abbreviation } from 'src/datatypes/Position'
@@ -10,11 +10,11 @@ import { Id } from 'src/utils/Entity'
 
 export type RootState = {
   core: { isLoaded: boolean }
-  alert: Option.Option<{
+  alert: {
     title: string
     message: string
     type: 'error' | 'success'
-  }>
+  } | null
   parameters: Parameters
   groupOrder: GroupOrder
   preferences: { isRatingVisible: boolean }
@@ -23,7 +23,7 @@ export type RootState = {
   result: Fiber.Fiber<GeneratedResult>
   playerForm: PlayerForm
   groupForm: {
-    id: Option.Option<Id>
+    id: Id | null
     name: string
     modality: Modality.Reference
   }
@@ -32,7 +32,7 @@ export type RootState = {
 
 export const initialAppState: RootState = {
   core: { isLoaded: false },
-  alert: Option.none(),
+  alert: null,
   groups: emptyGroups,
   customModalities: Array.empty(),
   parameters: Parameters.initial,
@@ -41,7 +41,7 @@ export const initialAppState: RootState = {
     positionAbbreviation: Abbreviation.make('a'),
     rating: 5,
   },
-  groupForm: { id: Option.none(), name: '', modality: soccer },
+  groupForm: { id: null, name: '', modality: soccer },
   modalityForm: initialModalityForm,
   result: Fiber.never,
   groupOrder: GroupOrder.initial,

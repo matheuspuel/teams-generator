@@ -1,4 +1,4 @@
-import { Effect, Option, pipe } from 'effect'
+import { Effect } from 'effect'
 import { router, useLocalSearchParams } from 'expo-router'
 import { Row, Txt, TxtContext, View } from 'src/components'
 import { CenterModal } from 'src/components/derivative/CenterModal'
@@ -17,16 +17,12 @@ export default function GroupDeleteScreen() {
   return (
     <CenterModal title={t('Delete group')}>
       <View p={16}>
-        {pipe(
-          group,
-          Option.map(g => (
-            <TxtContext align="left">
-              <Txt align="left">{`${t('Want to delete the group')} `}</Txt>
-              <Txt weight={600}>{g.name}</Txt>
-              <Txt>{` ${t('and all its players?')}`}</Txt>
-            </TxtContext>
-          )),
-          Option.getOrNull,
+        {group && (
+          <TxtContext align="left">
+            <Txt align="left">{`${t('Want to delete the group')} `}</Txt>
+            <Txt weight={600}>{group.name}</Txt>
+            <Txt>{` ${t('and all its players?')}`}</Txt>
+          </TxtContext>
         )}
       </View>
       <View borderWidthT={1} borderColor={Colors.opacity(0.375)(Colors.gray)} />

@@ -1,4 +1,4 @@
-import { Effect, Fiber, pipe } from 'effect'
+import { Effect, Fiber, Option, pipe } from 'effect'
 import { router } from 'expo-router'
 import { Parameters as Parameters_ } from 'src/datatypes'
 import { root } from 'src/model/optic'
@@ -77,7 +77,9 @@ export const startNewPlayer = (args: { group: { id: Id } }) =>
     Effect.sync(() =>
       router.navigate(`/groups/${args.group.id}/players/create`),
     ),
-    Effect.flatMap(() => State.flatWith(getGroupModality(args))),
+    Effect.flatMap(() =>
+      State.flatWith(s => Option.fromNullable(getGroupModality(args)(s))),
+    ),
     Effect.tap(m =>
       State.on(root.at('playerForm')).set(blankPlayerForm({ modality: m })),
     ),
@@ -89,7 +91,9 @@ export const openPlayer = (args: { group: { id: Id }; player: { id: Id } }) =>
     Effect.sync(() =>
       router.navigate(`/groups/${args.group.id}/players/${args.player.id}`),
     ),
-    Effect.flatMap(() => State.flatWith(getPlayer(args))),
+    Effect.flatMap(() =>
+      State.flatWith(s => Option.fromNullable(getPlayer(args)(s))),
+    ),
     Effect.flatMap(v =>
       State.on(root.at('playerForm')).set(getPlayerFormFromData(v)),
     ),

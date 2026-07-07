@@ -36,7 +36,7 @@ export default function ModalityScreen() {
   const isEnabled = useSelector(s =>
     Either.isRight(validateModalityForm(s.modalityForm)),
   )
-  const isEdit = useSelector(s => Option.isSome(s.modalityForm.id))
+  const isEdit = useSelector(s => s.modalityForm.id !== null)
   return (
     <SafeAreaView flex={1} edges={['bottom']}>
       <KeyboardAvoidingView>

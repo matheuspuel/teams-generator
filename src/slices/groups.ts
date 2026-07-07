@@ -40,29 +40,22 @@ const refOnGroups = State.on(root.at('groups'))
 export const getGroupsRecord = Optic.get(root.at('groups'))
 
 export const getGroup = (group: { id: Id }) =>
-  flow(getGroupsRecord, Record.get(group.id))
+  flow(getGroupsRecord, _ => _[group.id] ?? null)
 
 export const getModality =
   (modality: Modality.Reference) =>
-  (state: RootState): Option.Option<Modality> =>
-    modality._tag === 'StaticModality'
-      ? Array.findFirst(staticModalities, _ => _.id === modality.id)
-      : Array.findFirst(state.customModalities, _ => _.id === modality.id)
+  (state: RootState): Modality | null =>
+    (modality._tag === 'StaticModality'
+      ? staticModalities.find(_ => _.id === modality.id)
+      : state.customModalities.find(_ => _.id === modality.id)) ?? null
 
 export const getGroupModality =
   (args: { group: { id: Id } }) => (s: RootState) =>
-    pipe(
-      getGroup(args.group)(s),
-      Option.flatMap(g => getModality(g.modality)(s)),
-    )
+    pipe(getGroup(args.group)(s), g => (g ? getModality(g.modality)(s) : null))
 
 export const getPlayer =
   (args: { player: { id: Id }; group: { id: Id } }) => (s: RootState) =>
-    pipe(
-      getGroup(args.group)(s),
-      Option.map(g => g.players),
-      Option.flatMap(Array.findFirst(p => p.id === args.player.id)),
-    )
+    getGroup(args.group)(s)?.players.find(p => p.id === args.player.id) ?? null
 
 const addGroup = (group: Group) =>
   refOnGroups.update(gs => ({ ...gs, [group.id]: group }))
@@ -92,14 +85,13 @@ export const editGroup = (args: {
     Effect.Do,
     Effect.bind('prevModality', () =>
       State.with(s =>
-        pipe(
-          Record.get(s.groups, args.id),
-          Option.flatMap(prevGroup => getModality(prevGroup.modality)(s)),
+        pipe(s.groups[args.id], prevGroup =>
+          prevGroup ? getModality(prevGroup.modality)(s) : null,
         ),
       ),
     ),
     Effect.bind('nextModality', () =>
-      State.flatWith(getModality(args.modality)),
+      State.flatWith(s => Option.fromNullable(getModality(args.modality)(s))),
     ),
     Effect.flatMap(({ prevModality, nextModality }) =>
       refOnGroups.update(s =>
@@ -229,45 +221,45 @@ export const toggleAllPlayersActive =
 
 const adaptStaticModalitiesPosition =
   (args: { previous: StaticModality; next: StaticModality }) =>
-  (positionAbbreviation: Abbreviation): Option.Option<Position> =>
+  (positionAbbreviation: Abbreviation): Position | null =>
     args.previous.id === args.next.id
-      ? Option.none()
+      ? null
       : args.previous.id === soccer.id && args.next.id === futsal.id
         ? positionAbbreviation === soccerPositions.z.abbreviation
-          ? Option.some(futsalPositions.f)
+          ? futsalPositions.f
           : positionAbbreviation === soccerPositions.le.abbreviation
-            ? Option.some(futsalPositions.ae)
+            ? futsalPositions.ae
             : positionAbbreviation === soccerPositions.ld.abbreviation
-              ? Option.some(futsalPositions.ad)
+              ? futsalPositions.ad
               : positionAbbreviation === soccerPositions.v.abbreviation
-                ? Option.some(futsalPositions.f)
+                ? futsalPositions.f
                 : positionAbbreviation === soccerPositions.m.abbreviation
-                  ? Option.some(futsalPositions.p)
+                  ? futsalPositions.p
                   : positionAbbreviation === soccerPositions.a.abbreviation
-                    ? Option.some(futsalPositions.p)
-                    : Option.none()
+                    ? futsalPositions.p
+                    : null
         : args.previous.id === futsal.id && args.next.id === soccer.id
           ? positionAbbreviation === futsalPositions.f.abbreviation
-            ? Option.some(soccerPositions.z)
+            ? soccerPositions.z
             : positionAbbreviation === futsalPositions.ae.abbreviation
-              ? Option.some(soccerPositions.le)
+              ? soccerPositions.le
               : positionAbbreviation === futsalPositions.ad.abbreviation
-                ? Option.some(soccerPositions.ld)
+                ? soccerPositions.ld
                 : positionAbbreviation === futsalPositions.p.abbreviation
-                  ? Option.some(soccerPositions.a)
-                  : Option.none()
-          : Option.none()
+                  ? soccerPositions.a
+                  : null
+          : null
 
 export const adjustPlayerPosition =
   (args: {
-    prevModality: Option.Option<Modality>
+    prevModality: Modality | null
     nextModality:
       | { _tag: 'unchanged'; modality: StaticModality | CustomModality }
       | {
           _tag: 'edited'
           modality: CustomModality & {
             positions: NonEmptyReadonlyArray<
-              Position & { oldAbbreviation: Option.Option<Abbreviation> }
+              Position & { oldAbbreviation: Abbreviation | null }
             >
           }
         }
@@ -276,43 +268,43 @@ export const adjustPlayerPosition =
     ...player,
     positionAbbreviation: pipe(
       args.prevModality,
-      Option.flatMap(prevModality =>
-        args.nextModality._tag === 'edited'
-          ? Array.findFirst(args.nextModality.modality.positions, pos =>
-              Option.match(pos.oldAbbreviation, {
-                onNone: () => false,
-                onSome: _ => _ === player.positionAbbreviation,
-              }),
-            )
-          : args.nextModality.modality._tag === 'StaticModality' &&
-              prevModality._tag === 'StaticModality'
-            ? adaptStaticModalitiesPosition({
-                previous: prevModality,
-                next: args.nextModality.modality,
-              })(player.positionAbbreviation)
-            : Option.none(),
-      ),
-      Option.orElse(() =>
-        Array.findFirst(
-          args.nextModality.modality.positions,
+      prevModality =>
+        prevModality === null
+          ? null
+          : args.nextModality._tag === 'edited'
+            ? Array.findFirst(args.nextModality.modality.positions, pos =>
+                pos.oldAbbreviation === null
+                  ? false
+                  : pos.oldAbbreviation === player.positionAbbreviation,
+              ).pipe(Option.getOrNull)
+            : args.nextModality.modality._tag === 'StaticModality' &&
+                prevModality._tag === 'StaticModality'
+              ? adaptStaticModalitiesPosition({
+                  previous: prevModality,
+                  next: args.nextModality.modality,
+                })(player.positionAbbreviation)
+              : null,
+      v =>
+        v ??
+        args.nextModality.modality.positions.find(
           pos => pos.abbreviation === player.positionAbbreviation,
-        ),
-      ),
-      Option.orElse<Position>(() =>
-        args.nextModality._tag === 'unchanged' &&
+        ) ??
+        null,
+      v =>
+        v ??
+        (args.nextModality._tag === 'unchanged' &&
         args.nextModality.modality._tag === 'StaticModality'
           ? args.nextModality.modality.id === soccer.id
-            ? Option.some(soccerPositions.a)
+            ? soccerPositions.a
             : args.nextModality.modality.id === futsal.id
-              ? Option.some(futsalPositions.p)
+              ? futsalPositions.p
               : args.nextModality.modality.id === basketball.id
-                ? Option.some(basketballPositions.c)
+                ? basketballPositions.c
                 : args.nextModality.modality.id === volleyball.id
-                  ? Option.some(volleyballPositions.l)
-                  : Option.none()
-          : Option.none(),
-      ),
-      Option.getOrElse(() => args.nextModality.modality.positions[0]),
+                  ? volleyballPositions.l
+                  : null
+          : null),
+      _ => _ ?? args.nextModality.modality.positions[0],
       _ => _.abbreviation,
     ),
   })

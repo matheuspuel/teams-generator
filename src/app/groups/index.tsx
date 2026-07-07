@@ -2,17 +2,7 @@ import AddIcon from '@expo/material-symbols/add.xml'
 import DownloadIcon from '@expo/material-symbols/download.xml'
 import MoreVertIcon from '@expo/material-symbols/more_vert.xml'
 import SportsSoccerIcon from '@expo/material-symbols/sports_soccer.xml'
-import {
-  Array,
-  Data,
-  Effect,
-  flow,
-  Option,
-  pipe,
-  Record,
-  Runtime,
-  Tuple,
-} from 'effect'
+import { Array, Data, Effect, flow, pipe, Record, Runtime, Tuple } from 'effect'
 import { router, Stack } from 'expo-router'
 import { FlatList, Pressable, Txt, View } from 'src/components'
 import { BannerAd } from 'src/components/custom/BannerAd'
@@ -88,41 +78,37 @@ const Item = ({ id }: { id: Id }) => {
   const group = useSelector(s =>
     pipe(
       getGroup({ id })(s),
-      Option.map(({ name, modality }) =>
+      g =>
+        g &&
         Data.struct({
-          name,
-          modality: pipe(
-            getModality(modality)(s),
-            Option.map(_ => _.name),
-          ),
+          name: g.name,
+          modalityName: getModality(g.modality)(s)?.name ?? null,
         }),
-      ),
     ),
   )
-  return Option.match(group, {
-    onNone: () => <></>,
-    onSome: ({ name, modality }) => (
-      <Pressable
-        onPress={Effect.sync(() => router.navigate(`/groups/${id}`))}
-        p={12}
-        round={8}
-        shadow={1}
-        bg={Colors.card}
+  if (!group) return null
+  const { name, modalityName } = group
+  return (
+    <Pressable
+      onPress={Effect.sync(() => router.navigate(`/groups/${id}`))}
+      p={12}
+      round={8}
+      shadow={1}
+      bg={Colors.card}
+    >
+      <Txt
+        numberOfLines={1}
+        flex={1}
+        align="left"
+        weight={600}
+        color={Colors.text.secondary}
+        size={10}
       >
-        <Txt
-          numberOfLines={1}
-          flex={1}
-          align="left"
-          weight={600}
-          color={Colors.text.secondary}
-          size={10}
-        >
-          {Option.getOrElse(modality, () => '-')}
-        </Txt>
-        <Txt numberOfLines={1} flex={1} align="left" weight={600} size={16}>
-          {name}
-        </Txt>
-      </Pressable>
-    ),
-  })
+        {modalityName ?? '-'}
+      </Txt>
+      <Txt numberOfLines={1} flex={1} align="left" weight={600} size={16}>
+        {name}
+      </Txt>
+    </Pressable>
+  )
 }

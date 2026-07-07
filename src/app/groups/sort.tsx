@@ -1,4 +1,3 @@
-import { Option } from 'effect'
 import { MaterialCommunityIcons, Pressable, Txt, View } from 'src/components'
 import { CenterModal } from 'src/components/derivative/CenterModal'
 import { sortPlayersBy } from 'src/events/group'
@@ -15,47 +14,27 @@ export default function SortGroupScreen() {
         <FilterButton
           name={t('Name')}
           onPress={sortPlayersBy.name}
-          state={
-            mainSort._tag === 'name'
-              ? Option.some({ reverse: mainSort.reverse })
-              : Option.none()
-          }
+          state={mainSort._tag === 'name' ? mainSort : null}
         />
         <FilterButton
           name={t('Position')}
           onPress={sortPlayersBy.position}
-          state={
-            mainSort._tag === 'position'
-              ? Option.some({ reverse: mainSort.reverse })
-              : Option.none()
-          }
+          state={mainSort._tag === 'position' ? mainSort : null}
         />
         <FilterButton
           name={t('Rating')}
           onPress={sortPlayersBy.rating}
-          state={
-            mainSort._tag === 'rating'
-              ? Option.some({ reverse: mainSort.reverse })
-              : Option.none()
-          }
+          state={mainSort._tag === 'rating' ? mainSort : null}
         />
         <FilterButton
           name={t('Active')}
           onPress={sortPlayersBy.active}
-          state={
-            mainSort._tag === 'active'
-              ? Option.some({ reverse: mainSort.reverse })
-              : Option.none()
-          }
+          state={mainSort._tag === 'active' ? mainSort : null}
         />
         <FilterButton
           name={t('Date')}
           onPress={sortPlayersBy.date}
-          state={
-            mainSort._tag === 'date'
-              ? Option.some({ reverse: mainSort.reverse })
-              : Option.none()
-          }
+          state={mainSort._tag === 'date' ? mainSort : null}
         />
       </View>
     </CenterModal>
@@ -63,21 +42,18 @@ export default function SortGroupScreen() {
 }
 
 const FilterButton = (props: {
-  state: Option.Option<{ reverse: boolean }>
+  state: { reverse: boolean } | null
   onPress: AppEvent
   name: string
 }) => (
   <Pressable direction="row" align="center" p={16} onPress={props.onPress}>
     <View w={36}>
-      {Option.match(props.state, {
-        onNone: () => null,
-        onSome: ({ reverse }) => (
-          <MaterialCommunityIcons
-            name={reverse ? 'sort-descending' : 'sort-ascending'}
-            color={Colors.primary}
-          />
-        ),
-      })}
+      {props.state === null ? null : (
+        <MaterialCommunityIcons
+          name={props.state.reverse ? 'sort-descending' : 'sort-ascending'}
+          color={Colors.primary}
+        />
+      )}
     </View>
     <Txt flex={1} align="left">
       {props.name}

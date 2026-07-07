@@ -1,13 +1,4 @@
-import {
-  Option,
-  ParseResult,
-  Schema,
-  String,
-  flow,
-  identity,
-  pipe,
-} from 'effect'
-import { apply } from 'effect/Function'
+import { ParseResult, Schema, String, flow, pipe } from 'effect'
 
 type Endomorphism<A> = (_: A) => A
 
@@ -60,56 +51,42 @@ export const toHex = (color: Color): string =>
   byteToHex(color.blue) +
   byteToHex(color.opacity)
 
-const parseChar = (v: string): Option.Option<number> =>
+const parseChar = (v: string): number | null =>
   pipe(
     v.charCodeAt(0),
     n => (n >= 97 ? n - 97 + 10 : n >= 65 ? n - 65 + 10 : n - 48),
-    Option.liftPredicate(n => 0 <= n && n <= 15),
+    n => (0 <= n && n <= 15 ? n : null),
   )
 
-const parseByte = (v: string): Option.Option<Byte> =>
-  pipe(
-    Option.fromNullable(v[0]),
-    Option.flatMap(parseChar),
-    Option.flatMap(a =>
-      pipe(
-        Option.fromNullable(v[1]),
-        Option.flatMap(parseChar),
-        Option.map(b => a * 16 + b),
-      ),
-    ),
-  )
+const parseByte = (v: string): Byte | null => {
+  if (v[0] === undefined || v[1] === undefined) return null
+  const a = parseChar(v[0])
+  if (a === null) return null
+  const b = parseChar(v[1])
+  if (b === null) return null
+  return a * 16 + b
+}
 
 export const FromHex: Schema.Schema<Color, string> = Schema.transformOrFail(
   Schema.String,
   Color,
   {
-    decode: (v: string) =>
-      !v.startsWith('#')
+    decode: (v: string) => {
+      const result = (() => {
+        if (!v.startsWith('#')) return null
+        const r = parseByte(String.slice(1, 3)(v))
+        const g = parseByte(String.slice(3, 5)(v))
+        const b = parseByte(String.slice(5, 7)(v))
+        if (r === null || g === null || b === null) return null
+        const solid = color(r, g, b)
+        if (solid === null) return null
+        const opacity = parseByte(String.slice(7, 9)(v))
+        return opacity === null ? solid : withOpacity(opacity)(solid)
+      })()
+      return result === null
         ? ParseResult.fail(new ParseResult.Type(Color.ast, v))
-        : pipe(
-            Option.all([
-              parseByte(String.slice(1, 3)(v)),
-              parseByte(String.slice(3, 5)(v)),
-              parseByte(String.slice(5, 7)(v)),
-            ]),
-            Option.map(([r, g, b]) => color(r, g, b)),
-            Option.map(c =>
-              pipe(
-                parseByte(String.slice(7, 9)(v)),
-                Option.match({
-                  onNone: () => identity<Color>,
-                  onSome: withOpacity,
-                }),
-                apply(c),
-              ),
-            ),
-            Option.match({
-              onNone: () =>
-                ParseResult.fail(new ParseResult.Type(Color.ast, v)),
-              onSome: ParseResult.succeed,
-            }),
-          ),
+        : ParseResult.succeed(result)
+    },
     encode: flow(toHex, ParseResult.succeed),
   },
 )

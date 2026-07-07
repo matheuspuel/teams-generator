@@ -33,10 +33,10 @@ export const exportGroup = (group: { id: Id }) =>
   pipe(
     State.get,
     Effect.map(getGroup(group)),
-    Effect.flatten,
+    Effect.flatMap(Option.fromNullable),
     Effect.bindTo('group'),
     Effect.bind('modality', ({ group }) =>
-      State.flatWith(getModality(group.modality)),
+      State.flatWith(s => Option.fromNullable(getModality(group.modality)(s))),
     ),
     StateRef.query,
     Effect.bind('fileUri', ({ group }) => makeFileUri(group)),
@@ -67,7 +67,7 @@ export const importGroupFromDocumentPicker = () =>
 export const setupReceiveURLHandler = () =>
   pipe(
     Linking.getInitialURL(),
-    Effect.flatten,
+    Effect.flatMap(Option.fromNullable),
     Stream.catchAll(() => Stream.empty),
     Stream.concat(Linking.startLinkingStream()),
     Stream.map(url => ({ url })),

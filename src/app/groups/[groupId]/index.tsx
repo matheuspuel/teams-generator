@@ -5,14 +5,13 @@ import EditIcon from '@expo/material-symbols/edit.xml'
 import MoreVertIcon from '@expo/material-symbols/more_vert.xml'
 import SortIcon from '@expo/material-symbols/sort.xml'
 import UploadIcon from '@expo/material-symbols/upload.xml'
-import { Array, Data, Effect, flow, Option, pipe, Runtime } from 'effect'
-import { constant } from 'effect/Function'
+import { Array, Data, Effect, Option, pipe, Runtime } from 'effect'
 import { router, Stack, useLocalSearchParams } from 'expo-router'
 import { FlatList, Pressable, SafeAreaView, Txt, View } from 'src/components'
 import { Checkbox } from 'src/components/derivative/Checkbox'
 import { PreRender } from 'src/components/derivative/PreRender'
 import { SolidButton } from 'src/components/derivative/SolidButton'
-import { GroupOrder, Player, Position, Rating } from 'src/datatypes'
+import { GroupOrder, Position, Rating } from 'src/datatypes'
 import {
   openPlayer,
   startNewPlayer,
@@ -32,8 +31,10 @@ export default function GroupScreen() {
   const { groupId } = useLocalSearchParams<{ groupId: Id }>()
   const playersIds = useSelector(_ =>
     Option.gen(function* () {
-      const group = yield* getGroup({ id: groupId })(_)
-      const modality = yield* getGroupModality({ group: { id: groupId } })(_)
+      const group = yield* Option.fromNullable(getGroup({ id: groupId })(_))
+      const modality = yield* Option.fromNullable(
+        getGroupModality({ group: { id: groupId } })(_),
+      )
       return Array.sort(
         group.players,
         GroupOrder.toOrder(_.groupOrder)({ modality }),
@@ -136,81 +137,65 @@ const Item = ({ groupId, playerId }: { groupId: Id; playerId: Id }) => {
   const player = useSelector(s =>
     pipe(
       getPlayer({ group: { id: groupId }, player: { id: playerId } })(s),
-      Option.map(player => ({
-        ...player,
-        position: pipe(
-          getGroupModality({ group: { id: groupId } })(s),
-          Option.flatMap(m =>
-            Array.findFirst(
-              m.positions,
-              p => p.abbreviation === player.positionAbbreviation,
-            ),
+      player =>
+        player &&
+        Data.struct({
+          ...player,
+          position: pipe(getGroupModality({ group: { id: groupId } })(s), m =>
+            m == null
+              ? null
+              : (m.positions.find(
+                  p => p.abbreviation === player.positionAbbreviation,
+                ) ?? null),
           ),
-        ),
-      })),
-      Option.map(Data.struct),
+        }),
     ),
   )
-  return Option.match(player, {
-    onNone: () => <></>,
-    onSome: ({ active, name, position, rating }) => (
-      <Pressable
-        onPress={openPlayer({
+  if (!player) return null
+  const { active, name, position, rating } = player
+  return (
+    <Pressable
+      onPress={openPlayer({
+        group: { id: groupId },
+        player: { id: playerId },
+      })}
+      direction="row"
+      align="center"
+      gap={8}
+      round={8}
+      shadow={1}
+      bg={Colors.card}
+    >
+      <Checkbox
+        onToggle={togglePlayerActive({
           group: { id: groupId },
           player: { id: playerId },
         })}
-        direction="row"
-        align="center"
-        gap={8}
-        round={8}
-        shadow={1}
-        bg={Colors.card}
-      >
-        <Checkbox
-          onToggle={togglePlayerActive({
-            group: { id: groupId },
-            player: { id: playerId },
-          })}
-          isSelected={active}
-          m={8}
-          mr={-8}
-        />
-        <View
-          p={4}
-          round={12}
-          bg={Colors.opacity(0.5)(Colors.primary)}
-          minW={35}
-        >
-          <Txt align="center" size={18} weight={600} includeFontPadding={false}>
-            {Option.match(position, {
-              onNone: () => '-',
-              onSome: Position.toAbbreviationString,
-            })}
-          </Txt>
-        </View>
-        <Txt size={18} weight={600}>
-          {Rating.toString(rating)}
+        isSelected={active}
+        m={8}
+        mr={-8}
+      />
+      <View p={4} round={12} bg={Colors.opacity(0.5)(Colors.primary)} minW={35}>
+        <Txt align="center" size={18} weight={600} includeFontPadding={false}>
+          {position ? Position.toAbbreviationString(position) : '-'}
         </Txt>
-        <Txt my={8} numberOfLines={1}>
-          {name}
-        </Txt>
-      </Pressable>
-    ),
-  })
+      </View>
+      <Txt size={18} weight={600}>
+        {Rating.toString(rating)}
+      </Txt>
+      <Txt my={8} numberOfLines={1}>
+        {name}
+      </Txt>
+    </Pressable>
+  )
 }
 
 const ShuffleButton = () => {
   const { groupId } = useLocalSearchParams<{ groupId: Id }>()
   const numSelected = useSelector(
-    flow(
-      getGroup({ id: groupId }),
-      Option.match({
-        onNone: constant<Array<Player>>([]),
-        onSome: g => g.players,
-      }),
-      Array.filter(p => p.active),
-      Array.length,
-    ),
+    s =>
+      (getGroup({ id: groupId })(s)?.players ?? []).filter(p => p.active)
+        .length,
   )
   return (
     <SolidButton

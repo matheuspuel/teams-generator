@@ -1,4 +1,4 @@
-import { Effect, Option, pipe } from 'effect'
+import { Effect, pipe } from 'effect'
 import { router } from 'expo-router'
 import { Row, Txt, TxtContext, View } from 'src/components'
 import { CenterModal } from 'src/components/derivative/CenterModal'
@@ -14,26 +14,23 @@ export default function DeleteModalityView() {
   const modality = useSelector(s =>
     pipe(
       s.modalityForm.id,
-      Option.flatMap(id => getModality({ _tag: 'CustomModality', id })(s)),
+      id => id && getModality({ _tag: 'CustomModality', id })(s),
     ),
   )
   return (
     <CenterModal title={t('Delete modality')}>
       <View p={16}>
-        {Option.match(modality, {
-          onNone: () => null,
-          onSome: m => (
-            <TxtContext align="left">
-              <Txt align="left">{`${t('Want to delete the modality')} `}</Txt>
-              <Txt weight={600}>{m.name}</Txt>
-              <Txt>
-                {`? ${t(
-                  'The positions of the players of this modality will be lost',
-                )}.`}
-              </Txt>
-            </TxtContext>
-          ),
-        })}
+        {modality && (
+          <TxtContext align="left">
+            <Txt align="left">{`${t('Want to delete the modality')} `}</Txt>
+            <Txt weight={600}>{modality.name}</Txt>
+            <Txt>
+              {`? ${t(
+                'The positions of the players of this modality will be lost',
+              )}.`}
+            </Txt>
+          </TxtContext>
+        )}
       </View>
       <View borderWidthT={1} borderColor={Colors.opacity(0.375)(Colors.gray)} />
       <Row p={16} gap={8} justify="end">

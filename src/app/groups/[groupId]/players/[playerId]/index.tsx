@@ -1,5 +1,5 @@
 import DeleteIcon from '@expo/material-symbols/delete.xml'
-import { Array, Option, pipe, Runtime, String } from 'effect'
+import { Array, Runtime, String } from 'effect'
 import { router, Stack, useLocalSearchParams } from 'expo-router'
 import {
   Input,
@@ -112,12 +112,8 @@ const RatingField = () => {
 
 const PositionField = () => {
   const { groupId } = useLocalSearchParams<{ groupId: Id }>()
-  const positions = useSelector(s =>
-    pipe(
-      getGroupModality({ group: { id: groupId } })(s),
-      Option.map(m => m.positions),
-      Option.getOrElse(() => Array.empty()),
-    ),
+  const positions = useSelector(
+    s => getGroupModality({ group: { id: groupId } })(s)?.positions ?? [],
   )
   return (
     <View p={4}>
@@ -133,58 +129,49 @@ const PositionField = () => {
 
 const PositionItem = ({ abbreviation }: { abbreviation: Abbreviation }) => {
   const { groupId } = useLocalSearchParams<{ groupId: Id }>()
-  const position = useSelector(s =>
-    pipe(
-      getGroupModality({ group: { id: groupId } })(s),
-      Option.flatMap(m =>
-        Array.findFirst(m.positions, _ => _.abbreviation === abbreviation),
-      ),
-    ),
+  const position = useSelector(
+    s =>
+      getGroupModality({ group: { id: groupId } })(s)?.positions.find(
+        _ => _.abbreviation === abbreviation,
+      ) || null,
   )
   const isActive = useSelector(
     s => s.playerForm.positionAbbreviation === abbreviation,
   )
-  return Option.match(position, {
-    onNone: () => null,
-    onSome: position => (
-      <Pressable
-        key={position.abbreviation}
-        onPress={changePlayerPosition(position.abbreviation)}
-        py={4}
-        px={12}
-        round={8}
-        align="center"
-        direction="row"
-        bg={isActive ? Colors.opacity(0.125)(Colors.primary) : undefined}
-        rippleColor={Colors.primary}
-        rippleOpacity={0.1}
-      >
-        <View w={30}>
-          {isActive ? (
-            <MaterialIcons name="check" color={Colors.primary} />
-          ) : null}
+  if (!position) return null
+  return (
+    <Pressable
+      key={position.abbreviation}
+      onPress={changePlayerPosition(position.abbreviation)}
+      py={4}
+      px={12}
+      round={8}
+      align="center"
+      direction="row"
+      bg={isActive ? Colors.opacity(0.125)(Colors.primary) : undefined}
+      rippleColor={Colors.primary}
+      rippleOpacity={0.1}
+    >
+      <View w={30}>
+        {isActive ? (
+          <MaterialIcons name="check" color={Colors.primary} />
+        ) : null}
+      </View>
+      <View minW={70} align="center">
+        <View
+          p={4}
+          round={12}
+          bg={Colors.opacity(0.5)(Colors.primary)}
+          minW={35}
+        >
+          <Txt align="center" size={18} weight={600} includeFontPadding={false}>
+            {Position.toAbbreviationString(position)}
+          </Txt>
         </View>
-        <View minW={70} align="center">
-          <View
-            p={4}
-            round={12}
-            bg={Colors.opacity(0.5)(Colors.primary)}
-            minW={35}
-          >
-            <Txt
-              align="center"
-              size={18}
-              weight={600}
-              includeFontPadding={false}
-            >
-              {Position.toAbbreviationString(position)}
-            </Txt>
-          </View>
-        </View>
-        <Txt flex={1} align="center" weight={500}>
-          {position.name}
-        </Txt>
-      </Pressable>
-    ),
-  })
+      </View>
+      <Txt flex={1} align="center" weight={500}>
+        {position.name}
+      </Txt>
+    </Pressable>
+  )
 }

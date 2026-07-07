@@ -1,27 +1,27 @@
-import { Array, Either, Option, Schema } from 'effect'
+import { Array, Either, Schema } from 'effect'
 import { NonEmptyReadonlyArray } from 'effect/Array'
 import { Abbreviation } from 'src/datatypes/Position'
 import { Id } from 'src/utils/Entity'
 import { NonEmptyString } from 'src/utils/datatypes/NonEmptyString'
 
 export type ModalityForm = {
-  id: Option.Option<Id>
+  id: Id | null
   name: string
   positions: NonEmptyReadonlyArray<{
-    oldAbbreviation: Option.Option<Abbreviation>
+    oldAbbreviation: Abbreviation | null
     abbreviation: string
     name: string
   }>
 }
 
 export const blankPositionForm: ModalityForm['positions'][number] = {
-  oldAbbreviation: Option.none(),
+  oldAbbreviation: null,
   abbreviation: '',
   name: '',
 }
 
 export const initialModalityForm: ModalityForm = {
-  id: Option.none(),
+  id: null,
   name: '',
   positions: [blankPositionForm],
 }

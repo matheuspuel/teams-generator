@@ -66,16 +66,12 @@ export const getResultRatingDeviance = (teams: Array<Array<Player>>): number =>
     teams,
     Array.flatten,
     Player.getRatingAverage,
-    Option.getOrElse(() => 0),
+    _ => _ ?? 0,
     overallAverage =>
       pipe(
         teams,
         Array.map(
-          flow(
-            Player.getRatingAverage,
-            Option.getOrElse(() => 0),
-            deviance(overallAverage),
-          ),
+          flow(Player.getRatingAverage, _ => _ ?? 0, deviance(overallAverage)),
         ),
         sumAll,
         fixFloat,

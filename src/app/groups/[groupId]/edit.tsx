@@ -1,4 +1,4 @@
-import { Effect, Option, String } from 'effect'
+import { Effect, String } from 'effect'
 import { router, Stack } from 'expo-router'
 import {
   Input,
@@ -27,7 +27,7 @@ import { Colors } from 'src/services/Theme'
 
 export default function GroupEditScreen() {
   const isEnabled = useSelector(s => String.isNonEmpty(s.groupForm.name.trim()))
-  const isEdit = useSelector(s => Option.isSome(s.groupForm.id))
+  const isEdit = useSelector(s => s.groupForm.id !== null)
   return (
     <SafeAreaView flex={1} edges={['bottom']}>
       <KeyboardAvoidingView>

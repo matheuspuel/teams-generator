@@ -34,9 +34,7 @@ export const isActive = (p: Player) => p.active
 
 const getPositionAndIndex =
   (args: { modality: Modality }) =>
-  (
-    player: Player,
-  ): Option.Option<{ position: Position.Position; index: number }> =>
+  (player: Player): { position: Position.Position; index: number } | null =>
     pipe(
       identity<
         NonEmptyReadonlyArray<Position.StaticPosition | Position.CustomPosition>
@@ -46,16 +44,14 @@ const getPositionAndIndex =
           ? Option.some({ position: po, index: i })
           : Option.none(),
       ),
+      Option.getOrNull,
     )
 
 export const PositionOrd = (args: {
   modality: Modality
 }): Order.Order<Player> =>
   Order.mapInput(Number.Order, p =>
-    pipe(
-      getPositionAndIndex(args)(p),
-      Option.match({ onNone: () => -1, onSome: _ => _.index }),
-    ),
+    pipe(getPositionAndIndex(args)(p), _ => (_ === null ? -1 : _.index)),
   )
 
 export const NameOrd: Order.Order<Player> = pipe(
@@ -80,16 +76,14 @@ export const CreatedAtOrder: Order.Order<Player> = pipe(
 
 export const position =
   (args: { modality: Modality }) =>
-  (player: Player): Option.Option<Position.Position> =>
-    Option.map(getPositionAndIndex(args)(player), _ => _.position)
+  (player: Player): Position.Position | null =>
+    getPositionAndIndex(args)(player)?.position ?? null
 
 export const toString =
   (args: { modality: Modality }): ((player: Player) => string) =>
   p =>
-    `${Rating.toString(p.rating)} - ${p.name} (${pipe(
-      position(args)(p),
-      Option.map(Position.toAbbreviationString),
-      Option.getOrElse(() => '-'),
+    `${Rating.toString(p.rating)} - ${p.name} (${pipe(position(args)(p), _ =>
+      _ ? Position.toAbbreviationString(_) : '-',
     )})`
 
 export const listToString =
@@ -115,10 +109,8 @@ export const teamListToString =
 export const toStringSensitive =
   (args: { modality: Modality }) =>
   (player: Player): string =>
-    `${player.name} (${pipe(
-      position(args)(player),
-      Option.map(Position.toAbbreviationString),
-      Option.getOrElse(() => '-'),
+    `${player.name} (${pipe(position(args)(player), _ =>
+      _ ? Position.toAbbreviationString(_) : '-',
     )})`
 
 export const listToStringSensitive =
@@ -144,9 +136,7 @@ export const teamListToStringSensitive =
 export const getRatingTotal: (players: Array<Player>) => number = players =>
   sumAll(Array.map(players, p => p.rating))
 
-export const getRatingAverage: (
-  players: Array<Player>,
-) => Option.Option<number> = flow(
+export const getRatingAverage: (players: Array<Player>) => number | null = flow(
   Array.map(p => p.rating),
   average,
 )

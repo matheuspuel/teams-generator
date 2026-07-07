@@ -1,13 +1,7 @@
 import { Array as A, Equivalence, Option } from 'effect'
-import { NonEmptyReadonlyArray } from 'effect/Array'
 import { constant, pipe } from 'effect/Function'
 
 export * from 'effect/Array'
-
-export const toNonEmpty = <A>(
-  array: ReadonlyArray<A>,
-): Option.Option<NonEmptyReadonlyArray<A>> =>
-  A.match(array, { onEmpty: () => Option.none(), onNonEmpty: Option.some })
 
 export const getUnorderedEquivalence = <A>(
   Eq: Equivalence.Equivalence<A>,

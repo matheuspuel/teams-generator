@@ -1,4 +1,4 @@
-import { Chunk, Effect, Layer, Option, Stream, pipe } from 'effect'
+import { Chunk, Effect, Layer, Stream, pipe } from 'effect'
 import * as ExpoLinking from 'expo-linking'
 import { Linking } from '.'
 
@@ -11,8 +11,7 @@ export const LinkingDefault = Linking.context({
   getInitialURL: () =>
     pipe(
       Effect.tryPromise(() => ExpoLinking.getInitialURL()),
-      Effect.map(Option.fromNullable),
-      Effect.orElseSucceed(() => Option.none()),
+      Effect.orElseSucceed(() => null),
     ),
   startLinkingStream: () =>
     Stream.async<string>(

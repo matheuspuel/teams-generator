@@ -13,7 +13,7 @@ export const startCreateGroup = pipe(
   ),
   Effect.flatMap(m =>
     State.on(root.at('groupForm')).set({
-      id: Option.none(),
+      id: null,
       name: '',
       modality: m,
     }),
@@ -24,11 +24,10 @@ export const startCreateGroup = pipe(
 
 export const startEditGroup = (group: { id: Id }) =>
   pipe(
-    State.with(getGroup(group)),
-    Effect.flatten,
+    State.flatWith(s => Option.fromNullable(getGroup(group)(s))),
     Effect.tap(g =>
       State.on(root.at('groupForm')).set({
-        id: Option.some(g.id),
+        id: g.id,
         name: g.name,
         modality: g.modality,
       }),
@@ -56,10 +55,7 @@ export const saveGroup = pipe(
     () => Option.none(),
   ),
   Effect.flatMap(g =>
-    Option.match(g.id, {
-      onNone: () => createGroup(g),
-      onSome: id => editGroup({ ...g, id }),
-    }),
+    g.id === null ? createGroup(g) : editGroup({ ...g, id: g.id }),
   ),
   Effect.tap(() => Effect.sync(() => router.back())),
   StateRef.execute,

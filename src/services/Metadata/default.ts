@@ -1,4 +1,4 @@
-import { Effect, Layer, Option, Ref, flow, identity, pipe } from 'effect'
+import { Effect, Layer, Option, Ref, flow, pipe } from 'effect'
 import * as Application from 'expo-application'
 import * as Device from 'expo-device'
 import packageJSON from 'src/../package.json'
@@ -15,7 +15,7 @@ export const MetadataServiceDefault = Effect.gen(function* () {
     get: () =>
       pipe(
         Ref.get(metadataRef),
-        Effect.flatMap(identity),
+        Effect.flatMap(Option.fromNullable),
         Effect.orElse(() =>
           pipe(
             Effect.all({
@@ -39,15 +39,13 @@ export const MetadataServiceDefault = Effect.gen(function* () {
               launch: Effect.map(IdGenerator.generate(), id => ({ id })),
               staticMeta: getStaticMetadata,
             }),
-            Effect.map(
-              (v): Metadata => ({
-                ...v.staticMeta,
-                installation: { id: v.installation.id },
-                isFirstLaunch: v.installation.isFirstLaunch,
-                launch: v.launch,
-              }),
-            ),
-            Effect.tap(v => pipe(Option.some(v), x => Ref.set(metadataRef, x))),
+            Effect.map((v): Metadata => ({
+              ...v.staticMeta,
+              installation: { id: v.installation.id },
+              isFirstLaunch: v.installation.isFirstLaunch,
+              launch: v.launch,
+            })),
+            Effect.tap(v => Ref.set(metadataRef, v)),
           ),
         ),
         Effect.provide(context),
@@ -63,9 +61,7 @@ export const MetadataServiceDefault = Effect.gen(function* () {
   ),
 )
 
-const metadataRef = Ref.make<Option.Option<Metadata>>(Option.none()).pipe(
-  Effect.runSync,
-)
+const metadataRef = Ref.make<Metadata | null>(null).pipe(Effect.runSync)
 
 const getStaticMetadata = Effect.sync(() => ({
   device: {

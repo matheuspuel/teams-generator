@@ -1,12 +1,10 @@
-import { Effect, Option } from 'effect'
+import { Effect } from 'effect'
 import { UnknownException } from 'effect/Cause'
 
 export class AsyncStorage extends Effect.Tag('AsyncStorage')<
   AsyncStorage,
   {
-    getItem: (
-      key: string,
-    ) => Effect.Effect<Option.Option<string>, UnknownException>
+    getItem: (key: string) => Effect.Effect<string | null, UnknownException>
     setItem: ({
       key,
       value,

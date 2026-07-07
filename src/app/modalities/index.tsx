@@ -1,5 +1,5 @@
 import AddIcon from '@expo/material-symbols/add.xml'
-import { Data, Option, Runtime } from 'effect'
+import { Data, Runtime } from 'effect'
 import { Stack } from 'expo-router'
 import { FlatList, MaterialIcons, Pressable, Txt, View } from 'src/components'
 import { Modality } from 'src/datatypes'
@@ -43,35 +43,31 @@ export default function ModalityListScreen() {
 }
 
 const Item = ({ modality }: { modality: Modality.Reference }) => {
-  const name = useSelector(s =>
-    getModality(modality)(s).pipe(Option.map(m => m.name)),
+  const name = useSelector(s => getModality(modality)(s)?.name ?? null)
+  if (!name) return null
+  return (
+    <Pressable
+      onPress={openModality(modality)}
+      direction="row"
+      align="center"
+      p={12}
+      round={8}
+      shadow={1}
+      bg={Colors.card}
+      isEnabled={modality._tag === 'CustomModality'}
+    >
+      <View minW={30} />
+      <Txt flex={1} numberOfLines={1} size={16} weight={500}>
+        {name}
+      </Txt>
+      <View minW={30} h={24} align="end">
+        {modality._tag === 'CustomModality' ? null : (
+          <MaterialIcons
+            name="lock"
+            color={Colors.opacity(0.375)(Colors.gray)}
+          />
+        )}
+      </View>
+    </Pressable>
   )
-  return Option.match(name, {
-    onNone: () => <></>,
-    onSome: name => (
-      <Pressable
-        onPress={openModality(modality)}
-        direction="row"
-        align="center"
-        p={12}
-        round={8}
-        shadow={1}
-        bg={Colors.card}
-        isEnabled={modality._tag === 'CustomModality'}
-      >
-        <View minW={30} />
-        <Txt flex={1} numberOfLines={1} size={16} weight={500}>
-          {name}
-        </Txt>
-        <View minW={30} h={24} align="end">
-          {modality._tag === 'CustomModality' ? null : (
-            <MaterialIcons
-              name="lock"
-              color={Colors.opacity(0.375)(Colors.gray)}
-            />
-          )}
-        </View>
-      </Pressable>
-    ),
-  })
 }

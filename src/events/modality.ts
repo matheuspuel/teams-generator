@@ -11,7 +11,6 @@ import {
   initialModalityForm,
   validateModalityForm,
 } from 'src/slices/modalityForm'
-import { toNonEmpty } from 'src/utils/fp/Array'
 import { nonEmptyIndex } from 'src/utils/fp/Optic'
 
 export const goToModality = StateRef.execute(
@@ -31,18 +30,18 @@ export const newModality = StateRef.execute(
 export const openModality = (modality: Modality.Reference) =>
   pipe(
     State.with(getModality(modality)),
-    Effect.flatten,
+    Effect.flatMap(Option.fromNullable),
     Effect.flatMap(m =>
       m._tag === 'StaticModality' ? Option.none() : Option.some(m),
     ),
     Effect.tap(m =>
       State.on(root.at('modalityForm')).set({
-        id: Option.some(m.id),
+        id: m.id,
         name: m.name,
         positions: Array.map(m.positions, p => ({
           abbreviation: p.abbreviation.toUpperCase(),
           name: p.name,
-          oldAbbreviation: Option.some(p.abbreviation),
+          oldAbbreviation: p.abbreviation,
         })),
       }),
     ),
@@ -59,7 +58,7 @@ export const submitModality = pipe(
   Effect.flatMap(f =>
     Effect.all({
       _tag: Effect.succeed('CustomModality' as const),
-      id: Effect.orElse(f.id, () => IdGenerator.generate()),
+      id: f.id ? Effect.succeed(f.id) : IdGenerator.generate(),
       name: Effect.succeed(f.name),
       positions: Effect.succeed(f.positions),
     }),
@@ -77,10 +76,9 @@ export const submitModality = pipe(
     ),
   ),
   Effect.tap(({ nextModality, prevModality }) =>
-    pipe(
-      prevModality,
-      Effect.tap(prevModality =>
-        State.on(root.at('groups')).update(
+    prevModality === null
+      ? Effect.void
+      : State.on(root.at('groups')).update(
           Record.map(g =>
             g.modality.id === prevModality.id
               ? {
@@ -88,7 +86,7 @@ export const submitModality = pipe(
                   players: Array.map(
                     g.players,
                     adjustPlayerPosition({
-                      prevModality: Option.some(prevModality),
+                      prevModality,
                       nextModality: {
                         _tag: 'edited',
                         modality: nextModality,
@@ -99,9 +97,6 @@ export const submitModality = pipe(
               : g,
           ),
         ),
-      ),
-      Effect.optionFromOptional,
-    ),
   ),
   StateRef.execute,
   Effect.tap(() => Effect.sync(() => router.back())),
@@ -110,21 +105,19 @@ export const submitModality = pipe(
 
 export const openRemoveModality = pipe(
   State.with(s => s.modalityForm.id),
-  Effect.flatMap(
-    Option.match({
-      onNone: () => Effect.sync(() => router.back()),
-      onSome: id =>
-        Effect.sync(() => router.navigate(`/modalities/${id}/delete`)),
-    }),
-  ),
   StateRef.execute,
+  Effect.flatMap(id =>
+    id === null
+      ? Effect.sync(() => router.back())
+      : Effect.sync(() => router.navigate(`/modalities/${id}/delete`)),
+  ),
 )
 
 export const removeModality = pipe(
   State.with(s => s.modalityForm.id),
-  Effect.flatten,
+  Effect.flatMap(Option.fromNullable),
   Effect.flatMap(id => State.with(getModality({ _tag: 'CustomModality', id }))),
-  Effect.flatten,
+  Effect.flatMap(Option.fromNullable),
   Effect.bindTo('prevModality'),
   Effect.tap(({ prevModality }) =>
     State.on(root.at('customModalities')).update(
@@ -149,7 +142,7 @@ export const removeModality = pipe(
               players: Array.map(
                 g.players,
                 adjustPlayerPosition({
-                  prevModality: Option.some(prevModality),
+                  prevModality,
                   nextModality: {
                     _tag: 'unchanged',
                     modality: nextModality,
@@ -183,8 +176,10 @@ export const removeModalityPosition = (index: number) =>
     State.on(root.at('modalityForm').at('positions')).update(
       flow(
         Array.remove(index),
-        toNonEmpty,
-        Option.getOrElse(() => Array.of(blankPositionForm)),
+        Array.match({
+          onEmpty: () => [blankPositionForm],
+          onNonEmpty: _ => _,
+        }),
       ),
     ),
   )

@@ -1,10 +1,10 @@
-import { Context, Effect, Option, Stream } from 'effect'
+import { Context, Effect, Stream } from 'effect'
 
 export class Linking extends Context.Tag('Linking')<
   Linking,
   {
     openURL: (url: string) => Effect.Effect<void>
-    getInitialURL: () => Effect.Effect<Option.Option<string>>
+    getInitialURL: () => Effect.Effect<string | null>
     startLinkingStream: () => Stream.Stream<string>
   }
 >() {

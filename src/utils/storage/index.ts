@@ -1,11 +1,10 @@
-import { Effect, Option, Schema, flow, identity, pipe } from 'effect'
+import { Effect, Schema, flow, identity, pipe } from 'effect'
 import { SimpleStorage } from './simpleStorage'
 
 export type Storage<A> = {
   get: () => Effect.Effect<A, unknown>
   set: (value: A) => Effect.Effect<void, unknown>
   remove: () => Effect.Effect<void, void>
-  setOrRemove: (value: Option.Option<A>) => Effect.Effect<void, unknown>
 }
 
 export const createStorage: <A, I>(args: {
@@ -24,13 +23,4 @@ export const createStorage: <A, I>(args: {
     Effect.flatMap(SimpleStorage.set(key)),
   ),
   remove: () => SimpleStorage.remove(key),
-  setOrRemove: flow(
-    Option.match({
-      onNone: () => SimpleStorage.remove(key),
-      onSome: flow(
-        Schema.encodeEither(schema),
-        Effect.flatMap(SimpleStorage.set(key)),
-      ),
-    }),
-  ),
 })

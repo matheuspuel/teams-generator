@@ -1,4 +1,4 @@
-import { Effect, pipe } from 'effect'
+import { Effect, Option, pipe } from 'effect'
 import { Player } from 'src/datatypes'
 import { t } from 'src/i18n'
 import { root } from 'src/model/optic'
@@ -18,7 +18,9 @@ export const shareResult = (args: { group: { id: Id } }) =>
   pipe(
     Effect.all({
       result: State.flatWith(s => s.result),
-      modality: State.flatWith(getGroupModality(args)),
+      modality: State.flatWith(s =>
+        Option.fromNullable(getGroupModality(args)(s)),
+      ),
     }),
     StateRef.query,
     Effect.flatMap(({ result, modality }) =>

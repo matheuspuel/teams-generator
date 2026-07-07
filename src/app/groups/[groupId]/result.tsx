@@ -44,54 +44,50 @@ export default function ResultScreen() {
   React.useEffect(() => {
     return () => void interruptResultGeneration.pipe(Runtime.runFork(runtime))
   }, [])
-  return Option.match(modality, {
-    onNone: () => null,
-    onSome: modality => (
-      <View flex={1}>
-        <Stack.Title>{t('Result')}</Stack.Title>
-        <Stack.Toolbar placement="right">
-          <Stack.Toolbar.Button
-            onPress={() =>
-              toggleRatingVisibility.pipe(Runtime.runFork(runtime))
-            }
-            icon={isRatingVisible ? VisibilityIcon : VisibilityOffIcon}
-          />
-          <Stack.Toolbar.Button
-            onPress={() =>
-              shareResult({ group: { id: groupId } }).pipe(
-                Runtime.runFork(runtime),
-              )
-            }
-            icon={ShareIcon}
-          />
-        </Stack.Toolbar>
-        <ScrollView contentContainerStyle={{ flexGrow: 1, gap: 8, p: 8 }}>
-          {pipe(
-            result.poll,
-            Effect.runSync,
-            Exit.fromOption,
-            Exit.flatten,
-            Exit.match({
-              onFailure: () => (
-                <View flex={1} justify="center">
-                  <ActivityIndicator color={Colors.primary} />
-                </View>
-              ),
-              onSuccess: Array.map((t, i) => (
-                <TeamItem
-                  key={i.toString()}
-                  index={i}
-                  players={t}
-                  modality={modality}
-                  isRatingVisible={isRatingVisible}
-                />
-              )),
-            }),
-          )}
-        </ScrollView>
-      </View>
-    ),
-  })
+  if (!modality) return null
+  return (
+    <View flex={1}>
+      <Stack.Title>{t('Result')}</Stack.Title>
+      <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Button
+          onPress={() => toggleRatingVisibility.pipe(Runtime.runFork(runtime))}
+          icon={isRatingVisible ? VisibilityIcon : VisibilityOffIcon}
+        />
+        <Stack.Toolbar.Button
+          onPress={() =>
+            shareResult({ group: { id: groupId } }).pipe(
+              Runtime.runFork(runtime),
+            )
+          }
+          icon={ShareIcon}
+        />
+      </Stack.Toolbar>
+      <ScrollView contentContainerStyle={{ flexGrow: 1, gap: 8, p: 8 }}>
+        {pipe(
+          result.poll,
+          Effect.runSync,
+          Exit.fromOption,
+          Exit.flatten,
+          Exit.match({
+            onFailure: () => (
+              <View flex={1} justify="center">
+                <ActivityIndicator color={Colors.primary} />
+              </View>
+            ),
+            onSuccess: Array.map((t, i) => (
+              <TeamItem
+                key={i.toString()}
+                index={i}
+                players={t}
+                modality={modality}
+                isRatingVisible={isRatingVisible}
+              />
+            )),
+          }),
+        )}
+      </ScrollView>
+    </View>
+  )
 }
 
 const TeamItem = (props: {
