@@ -2,7 +2,7 @@ import AddIcon from '@expo/material-symbols/add.xml'
 import DownloadIcon from '@expo/material-symbols/download.xml'
 import MoreVertIcon from '@expo/material-symbols/more_vert.xml'
 import SportsSoccerIcon from '@expo/material-symbols/sports_soccer.xml'
-import { Array, Data, Effect, flow, pipe, Record, Runtime, Tuple } from 'effect'
+import { Array, Data, flow, pipe, Record, Tuple } from 'effect'
 import { router, Stack } from 'expo-router'
 import { FlatList, Pressable, Txt, View } from 'src/components'
 import { BannerAd } from 'src/components/custom/BannerAd'
@@ -29,19 +29,20 @@ export default function GroupListScreen() {
     ),
   )
   return (
-    <View flex={1} onLayout={hideSplashScreen}>
+    <View
+      flex={1}
+      onLayout={() => hideSplashScreen.pipe(runtime.runPromiseExit)}
+    >
       <Stack.Title>{t('Groups')}</Stack.Title>
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button
-          onPress={() => startCreateGroup.pipe(Runtime.runPromiseExit(runtime))}
+          onPress={() => startCreateGroup.pipe(runtime.runPromiseExit)}
           icon={AddIcon}
         />
         <Stack.Toolbar.Menu icon={MoreVertIcon}>
           <Stack.Toolbar.MenuAction
             onPress={() =>
-              importGroupFromDocumentPicker().pipe(
-                Runtime.runPromiseExit(runtime),
-              )
+              importGroupFromDocumentPicker().pipe(runtime.runPromiseExit)
             }
             icon={DownloadIcon}
           >
@@ -90,7 +91,7 @@ const Item = ({ id }: { id: Id }) => {
   const { name, modalityName } = group
   return (
     <Pressable
-      onPress={Effect.sync(() => router.navigate(`/groups/${id}`))}
+      onPress={() => router.navigate(`/groups/${id}`)}
       p={12}
       round={8}
       shadow={1}

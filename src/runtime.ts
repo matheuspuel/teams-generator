@@ -1,4 +1,4 @@
-import { Effect, Layer, LogLevel, Logger, Runtime, pipe } from 'effect'
+import { Layer, LogLevel, Logger, ManagedRuntime, pipe } from 'effect'
 import { Alert } from 'src/services/Alert'
 import { DocumentPicker } from 'src/services/DocumentPicker'
 import { FileSystem } from 'src/services/FileSystem'
@@ -56,14 +56,5 @@ const appLayer = pipe(
   ),
 )
 
-export type AppRuntime = Runtime.Runtime<AppRequirements>
-
-export const runtime: AppRuntime = pipe(
-  Layer.toRuntime(appLayer),
-  Effect.scoped,
-  Effect.cached,
-  Effect.flatten,
-  Effect.runSync,
-)
-
-export type AppEvent = Effect.Effect<unknown, never, AppRequirements>
+export type AppRuntime = typeof runtime
+export const runtime = ManagedRuntime.make(appLayer)

@@ -1,12 +1,11 @@
 import { MaterialIcons, Pressable, View } from 'src/components'
-import { AppEvent } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
 import { PressableProps } from '../react-native/Pressable'
 import { UIColor } from '../types'
 
 export const Checkbox = (
   props: Omit<PressableProps, 'onPress' | 'children'> & {
-    onToggle: AppEvent
+    onToggle: () => void
     isSelected: boolean
     pressPadding?: number
     color?: UIColor

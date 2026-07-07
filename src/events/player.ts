@@ -56,6 +56,6 @@ export const savePlayer = (args: {
         : createPlayer({ group: args.group, player: form }),
     ),
     StateRef.execute,
-    Effect.flatMap(() => Effect.sync(() => router.back())),
+    Effect.tap(() => router.back()),
     Effect.ignore,
   )

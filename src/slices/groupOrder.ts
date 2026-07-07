@@ -22,5 +22,5 @@ const selectGroupOrder =
 export const onSelectGroupOrder = flow(
   selectGroupOrder,
   State.on(root.at('groupOrder')).update,
-  Effect.tap(Effect.sync(() => router.back())),
+  Effect.tap(() => router.back()),
 )

@@ -1,4 +1,4 @@
-import { Effect, String } from 'effect'
+import { String } from 'effect'
 import { router, Stack } from 'expo-router'
 import {
   Input,
@@ -14,6 +14,7 @@ import {
 import { FormLabel } from 'src/components/derivative/FormLabel'
 import { GhostButton } from 'src/components/derivative/GhostButton'
 import { SolidButton } from 'src/components/derivative/SolidButton'
+import { useRuntime } from 'src/contexts/Runtime'
 import { Modality } from 'src/datatypes'
 import { staticModalities } from 'src/datatypes/Modality'
 import {
@@ -26,6 +27,7 @@ import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 
 export default function GroupEditScreen() {
+  const runtime = useRuntime()
   const isEnabled = useSelector(s => String.isNonEmpty(s.groupForm.name.trim()))
   const isEdit = useSelector(s => s.groupForm.id !== null)
   return (
@@ -42,7 +44,7 @@ export default function GroupEditScreen() {
           </View>
         </ScrollView>
         <SolidButton
-          onPress={saveGroup}
+          onPress={() => saveGroup.pipe(runtime.runPromiseExit)}
           isEnabled={isEnabled}
           p={16}
           round={0}
@@ -78,7 +80,7 @@ const ModalityField = () => {
       <Row justify="space-between" align="center">
         <FormLabel>{t('Modality/Sport')}</FormLabel>
         <GhostButton
-          onPress={Effect.sync(() => router.navigate(`/modalities`))}
+          onPress={() => router.navigate(`/modalities`)}
           alignSelf="center"
         >
           <Row align="center" gap={8}>
@@ -97,11 +99,12 @@ const ModalityField = () => {
 }
 
 const ModalityItem = (props: Modality) => {
+  const runtime = useRuntime()
   const isActive = useSelector(s => s.groupForm.modality.id === props.id)
   return (
     <Pressable
       key={props.id}
-      onPress={changeGroupModality(props)}
+      onPress={() => changeGroupModality(props).pipe(runtime.runPromiseExit)}
       py={4}
       px={12}
       round={8}

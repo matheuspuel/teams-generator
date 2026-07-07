@@ -1,4 +1,4 @@
-import { Runtime, pipe } from 'effect'
+import { pipe } from 'effect'
 import * as React from 'react'
 import { View as RawView } from 'react-native'
 import {
@@ -12,9 +12,7 @@ import {
   RoundProps,
   UIColor,
 } from 'src/components/types'
-import { useRuntime } from 'src/contexts/Runtime'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
-import { AppEvent } from 'src/runtime'
 
 export type ViewStyleProps = PaddingProps &
   MarginProps &
@@ -37,21 +35,16 @@ export type ViewStyleProps = PaddingProps &
   }
 
 export type ViewProps = ViewStyleProps & {
-  onLayout?: AppEvent
+  onLayout?: () => void
   children?: React.ReactNode
 }
 
 export const View = (props: ViewProps = {}) => {
-  const runtime = useRuntime()
   const getRawColor = useThemeGetRawColor()
   return (
     <RawView
       children={props.children}
-      onLayout={
-        props.onLayout &&
-        (() =>
-          void (props.onLayout && Runtime.runPromise(runtime)(props.onLayout)))
-      }
+      onLayout={props.onLayout}
       style={{
         padding: props?.p,
         paddingHorizontal: props?.px,

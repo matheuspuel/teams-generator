@@ -1,16 +1,7 @@
 import ShareIcon from '@expo/material-symbols/share.xml'
 import VisibilityIcon from '@expo/material-symbols/visibility.xml'
 import VisibilityOffIcon from '@expo/material-symbols/visibility_off.xml'
-import {
-  Array,
-  Effect,
-  Exit,
-  Option,
-  Order,
-  Runtime,
-  identity,
-  pipe,
-} from 'effect'
+import { Array, Effect, Exit, Option, Order, identity, pipe } from 'effect'
 import { NonEmptyReadonlyArray } from 'effect/Array'
 import { Stack, useLocalSearchParams } from 'expo-router'
 import * as React from 'react'
@@ -42,7 +33,7 @@ export default function ResultScreen() {
   )
   const isRatingVisible = useSelector(s => s.preferences.isRatingVisible)
   React.useEffect(() => {
-    return () => void interruptResultGeneration.pipe(Runtime.runFork(runtime))
+    return () => void interruptResultGeneration.pipe(runtime.runPromiseExit)
   }, [])
   if (!modality) return null
   return (
@@ -50,14 +41,12 @@ export default function ResultScreen() {
       <Stack.Title>{t('Result')}</Stack.Title>
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button
-          onPress={() => toggleRatingVisibility.pipe(Runtime.runFork(runtime))}
+          onPress={() => toggleRatingVisibility.pipe(runtime.runPromiseExit)}
           icon={isRatingVisible ? VisibilityIcon : VisibilityOffIcon}
         />
         <Stack.Toolbar.Button
           onPress={() =>
-            shareResult({ group: { id: groupId } }).pipe(
-              Runtime.runFork(runtime),
-            )
+            shareResult({ group: { id: groupId } }).pipe(runtime.runPromiseExit)
           }
           icon={ShareIcon}
         />

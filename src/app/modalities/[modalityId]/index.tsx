@@ -1,5 +1,5 @@
 import DeleteIcon from '@expo/material-symbols/delete.xml'
-import { Array, Either, Option, Runtime } from 'effect'
+import { Array, Either, Option } from 'effect'
 import { Stack } from 'expo-router'
 import { Platform } from 'react-native'
 import {
@@ -45,9 +45,7 @@ export default function ModalityScreen() {
         </Stack.Title>
         <Stack.Toolbar placement="right">
           <Stack.Toolbar.Button
-            onPress={() =>
-              openRemoveModality.pipe(Runtime.runPromiseExit(runtime))
-            }
+            onPress={() => openRemoveModality.pipe(runtime.runPromiseExit)}
             icon={DeleteIcon}
           />
         </Stack.Toolbar>
@@ -61,7 +59,7 @@ export default function ModalityScreen() {
           </View>
         </ScrollView>
         <SolidButton
-          onPress={submitModality}
+          onPress={() => submitModality.pipe(runtime.runPromiseExit)}
           isEnabled={isEnabled}
           p={16}
           round={0}
@@ -107,7 +105,10 @@ const PositionsField = () => {
           <PositionItem key={i} index={i} />
         ))}
       </View>
-      <GhostButton onPress={addModalityPosition} alignSelf="center">
+      <GhostButton
+        onPress={() => addModalityPosition.pipe(runtime.runPromiseExit)}
+        alignSelf="center"
+      >
         <Row align="center">
           <MaterialIcons name="add" />
           <Txt>{t('New position')}</Txt>
@@ -121,11 +122,13 @@ const PositionItem = ({ index }: { index: number }) => (
   <Row align="center">
     <PositionAbbreviationField index={index} />
     <PositionNameField index={index} />
-    <BorderlessButton onPress={liftModalityPosition(index)}>
+    <BorderlessButton
+      onPress={() => liftModalityPosition(index).pipe(runtime.runPromiseExit)}
+    >
       <MaterialIcons name="keyboard-arrow-up" />
     </BorderlessButton>
     <BorderlessButton
-      onPress={removeModalityPosition(index)}
+      onPress={() => removeModalityPosition(index).pipe(runtime.runPromiseExit)}
       color={Colors.error}
     >
       <MaterialIcons name="delete" />

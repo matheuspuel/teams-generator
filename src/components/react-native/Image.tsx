@@ -1,8 +1,7 @@
-import { Effect, Runtime, pipe } from 'effect'
+import { Effect, pipe } from 'effect'
 import * as React from 'react'
 import { Image as RNImage_ } from 'react-native'
 import { UIColor } from 'src/components/types'
-import { useRuntime } from 'src/contexts/Runtime'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
 import * as Match from 'src/utils/fp/Match'
 
@@ -28,7 +27,6 @@ export type ImageProps = ImageStyleProps & {
 type ImageStatus = 'loading' | 'success' | 'error'
 
 export const Image = (props: ImageProps) => {
-  const runtime = useRuntime()
   const getThemeRawColor = useThemeGetRawColor()
   const [status, setStatus] = React.useState<ImageStatus>('loading')
   React.useEffect(() => {
@@ -49,7 +47,7 @@ export const Image = (props: ImageProps) => {
           ),
         _: () => Effect.void,
       }),
-      Runtime.runPromise(runtime),
+      Effect.runPromise,
     )
   }, [props.src._tag === 'uri' ? props.src.uri : undefined])
   return (

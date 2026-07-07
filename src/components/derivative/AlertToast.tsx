@@ -1,6 +1,7 @@
 import { absurd } from 'effect'
 import Animated, { SlideInRight, SlideOutRight } from 'react-native-reanimated'
 import { MaterialIcons, Pressable, Txt, View } from 'src/components'
+import { useRuntime } from 'src/contexts/Runtime'
 import { dismissAlert } from 'src/events/core'
 import { useSelector } from 'src/hooks/useSelector'
 import { Colors } from 'src/services/Theme'
@@ -8,6 +9,7 @@ import { Colors } from 'src/services/Theme'
 const ANIMATION_DURATION = 200
 
 export const AlertToast = () => {
+  const runtime = useRuntime()
   const alert = useSelector(s => s.alert)
   return alert === null ? null : (
     <View absolute={{ top: 0, bottom: 0, left: 0, right: 0 }} justify="end">
@@ -16,7 +18,7 @@ export const AlertToast = () => {
         exiting={SlideOutRight.duration(ANIMATION_DURATION)}
       >
         <Pressable
-          onPress={dismissAlert}
+          onPress={() => dismissAlert.pipe(runtime.runPromiseExit)}
           bg={Colors.card}
           m={16}
           mb={48}

@@ -1,10 +1,9 @@
-import { Runtime, pipe } from 'effect'
+import { pipe } from 'effect'
 import * as React from 'react'
 import {
   Edges,
   SafeAreaView as SafeAreaView_,
 } from 'react-native-safe-area-context'
-import { useRuntime } from 'src/contexts/Runtime'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
 import { ViewProps } from '../react-native/View'
 
@@ -15,16 +14,11 @@ export type SafeAreaViewProps = ViewProps & {
 }
 
 export const SafeAreaView = (props: SafeAreaViewProps = {}) => {
-  const runtime = useRuntime()
   const getRawColor = useThemeGetRawColor()
   return (
     <SafeAreaView_
       children={props.children}
-      onLayout={
-        props.onLayout &&
-        (() =>
-          void (props.onLayout && Runtime.runPromise(runtime)(props.onLayout)))
-      }
+      onLayout={props.onLayout}
       mode={props.mode}
       edges={props.edges}
       style={{

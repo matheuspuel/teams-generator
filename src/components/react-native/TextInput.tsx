@@ -1,4 +1,4 @@
-import { pipe, Runtime } from 'effect'
+import { pipe } from 'effect'
 import * as React from 'react'
 import { TextInput as RNTextInput_ } from 'react-native-gesture-handler'
 import {
@@ -9,9 +9,7 @@ import {
   RoundProps,
   UIColor,
 } from 'src/components/types'
-import { useRuntime } from 'src/contexts/Runtime'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
-import { AppEvent } from 'src/runtime'
 
 export type TextInputStyleProps = PaddingProps &
   MarginProps &
@@ -28,9 +26,9 @@ export type TextInputStyleProps = PaddingProps &
 
 export type TextInputProps = TextInputStyleProps & {
   value: string
-  onChange: (value: string) => AppEvent
-  onFocus?: AppEvent
-  onBlur?: AppEvent
+  onChange: (value: string) => void
+  onFocus?: () => void
+  onBlur?: () => void
   ref?: React.RefObject<RNTextInput_>
   autoFocus?: boolean
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters'
@@ -45,21 +43,19 @@ export type TextInputProps = TextInputStyleProps & {
 }
 
 export const TextInput = (props: TextInputProps) => {
-  const runtime = useRuntime()
   const getRawColor = useThemeGetRawColor()
   const [isFocused, setIsFocused] = React.useState(false)
   return (
     <RNTextInput_
       value={props.value}
-      onChangeText={t => void Runtime.runSync(runtime)(props.onChange(t))}
+      onChangeText={props.onChange}
       onFocus={() => {
         setIsFocused(true)
-        if (props.onFocus)
-          return void Runtime.runPromise(runtime)(props.onFocus)
+        if (props.onFocus) props.onFocus()
       }}
       onBlur={() => {
         setIsFocused(false)
-        if (props.onBlur) return void Runtime.runPromise(runtime)(props.onBlur)
+        if (props.onBlur) props.onBlur()
       }}
       ref={props.ref}
       autoFocus={props.autoFocus}

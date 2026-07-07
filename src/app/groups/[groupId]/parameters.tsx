@@ -1,4 +1,4 @@
-import { Effect, Match, pipe, Schema } from 'effect'
+import { Match, pipe, Schema } from 'effect'
 import { router, useLocalSearchParams } from 'expo-router'
 import { MaterialIcons, Pressable, Row, Txt, View } from 'src/components'
 import { BorderlessButton } from 'src/components/derivative/BorderlessButton'
@@ -6,6 +6,7 @@ import { CenterModal } from 'src/components/derivative/CenterModal'
 import { Checkbox } from 'src/components/derivative/Checkbox'
 import { GhostButton } from 'src/components/derivative/GhostButton'
 import { SolidButton } from 'src/components/derivative/SolidButton'
+import { useRuntime } from 'src/contexts/Runtime'
 import { Parameters } from 'src/datatypes/Parameters'
 import {
   decrementTeamsCount,
@@ -22,6 +23,7 @@ import { Id } from 'src/utils/Entity'
 
 export default function ParametersScreen() {
   const { groupId } = useLocalSearchParams<{ groupId: Id }>()
+  const runtime = useRuntime()
   const parameters = useSelector(
     s => s.parameters,
     Schema.equivalence(Parameters),
@@ -30,7 +32,9 @@ export default function ParametersScreen() {
     <CenterModal title={t('Parameters')} m={24}>
       <View p={16}>
         <Row align="center">
-          <BorderlessButton onPress={decrementTeamsCount}>
+          <BorderlessButton
+            onPress={() => decrementTeamsCount.pipe(runtime.runPromiseExit)}
+          >
             <MaterialIcons name="remove" />
           </BorderlessButton>
           <Txt p={8} weight={600}>
@@ -42,11 +46,13 @@ export default function ParametersScreen() {
               }),
             )}
           </Txt>
-          <BorderlessButton onPress={incrementTeamsCount}>
+          <BorderlessButton
+            onPress={() => incrementTeamsCount.pipe(runtime.runPromiseExit)}
+          >
             <MaterialIcons name="add" />
           </BorderlessButton>
           <GhostButton
-            onPress={toggleTeamsCountType}
+            onPress={() => toggleTeamsCountType.pipe(runtime.runPromiseExit)}
             flex={1}
             direction="row"
             align="center"
@@ -68,7 +74,7 @@ export default function ParametersScreen() {
           </GhostButton>
         </Row>
         <Pressable
-          onPress={togglePositionParameter}
+          onPress={() => togglePositionParameter.pipe(runtime.runPromiseExit)}
           direction="row"
           align="center"
           p={8}
@@ -76,7 +82,9 @@ export default function ParametersScreen() {
           bg={Colors.opacity(0)(Colors.white)}
         >
           <Checkbox
-            onToggle={togglePositionParameter}
+            onToggle={() =>
+              togglePositionParameter.pipe(runtime.runPromiseExit)
+            }
             isSelected={parameters.position}
           />
           <Txt ml={8} size={14}>
@@ -84,7 +92,7 @@ export default function ParametersScreen() {
           </Txt>
         </Pressable>
         <Pressable
-          onPress={toggleRatingParameter}
+          onPress={() => toggleRatingParameter.pipe(runtime.runPromiseExit)}
           direction="row"
           align="center"
           p={8}
@@ -92,7 +100,7 @@ export default function ParametersScreen() {
           bg={Colors.opacity(0)(Colors.white)}
         >
           <Checkbox
-            onToggle={toggleRatingParameter}
+            onToggle={() => toggleRatingParameter.pipe(runtime.runPromiseExit)}
             isSelected={parameters.rating}
           />
           <Txt ml={8} size={14}>
@@ -102,10 +110,16 @@ export default function ParametersScreen() {
       </View>
       <View borderWidthT={1} borderColor={Colors.opacity(0.375)(Colors.gray)} />
       <Row p={16} gap={8} justify="end">
-        <GhostButton onPress={Effect.sync(() => router.back())}>
+        <GhostButton onPress={() => router.back()}>
           <Txt>{t('Cancel')}</Txt>
         </GhostButton>
-        <SolidButton onPress={generateResult({ group: { id: groupId } })}>
+        <SolidButton
+          onPress={() =>
+            generateResult({ group: { id: groupId } }).pipe(
+              runtime.runPromiseExit,
+            )
+          }
+        >
           <Txt>{t('Generate teams')}</Txt>
         </SolidButton>
       </Row>

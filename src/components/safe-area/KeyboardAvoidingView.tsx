@@ -1,10 +1,9 @@
-import { Runtime, pipe } from 'effect'
+import { pipe } from 'effect'
 import * as React from 'react'
 import {
   KeyboardAvoidingView as KeyboardAvoidingView_,
   Platform,
 } from 'react-native'
-import { useRuntime } from 'src/contexts/Runtime'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
 import { ViewProps } from '../react-native/View'
 
@@ -14,15 +13,10 @@ export type KeyboardAvoidingViewProps = ViewProps & {
 }
 
 export const KeyboardAvoidingView = (props: KeyboardAvoidingViewProps) => {
-  const runtime = useRuntime()
   const getRawColor = useThemeGetRawColor()
   return (
     <KeyboardAvoidingView_
-      onLayout={
-        props.onLayout &&
-        (() =>
-          void (props.onLayout && Runtime.runPromise(runtime)(props.onLayout)))
-      }
+      onLayout={props.onLayout}
       // behavior: props.behavior,
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       contentContainerStyle={{ flexGrow: 1 }}

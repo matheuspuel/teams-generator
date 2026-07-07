@@ -1,4 +1,3 @@
-import { Effect } from 'effect'
 import {
   BannerAdSize,
   BannerAd as RNGMABannerAd,
@@ -24,10 +23,10 @@ export const BannerAd = () => {
       <RNGMABannerAd
         unitId={adUnitId}
         size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-        onAdLoaded={() => isLoaded.set(true).pipe(Effect.runSync)}
+        onAdLoaded={() => isLoaded.set(true)}
       />
       <Pressable
-        onPress={isDismissed.set(true)}
+        onPress={() => isDismissed.set(true)}
         absolute={{ top: 0, right: 0 }}
         p={2}
       >

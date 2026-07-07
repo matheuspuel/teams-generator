@@ -21,9 +21,6 @@ import { blankPlayerForm, getPlayerFormFromData } from 'src/slices/playerForm'
 import { generateResult as generateResult_ } from 'src/slices/result'
 import { Id } from 'src/utils/Entity'
 
-export const openGroupMenu = (group: { id: Id }) =>
-  Effect.sync(() => router.navigate(`/groups/${group.id}/menu`))
-
 export const sortPlayersBy = {
   name: StateRef.execute(onSelectGroupOrder('name')),
   position: StateRef.execute(onSelectGroupOrder('position')),
@@ -53,10 +50,8 @@ export const generateResult = (args: { group: { id: Id } }) =>
     yield* interruptResultGeneration
     yield* Effect.gen(function* () {
       yield* State.on(root.at('result')).set(Fiber.never)
-      yield* Effect.sync(() => router.back())
-      yield* Effect.sync(() =>
-        router.navigate(`/groups/${args.group.id}/result`),
-      )
+      router.back()
+      router.navigate(`/groups/${args.group.id}/result`)
     }).pipe(StateRef.execute)
     yield* Effect.sleep(100)
     yield* generateResult_(args)
@@ -66,40 +61,29 @@ export const deleteGroup = (group: { id: Id }) =>
   pipe(
     deleteGroup_(group),
     StateRef.execute,
-    Effect.tap(() => Effect.sync(() => router.back())),
-    Effect.tap(() => Effect.sync(() => router.back())),
-    Effect.tap(() => Effect.sync(() => router.back())),
+    Effect.tap(() => router.back()),
+    Effect.tap(() => router.back()),
+    Effect.tap(() => router.back()),
     Effect.ignore,
   )
 
 export const startNewPlayer = (args: { group: { id: Id } }) =>
-  pipe(
-    Effect.sync(() =>
-      router.navigate(`/groups/${args.group.id}/players/create`),
-    ),
-    Effect.flatMap(() =>
-      State.flatWith(s => Option.fromNullable(getGroupModality(args)(s))),
-    ),
-    Effect.tap(m =>
-      State.on(root.at('playerForm')).set(blankPlayerForm({ modality: m })),
-    ),
-    StateRef.execute,
-  ).pipe(Effect.ignore)
+  Effect.gen(function* () {
+    router.navigate(`/groups/${args.group.id}/players/create`)
+    const modality = yield* State.flatWith(s =>
+      Option.fromNullable(getGroupModality(args)(s)),
+    )
+    yield* State.on(root.at('playerForm')).set(blankPlayerForm({ modality }))
+  }).pipe(StateRef.execute, Effect.ignore)
 
 export const openPlayer = (args: { group: { id: Id }; player: { id: Id } }) =>
-  pipe(
-    Effect.sync(() =>
-      router.navigate(`/groups/${args.group.id}/players/${args.player.id}`),
-    ),
-    Effect.flatMap(() =>
-      State.flatWith(s => Option.fromNullable(getPlayer(args)(s))),
-    ),
-    Effect.flatMap(v =>
-      State.on(root.at('playerForm')).set(getPlayerFormFromData(v)),
-    ),
-    StateRef.execute,
-    Effect.ignore,
-  )
+  Effect.gen(function* () {
+    router.navigate(`/groups/${args.group.id}/players/${args.player.id}`)
+    const player = yield* State.flatWith(s =>
+      Option.fromNullable(getPlayer(args)(s)),
+    )
+    yield* State.on(root.at('playerForm')).set(getPlayerFormFromData(player))
+  }).pipe(StateRef.execute, Effect.ignore)
 
 export const togglePlayerActive = (args: {
   group: { id: Id }

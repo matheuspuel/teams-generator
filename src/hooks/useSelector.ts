@@ -1,4 +1,4 @@
-import { Effect, Equal, Equivalence, Runtime } from 'effect'
+import { Effect, Equal, Equivalence } from 'effect'
 import { useRuntime } from 'src/contexts/Runtime'
 import { RootState } from 'src/model'
 import { AppRuntime } from 'src/runtime'
@@ -30,10 +30,10 @@ export const useSelectorComplete = <A>({
     onChange => {
       const subscription = StateRef.react
         .subscribe(() => Effect.sync(onChange))
-        .pipe(Runtime.runSync(runtime))
-      return () => subscription.unsubscribe().pipe(Runtime.runSync(runtime))
+        .pipe(runtime.runSync)
+      return () => subscription.unsubscribe().pipe(runtime.runSync)
     },
-    () => StateRef.get.pipe(Runtime.runSync(runtime)),
+    () => StateRef.get.pipe(runtime.runSync),
     undefined,
     selector,
     equivalence,

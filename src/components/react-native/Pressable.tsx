@@ -1,4 +1,4 @@
-import { Runtime, pipe } from 'effect'
+import { pipe } from 'effect'
 import * as React from 'react'
 import { BorderlessButton, RectButton } from 'react-native-gesture-handler'
 import {
@@ -10,9 +10,7 @@ import {
   PaddingProps,
   UIColor,
 } from 'src/components/types'
-import { useRuntime } from 'src/contexts/Runtime'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
-import { AppEvent } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
 
 export type PressableStyleProps = PaddingProps &
@@ -33,7 +31,7 @@ export type PressableStyleProps = PaddingProps &
   }
 
 export type PressableProps = PressableStyleProps & {
-  onPress: AppEvent
+  onPress: () => void
   isEnabled?: boolean
   rippleColor?: UIColor
   rippleOpacity?: number
@@ -43,17 +41,12 @@ export type PressableProps = PressableStyleProps & {
 }
 
 export const Pressable = (props: PressableProps) => {
-  const runtime = useRuntime()
   const getRawColor = useThemeGetRawColor()
   const Component = props.borderless ? BorderlessButton : RectButton
   return (
     <Component
       children={props.children}
-      onPress={
-        props.isEnabled !== false
-          ? () => void Runtime.runPromise(runtime)(props.onPress)
-          : undefined
-      }
+      onPress={props.isEnabled !== false ? props.onPress : undefined}
       rippleColor={
         props.isEnabled !== false
           ? props.rippleColor

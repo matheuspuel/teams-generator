@@ -1,4 +1,3 @@
-import { Effect } from 'effect'
 import { router, Stack } from 'expo-router'
 import { MaterialIcons, Pressable, Row, Txt, View } from 'src/components'
 import { Colors } from 'src/services/Theme'
@@ -9,7 +8,7 @@ export const CenterModal = (props: {
   children: React.ReactNode
 }) => (
   <Pressable
-    onPress={Effect.sync(() => router.back())}
+    onPress={() => router.back()}
     flex={1}
     justify="center"
     bg={Colors.opacity(0.375)(Colors.black)}
@@ -17,7 +16,7 @@ export const CenterModal = (props: {
     rippleOpacity={0}
   >
     <Pressable
-      onPress={Effect.void}
+      onPress={() => {}}
       m={props.m ?? 48}
       round={8}
       bg={Colors.card}
@@ -51,7 +50,7 @@ const Header = (props: { title: string }) => (
     <Txt flex={1} align="left" m={8} size={16} weight={600}>
       {props.title}
     </Txt>
-    <Pressable p={8} round={4} onPress={Effect.sync(() => router.back())}>
+    <Pressable p={8} round={4} onPress={() => router.back()}>
       <MaterialIcons name="close" color={Colors.gray} />
     </Pressable>
   </Row>

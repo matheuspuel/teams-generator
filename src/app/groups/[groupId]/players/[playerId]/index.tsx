@@ -1,5 +1,5 @@
 import DeleteIcon from '@expo/material-symbols/delete.xml'
-import { Array, Runtime, String } from 'effect'
+import { Array, String } from 'effect'
 import { router, Stack, useLocalSearchParams } from 'expo-router'
 import {
   Input,
@@ -47,7 +47,7 @@ export default function PlayerScreen() {
                 deletePlayer({
                   group: { id: groupId },
                   player: { id: playerId },
-                }).pipe(Runtime.runPromiseExit(runtime))
+                }).pipe(runtime.runPromiseExit)
               }
               router.back()
             }}
@@ -65,10 +65,12 @@ export default function PlayerScreen() {
           </View>
         </ScrollView>
         <SolidButton
-          onPress={savePlayer({
-            group: { id: groupId },
-            player: playerId ? { id: playerId } : null,
-          })}
+          onPress={() =>
+            savePlayer({
+              group: { id: groupId },
+              player: playerId ? { id: playerId } : null,
+            }).pipe(runtime.runPromiseExit)
+          }
           isEnabled={String.isNonEmpty(name.trim())}
           p={16}
           round={0}
@@ -87,7 +89,7 @@ const NameField = ({ name }: { name: string }) => (
     <Input
       placeholder={t('Ex: Jack')}
       value={name}
-      onChange={changePlayerName}
+      onChange={_ => changePlayerName(_).pipe(runtime.runPromiseExit)}
       autoFocus={true}
     />
   </View>
@@ -104,7 +106,7 @@ const RatingField = () => {
       <RatingSlider
         initialPercentage={rating / 10}
         step={0.05}
-        onChange={changePlayerRating}
+        onChange={_ => changePlayerRating(_).pipe(runtime.runPromiseExit)}
       />
     </View>
   )
@@ -142,7 +144,9 @@ const PositionItem = ({ abbreviation }: { abbreviation: Abbreviation }) => {
   return (
     <Pressable
       key={position.abbreviation}
-      onPress={changePlayerPosition(position.abbreviation)}
+      onPress={() =>
+        changePlayerPosition(position.abbreviation).pipe(runtime.runPromiseExit)
+      }
       py={4}
       px={12}
       round={8}

@@ -1,4 +1,3 @@
-import { Runtime } from 'effect'
 import * as React from 'react'
 import { View as View_ } from 'react-native'
 import {
@@ -14,22 +13,20 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import { Txt, View } from 'src/components'
-import { useRuntime } from 'src/contexts/Runtime'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
 import { Rating } from 'src/datatypes'
-import { AppEvent } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
 
 export type RatingSliderProps = {
   initialPercentage: number
   step: number
-  onChange: (percentage: number) => AppEvent
+  onChange: (percentage: number) => void
 }
 
 export const RatingSlider = ({
   initialPercentage,
   step,
-  onChange: onChange_,
+  onChange,
 }: RatingSliderProps) => {
   const paddingHorizontal = 16
   const paddingVertical = 25
@@ -40,7 +37,6 @@ export const RatingSlider = ({
   const thumbColor = Colors.primary
   const [width, setWidth] = React.useState(0)
   const position = useSharedValue(0)
-  const runtime = useRuntime()
   const getRawColor = useThemeGetRawColor()
 
   const getPosition = (
@@ -61,8 +57,6 @@ export const RatingSlider = ({
     const v = p / width
     return Math.round(v / step) * step
   }
-
-  const onChange = (n: number) => Runtime.runPromise(runtime)(onChange_(n))
 
   const gesture = Gesture.Pan()
     .onBegin(e => {

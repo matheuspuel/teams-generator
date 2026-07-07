@@ -13,18 +13,8 @@ import {
 } from 'src/slices/modalityForm'
 import { nonEmptyIndex } from 'src/utils/fp/Optic'
 
-export const goToModality = StateRef.execute(
-  Effect.all([
-    Effect.sync(() => router.back()),
-    Effect.sync(() => router.navigate(`/modalities`)),
-  ]),
-)
-
 export const newModality = StateRef.execute(
-  Effect.all([
-    State.on(root.at('modalityForm')).set(initialModalityForm),
-    Effect.sync(() => router.navigate(`/modalities/create`)),
-  ]),
+  State.on(root.at('modalityForm')).set(initialModalityForm),
 )
 
 export const openModality = (modality: Modality.Reference) =>
@@ -45,9 +35,7 @@ export const openModality = (modality: Modality.Reference) =>
         })),
       }),
     ),
-    Effect.tap(() =>
-      Effect.sync(() => router.navigate(`/modalities/${modality.id}`)),
-    ),
+    Effect.tap(() => router.navigate(`/modalities/${modality.id}`)),
     StateRef.execute,
     Effect.ignore,
   )
@@ -99,17 +87,15 @@ export const submitModality = pipe(
         ),
   ),
   StateRef.execute,
-  Effect.tap(() => Effect.sync(() => router.back())),
+  Effect.tap(() => router.back()),
   Effect.ignore,
 )
 
 export const openRemoveModality = pipe(
   State.with(s => s.modalityForm.id),
   StateRef.execute,
-  Effect.flatMap(id =>
-    id === null
-      ? Effect.sync(() => router.back())
-      : Effect.sync(() => router.navigate(`/modalities/${id}/delete`)),
+  Effect.tap(id =>
+    id === null ? router.back() : router.navigate(`/modalities/${id}/delete`),
   ),
 )
 
@@ -154,8 +140,8 @@ export const removeModality = pipe(
       ),
     ),
   ),
-  Effect.tap(() => Effect.sync(() => router.back())),
-  Effect.tap(() => Effect.sync(() => router.back())),
+  Effect.tap(() => router.back()),
+  Effect.tap(() => router.back()),
   StateRef.execute,
   Effect.ignore,
 )

@@ -1,4 +1,4 @@
-import { Effect, Option, Runtime, pipe } from 'effect'
+import { Effect, Option, pipe } from 'effect'
 import * as React from 'react'
 import { SafeAreaProvider as RawSafeAreaProvider_ } from 'react-native-safe-area-context'
 import { UIColor } from 'src/components/types'
@@ -21,7 +21,7 @@ export const SafeAreaProvider = (props: SafeAreaProviderProps) => {
       initialMetrics={pipe(
         SafeAreaService.initialMetrics(),
         Effect.map(Option.getOrUndefined),
-        Runtime.runSync(runtime),
+        runtime.runSync,
       )}
       style={{
         backgroundColor: props?.bg ? getRawColor(props.bg) : undefined,

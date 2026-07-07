@@ -32,7 +32,7 @@ export const startEditGroup = (group: { id: Id }) =>
         modality: g.modality,
       }),
     ),
-    Effect.tap(_ => Effect.sync(() => router.navigate(`/groups/${_.id}/edit`))),
+    Effect.tap(_ => router.navigate(`/groups/${_.id}/edit`)),
     StateRef.execute,
     Effect.ignore,
   )
@@ -57,7 +57,7 @@ export const saveGroup = pipe(
   Effect.flatMap(g =>
     g.id === null ? createGroup(g) : editGroup({ ...g, id: g.id }),
   ),
-  Effect.tap(() => Effect.sync(() => router.back())),
+  Effect.tap(() => router.back()),
   StateRef.execute,
   Effect.ignore,
 )

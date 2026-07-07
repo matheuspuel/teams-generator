@@ -5,7 +5,7 @@ import EditIcon from '@expo/material-symbols/edit.xml'
 import MoreVertIcon from '@expo/material-symbols/more_vert.xml'
 import SortIcon from '@expo/material-symbols/sort.xml'
 import UploadIcon from '@expo/material-symbols/upload.xml'
-import { Array, Data, Effect, Option, pipe, Runtime } from 'effect'
+import { Array, Data, Option, pipe } from 'effect'
 import { router, Stack, useLocalSearchParams } from 'expo-router'
 import { FlatList, Pressable, SafeAreaView, Txt, View } from 'src/components'
 import { Checkbox } from 'src/components/derivative/Checkbox'
@@ -51,7 +51,7 @@ export default function GroupScreen() {
         <Stack.Toolbar.Button
           onPress={() =>
             startNewPlayer({ group: { id: groupId } }).pipe(
-              Runtime.runPromiseExit(runtime),
+              runtime.runPromiseExit,
             )
           }
           icon={AddIcon}
@@ -60,7 +60,7 @@ export default function GroupScreen() {
           <Stack.Toolbar.MenuAction
             onPress={() =>
               toggleAllPlayers({ group: { id: groupId } }).pipe(
-                Runtime.runPromiseExit(runtime),
+                runtime.runPromiseExit,
               )
             }
             icon={CheckBoxIcon}
@@ -75,7 +75,7 @@ export default function GroupScreen() {
           </Stack.Toolbar.MenuAction>
           <Stack.Toolbar.MenuAction
             onPress={() =>
-              exportGroup({ id: groupId }).pipe(Runtime.runPromiseExit(runtime))
+              exportGroup({ id: groupId }).pipe(runtime.runPromiseExit)
             }
             icon={UploadIcon}
           >
@@ -83,9 +83,7 @@ export default function GroupScreen() {
           </Stack.Toolbar.MenuAction>
           <Stack.Toolbar.MenuAction
             onPress={() =>
-              startEditGroup({ id: groupId }).pipe(
-                Runtime.runPromiseExit(runtime),
-              )
+              startEditGroup({ id: groupId }).pipe(runtime.runPromiseExit)
             }
             icon={EditIcon}
           >
@@ -155,10 +153,12 @@ const Item = ({ groupId, playerId }: { groupId: Id; playerId: Id }) => {
   const { active, name, position, rating } = player
   return (
     <Pressable
-      onPress={openPlayer({
-        group: { id: groupId },
-        player: { id: playerId },
-      })}
+      onPress={() =>
+        openPlayer({
+          group: { id: groupId },
+          player: { id: playerId },
+        }).pipe(runtime.runPromiseExit)
+      }
       direction="row"
       align="center"
       gap={8}
@@ -167,10 +167,12 @@ const Item = ({ groupId, playerId }: { groupId: Id; playerId: Id }) => {
       bg={Colors.card}
     >
       <Checkbox
-        onToggle={togglePlayerActive({
-          group: { id: groupId },
-          player: { id: playerId },
-        })}
+        onToggle={() =>
+          togglePlayerActive({
+            group: { id: groupId },
+            player: { id: playerId },
+          }).pipe(runtime.runPromiseExit)
+        }
         isSelected={active}
         m={8}
         mr={-8}
@@ -199,9 +201,7 @@ const ShuffleButton = () => {
   )
   return (
     <SolidButton
-      onPress={Effect.sync(() =>
-        router.navigate(`/groups/${groupId}/parameters`),
-      )}
+      onPress={() => router.navigate(`/groups/${groupId}/parameters`)}
       p={16}
       round={0}
       color={Colors.header}
