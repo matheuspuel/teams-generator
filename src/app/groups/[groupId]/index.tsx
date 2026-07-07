@@ -5,7 +5,7 @@ import EditIcon from '@expo/material-symbols/edit.xml'
 import MoreVertIcon from '@expo/material-symbols/more_vert.xml'
 import SortIcon from '@expo/material-symbols/sort.xml'
 import UploadIcon from '@expo/material-symbols/upload.xml'
-import { Array, Data, flow, Option, pipe, Runtime } from 'effect'
+import { Array, Data, Effect, flow, Option, pipe, Runtime } from 'effect'
 import { constant } from 'effect/Function'
 import { router, Stack, useLocalSearchParams } from 'expo-router'
 import { FlatList, Pressable, SafeAreaView, Txt, View } from 'src/components'
@@ -14,7 +14,6 @@ import { PreRender } from 'src/components/derivative/PreRender'
 import { SolidButton } from 'src/components/derivative/SolidButton'
 import { GroupOrder, Player, Position, Rating } from 'src/datatypes'
 import {
-  openParameters,
   openPlayer,
   startNewPlayer,
   toggleAllPlayers,
@@ -215,7 +214,9 @@ const ShuffleButton = () => {
   )
   return (
     <SolidButton
-      onPress={openParameters}
+      onPress={Effect.sync(() =>
+        router.navigate(`/groups/${groupId}/parameters`),
+      )}
       p={16}
       round={0}
       color={Colors.header}

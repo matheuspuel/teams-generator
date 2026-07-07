@@ -32,8 +32,6 @@ export const sortPlayersBy = {
   date: StateRef.execute(onSelectGroupOrder('date')),
 }
 
-export const openParameters = Effect.sync(() => router.navigate(`/parameters`))
-
 export const decrementTeamsCount = StateRef.execute(decrementTeamsCount_)
 
 export const incrementTeamsCount = StateRef.execute(incrementTeamsCount_)
