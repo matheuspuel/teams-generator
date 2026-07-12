@@ -1,5 +1,4 @@
-import * as Optic from '@fp-ts/optic'
-import { Match, pipe, Schema } from 'effect'
+import { Number, Order, Schema } from 'effect'
 
 export class Parameters extends Schema.Class<Parameters>('Parameters')({
   teamsCountMethod: Schema.Union(
@@ -18,34 +17,14 @@ export const SchemaV1 = Schema.Struct({
   rating: Schema.Boolean,
 })
 
-export const initial: Parameters = {
-  teamsCountMethod: { _tag: 'count' },
-  teamsCount: 2,
-  playersRequired: 11,
-  position: true,
-  rating: true,
-}
+const MINIMUM_NUMBER_OF_TEAMS = 2
 
-export const MINIMUM_NUMBER_OF_TEAMS = 2
+export const teamsCountClamp = Order.clamp(Number.Order)({
+  minimum: MINIMUM_NUMBER_OF_TEAMS,
+  maximum: 99,
+})
 
-export const numOfTeams = (numOfPlayersAvailable: number) => (p: Parameters) =>
-  pipe(
-    p.teamsCountMethod,
-    Match.valueTags({
-      count: () => p.teamsCount,
-      playersRequired: () =>
-        Math.max(
-          MINIMUM_NUMBER_OF_TEAMS,
-          Math.floor(numOfPlayersAvailable / p.playersRequired),
-        ),
-    }),
-  )
-
-export const toggleType: (_: Parameters) => Parameters = Optic.modify(
-  Optic.id<Parameters>().at('teamsCountMethod'),
-)(
-  Match.valueTags({
-    count: () => ({ _tag: 'playersRequired' as const }),
-    playersRequired: () => ({ _tag: 'count' as const }),
-  }),
-)
+export const playersRequiredClamp = Order.clamp(Number.Order)({
+  minimum: 2,
+  maximum: 99,
+})

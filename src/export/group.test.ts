@@ -1,12 +1,11 @@
-import { Effect, Ref, Schema, SubscriptionRef } from 'effect'
+import { StateMachine } from '@matheuspuel/state-machine'
+import { Effect, Schema } from 'effect'
 import { Group, Modality } from 'src/datatypes'
 import { CustomModality, futsal, futsalPositions } from 'src/datatypes/Modality'
-import { RootState, initialAppState } from 'src/model'
 import { IdGenerator } from 'src/services/IdGenerator'
-import { AppStateRef, StateRef, Subscription } from 'src/services/StateRef'
+import { appStateMachine } from 'src/state'
 import { Id } from 'src/utils/Entity'
 import { describe, expect, test } from 'vitest'
-import { _importGroup } from './group'
 
 const modality0 = Schema.decodeSync(Modality.CustomModality)({
   _tag: 'CustomModality',
@@ -150,34 +149,20 @@ const group3 = Schema.decodeSync(Group.Group)({
 
 describe('importGroup state logic', () => {
   test('add group and modality', () => {
-    const ref = Ref.unsafeMake<RootState>({
-      ...initialAppState,
-      groups: { [group0.id]: group0 },
-      customModalities: [modality0],
-    })
+    const instance = StateMachine.run(appStateMachine)
+    instance.actions.groups.setItem(group0)
+    instance.actions.customModalities.set([modality0])
     let currentId = 0
     const IdGeneratorSequential = IdGenerator.context({
       _tag: 'IdGenerator',
       generate: () => Effect.sync(() => Id.make((++currentId).toString())),
     })
 
-    _importGroup({
-      ...group1,
-      modality: modality1,
-    }).pipe(
-      StateRef.execute,
-      Effect.provide(IdGeneratorSequential),
-      Effect.provideService(AppStateRef, {
-        ref,
-        subscriptionsRef: SubscriptionRef.make<ReadonlyArray<Subscription>>(
-          [],
-        ).pipe(Effect.runSync),
-        batchedUpdates: <A>(f: () => A) => f(),
-      }),
-      Effect.runSync,
-    )
+    instance.actions
+      .importGroupData({ ...group1, modality: modality1 })
+      .pipe(Effect.provide(IdGeneratorSequential), Effect.runSync)
 
-    const state = Ref.get(ref).pipe(Effect.runSync)
+    const state = instance.ref.get.pipe(Effect.runSync)
     expect(state.groups).toEqual<typeof state.groups>({
       [group0.id]: group0,
       [Id.make('4')]: Schema.decodeSync(Group.Group)({
@@ -225,34 +210,20 @@ describe('importGroup state logic', () => {
   })
 
   test('add group and reuse modality', () => {
-    const ref = Ref.unsafeMake<RootState>({
-      ...initialAppState,
-      groups: { [group0.id]: group0 },
-      customModalities: [modality0],
-    })
+    const instance = StateMachine.run(appStateMachine)
+    instance.actions.groups.setItem(group0)
+    instance.actions.customModalities.set([modality0])
     let currentId = 0
     const IdGeneratorSequential = IdGenerator.context({
       _tag: 'IdGenerator',
       generate: () => Effect.sync(() => Id.make((++currentId).toString())),
     })
 
-    _importGroup({
-      ...group2,
-      modality: modality2,
-    }).pipe(
-      StateRef.execute,
-      Effect.provide(IdGeneratorSequential),
-      Effect.provideService(AppStateRef, {
-        ref,
-        subscriptionsRef: SubscriptionRef.make<ReadonlyArray<Subscription>>(
-          [],
-        ).pipe(Effect.runSync),
-        batchedUpdates: <A>(f: () => A) => f(),
-      }),
-      Effect.runSync,
-    )
+    instance.actions
+      .importGroupData({ ...group2, modality: modality2 })
+      .pipe(Effect.provide(IdGeneratorSequential), Effect.runSync)
 
-    const state = Ref.get(ref).pipe(Effect.runSync)
+    const state = instance.ref.get.pipe(Effect.runSync)
     expect(state.groups).toEqual<typeof state.groups>({
       [group0.id]: group0,
       [Id.make('3')]: Schema.decodeSync(Group.Group)({
@@ -285,11 +256,9 @@ describe('importGroup state logic', () => {
   })
 
   test('add group with static modality', () => {
-    const ref = Ref.unsafeMake<RootState>({
-      ...initialAppState,
-      groups: { [group0.id]: group0 },
-      customModalities: [modality0],
-    })
+    const instance = StateMachine.run(appStateMachine)
+    instance.actions.groups.setItem(group0)
+    instance.actions.customModalities.set([modality0])
     let currentId = 0
     const IdGeneratorSequential = IdGenerator.context({
       _tag: 'IdGenerator',
@@ -297,23 +266,14 @@ describe('importGroup state logic', () => {
     })
     // TODO reuse IdGeneratorTest
 
-    _importGroup({
-      ...group3,
-      modality: { _tag: 'StaticModality', id: futsal.id },
-    }).pipe(
-      StateRef.execute,
-      Effect.provide(IdGeneratorSequential),
-      Effect.provideService(AppStateRef, {
-        ref,
-        subscriptionsRef: SubscriptionRef.make<ReadonlyArray<Subscription>>(
-          [],
-        ).pipe(Effect.runSync),
-        batchedUpdates: <A>(f: () => A) => f(),
-      }),
-      Effect.runSync,
-    )
+    instance.actions
+      .importGroupData({
+        ...group3,
+        modality: { _tag: 'StaticModality', id: futsal.id },
+      })
+      .pipe(Effect.provide(IdGeneratorSequential), Effect.runSync)
 
-    const state = Ref.get(ref).pipe(Effect.runSync)
+    const state = instance.ref.get.pipe(Effect.runSync)
     expect(state.groups).toEqual<typeof state.groups>({
       [group0.id]: group0,
       [Id.make('3')]: Schema.decodeSync(Group.Group)({

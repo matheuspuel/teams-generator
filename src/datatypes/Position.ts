@@ -21,7 +21,7 @@ export class CustomPosition extends Schema.Class<CustomPosition>(
   'CustomPosition',
 )({
   abbreviation: Abbreviation,
-  name: NonEmptyString,
+  name: Schema.NonEmptyString,
 }) {}
 
 export type Position = StaticPosition | CustomPosition

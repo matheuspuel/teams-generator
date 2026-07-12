@@ -41,4 +41,5 @@ export const preferences = getPreferences()
 
 const translation = preferences.translation.translation
 
+export type TranslationFunction = typeof t
 export const t = (token: keyof Translation) => translation[token]

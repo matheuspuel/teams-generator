@@ -20,9 +20,9 @@ importers:
       '@expo/ui':
         specifier: ~57.0.3
         version: 57.0.3(@babel/core@7.29.7)(@types/react@19.2.17)(expo@57.0.2)(react-dom@19.2.7(react@19.2.3))(react-native-worklets@0.10.0(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(react-native@0.86.0(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3))(react-native@0.86.0(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)
-      '@fp-ts/optic':
-        specifier: ^0.25.0
-        version: 0.25.0(@effect/typeclass@0.40.0(effect@3.21.4))(effect@3.21.4)
+      '@matheuspuel/state-machine':
+        specifier: ^0.8.3
+        version: 0.8.3
       '@paralleldrive/cuid2':
         specifier: ^3.3.0
         version: 3.3.0
@@ -116,9 +116,6 @@ importers:
       react-native-worklets:
         specifier: 0.10.0
         version: 0.10.0(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(react-native@0.86.0(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)
-      use-sync-external-store:
-        specifier: ^1.6.0
-        version: 1.6.0(react@19.2.3)
     devDependencies:
       '@babel/core':
         specifier: ^7.29.7
@@ -144,9 +141,6 @@ importers:
       '@types/react':
         specifier: ~19.2.17
         version: 19.2.17
-      '@types/use-sync-external-store':
-        specifier: ^1.5.0
-        version: 1.5.0
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.39.1
         version: 8.62.1(@typescript-eslint/parser@8.62.1(eslint@8.57.1)(typescript@6.0.3))(eslint@8.57.1)(typescript@6.0.3)
@@ -1047,12 +1041,6 @@ packages:
     resolution: {integrity: sha512-4aQzz9vgxcNXFfo/iyNgDDYfsU5XGKKxWxZopw0cVotHiW+U8IJbIxMaxsINs6bHhtkG3StKNPcOrn3eBuxKPw==}
     hasBin: true
 
-  '@fp-ts/optic@0.25.0':
-    resolution: {integrity: sha512-qEALuWspe+M+zOB7HnL1n6VVLTB2rRYhcgSWIBOJgIrCQcUpIsicgdLl1qN8VeuMvlE6EiCf3YFWDUmgnE7sAA==}
-    peerDependencies:
-      '@effect/typeclass': ^0.27.0
-      effect: ^3.8.0
-
   '@humanwhocodes/config-array@0.13.0':
     resolution: {integrity: sha512-DZLEEqFWQFiyK6h5YIeynKx7JlvCYWL0cImfSRXZ9l4Sg2efkFGTuFf6vzXjK1cq6IYkU+Eg/JizXw+TD2vRNw==}
     engines: {node: '>=10.10.0'}
@@ -1114,6 +1102,15 @@ packages:
 
   '@manypkg/get-packages@1.1.3':
     resolution: {integrity: sha512-fo+QhuU3qE/2TQMQmbVMqaQ6EWbMhi4ABWP+O4AM1NqPBuy0OrApV5LO6BrrgnhtAHS2NH6RrVk9OL181tTi8A==}
+
+  '@matheuspuel/optic@0.3.0':
+    resolution: {integrity: sha512-WxYiFeUFcSx3M+29CfKqvwQXsd4bqLghdSBzfpXfZKggWJPMsWbc6Fn+fzESq+w/nuSK1oYF5Jw93gmFWYS13w==}
+
+  '@matheuspuel/query-state@0.3.0':
+    resolution: {integrity: sha512-8G1iRohi0HlAJGhJ7/wovTAjFFbtvxJRIVUexv5BvBQmyKvU49JXWV/d8z7iRf1FZDWwVczlMzjpaH8kdiaegw==}
+
+  '@matheuspuel/state-machine@0.8.3':
+    resolution: {integrity: sha512-X3Clc40O9rI1s/XNKrLpk+x+36As/PLtSRSHy8zEVs9WbThH4xwiMFCKToJqdVg7UOHbD8Mquy2GjnvWsEYhTQ==}
 
   '@napi-rs/wasm-runtime@1.1.6':
     resolution: {integrity: sha512-ZLv/JdUfkvOy9eCnnBaGfiO+XimbjebAeO+MRQqD/B+FR1tnRN0tpKSJHRbE8sFfS6aqsXZ67TQjfwfsxULVbg==}
@@ -1660,9 +1657,6 @@ packages:
 
   '@types/react@19.2.17':
     resolution: {integrity: sha512-MXfmqaVPEVgkBT/aY0aGCkRWWtByiYQXo3xdQ8r5RzuFrPiRn8Gar2tQdXSUQ2GKV3bkXckek89V8wQBY2Q/Aw==}
-
-  '@types/use-sync-external-store@1.5.0':
-    resolution: {integrity: sha512-5dyB8nLC/qogMrlCizZnYWQTA4lnb/v+It+sqNl5YnSRAPMlIqY/X0Xn+gZw8vOL+TgTTr28VEbn3uf8fUtAkw==}
 
   '@types/yargs-parser@21.0.3':
     resolution: {integrity: sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==}
@@ -6086,11 +6080,6 @@ snapshots:
       chalk: 4.1.2
       js-yaml: 4.3.0
 
-  '@fp-ts/optic@0.25.0(@effect/typeclass@0.40.0(effect@3.21.4))(effect@3.21.4)':
-    dependencies:
-      '@effect/typeclass': 0.40.0(effect@3.21.4)
-      effect: 3.21.4
-
   '@humanwhocodes/config-array@0.13.0':
     dependencies:
       '@humanwhocodes/object-schema': 2.0.3
@@ -6166,6 +6155,22 @@ snapshots:
       fs-extra: 8.1.0
       globby: 11.1.0
       read-yaml-file: 1.1.0
+
+  '@matheuspuel/optic@0.3.0':
+    dependencies:
+      effect: 3.21.4
+
+  '@matheuspuel/query-state@0.3.0':
+    dependencies:
+      effect: 3.21.4
+
+  '@matheuspuel/state-machine@0.8.3':
+    dependencies:
+      '@matheuspuel/optic': 0.3.0
+      '@matheuspuel/query-state': 0.3.0
+      effect: 3.21.4
+      react: 19.2.3
+      use-sync-external-store: 1.6.0(react@19.2.3)
 
   '@napi-rs/wasm-runtime@1.1.6(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)':
     dependencies:
@@ -6700,8 +6705,6 @@ snapshots:
   '@types/react@19.2.17':
     dependencies:
       csstype: 3.2.3
-
-  '@types/use-sync-external-store@1.5.0': {}
 
   '@types/yargs-parser@21.0.3': {}
 

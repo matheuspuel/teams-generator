@@ -8,7 +8,6 @@ import { Repository } from 'src/services/Repositories'
 import { SafeAreaService } from 'src/services/SafeArea'
 import { ShareService } from 'src/services/Share'
 import { SplashScreen } from 'src/services/SplashScreen'
-import { AppStateRef } from 'src/services/StateRef'
 import { envName } from 'src/utils/Metadata'
 import { AsyncStorageDefault } from './services/AsyncStorage/default'
 import { DocumentPickerDefault } from './services/DocumentPicker/default'
@@ -17,12 +16,10 @@ import { LinkingDefault } from './services/Linking/default'
 import { RepositoryDefault } from './services/Repositories/default'
 import { ShareServiceDefault } from './services/Share/default'
 import { SplashScreenDefault } from './services/SplashScreen/default'
-import { AppStateRefDefault } from './services/StateRef/default'
 
 const DEV_MINIMUM_LOG_LEVEL = LogLevel.Debug
 
 export type AppRequirements =
-  | AppStateRef
   | SplashScreen
   | Repository
   | Alert
@@ -47,7 +44,7 @@ const appLayer = pipe(
       SafeAreaService.Default,
     ),
   ),
-  Layer.provideMerge(Layer.mergeAll(RepositoryDefault, AppStateRefDefault)),
+  Layer.provideMerge(RepositoryDefault),
   Layer.provideMerge(AsyncStorageDefault),
   Layer.provideMerge(
     Logger.minimumLogLevel(

@@ -3,18 +3,15 @@ import { Row, Txt, TxtContext, View } from 'src/components'
 import { CenterModal } from 'src/components/derivative/CenterModal'
 import { GhostButton } from 'src/components/derivative/GhostButton'
 import { SolidButton } from 'src/components/derivative/SolidButton'
-import { useRuntime } from 'src/contexts/Runtime'
-import { deleteGroup } from 'src/events/group'
-import { useSelector } from 'src/hooks/useSelector'
+import { useActions, useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
-import { getGroup } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
 
 export default function GroupDeleteScreen() {
   const { groupId } = useLocalSearchParams<{ groupId: Id }>()
-  const runtime = useRuntime()
-  const group = useSelector(getGroup({ id: groupId }))
+  const actions = useActions()
+  const group = useSelector(_ => _.groups[groupId])
   return (
     <CenterModal title={t('Delete group')}>
       <View p={16}>
@@ -32,9 +29,12 @@ export default function GroupDeleteScreen() {
           <Txt>{t('Cancel')}</Txt>
         </GhostButton>
         <SolidButton
-          onPress={() =>
-            deleteGroup({ id: groupId }).pipe(runtime.runPromiseExit)
-          }
+          onPress={() => {
+            actions.groups.key(groupId).remove()
+            router.back()
+            router.back()
+            router.back()
+          }}
           color={Colors.error}
         >
           <Txt>{t('Delete')}</Txt>

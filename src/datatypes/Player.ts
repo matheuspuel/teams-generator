@@ -1,18 +1,17 @@
 import {
   Array,
   Boolean,
+  flow,
+  identity,
   Number,
   Option,
   Order,
+  pipe,
   Schema,
   String,
-  flow,
-  identity,
-  pipe,
 } from 'effect'
-import { NonEmptyReadonlyArray } from 'effect/Array'
 import { sumAll } from 'effect/Number'
-import { t } from 'src/i18n'
+import type { TranslationFunction } from 'src/i18n'
 import { Id } from 'src/utils/Entity'
 import { normalize } from 'src/utils/String'
 import { Timestamp } from 'src/utils/datatypes'
@@ -37,7 +36,7 @@ const getPositionAndIndex =
   (player: Player): { position: Position.Position; index: number } | null =>
     pipe(
       identity<
-        NonEmptyReadonlyArray<Position.StaticPosition | Position.CustomPosition>
+        ReadonlyArray<Position.StaticPosition | Position.CustomPosition>
       >(args.modality.positions),
       Array.findFirst((po, i) =>
         po.abbreviation === player.positionAbbreviation
@@ -96,16 +95,6 @@ export const listToString =
       Array.join('\n'),
     )
 
-export const teamListToString =
-  (args: { modality: Modality }) =>
-  (teams: Array<Array<Player>>): string =>
-    pipe(
-      teams,
-      Array.map(listToString(args)),
-      Array.map((v, i) => `${t('Team')} ${i + 1}\n\n${v}`),
-      Array.join('\n\n'),
-    )
-
 export const toStringSensitive =
   (args: { modality: Modality }) =>
   (player: Player): string =>
@@ -123,15 +112,19 @@ export const listToStringSensitive =
       Array.join('\n'),
     )
 
-export const teamListToStringSensitive =
-  (args: { modality: Modality }) =>
-  (teams: Array<Array<Player>>): string =>
-    pipe(
-      teams,
-      Array.map(listToStringSensitive(args)),
-      Array.map((v, i) => `${t('Team')} ${i + 1}\n\n${v}`),
-      Array.join('\n\n'),
-    )
+export const teamListToStringSensitive = (
+  args: {
+    modality: Modality
+    teams: Array<Array<Player>>
+  },
+  t: TranslationFunction,
+): string =>
+  pipe(
+    args.teams,
+    Array.map(listToStringSensitive(args)),
+    Array.map((v, i) => `${t('Team')} ${i + 1}\n\n${v}`),
+    Array.join('\n\n'),
+  )
 
 export const getRatingTotal: (players: Array<Player>) => number = players =>
   sumAll(Array.map(players, p => p.rating))

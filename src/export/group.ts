@@ -1,5 +1,4 @@
 import {
-  Array,
   Data,
   Effect,
   Match,
@@ -11,57 +10,40 @@ import {
   pipe,
 } from 'effect'
 import { Group, Modality } from 'src/datatypes'
-import {
-  CustomModality,
-  soccer,
-  staticModalities,
-} from 'src/datatypes/Modality'
-import { root } from 'src/model/optic'
 import { Alert } from 'src/services/Alert'
 import { DocumentPicker } from 'src/services/DocumentPicker'
 import { FileSystem } from 'src/services/FileSystem'
-import { IdGenerator } from 'src/services/IdGenerator'
 import { Linking } from 'src/services/Linking'
 import { ShareService } from 'src/services/Share'
-import { State, StateRef } from 'src/services/StateRef'
-import { addImportedGroup, getGroup, getModality } from 'src/slices/groups'
-import { Id } from 'src/utils/Entity'
 import { normalize } from 'src/utils/String'
 import { NonEmptyString } from 'src/utils/datatypes/NonEmptyString'
 
-export const exportGroup = (group: { id: Id }) =>
-  pipe(
-    State.get,
-    Effect.map(getGroup(group)),
-    Effect.flatMap(Option.fromNullable),
-    Effect.bindTo('group'),
-    Effect.bind('modality', ({ group }) =>
-      State.flatWith(s => Option.fromNullable(getModality(group.modality)(s))),
-    ),
-    StateRef.query,
-    Effect.bind('fileUri', ({ group }) => makeFileUri(group)),
-    Effect.tap(({ group, modality, fileUri }) =>
-      pipe(
-        Schema.encode(schema)({ ...group, modality }),
-        Effect.tap(s => FileSystem.write({ uri: fileUri, data: s })),
-      ),
-    ),
-    Effect.flatMap(({ fileUri }) =>
-      ShareService.shareFile({
-        title: 'Exportar Grupo',
-        uri: fileUri,
-        mimeType: 'application/json',
-      }),
-    ),
+export const exportGroup = ({
+  group,
+  modality,
+}: {
+  group: Group
+  modality: Modality
+}) =>
+  Effect.gen(function* () {
+    const fileUri = yield* makeFileUri(group)
+    const data = yield* Schema.encode(schema)({ ...group, modality })
+    yield* FileSystem.write({ uri: fileUri, data })
+    yield* ShareService.shareFile({
+      title: 'Exportar Grupo',
+      uri: fileUri,
+      mimeType: 'application/json',
+    })
+  }).pipe(
     Effect.tapError(e =>
       Effect.logError(e._tag === 'FileSystemError' ? e.cause.message : e),
     ),
   )
 
-export const importGroupFromDocumentPicker = () =>
+export const extractGroupFromDocumentPicker = () =>
   pipe(
     DocumentPicker.getDocument({ type: ['application/json'] }),
-    Effect.flatMap(f => importGroupFromFile({ url: f.uri })),
+    Effect.flatMap(f => extractGroupFromFile({ url: f.uri })),
   )
 
 export const setupReceiveURLHandler = () =>
@@ -71,102 +53,10 @@ export const setupReceiveURLHandler = () =>
     Stream.catchAll(() => Stream.empty),
     Stream.concat(Linking.startLinkingStream()),
     Stream.map(url => ({ url })),
-    Stream.tap(importGroupFromFile),
+    Stream.flatMap(extractGroupFromFile),
   )
 
-export const _importGroup = (
-  data: Omit<Group, 'modality'> & {
-    modality: { _tag: 'StaticModality'; id: NonEmptyString } | CustomModality
-  },
-) =>
-  data.modality._tag === 'StaticModality'
-    ? pipe(
-        Array.findFirst(staticModalities, m => m.id === data.modality.id),
-        Option.getOrElse(() => soccer),
-        modality =>
-          pipe(
-            Effect.all({
-              modality: Effect.succeed({
-                _tag: modality._tag,
-                id: modality.id,
-              }),
-              name: Effect.succeed(data.name),
-              players: Effect.forEach(data.players, p =>
-                pipe(
-                  Effect.all({
-                    id: IdGenerator.generate(),
-                    positionAbbreviation: Array.findFirst(
-                      modality.positions,
-                      pos => pos.abbreviation === p.positionAbbreviation,
-                    ).pipe(
-                      Option.getOrElse(() => modality.positions[0]),
-                      _ => _.abbreviation,
-                      Effect.succeed,
-                    ),
-                  }),
-                  Effect.map(({ id, positionAbbreviation }) => ({
-                    ...p,
-                    id,
-                    positionAbbreviation,
-                  })),
-                ),
-              ),
-            }),
-            Effect.flatMap(addImportedGroup),
-          ),
-      )
-    : pipe(
-        Effect.succeed({ modality: data.modality }),
-        Effect.bind('existingModality', ({ modality }) =>
-          State.with(s =>
-            Array.findFirst(
-              s.customModalities,
-              m =>
-                m.name === modality.name &&
-                modality.positions.every(a =>
-                  m.positions.some(b => a.abbreviation === b.abbreviation),
-                ),
-            ),
-          ),
-        ),
-        Effect.bind('nextModalityId', ({ existingModality }) =>
-          existingModality.pipe(
-            Option.map(_ => _.id),
-            Effect.orElse(() => IdGenerator.generate()),
-          ),
-        ),
-        Effect.tap(({ existingModality, modality, nextModalityId }) =>
-          Option.match(existingModality, {
-            onNone: () =>
-              State.on(root.at('customModalities')).update(
-                Array.append({
-                  _tag: 'CustomModality' as const,
-                  id: nextModalityId,
-                  name: modality.name,
-                  positions: modality.positions,
-                }),
-              ),
-            onSome: () => Effect.void,
-          }),
-        ),
-        Effect.tap(({ nextModalityId }) =>
-          pipe(
-            Effect.all({
-              modality: Effect.succeed({
-                _tag: 'CustomModality' as const,
-                id: nextModalityId,
-              }),
-              name: Effect.succeed(data.name),
-              players: Effect.forEach(data.players, p =>
-                Effect.map(IdGenerator.generate(), id => ({ ...p, id })),
-              ),
-            }),
-            Effect.flatMap(addImportedGroup),
-          ),
-        ),
-      )
-
-const importGroupFromFile = (args: { url: string }) =>
+const extractGroupFromFile = (args: { url: string }) =>
   pipe(
     temporaryImportUri,
     Effect.tap(() => Effect.log(args.url)),
@@ -193,14 +83,6 @@ const importGroupFromFile = (args: { url: string }) =>
         }),
       ),
     ),
-    Effect.flatMap(data => pipe(_importGroup(data), StateRef.execute)),
-    Effect.tap(() =>
-      Alert.alert({
-        type: 'success',
-        title: 'Sucesso',
-        message: 'Grupo importado',
-      }),
-    ),
     Effect.tapError(e =>
       Alert.alert({
         type: 'error',
@@ -216,6 +98,13 @@ const importGroupFromFile = (args: { url: string }) =>
             ParseError: () => 'O arquivo não é válido ou está corrompido',
           }),
         ),
+      }),
+    ),
+    Effect.tap(() =>
+      Alert.alert({
+        type: 'success',
+        title: 'Sucesso',
+        message: 'Grupo importado',
       }),
     ),
   )

@@ -1,40 +1,6 @@
-import { Effect, Equal, Equivalence } from 'effect'
-import { useRuntime } from 'src/contexts/Runtime'
-import { RootState } from 'src/model'
-import { AppRuntime } from 'src/runtime'
-import { useSyncExternalStoreWithSelector } from 'use-sync-external-store/with-selector'
-import { StateRef } from '../services/StateRef'
+import { makeUseSelector } from '@matheuspuel/state-machine/react'
+import { appStateMachineInstance } from 'src/state'
 
-export const useSelector = <A>(
-  selector: (state: RootState) => A,
-  equivalence?: Equivalence.Equivalence<A>,
-) => {
-  const runtime = useRuntime()
-  return useSelectorComplete({
-    selector,
-    equivalence: equivalence ?? Equal.equivalence(),
-    runtime,
-  })
-}
+export const useSelector = makeUseSelector(appStateMachineInstance)
 
-export const useSelectorComplete = <A>({
-  selector,
-  equivalence,
-  runtime,
-}: {
-  selector: (state: RootState) => A
-  equivalence: Equivalence.Equivalence<A>
-  runtime: AppRuntime
-}) =>
-  useSyncExternalStoreWithSelector<RootState, A>(
-    onChange => {
-      const subscription = StateRef.react
-        .subscribe(() => Effect.sync(onChange))
-        .pipe(runtime.runSync)
-      return () => subscription.unsubscribe().pipe(runtime.runSync)
-    },
-    () => StateRef.get.pipe(runtime.runSync),
-    undefined,
-    selector,
-    equivalence,
-  )
+export const useActions = () => appStateMachineInstance.actions

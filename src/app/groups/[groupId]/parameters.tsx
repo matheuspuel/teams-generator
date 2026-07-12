@@ -7,34 +7,25 @@ import { Checkbox } from 'src/components/derivative/Checkbox'
 import { GhostButton } from 'src/components/derivative/GhostButton'
 import { SolidButton } from 'src/components/derivative/SolidButton'
 import { useRuntime } from 'src/contexts/Runtime'
-import { Parameters } from 'src/datatypes/Parameters'
-import {
-  decrementTeamsCount,
-  generateResult,
-  incrementTeamsCount,
-  togglePositionParameter,
-  toggleRatingParameter,
-  toggleTeamsCountType,
-} from 'src/events/group'
-import { useSelector } from 'src/hooks/useSelector'
+import { Parameters } from 'src/datatypes'
+import { useActions, useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 import { Id } from 'src/utils/Entity'
 
 export default function ParametersScreen() {
   const { groupId } = useLocalSearchParams<{ groupId: Id }>()
+  const actions = useActions()
   const runtime = useRuntime()
   const parameters = useSelector(
     s => s.parameters,
-    Schema.equivalence(Parameters),
+    Schema.equivalence(Parameters.Parameters),
   )
   return (
     <CenterModal title={t('Parameters')} m={24}>
       <View p={16}>
         <Row align="center">
-          <BorderlessButton
-            onPress={() => decrementTeamsCount.pipe(runtime.runPromiseExit)}
-          >
+          <BorderlessButton onPress={actions.parameters.decrementMethod}>
             <MaterialIcons name="remove" />
           </BorderlessButton>
           <Txt p={8} weight={600}>
@@ -46,13 +37,11 @@ export default function ParametersScreen() {
               }),
             )}
           </Txt>
-          <BorderlessButton
-            onPress={() => incrementTeamsCount.pipe(runtime.runPromiseExit)}
-          >
+          <BorderlessButton onPress={actions.parameters.incrementMethod}>
             <MaterialIcons name="add" />
           </BorderlessButton>
           <GhostButton
-            onPress={() => toggleTeamsCountType.pipe(runtime.runPromiseExit)}
+            onPress={actions.parameters.teamsCountMethod.toggle}
             flex={1}
             direction="row"
             align="center"
@@ -74,7 +63,7 @@ export default function ParametersScreen() {
           </GhostButton>
         </Row>
         <Pressable
-          onPress={() => togglePositionParameter.pipe(runtime.runPromiseExit)}
+          onPress={() => actions.parameters.position.update(_ => !_)}
           direction="row"
           align="center"
           p={8}
@@ -82,9 +71,7 @@ export default function ParametersScreen() {
           bg={Colors.opacity(0)(Colors.white)}
         >
           <Checkbox
-            onToggle={() =>
-              togglePositionParameter.pipe(runtime.runPromiseExit)
-            }
+            onToggle={() => actions.parameters.position.update(_ => !_)}
             isSelected={parameters.position}
           />
           <Txt ml={8} size={14}>
@@ -92,7 +79,7 @@ export default function ParametersScreen() {
           </Txt>
         </Pressable>
         <Pressable
-          onPress={() => toggleRatingParameter.pipe(runtime.runPromiseExit)}
+          onPress={() => actions.parameters.rating.update(_ => !_)}
           direction="row"
           align="center"
           p={8}
@@ -100,7 +87,7 @@ export default function ParametersScreen() {
           bg={Colors.opacity(0)(Colors.white)}
         >
           <Checkbox
-            onToggle={() => toggleRatingParameter.pipe(runtime.runPromiseExit)}
+            onToggle={() => actions.parameters.rating.update(_ => !_)}
             isSelected={parameters.rating}
           />
           <Txt ml={8} size={14}>
@@ -114,11 +101,13 @@ export default function ParametersScreen() {
           <Txt>{t('Cancel')}</Txt>
         </GhostButton>
         <SolidButton
-          onPress={() =>
-            generateResult({ group: { id: groupId } }).pipe(
-              runtime.runPromiseExit,
-            )
-          }
+          onPress={() => {
+            router.back()
+            router.navigate(`/groups/${groupId}/result`)
+            actions
+              .generateResult({ group: { id: groupId } })
+              .pipe(runtime.runPromiseExit)
+          }}
         >
           <Txt>{t('Generate teams')}</Txt>
         </SolidButton>

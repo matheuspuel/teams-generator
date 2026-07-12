@@ -1,6 +1,7 @@
 import DeleteIcon from '@expo/material-symbols/delete.xml'
-import { Array, String } from 'effect'
+import { Effect, String } from 'effect'
 import { router, Stack, useLocalSearchParams } from 'expo-router'
+import { useEffect } from 'react'
 import {
   Input,
   KeyboardAvoidingView,
@@ -11,31 +12,51 @@ import {
   Txt,
   View,
 } from 'src/components'
+import { RatingSlider } from 'src/components/custom/RatingSlider'
 import { FormLabel } from 'src/components/derivative/FormLabel'
 import { SolidButton } from 'src/components/derivative/SolidButton'
 import { Position, Rating } from 'src/datatypes'
+import { initialModalityPosition } from 'src/datatypes/Modality'
 import { Abbreviation } from 'src/datatypes/Position'
-import {
-  changePlayerName,
-  changePlayerPosition,
-  changePlayerRating,
-  deletePlayer,
-  savePlayer,
-} from 'src/events/player'
-import { useSelector } from 'src/hooks/useSelector'
+import { useActions, useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { runtime } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
 import { getGroupModality } from 'src/slices/groups'
+import { PlayerForm } from 'src/state/forms/player'
 import { Id } from 'src/utils/Entity'
-import { RatingSlider } from '../../../../../components/custom/RatingSlider'
 
 export default function PlayerScreen() {
+  return (
+    <PlayerForm.Provider>
+      <PlayerScreen_ />
+    </PlayerForm.Provider>
+  )
+}
+
+function PlayerScreen_() {
   const { groupId, playerId } = useLocalSearchParams<{
     groupId: Id
     playerId?: Id
   }>()
-  const name = useSelector(s => s.playerForm.name)
+  const appActions = useActions()
+  const actions = PlayerForm.useActions()
+  const name = PlayerForm.useSelector(_ => _.name.value)
+
+  useEffect(() => {
+    if (playerId) {
+      const player = appActions.groups.key(groupId).players.id(playerId).get()
+      if (!player) return
+      actions.setStateFromData(player)
+    } else {
+      const modality = appActions.getGroupModality({ group: { id: groupId } })
+      if (!modality) return
+      actions.positionAbbreviation.set(
+        initialModalityPosition({ modality }).abbreviation,
+      )
+    }
+  }, [groupId, playerId, appActions])
+
   return (
     <SafeAreaView flex={1} edges={['bottom']}>
       <KeyboardAvoidingView>
@@ -44,10 +65,9 @@ export default function PlayerScreen() {
           <Stack.Toolbar.Button
             onPress={() => {
               if (playerId) {
-                deletePlayer({
-                  group: { id: groupId },
-                  player: { id: playerId },
-                }).pipe(runtime.runPromiseExit)
+                appActions.groups
+                  .key(groupId)
+                  .players.removeItem({ id: playerId })
               }
               router.back()
             }}
@@ -59,16 +79,21 @@ export default function PlayerScreen() {
           contentContainerStyle={{ flexGrow: 1 }}
         >
           <View flex={1} p={4}>
-            <NameField name={name} />
+            <NameField />
             <RatingField />
             <PositionField />
           </View>
         </ScrollView>
         <SolidButton
           onPress={() =>
-            savePlayer({
-              group: { id: groupId },
-              player: playerId ? { id: playerId } : null,
+            Effect.gen(function* () {
+              const data = yield* actions.validate()
+              yield* appActions.savePlayer({
+                ...data,
+                id: playerId ?? null,
+                group: { id: groupId },
+              })
+              router.back()
             }).pipe(runtime.runPromiseExit)
           }
           isEnabled={String.isNonEmpty(name.trim())}
@@ -83,30 +108,35 @@ export default function PlayerScreen() {
   )
 }
 
-const NameField = ({ name }: { name: string }) => (
-  <View p={4}>
-    <FormLabel>{t('Name')}</FormLabel>
-    <Input
-      placeholder={t('Ex: Jack')}
-      value={name}
-      onChange={_ => changePlayerName(_).pipe(runtime.runPromiseExit)}
-      autoFocus={true}
-    />
-  </View>
-)
+const NameField = () => {
+  const actions = PlayerForm.useActions()
+  const name = PlayerForm.useSelector(_ => _.name.value)
+  return (
+    <View p={4}>
+      <FormLabel>{t('Name')}</FormLabel>
+      <Input
+        placeholder={t('Ex: Jack')}
+        value={name}
+        onChange={actions.name.set}
+        autoFocus={true}
+      />
+    </View>
+  )
+}
 
 const RatingField = () => {
-  const rating = useSelector(s => s.playerForm.rating)
+  const actions = PlayerForm.useActions()
+  const rating = PlayerForm.useSelector(_ => _.rating)
   return (
     <View p={4}>
       <FormLabel>{t('Rating')}</FormLabel>
       <Txt size={24} weight={700} color={Colors.primary}>
-        {Rating.toString(rating)}
+        {Rating.toString(rating.value)}
       </Txt>
       <RatingSlider
-        initialPercentage={rating / 10}
+        initialPercentage={rating.value / 10}
         step={0.05}
-        onChange={_ => changePlayerRating(_).pipe(runtime.runPromiseExit)}
+        onChange={actions.rating.setFromPercentage}
       />
     </View>
   )
@@ -115,14 +145,14 @@ const RatingField = () => {
 const PositionField = () => {
   const { groupId } = useLocalSearchParams<{ groupId: Id }>()
   const positions = useSelector(
-    s => getGroupModality({ group: { id: groupId } })(s)?.positions ?? [],
+    _ => getGroupModality({ group: { id: groupId } })(_)?.positions ?? [],
   )
   return (
     <View p={4}>
       <FormLabel>{t('Position')}</FormLabel>
       <View>
-        {Array.map(positions, p => (
-          <PositionItem key={p.abbreviation} abbreviation={p.abbreviation} />
+        {positions.map(_ => (
+          <PositionItem key={_.abbreviation} abbreviation={_.abbreviation} />
         ))}
       </View>
     </View>
@@ -131,22 +161,21 @@ const PositionField = () => {
 
 const PositionItem = ({ abbreviation }: { abbreviation: Abbreviation }) => {
   const { groupId } = useLocalSearchParams<{ groupId: Id }>()
+  const actions = PlayerForm.useActions()
   const position = useSelector(
     s =>
       getGroupModality({ group: { id: groupId } })(s)?.positions.find(
         _ => _.abbreviation === abbreviation,
       ) || null,
   )
-  const isActive = useSelector(
-    s => s.playerForm.positionAbbreviation === abbreviation,
+  const isActive = PlayerForm.useSelector(
+    s => s.positionAbbreviation.value === abbreviation,
   )
   if (!position) return null
   return (
     <Pressable
       key={position.abbreviation}
-      onPress={() =>
-        changePlayerPosition(position.abbreviation).pipe(runtime.runPromiseExit)
-      }
+      onPress={() => actions.positionAbbreviation.set(position.abbreviation)}
       py={4}
       px={12}
       round={8}

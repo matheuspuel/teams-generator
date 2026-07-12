@@ -1,13 +1,12 @@
 import { Duration, Effect, Stream, SubscriptionRef, pipe } from 'effect'
-import { root } from 'src/model/optic'
-import { AppStateRef, State, StateRef } from 'src/services/StateRef'
+import { alertActions } from 'src/state/alert'
 
 const ref = SubscriptionRef.make<void>(undefined).pipe(Effect.runSync)
 
 const stream = pipe(
   ref.changes,
   Stream.debounce(Duration.decode('5 seconds')),
-  Stream.tap(() => StateRef.execute(State.on(root.at('alert')).set(null))),
+  Stream.tap(() => Effect.sync(() => alertActions.set(null))),
 )
 
 export class Alert extends Effect.Service<Alert>()('Alert', {
@@ -16,25 +15,17 @@ export class Alert extends Effect.Service<Alert>()('Alert', {
     stream,
     Stream.runDrain,
     Effect.forkDaemon,
-    Effect.flatMap(() => Effect.context<AppStateRef>()),
-    Effect.map(ctx => ({
+    Effect.map(() => ({
       alert: (args: {
         type: 'error' | 'success'
         title: string
         message: string
       }) =>
         pipe(
-          State.on(root.at('alert')).set(args),
-          StateRef.execute,
+          Effect.sync(() => alertActions.set(args)),
           Effect.tap(() => SubscriptionRef.set(ref, undefined)),
-          Effect.provide(ctx),
         ),
-      dismiss: () =>
-        pipe(
-          State.on(root.at('alert')).set(null),
-          StateRef.execute,
-          Effect.provide(ctx),
-        ),
+      dismiss: () => Effect.sync(() => alertActions.set(null)),
     })),
   ),
 }) {}

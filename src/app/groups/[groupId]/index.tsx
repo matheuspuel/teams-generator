@@ -12,26 +12,19 @@ import { Checkbox } from 'src/components/derivative/Checkbox'
 import { PreRender } from 'src/components/derivative/PreRender'
 import { SolidButton } from 'src/components/derivative/SolidButton'
 import { GroupOrder, Position, Rating } from 'src/datatypes'
-import {
-  openPlayer,
-  startNewPlayer,
-  toggleAllPlayers,
-  togglePlayerActive,
-} from 'src/events/group'
-import { startEditGroup } from 'src/events/groups'
-import { exportGroup } from 'src/export/group'
-import { useSelector } from 'src/hooks/useSelector'
+import { useActions, useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { runtime } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
-import { getGroup, getGroupModality, getPlayer } from 'src/slices/groups'
+import { getGroupModality, getPlayer } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
 
 export default function GroupScreen() {
   const { groupId } = useLocalSearchParams<{ groupId: Id }>()
+  const actions = useActions()
   const playersIds = useSelector(_ =>
     Option.gen(function* () {
-      const group = yield* Option.fromNullable(getGroup({ id: groupId })(_))
+      const group = yield* Option.fromNullable(_.groups[groupId])
       const modality = yield* Option.fromNullable(
         getGroupModality({ group: { id: groupId } })(_),
       )
@@ -49,20 +42,12 @@ export default function GroupScreen() {
       <Stack.Title>{t('Group')}</Stack.Title>
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button
-          onPress={() =>
-            startNewPlayer({ group: { id: groupId } }).pipe(
-              runtime.runPromiseExit,
-            )
-          }
+          onPress={() => router.navigate(`/groups/${groupId}/players/create`)}
           icon={AddIcon}
         />
         <Stack.Toolbar.Menu icon={MoreVertIcon}>
           <Stack.Toolbar.MenuAction
-            onPress={() =>
-              toggleAllPlayers({ group: { id: groupId } }).pipe(
-                runtime.runPromiseExit,
-              )
-            }
+            onPress={actions.groups.key(groupId).players.toggleAll}
             icon={CheckBoxIcon}
           >
             {t('Select all')}
@@ -75,16 +60,14 @@ export default function GroupScreen() {
           </Stack.Toolbar.MenuAction>
           <Stack.Toolbar.MenuAction
             onPress={() =>
-              exportGroup({ id: groupId }).pipe(runtime.runPromiseExit)
+              actions.exportGroup({ id: groupId }).pipe(runtime.runPromiseExit)
             }
             icon={UploadIcon}
           >
             {t('Export group')}
           </Stack.Toolbar.MenuAction>
           <Stack.Toolbar.MenuAction
-            onPress={() =>
-              startEditGroup({ id: groupId }).pipe(runtime.runPromiseExit)
-            }
+            onPress={() => router.navigate(`/groups/${groupId}/edit`)}
             icon={EditIcon}
           >
             {t('Edit group')}
@@ -132,6 +115,7 @@ export default function GroupScreen() {
 }
 
 const Item = ({ groupId, playerId }: { groupId: Id; playerId: Id }) => {
+  const actions = useActions()
   const player = useSelector(s =>
     pipe(
       getPlayer({ group: { id: groupId }, player: { id: playerId } })(s),
@@ -153,12 +137,7 @@ const Item = ({ groupId, playerId }: { groupId: Id; playerId: Id }) => {
   const { active, name, position, rating } = player
   return (
     <Pressable
-      onPress={() =>
-        openPlayer({
-          group: { id: groupId },
-          player: { id: playerId },
-        }).pipe(runtime.runPromiseExit)
-      }
+      onPress={() => router.navigate(`/groups/${groupId}/players/${playerId}`)}
       direction="row"
       align="center"
       gap={8}
@@ -167,11 +146,8 @@ const Item = ({ groupId, playerId }: { groupId: Id; playerId: Id }) => {
       bg={Colors.card}
     >
       <Checkbox
-        onToggle={() =>
-          togglePlayerActive({
-            group: { id: groupId },
-            player: { id: playerId },
-          }).pipe(runtime.runPromiseExit)
+        onToggle={
+          actions.groups.key(groupId).players.id(playerId).active.toggle
         }
         isSelected={active}
         m={8}
@@ -195,9 +171,7 @@ const Item = ({ groupId, playerId }: { groupId: Id; playerId: Id }) => {
 const ShuffleButton = () => {
   const { groupId } = useLocalSearchParams<{ groupId: Id }>()
   const numSelected = useSelector(
-    s =>
-      (getGroup({ id: groupId })(s)?.players ?? []).filter(p => p.active)
-        .length,
+    _ => (_.groups[groupId]?.players ?? []).filter(_ => _.active).length,
   )
   return (
     <SolidButton

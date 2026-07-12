@@ -3,7 +3,7 @@ import { NonEmptyReadonlyArray } from 'effect/Array'
 import { t } from 'src/i18n'
 import { Id } from 'src/utils/Entity'
 import { NonEmptyString } from 'src/utils/datatypes/NonEmptyString'
-import { CustomPosition, StaticPosition } from './Position'
+import { CustomPosition, Position, StaticPosition } from './Position'
 
 export class StaticModality extends Schema.Class<StaticModality>(
   'StaticModality',
@@ -204,8 +204,8 @@ export class CustomModality extends Schema.Class<CustomModality>(
 )({
   _tag: Schema.Literal('CustomModality'),
   id: Id,
-  name: NonEmptyString,
-  positions: Schema.NonEmptyArray(CustomPosition),
+  name: Schema.NonEmptyString,
+  positions: Schema.Array(CustomPosition),
 }) {}
 
 export type Modality = StaticModality | CustomModality
@@ -219,3 +219,19 @@ export const Reference: Schema.Schema<
   Reference,
   Schema.Schema.Encoded<typeof Reference_>
 > = Reference_
+
+export const initialModalityPosition = (args: {
+  modality: Modality
+}): Position =>
+  args.modality._tag === 'StaticModality'
+    ? args.modality.id === soccer.id
+      ? soccerPositions.a
+      : args.modality.id === futsal.id
+        ? futsalPositions.p
+        : args.modality.id === volleyball.id
+          ? volleyballPositions.l
+          : args.modality.id === basketball.id
+            ? basketballPositions.c
+            : args.modality.positions[0]
+    : // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      args.modality.positions[0]!

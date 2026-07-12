@@ -10,6 +10,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      src: path.join(__dirname, 'src'),
       fp: path.join(__dirname, 'src/utils/fp'),
       'react-native': path.join(__dirname, 'src/mocks/libs/react-native.ts'),
       'expo-localization': path.join(

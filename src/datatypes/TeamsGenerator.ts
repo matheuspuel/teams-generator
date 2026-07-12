@@ -11,7 +11,6 @@ import {
   identity,
   pipe,
 } from 'effect'
-import { NonEmptyReadonlyArray } from 'effect/Array'
 import { sumAll } from 'effect/Number'
 import * as Player from 'src/datatypes/Player'
 import * as Position from 'src/datatypes/Position'
@@ -36,9 +35,7 @@ const getResultPositionDeviance =
     pipe(teams, Array.flatten, allPlayers =>
       pipe(
         identity<
-          NonEmptyReadonlyArray<
-            Position.StaticPosition | Position.CustomPosition
-          >
+          ReadonlyArray<Position.StaticPosition | Position.CustomPosition>
         >(args.modality.positions),
         Array.map(pos =>
           pipe(

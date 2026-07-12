@@ -2,22 +2,22 @@ import AddIcon from '@expo/material-symbols/add.xml'
 import DownloadIcon from '@expo/material-symbols/download.xml'
 import MoreVertIcon from '@expo/material-symbols/more_vert.xml'
 import SportsSoccerIcon from '@expo/material-symbols/sports_soccer.xml'
-import { Array, Data, flow, pipe, Record, Tuple } from 'effect'
+import { Array, Data, Effect, flow, pipe, Record, Tuple } from 'effect'
 import { router, Stack } from 'expo-router'
 import { FlatList, Pressable, Txt, View } from 'src/components'
 import { BannerAd } from 'src/components/custom/BannerAd'
 import { Group } from 'src/datatypes'
-import { hideSplashScreen } from 'src/events/core'
-import { startCreateGroup } from 'src/events/groups'
-import { importGroupFromDocumentPicker } from 'src/export/group'
-import { useSelector } from 'src/hooks/useSelector'
+import { extractGroupFromDocumentPicker } from 'src/export/group'
+import { useActions, useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { runtime } from 'src/runtime'
+import { SplashScreen } from 'src/services/SplashScreen'
 import { Colors } from 'src/services/Theme'
-import { getGroup, getModality } from 'src/slices/groups'
+import { getModality } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
 
 export default function GroupListScreen() {
+  const actions = useActions()
   const groupsIds = useSelector(
     flow(
       s => s.groups,
@@ -31,18 +31,21 @@ export default function GroupListScreen() {
   return (
     <View
       flex={1}
-      onLayout={() => hideSplashScreen.pipe(runtime.runPromiseExit)}
+      onLayout={() => SplashScreen.hide().pipe(runtime.runPromiseExit)}
     >
       <Stack.Title>{t('Groups')}</Stack.Title>
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button
-          onPress={() => startCreateGroup.pipe(runtime.runPromiseExit)}
+          onPress={() => router.navigate(`/groups/create`)}
           icon={AddIcon}
         />
         <Stack.Toolbar.Menu icon={MoreVertIcon}>
           <Stack.Toolbar.MenuAction
             onPress={() =>
-              importGroupFromDocumentPicker().pipe(runtime.runPromiseExit)
+              extractGroupFromDocumentPicker().pipe(
+                Effect.tap(_ => actions.importGroupData(_)),
+                runtime.runPromiseExit,
+              )
             }
             icon={DownloadIcon}
           >
@@ -78,7 +81,7 @@ export default function GroupListScreen() {
 const Item = ({ id }: { id: Id }) => {
   const group = useSelector(s =>
     pipe(
-      getGroup({ id })(s),
+      s.groups[id] ?? null,
       g =>
         g &&
         Data.struct({

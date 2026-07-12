@@ -33,9 +33,11 @@
     "@expo/dom-webview": "^57.0.0",
     "@expo/material-symbols": "^0.1.1",
     "@expo/ui": "~57.0.3",
-    "@fp-ts/optic": "^0.25.0",
+    "@matheuspuel/state-machine": "^0.8.3",
     "@paralleldrive/cuid2": "^3.3.0",
     "@react-native-async-storage/async-storage": "~2.2.0",
+    "@react-native-vector-icons/material-design-icons": "^13.1.2",
+    "@react-native-vector-icons/material-icons": "^13.1.2",
     "cross-env": "^10.1.0",
     "effect": "3.21.4",
     "expo": "^57.0.2",
@@ -62,10 +64,7 @@
     "react-native-reanimated": "~4.5.0",
     "react-native-safe-area-context": "5.7.0",
     "react-native-screens": "~4.25.2",
-    "react-native-worklets": "0.10.0",
-    "use-sync-external-store": "^1.6.0",
-    "@react-native-vector-icons/material-icons": "^13.1.2",
-    "@react-native-vector-icons/material-design-icons": "^13.1.2"
+    "react-native-worklets": "0.10.0"
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",
@@ -76,7 +75,6 @@
     "@types/benchmark": "^2.1.5",
     "@types/lodash.throttle": "^4.1.9",
     "@types/react": "~19.2.17",
-    "@types/use-sync-external-store": "^1.5.0",
     "@typescript-eslint/eslint-plugin": "^8.39.1",
     "@typescript-eslint/parser": "^8.39.1",
     "@vitest/coverage-v8": "^4.1.9",
@@ -101,12 +99,10 @@
         "enabled": true,
         "listUnknownPackages": true,
         "exclude": [
-          "@fp-ts/optic",
           "@paralleldrive/cuid2",
           "cross-env",
           "effect",
-          "fast-text-encoding",
-          "use-sync-external-store"
+          "fast-text-encoding"
         ]
       }
     }

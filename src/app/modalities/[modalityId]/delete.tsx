@@ -1,24 +1,21 @@
-import { pipe } from 'effect'
-import { router } from 'expo-router'
+import { router, useLocalSearchParams } from 'expo-router'
 import { Row, Txt, TxtContext, View } from 'src/components'
 import { CenterModal } from 'src/components/derivative/CenterModal'
 import { GhostButton } from 'src/components/derivative/GhostButton'
 import { SolidButton } from 'src/components/derivative/SolidButton'
-import { useRuntime } from 'src/contexts/Runtime'
-import { removeModality } from 'src/events/modality'
-import { useSelector } from 'src/hooks/useSelector'
+import { useActions, useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 import { getModality } from 'src/slices/groups'
+import { Id } from 'src/utils/Entity'
 
 export default function DeleteModalityView() {
-  const runtime = useRuntime()
-  const modality = useSelector(s =>
-    pipe(
-      s.modalityForm.id,
-      id => id && getModality({ _tag: 'CustomModality', id })(s),
-    ),
+  const { modalityId } = useLocalSearchParams<{ modalityId: Id }>()
+  const actions = useActions()
+  const modality = useSelector(
+    getModality({ _tag: 'CustomModality', id: modalityId }),
   )
+  if (!modality || modality._tag !== 'CustomModality') return
   return (
     <CenterModal title={t('Delete modality')}>
       <View p={16}>
@@ -40,7 +37,11 @@ export default function DeleteModalityView() {
           <Txt>{t('Cancel')}</Txt>
         </GhostButton>
         <SolidButton
-          onPress={() => removeModality.pipe(runtime.runPromiseExit)}
+          onPress={() => {
+            actions.removeModality({ id: modality.id })
+            router.back()
+            router.back()
+          }}
           color={Colors.error}
         >
           <Txt>{t('Delete')}</Txt>

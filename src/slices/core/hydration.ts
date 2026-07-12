@@ -1,64 +1,55 @@
-import { get } from '@fp-ts/optic'
-import { Effect, flow, pipe } from 'effect'
-import { GroupOrder, Parameters } from 'src/datatypes'
-import { root } from 'src/model/optic'
+import { Effect, pipe, Ref } from 'effect'
+import { GroupOrder } from 'src/datatypes'
 import { Repository } from 'src/services/Repositories'
-import { State, StateRef } from 'src/services/StateRef'
-import { emptyGroups } from '../groups'
+import { appStateMachineInstance } from 'src/state'
 
 export const saveState = () =>
   pipe(
-    StateRef.query(State.get),
-    Effect.tap(flow(get(root.at('groups')), Repository.teams.Groups.set)),
-    Effect.tap(
-      flow(get(root.at('parameters')), Repository.teams.Parameters.set),
-    ),
-    Effect.tap(
-      flow(get(root.at('preferences')), Repository.teams.Preferences.set),
-    ),
-    Effect.tap(
-      flow(get(root.at('groupOrder')), Repository.teams.GroupOrder.set),
-    ),
-    Effect.tap(
-      flow(get(root.at('customModalities')), Repository.teams.Modality.set),
-    ),
+    appStateMachineInstance.ref,
+    Ref.get,
+    Effect.tap(_ => Repository.teams.Groups.set(_.groups)),
+    Effect.tap(_ => Repository.teams.Parameters.set(_.parameters)),
+    Effect.tap(_ => Repository.teams.Preferences.set(_.preferences)),
+    Effect.tap(_ => Repository.teams.GroupOrder.set(_.groupOrder)),
+    Effect.tap(_ => Repository.teams.Modality.set(_.customModalities)),
     Effect.catchAll(() => Effect.void),
   )
 
 export const hydrate = Effect.all([
   pipe(
     Repository.teams.Groups.get(),
-    Effect.catchAll(() => Effect.succeed(emptyGroups)),
-    Effect.flatMap(data =>
-      StateRef.execute(State.on(root.at('groups')).set(data)),
-    ),
+    Effect.tap(data => appStateMachineInstance.actions.groups.set(data)),
+    Effect.ignore,
   ),
   pipe(
     Repository.teams.Parameters.get(),
-    Effect.catchAll(() => Effect.succeed(Parameters.initial)),
-    Effect.flatMap(data =>
-      StateRef.execute(State.on(root.at('parameters')).set(data)),
+    Effect.tap(data =>
+      Ref.update(appStateMachineInstance.ref, _ => ({
+        ..._,
+        parameters: data,
+      })),
     ),
+    Effect.ignore,
   ),
   pipe(
     Repository.teams.Preferences.get(),
     Effect.catchAll(() => Effect.succeed({ isRatingVisible: true })),
-    Effect.flatMap(data =>
-      StateRef.execute(State.on(root.at('preferences')).set(data)),
+    Effect.tap(data =>
+      appStateMachineInstance.actions.preferences.isRatingVisible.set(
+        data.isRatingVisible,
+      ),
     ),
   ),
   pipe(
     Repository.teams.GroupOrder.get(),
     Effect.catchAll(() => Effect.succeed(GroupOrder.initial)),
-    Effect.flatMap(data =>
-      StateRef.execute(State.on(root.at('groupOrder')).set(data)),
-    ),
+    Effect.tap(data => appStateMachineInstance.actions.groupOrder.set(data)),
   ),
   pipe(
     Repository.teams.Modality.get(),
     Effect.catchAll(() => Effect.succeed([])),
-    Effect.flatMap(data =>
-      StateRef.execute(State.on(root.at('customModalities')).set(data)),
+    Effect.tap(data =>
+      appStateMachineInstance.actions.customModalities.set(data),
     ),
   ),
 ]).pipe(Effect.asVoid)

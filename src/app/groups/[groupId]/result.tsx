@@ -2,7 +2,6 @@ import ShareIcon from '@expo/material-symbols/share.xml'
 import VisibilityIcon from '@expo/material-symbols/visibility.xml'
 import VisibilityOffIcon from '@expo/material-symbols/visibility_off.xml'
 import { Array, Effect, Exit, Option, Order, identity, pipe } from 'effect'
-import { NonEmptyReadonlyArray } from 'effect/Array'
 import { Stack, useLocalSearchParams } from 'expo-router'
 import * as React from 'react'
 import {
@@ -15,9 +14,7 @@ import {
 } from 'src/components'
 import { useRuntime } from 'src/contexts/Runtime'
 import { Modality, Player, Position, Rating } from 'src/datatypes'
-import { interruptResultGeneration } from 'src/events/group'
-import { shareResult, toggleRatingVisibility } from 'src/events/result'
-import { useSelector } from 'src/hooks/useSelector'
+import { useActions, useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 import { getGroupModality } from 'src/slices/groups'
@@ -26,6 +23,7 @@ import { toFixedLocale } from 'src/utils/Number'
 
 export default function ResultScreen() {
   const { groupId } = useLocalSearchParams<{ groupId: Id }>()
+  const actions = useActions()
   const runtime = useRuntime()
   const result = useSelector(s => s.result)
   const modality = useSelector(s =>
@@ -33,7 +31,8 @@ export default function ResultScreen() {
   )
   const isRatingVisible = useSelector(s => s.preferences.isRatingVisible)
   React.useEffect(() => {
-    return () => void interruptResultGeneration.pipe(runtime.runPromiseExit)
+    return () =>
+      void actions.result.interruptGeneration().pipe(runtime.runPromiseExit)
   }, [])
   if (!modality) return null
   return (
@@ -41,12 +40,14 @@ export default function ResultScreen() {
       <Stack.Title>{t('Result')}</Stack.Title>
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button
-          onPress={() => toggleRatingVisibility.pipe(runtime.runPromiseExit)}
+          onPress={() => actions.preferences.isRatingVisible.update(_ => !_)}
           icon={isRatingVisible ? VisibilityIcon : VisibilityOffIcon}
         />
         <Stack.Toolbar.Button
           onPress={() =>
-            shareResult({ group: { id: groupId } }).pipe(runtime.runPromiseExit)
+            actions
+              .shareResult({ group: { id: groupId } }, t)
+              .pipe(runtime.runPromiseExit)
           }
           icon={ShareIcon}
         />
@@ -154,7 +155,7 @@ const PlayerItem = ({
     <Txt numberOfLines={1}>{name}</Txt>
     <Txt>{` (${pipe(
       identity<
-        NonEmptyReadonlyArray<Position.StaticPosition | Position.CustomPosition>
+        ReadonlyArray<Position.StaticPosition | Position.CustomPosition>
       >(modality.positions),
       Array.findFirst(_ => _.abbreviation === positionAbbreviation),
       Option.map(Position.toAbbreviationString),
