@@ -1,8 +1,6 @@
 import { Array as A, Equivalence, Option } from 'effect'
 import { constant, pipe } from 'effect/Function'
 
-export * from 'effect/Array'
-
 export const getUnorderedEquivalence = <A>(
   Eq: Equivalence.Equivalence<A>,
 ): Equivalence.Equivalence<Array<A>> =>

@@ -57,32 +57,39 @@ export const setupReceiveURLHandler = () =>
   )
 
 const extractGroupFromFile = (args: { url: string }) =>
-  pipe(
-    temporaryImportUri,
-    Effect.tap(() => Effect.log(args.url)),
-    Effect.tap(tempUri => FileSystem.copy({ from: args.url, to: tempUri })),
-    Effect.tapErrorCause(_ => Effect.logError(_)),
-    Effect.flatMap(tempUri => FileSystem.read({ uri: tempUri })),
-    Effect.flatMap(data =>
-      pipe(
-        Schema.decodeUnknown(schema)(data),
-        Effect.catchTags({
-          ParseError: e =>
-            pipe(
-              Schema.decodeUnknown(Schema.parseJson(anyVersionSchema))(data),
-              Effect.flatMap(d =>
-                Effect.fail(
-                  d.version > currentVersion
-                    ? new NewerVersionError()
-                    : d.version < lastSupportedVersion
-                      ? new OldVersionError()
-                      : e,
-                ),
+  Effect.gen(function* () {
+    const tempUri = yield* pipe(
+      temporaryImportUri,
+      Effect.tap(() => Effect.log(args.url)),
+      Effect.tap(tempUri => FileSystem.copy({ from: args.url, to: tempUri })),
+      Effect.tapErrorCause(_ => Effect.logError(_)),
+    )
+    const rawData = yield* FileSystem.read({ uri: tempUri })
+    const group = yield* pipe(
+      Schema.decodeUnknown(schema)(rawData),
+      Effect.catchTags({
+        ParseError: e =>
+          pipe(
+            Schema.decodeUnknown(Schema.parseJson(anyVersionSchema))(rawData),
+            Effect.flatMap(d =>
+              Effect.fail(
+                d.version > currentVersion
+                  ? new NewerVersionError()
+                  : d.version < lastSupportedVersion
+                    ? new OldVersionError()
+                    : e,
               ),
             ),
-        }),
-      ),
-    ),
+          ),
+      }),
+    )
+    yield* Alert.alert({
+      type: 'success',
+      title: 'Sucesso',
+      message: 'Grupo importado',
+    })
+    return group
+  }).pipe(
     Effect.tapError(e =>
       Alert.alert({
         type: 'error',
@@ -98,13 +105,6 @@ const extractGroupFromFile = (args: { url: string }) =>
             ParseError: () => 'O arquivo não é válido ou está corrompido',
           }),
         ),
-      }),
-    ),
-    Effect.tap(() =>
-      Alert.alert({
-        type: 'success',
-        title: 'Sucesso',
-        message: 'Grupo importado',
       }),
     ),
   )

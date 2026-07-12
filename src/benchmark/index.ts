@@ -10,7 +10,7 @@ import {
   getFitOrdFromCriteria,
 } from 'src/datatypes/TeamsGenerator'
 import { getCombinationsIndices } from 'src/utils/Combinations'
-import { combineAllNonEmpty } from 'src/utils/fp/Semigroup'
+import { combineAllNonEmpty } from 'src/utils/datatypes/Semigroup'
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const sample1 = FastCheck.sample(

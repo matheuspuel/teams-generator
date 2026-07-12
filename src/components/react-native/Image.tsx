@@ -1,9 +1,8 @@
-import { Effect, pipe } from 'effect'
+import { Effect, Match, pipe } from 'effect'
 import * as React from 'react'
 import { Image as RNImage_ } from 'react-native'
 import { UIColor } from 'src/components/types'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
-import * as Match from 'src/utils/fp/Match'
 
 export type ImageStyleProps = {
   w?: number
@@ -30,25 +29,21 @@ export const Image = (props: ImageProps) => {
   const getThemeRawColor = useThemeGetRawColor()
   const [status, setStatus] = React.useState<ImageStatus>('loading')
   React.useEffect(() => {
-    void pipe(
-      props.src,
-      Match.valueTagsOrElse({
-        uri: ({ uri }) =>
-          pipe(
-            Effect.tryPromise(() => RNImage_.prefetch(uri)),
-            Effect.filterOrElse(
-              b => b,
-              () => Effect.fail(new Error('Error loading image')),
-            ),
-            Effect.matchEffect({
-              onFailure: () => Effect.sync(() => setStatus('error')),
-              onSuccess: () => Effect.sync(() => setStatus('success')),
-            }),
-          ),
-        _: () => Effect.void,
-      }),
-      Effect.runPromise,
-    )
+    if (props.src._tag === 'uri') {
+      const uri = props.src.uri
+      void pipe(
+        Effect.tryPromise(() => RNImage_.prefetch(uri)),
+        Effect.filterOrElse(
+          b => b,
+          () => Effect.fail(new Error('Error loading image')),
+        ),
+        Effect.matchEffect({
+          onFailure: () => Effect.sync(() => setStatus('error')),
+          onSuccess: () => Effect.sync(() => setStatus('success')),
+        }),
+        Effect.runPromise,
+      )
+    }
   }, [props.src._tag === 'uri' ? props.src.uri : undefined])
   return (
     (status === 'loading'
