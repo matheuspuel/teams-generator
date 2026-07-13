@@ -22,7 +22,7 @@ export const BannerAd = () => {
     <View h={isLoaded.value ? undefined : 0}>
       <RNGMABannerAd
         unitId={adUnitId}
-        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        size={BannerAdSize.LARGE_ANCHORED_ADAPTIVE_BANNER}
         onAdLoaded={() => isLoaded.set(true)}
       />
       <Pressable
