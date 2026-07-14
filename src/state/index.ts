@@ -306,7 +306,7 @@ export const appStateMachine = StateMachine.Struct({
           const modality =
             staticModalities.find(m => m.id === data.modality.id) ?? soccer
           return {
-            modality: modality,
+            modality: { _tag: 'StaticModality' as const, id: modality.id },
             name: data.name,
             players: yield* Effect.forEach(data.players, player =>
               Effect.gen(function* () {
