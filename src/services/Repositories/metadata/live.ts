@@ -1,4 +1,4 @@
-import { MetadataRepositories } from '.'
+import type { MetadataRepositories } from '.'
 import { InstallationRepositoryLive } from './Installation/live'
 import { StorageVersionRepositoryLive } from './StorageVersion/live'
 

@@ -3,8 +3,8 @@ import { View as View_ } from 'react-native'
 import {
   Gesture,
   GestureDetector,
-  GestureUpdateEvent,
-  PanGestureHandlerEventPayload,
+  type GestureUpdateEvent,
+  type PanGestureHandlerEventPayload,
 } from 'react-native-gesture-handler'
 import Animated, {
   runOnJS,

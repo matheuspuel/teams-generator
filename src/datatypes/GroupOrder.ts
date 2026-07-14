@@ -1,5 +1,5 @@
 import { Array, Order, Schema, absurd, identity, pipe } from 'effect'
-import { Modality, Player } from 'src/datatypes'
+import type { Modality, Player } from 'src/datatypes'
 import {
   ActiveOrd,
   CreatedAtOrder,

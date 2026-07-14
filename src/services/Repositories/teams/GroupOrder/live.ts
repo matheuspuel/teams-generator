@@ -1,6 +1,6 @@
 import { GroupOrder } from 'src/datatypes'
 import { createStorage } from 'src/utils/storage'
-import { GroupOrderRepository } from '.'
+import type { GroupOrderRepository } from '.'
 
 export const GroupOrderRepositoryLive: GroupOrderRepository = createStorage<
   GroupOrder,

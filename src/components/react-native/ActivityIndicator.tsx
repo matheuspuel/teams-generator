@@ -1,6 +1,6 @@
 import { ActivityIndicator as RNActivityIndicator_ } from 'react-native'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
-import { UIColor } from '../types'
+import type { UIColor } from '../types'
 
 export type ActivityIndicatorProps = {
   size?: 'large' | 'small'

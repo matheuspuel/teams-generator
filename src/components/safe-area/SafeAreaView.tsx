@@ -1,11 +1,11 @@
 import { pipe } from 'effect'
 import * as React from 'react'
 import {
-  Edges,
+  type Edges,
   SafeAreaView as SafeAreaView_,
 } from 'react-native-safe-area-context'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
-import { ViewProps } from '../react-native/View'
+import type { ViewProps } from '../react-native/View'
 
 export type SafeAreaViewProps = ViewProps & {
   mode?: 'padding' | 'margin'

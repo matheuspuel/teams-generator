@@ -1,7 +1,11 @@
 import { StateMachine } from '@matheuspuel/state-machine'
 import { Effect, Schema } from 'effect'
 import { Group, Modality } from 'src/datatypes'
-import { CustomModality, futsal, futsalPositions } from 'src/datatypes/Modality'
+import {
+  type CustomModality,
+  futsal,
+  futsalPositions,
+} from 'src/datatypes/Modality'
 import { IdGenerator } from 'src/services/IdGenerator'
 import { appStateMachine } from 'src/state'
 import { Id } from 'src/utils/Entity'

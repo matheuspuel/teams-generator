@@ -1,7 +1,7 @@
 import { Schema } from 'effect'
 import { Modality } from 'src/datatypes'
 import { createStorage } from 'src/utils/storage'
-import { ModalityRepository } from '.'
+import type { ModalityRepository } from '.'
 
 export const ModalityRepositoryLive: ModalityRepository = createStorage({
   key: 'core/Modality',

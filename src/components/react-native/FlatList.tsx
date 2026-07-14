@@ -2,7 +2,7 @@ import { Array, pipe } from 'effect'
 import { constUndefined } from 'effect/Function'
 import * as React from 'react'
 import { FlatList as RNFlatList_ } from 'react-native'
-import { GapProps, PaddingProps } from 'src/components/types'
+import type { GapProps, PaddingProps } from 'src/components/types'
 
 export type FlatListStyleProps = object
 

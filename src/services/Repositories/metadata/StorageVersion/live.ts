@@ -1,6 +1,6 @@
 import { Schema } from 'effect'
 import { createStorage } from 'src/utils/storage'
-import { StorageVersionRepository } from '.'
+import type { StorageVersionRepository } from '.'
 
 export const StorageVersionRepositoryLive: StorageVersionRepository =
   createStorage({

@@ -1,10 +1,10 @@
 import { Effect } from 'effect'
 import type { Repository } from '..'
-import { GroupOrderRepository } from './GroupOrder'
-import { GroupsRepository } from './Groups'
-import { ModalityRepository } from './Modality'
-import { ParameterRepository } from './Parameters'
-import { PreferencesRepository } from './Preferences'
+import type { GroupOrderRepository } from './GroupOrder'
+import type { GroupsRepository } from './Groups'
+import type { ModalityRepository } from './Modality'
+import type { ParameterRepository } from './Parameters'
+import type { PreferencesRepository } from './Preferences'
 
 export type TeamsRepositories = {
   Parameters: ParameterRepository

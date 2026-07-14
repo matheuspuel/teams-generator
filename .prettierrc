@@ -5,21 +5,5 @@
   "singleQuote": true,
   "printWidth": 80,
   "tabWidth": 2,
-  "endOfLine": "lf",
-  "overrides": [
-    {
-      "files": [
-        "**/.vscode/*.json",
-        "**/.vscode/*.code-workspace",
-        "**/tsconfig.json",
-        "**/tsconfig.*.json"
-      ],
-      "options": {
-        "parser": "json5",
-        "quoteProps": "preserve",
-        "singleQuote": false,
-        "trailingComma": "all"
-      }
-    }
-  ]
+  "endOfLine": "lf"
 }

@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { Text as RNText_ } from 'react-native'
-import { UIColor } from 'src/components/types'
+import type { UIColor } from 'src/components/types'
 import { TextStyleContext } from 'src/contexts/TextStyle'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
-import { TextProps } from './Txt'
+import type { TextProps } from './Txt'
 
 export type TxtContextArgs = {
   x?: TextProps

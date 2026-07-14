@@ -1,7 +1,7 @@
 import { Effect } from 'effect'
 import type { Repository } from '..'
-import { InstallationRepository } from './Installation'
-import { StorageVersionRepository } from './StorageVersion'
+import type { InstallationRepository } from './Installation'
+import type { StorageVersionRepository } from './StorageVersion'
 
 export type MetadataRepositories = {
   Installation: InstallationRepository

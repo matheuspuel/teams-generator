@@ -1,4 +1,4 @@
-import { Effect } from 'effect'
+import type { Effect } from 'effect'
 
 export type StorageVersionRepository = {
   get: () => Effect.Effect<{ version: number }, unknown>

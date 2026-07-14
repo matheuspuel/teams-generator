@@ -1,5 +1,5 @@
 import { Text as RawText } from 'react-native'
-import { MarginProps, PaddingProps, UIColor } from 'src/components/types'
+import type { MarginProps, PaddingProps, UIColor } from 'src/components/types'
 import { useTextStyle } from 'src/contexts/TextStyle'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
 

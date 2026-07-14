@@ -1,8 +1,8 @@
-import RawIcons_ from "@react-native-vector-icons/material-icons"
+import RawIcons_ from '@react-native-vector-icons/material-icons'
 import * as React from 'react'
 import { useTextStyle } from 'src/contexts/TextStyle'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
-import { UIColor } from '../types'
+import type { UIColor } from '../types'
 
 export type IconProps = {
   name: React.ComponentProps<typeof RawIcons_>['name']

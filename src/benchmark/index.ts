@@ -1,3 +1,5 @@
+// oxlint-disable no-console
+
 import { Semigroup } from '@effect/typeclass'
 import * as Benchmark from 'benchmark'
 import { Arbitrary, Array, Effect, FastCheck, Match, pipe } from 'effect'
@@ -5,14 +7,14 @@ import { constant } from 'effect/Function'
 import { Player } from 'src/datatypes'
 import { soccer } from 'src/datatypes/Modality'
 import {
-  Criteria,
+  type Criteria,
   distributeTeams,
   getFitOrdFromCriteria,
 } from 'src/datatypes/TeamsGenerator'
 import { getCombinationsIndices } from 'src/utils/Combinations'
 import { combineAllNonEmpty } from 'src/utils/datatypes/Semigroup'
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+// oxlint-disable-next-line typescript/no-non-null-assertion
 const sample1 = FastCheck.sample(
   FastCheck.array(Arbitrary.make(Player.Player), {
     minLength: 8,
@@ -117,14 +119,10 @@ void (async () => {
           criteria: criteria1,
         }).pipe(Effect.runSync)
       })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .on('cycle', function (event: any) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         console.log(String(event.target))
       })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .on('complete', function (this: any) {
-        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         console.log('Fastest is ' + this.filter('fastest').map('name'))
         resolve(undefined)
       })
@@ -147,14 +145,10 @@ void (async () => {
           criteria: criteria2,
         }).pipe(Effect.runSync)
       })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .on('cycle', function (event: any) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         console.log(String(event.target))
       })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .on('complete', function (this: any) {
-        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         console.log('Fastest is ' + this.filter('fastest').map('name'))
         resolve(undefined)
       })

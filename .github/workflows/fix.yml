@@ -35,7 +35,7 @@ jobs:
       - name: Lint
         run: pnpm run lint:fix
       - name: Run Tests
-        run: pnpm run test:ci
+        run: pnpm run test --run
       - name: Configure Git User
         run: |
           git config user.name "GitHub Actions"

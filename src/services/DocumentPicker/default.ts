@@ -1,8 +1,8 @@
 import { Array, Effect, Layer, pipe } from 'effect'
-import { NonEmptyReadonlyArray } from 'effect/Array'
+import type { NonEmptyReadonlyArray } from 'effect/Array'
 import * as ExpoDocumentPicker from 'expo-document-picker'
 import { enforceErrorInstance } from 'src/utils/Error'
-import { DeepMutable } from 'src/utils/types'
+import type { DeepMutable } from 'src/utils/types'
 import { CanceledOperationError, DocumentPicker, DocumentPickerError } from '.'
 
 export const DocumentPickerDefault = DocumentPicker.context({

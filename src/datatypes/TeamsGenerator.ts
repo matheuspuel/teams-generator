@@ -13,9 +13,9 @@ import {
 } from 'effect'
 import { sumAll } from 'effect/Number'
 import * as Player from 'src/datatypes/Player'
-import * as Position from 'src/datatypes/Position'
+import type * as Position from 'src/datatypes/Position'
 import { randomizeArray } from 'src/utils/Random'
-import { Modality } from './Modality'
+import type { Modality } from './Modality'
 
 type Player = Player.Player
 type Position = Position.Position
@@ -82,7 +82,6 @@ const balanceTeams = (args: {
   Effect.gen(function* () {
     const isMoreBalanced = Order.lessThan(args.fitOrder)
     let teams = args.teams
-    // eslint-disable-next-line no-constant-condition
     repeatTryingAllPossibleSimpleChanges: while (true) {
       for (const [team1, team1Index] of Iterable.map(teams, Tuple.make)) {
         for (const [team2, team2Index] of Iterable.map(teams, Tuple.make)) {

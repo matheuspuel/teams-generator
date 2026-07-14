@@ -1,4 +1,4 @@
-import { Semigroup } from '@effect/typeclass/Semigroup'
+import type { Semigroup } from '@effect/typeclass/Semigroup'
 
 export const combineAllNonEmpty =
   <A>(s: Semigroup<A>): ((as: readonly [A, ...Array<A>]) => A) =>

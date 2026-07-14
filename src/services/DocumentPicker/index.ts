@@ -1,5 +1,5 @@
 import { Data, Effect } from 'effect'
-import { NonEmptyArray } from 'effect/Array'
+import type { NonEmptyArray } from 'effect/Array'
 
 export class DocumentPicker extends Effect.Tag('DocumentPicker')<
   DocumentPicker,

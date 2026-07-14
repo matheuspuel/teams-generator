@@ -1,9 +1,9 @@
 import { Schema } from 'effect'
-import { NonEmptyReadonlyArray } from 'effect/Array'
+import type { NonEmptyReadonlyArray } from 'effect/Array'
 import { t } from 'src/i18n'
 import { Id } from 'src/utils/Entity'
 import { NonEmptyString } from 'src/utils/datatypes/NonEmptyString'
-import { CustomPosition, Position, StaticPosition } from './Position'
+import { CustomPosition, type Position, StaticPosition } from './Position'
 
 export class StaticModality extends Schema.Class<StaticModality>(
   'StaticModality',
@@ -233,5 +233,5 @@ export const initialModalityPosition = (args: {
           : args.modality.id === basketball.id
             ? basketballPositions.c
             : args.modality.positions[0]
-    : // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    : // oxlint-disable-next-line typescript/no-non-null-assertion
       args.modality.positions[0]!

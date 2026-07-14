@@ -11,7 +11,7 @@ import { Parameters } from 'src/datatypes'
 import { useActions, useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
-import { Id } from 'src/utils/Entity'
+import type { Id } from 'src/utils/Entity'
 
 export default function ParametersScreen() {
   const { groupId } = useLocalSearchParams<{ groupId: Id }>()

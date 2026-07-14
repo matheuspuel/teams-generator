@@ -1,6 +1,6 @@
-import { Player } from 'src/datatypes'
+import type { Player } from 'src/datatypes'
 import { Abbreviation } from 'src/datatypes/Position'
-import { Id } from 'src/utils/Entity'
+import type { Id } from 'src/utils/Entity'
 import { Timestamp } from 'src/utils/datatypes'
 
 export const playersMock: Array<Player> = [

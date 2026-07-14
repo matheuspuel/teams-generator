@@ -1,5 +1,5 @@
 import { Array, Option, pipe } from 'effect'
-import { NonEmptyReadonlyArray } from 'effect/Array'
+import type { NonEmptyReadonlyArray } from 'effect/Array'
 import { getCalendars, getLocales } from 'expo-localization'
 import { enTranslation } from './translations/en'
 import { ptTranslation } from './translations/pt'

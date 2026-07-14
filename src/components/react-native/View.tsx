@@ -1,7 +1,7 @@
 import { pipe } from 'effect'
 import * as React from 'react'
 import { View as RawView } from 'react-native'
-import {
+import type {
   AbsolutePositionProps,
   BorderWidthProps,
   FlexChildProps,

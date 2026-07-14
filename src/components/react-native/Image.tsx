@@ -1,7 +1,7 @@
 import { Effect, Match, pipe } from 'effect'
 import * as React from 'react'
 import { Image as RNImage_ } from 'react-native'
-import { UIColor } from 'src/components/types'
+import type { UIColor } from 'src/components/types'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
 
 export type ImageStyleProps = {

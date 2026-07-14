@@ -1,4 +1,4 @@
-import { Equivalence, Order } from 'effect'
+import type { Equivalence, Order } from 'effect'
 
 export const toEquivalence =
   <A>(order: Order.Order<A>): Equivalence.Equivalence<A> =>

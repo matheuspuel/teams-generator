@@ -17,14 +17,14 @@ import { FormLabel } from 'src/components/derivative/FormLabel'
 import { SolidButton } from 'src/components/derivative/SolidButton'
 import { Position, Rating } from 'src/datatypes'
 import { initialModalityPosition } from 'src/datatypes/Modality'
-import { Abbreviation } from 'src/datatypes/Position'
+import type { Abbreviation } from 'src/datatypes/Position'
 import { useActions, useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { runtime } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
 import { getGroupModality } from 'src/slices/groups'
 import { PlayerForm } from 'src/state/forms/player'
-import { Id } from 'src/utils/Entity'
+import type { Id } from 'src/utils/Entity'
 
 export default function PlayerScreen() {
   return (

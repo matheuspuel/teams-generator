@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { UIColor } from 'src/components/types'
+import type { UIColor } from 'src/components/types'
 import { Colors } from 'src/services/Theme'
 
 export type TextStyleContext = { color: UIColor }

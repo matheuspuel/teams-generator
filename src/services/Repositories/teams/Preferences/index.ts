@@ -1,5 +1,5 @@
-import { Effect } from 'effect'
-import { Preferences } from './live'
+import type { Effect } from 'effect'
+import type { Preferences } from './live'
 
 export type PreferencesRepository = {
   get: () => Effect.Effect<Preferences, unknown>

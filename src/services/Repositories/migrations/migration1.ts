@@ -11,7 +11,7 @@ import {
 } from 'effect'
 import { Rating } from 'src/datatypes'
 import { soccer, soccerPositions } from 'src/datatypes/Modality'
-import { Player } from 'src/datatypes/Player'
+import type { Player } from 'src/datatypes/Player'
 import { GroupsState } from 'src/slices/groups'
 import { Id } from 'src/utils/Entity'
 import { Timestamp } from 'src/utils/datatypes'
@@ -85,23 +85,21 @@ const schemaWithMigrations = Schema.transform(
         id: g.id,
         name: g.name,
         modality: { _tag: 'StaticModality', id: soccer.id },
-        players: g.players.map(
-          (p): Player => ({
-            id: p.id,
-            name: p.name,
-            rating: p.rating,
-            active: p.active,
-            createdAt: p.createdAt,
-            positionAbbreviation: pipe(
-              soccer.positions,
-              Array.findFirst(
-                pos => pos.abbreviation === p.position.toLowerCase(),
-              ),
-              Option.getOrElse(() => soccerPositions.a),
-              _ => _.abbreviation,
+        players: g.players.map((p): Player => ({
+          id: p.id,
+          name: p.name,
+          rating: p.rating,
+          active: p.active,
+          createdAt: p.createdAt,
+          positionAbbreviation: pipe(
+            soccer.positions,
+            Array.findFirst(
+              pos => pos.abbreviation === p.position.toLowerCase(),
             ),
-          }),
-        ),
+            Option.getOrElse(() => soccerPositions.a),
+            _ => _.abbreviation,
+          ),
+        })),
       })),
     encode: _ => _,
   },

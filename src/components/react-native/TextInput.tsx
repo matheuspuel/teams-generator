@@ -1,7 +1,7 @@
 import { pipe } from 'effect'
 import * as React from 'react'
 import { TextInput as RNTextInput_ } from 'react-native-gesture-handler'
-import {
+import type {
   BorderWidthProps,
   FlexChildProps,
   MarginProps,

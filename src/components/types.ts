@@ -1,6 +1,6 @@
-import { Effect } from 'effect'
-import { Theme } from 'src/services/Theme'
-import { Color } from 'src/utils/datatypes'
+import type { Effect } from 'effect'
+import type { Theme } from 'src/services/Theme'
+import type { Color } from 'src/utils/datatypes'
 
 type Axis = 'x' | 'y'
 
@@ -27,9 +27,9 @@ export type BorderWidthProps = {
 }
 
 export type RoundProps = {
-  [k in `round${
-    | ''
-    | `${Uppercase<DirectionY>}${Uppercase<DirectionX>}`}`]?: number
+  [
+    k in `round${'' | `${Uppercase<DirectionY>}${Uppercase<DirectionX>}`}`
+  ]?: number
 } & (
   | ({
       [k in `round${Uppercase<DirectionX>}`]?: number
@@ -68,8 +68,7 @@ export type FlexChildProps = {
 
 export type AbsolutePositionProps = {
   absolute?:
-    | false
-    | { left?: number; right?: number; top?: number; bottom?: number }
+    false | { left?: number; right?: number; top?: number; bottom?: number }
 }
 
 export type UIColor = Effect.Effect<Color, never, Theme>

@@ -1,8 +1,8 @@
 import { Array, Option, Schema, pipe } from 'effect'
-import { Group, Modality, Player } from 'src/datatypes'
+import { Group, type Modality, type Player } from 'src/datatypes'
 import {
-  CustomModality,
-  StaticModality,
+  type CustomModality,
+  type StaticModality,
   basketball,
   basketballPositions,
   futsal,
@@ -13,8 +13,8 @@ import {
   volleyball,
   volleyballPositions,
 } from 'src/datatypes/Modality'
-import { Abbreviation, Position } from 'src/datatypes/Position'
-import { RootState } from 'src/state'
+import type { Abbreviation, Position } from 'src/datatypes/Position'
+import type { RootState } from 'src/state'
 import { Id } from 'src/utils/Entity'
 
 export type GroupsState = { [groupId: Id]: Group }

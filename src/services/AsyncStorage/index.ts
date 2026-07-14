@@ -1,5 +1,5 @@
 import { Effect } from 'effect'
-import { UnknownException } from 'effect/Cause'
+import type { UnknownException } from 'effect/Cause'
 
 export class AsyncStorage extends Effect.Tag('AsyncStorage')<
   AsyncStorage,

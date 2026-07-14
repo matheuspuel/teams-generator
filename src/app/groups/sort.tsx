@@ -1,7 +1,7 @@
 import { router } from 'expo-router'
 import { MaterialCommunityIcons, Pressable, Txt, View } from 'src/components'
 import { CenterModal } from 'src/components/derivative/CenterModal'
-import { GroupOrderType } from 'src/datatypes/GroupOrder'
+import type { GroupOrderType } from 'src/datatypes/GroupOrder'
 import { useActions, useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'

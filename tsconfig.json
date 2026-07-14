@@ -6,7 +6,7 @@
     "noFallthroughCasesInSwitch": true,
     "noErrorTruncation": true,
     "skipLibCheck": true,
-    "paths": { "src/*": ["./src/*"] },
+    "paths": { "src/*": ["./src/*"] }
   },
-  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"],
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
 }

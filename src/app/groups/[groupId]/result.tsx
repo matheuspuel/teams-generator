@@ -13,12 +13,12 @@ import {
   View,
 } from 'src/components'
 import { useRuntime } from 'src/contexts/Runtime'
-import { Modality, Player, Position, Rating } from 'src/datatypes'
+import { type Modality, Player, Position, Rating } from 'src/datatypes'
 import { useActions, useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 import { getGroupModality } from 'src/slices/groups'
-import { Id } from 'src/utils/Entity'
+import type { Id } from 'src/utils/Entity'
 import { toFixedLocale } from 'src/utils/Number'
 
 export default function ResultScreen() {

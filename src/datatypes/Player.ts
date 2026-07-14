@@ -16,7 +16,7 @@ import { Id } from 'src/utils/Entity'
 import { normalize } from 'src/utils/String'
 import { Timestamp } from 'src/utils/datatypes'
 import { average } from 'src/utils/datatypes/Number'
-import { Modality } from './Modality'
+import type { Modality } from './Modality'
 import * as Position from './Position'
 import * as Rating from './Rating'
 

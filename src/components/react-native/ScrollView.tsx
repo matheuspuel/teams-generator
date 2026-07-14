@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { ScrollView as RNScrollView_ } from 'react-native'
-import { GapProps, PaddingProps } from 'src/components/types'
+import type { GapProps, PaddingProps } from 'src/components/types'
 
 export type ScrollViewStyleProps = object
 

@@ -7,7 +7,7 @@ import { useActions, useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 import { getModality } from 'src/slices/groups'
-import { Id } from 'src/utils/Entity'
+import type { Id } from 'src/utils/Entity'
 
 export default function DeleteModalityView() {
   const { modalityId } = useLocalSearchParams<{ modalityId: Id }>()

@@ -22,7 +22,7 @@ import { t } from 'src/i18n'
 import { runtime } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
 import { ModalityForm } from 'src/state/forms/modality'
-import { Id } from 'src/utils/Entity'
+import type { Id } from 'src/utils/Entity'
 
 export default function ModalityScreen() {
   return (

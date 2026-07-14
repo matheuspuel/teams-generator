@@ -1,7 +1,7 @@
 import { pipe } from 'effect'
 import * as React from 'react'
 import { BorderlessButton, RectButton } from 'react-native-gesture-handler'
-import {
+import type {
   AbsolutePositionProps,
   FlexChildProps,
   FlexContainerProps,

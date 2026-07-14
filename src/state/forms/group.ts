@@ -1,6 +1,6 @@
 import { Form } from '@matheuspuel/state-machine'
 import { makeStateMachineContext } from '@matheuspuel/state-machine/react'
-import { Modality } from 'src/datatypes'
+import type { Modality } from 'src/datatypes'
 import { soccer } from 'src/datatypes/Modality'
 
 const groupFormStateMachine = Form.Struct({

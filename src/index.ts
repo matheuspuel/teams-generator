@@ -1,3 +1,5 @@
+// oxlint-disable import/no-unassigned-import
+
 import 'fast-text-encoding'
 import 'react-native-gesture-handler'
 

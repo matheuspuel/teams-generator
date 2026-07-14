@@ -14,7 +14,7 @@ import { runtime } from 'src/runtime'
 import { SplashScreen } from 'src/services/SplashScreen'
 import { Colors } from 'src/services/Theme'
 import { getModality } from 'src/slices/groups'
-import { Id } from 'src/utils/Entity'
+import type { Id } from 'src/utils/Entity'
 
 export default function GroupListScreen() {
   const actions = useActions()

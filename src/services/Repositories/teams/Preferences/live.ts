@@ -1,6 +1,6 @@
 import { Schema } from 'effect'
 import { createStorage } from 'src/utils/storage'
-import { PreferencesRepository } from '.'
+import type { PreferencesRepository } from '.'
 
 export class Preferences extends Schema.Class<Preferences>('Preferences')({
   isRatingVisible: Schema.Boolean,

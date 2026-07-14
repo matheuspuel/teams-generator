@@ -1,7 +1,7 @@
 import { Effect, Option, pipe } from 'effect'
 import * as React from 'react'
 import { SafeAreaProvider as RawSafeAreaProvider_ } from 'react-native-safe-area-context'
-import { UIColor } from 'src/components/types'
+import type { UIColor } from 'src/components/types'
 import { useRuntime } from 'src/contexts/Runtime'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
 import { SafeAreaService } from 'src/services/SafeArea'

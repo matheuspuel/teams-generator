@@ -1,10 +1,10 @@
 import {
   Clock,
   Duration,
-  Effect,
+  type Effect,
   Number,
   Order as Order_,
-  Predicate,
+  type Predicate,
   Schema,
   pipe,
 } from 'effect'

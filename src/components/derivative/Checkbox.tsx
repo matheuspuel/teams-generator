@@ -1,7 +1,7 @@
 import { MaterialIcons, Pressable, View } from 'src/components'
 import { Colors } from 'src/services/Theme'
-import { PressableProps } from '../react-native/Pressable'
-import { UIColor } from '../types'
+import type { PressableProps } from '../react-native/Pressable'
+import type { UIColor } from '../types'
 
 export const Checkbox = (
   props: Omit<PressableProps, 'onPress' | 'children'> & {

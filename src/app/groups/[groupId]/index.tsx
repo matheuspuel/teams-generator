@@ -17,7 +17,7 @@ import { t } from 'src/i18n'
 import { runtime } from 'src/runtime'
 import { Colors } from 'src/services/Theme'
 import { getGroupModality, getPlayer } from 'src/slices/groups'
-import { Id } from 'src/utils/Entity'
+import type { Id } from 'src/utils/Entity'
 
 export default function GroupScreen() {
   const { groupId } = useLocalSearchParams<{ groupId: Id }>()

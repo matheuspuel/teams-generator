@@ -5,7 +5,7 @@ import {
   Platform,
 } from 'react-native'
 import { useThemeGetRawColor } from 'src/contexts/Theme'
-import { ViewProps } from '../react-native/View'
+import type { ViewProps } from '../react-native/View'
 
 export type KeyboardAvoidingViewProps = ViewProps & {
   behavior?: 'height' | 'position' | 'padding' | undefined

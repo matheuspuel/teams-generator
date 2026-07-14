@@ -1,4 +1,4 @@
-import { ExpoConfig } from '@expo/config-types'
+import type { ExpoConfig } from '@expo/config-types'
 import ExpoFont from 'expo-font/plugin'
 import ExpoLocalization from 'expo-localization/plugin'
 import ExpoRouter from 'expo-router/plugin'

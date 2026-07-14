@@ -16,13 +16,13 @@ import { FormLabel } from 'src/components/derivative/FormLabel'
 import { GhostButton } from 'src/components/derivative/GhostButton'
 import { SolidButton } from 'src/components/derivative/SolidButton'
 import { useRuntime } from 'src/contexts/Runtime'
-import { Modality } from 'src/datatypes'
+import type { Modality } from 'src/datatypes'
 import { staticModalities } from 'src/datatypes/Modality'
 import { useActions, useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { Colors } from 'src/services/Theme'
 import { GroupForm } from 'src/state/forms/group'
-import { Id } from 'src/utils/Entity'
+import type { Id } from 'src/utils/Entity'
 
 export default function GroupEditScreen() {
   return (

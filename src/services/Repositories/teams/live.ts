@@ -1,4 +1,4 @@
-import { TeamsRepositories } from '.'
+import type { TeamsRepositories } from '.'
 import { GroupOrderRepositoryLive } from './GroupOrder/live'
 import { GroupsRepositoryLive } from './Groups/live'
 import { ModalityRepositoryLive } from './Modality/live'

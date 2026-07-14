@@ -1,4 +1,4 @@
-import { Translation } from '..'
+import type { Translation } from '..'
 
 export const ptTranslation: Translation = {
   appName: 'Sorteio de Times',

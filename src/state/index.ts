@@ -1,29 +1,29 @@
 import { StateMachine } from '@matheuspuel/state-machine'
 import { Array, Effect, Fiber, Match, Option, pipe, Record } from 'effect'
 import {
-  Group,
+  type Group,
   GroupOrder,
-  Modality,
+  type Modality,
   Player,
-  Rating,
+  type Rating,
   TeamsGenerator,
 } from 'src/datatypes'
-import { GroupOrderType } from 'src/datatypes/GroupOrder'
+import type { GroupOrderType } from 'src/datatypes/GroupOrder'
 import {
-  CustomModality,
+  type CustomModality,
   soccer,
   staticModalities,
 } from 'src/datatypes/Modality'
 import { playersRequiredClamp, teamsCountClamp } from 'src/datatypes/Parameters'
-import { Abbreviation } from 'src/datatypes/Position'
+import type { Abbreviation } from 'src/datatypes/Position'
 import { exportGroup } from 'src/export/group'
 import type { TranslationFunction } from 'src/i18n'
 import { IdGenerator } from 'src/services/IdGenerator'
 import { ShareService } from 'src/services/Share'
 import { adjustPlayerPosition } from 'src/slices/groups'
 import { Timestamp } from 'src/utils/datatypes'
-import { NonEmptyString } from 'src/utils/datatypes/NonEmptyString'
-import { Id } from 'src/utils/Entity'
+import type { NonEmptyString } from 'src/utils/datatypes/NonEmptyString'
+import type { Id } from 'src/utils/Entity'
 
 export type RootState = typeof appStateMachine.initialState
 

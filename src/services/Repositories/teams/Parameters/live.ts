@@ -1,7 +1,7 @@
 import { ParseResult, Schema } from 'effect'
 import { Parameters } from 'src/datatypes'
 import { createStorage } from 'src/utils/storage'
-import { ParameterRepository } from '.'
+import type { ParameterRepository } from '.'
 
 export const ParametersRepositoryLive: ParameterRepository = createStorage<
   Parameters,

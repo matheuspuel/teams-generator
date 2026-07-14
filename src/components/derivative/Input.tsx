@@ -1,7 +1,7 @@
 import { Platform } from 'react-native'
 import { Colors } from 'src/services/Theme'
-import { TextInput, TextInputProps } from '../react-native/TextInput'
-import { UIColor } from '../types'
+import { TextInput, type TextInputProps } from '../react-native/TextInput'
+import type { UIColor } from '../types'
 
 export type InputProps = TextInputProps & {
   color?: UIColor
