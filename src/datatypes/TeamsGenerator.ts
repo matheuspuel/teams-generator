@@ -1,11 +1,13 @@
 import {
   Array,
+  Chunk,
   Effect,
   Iterable,
   Match,
   Number,
   Option,
   Order,
+  Random,
   Tuple,
   flow,
   identity,
@@ -14,7 +16,6 @@ import {
 import { sumAll } from 'effect/Number'
 import * as Player from 'src/datatypes/Player'
 import type * as Position from 'src/datatypes/Position'
-import { randomizeArray } from 'src/utils/Random'
 import type { Modality } from './Modality'
 
 type Player = Player.Player
@@ -241,6 +242,6 @@ export const generateRandomBalancedTeams = (args: {
   Effect.gen(function* () {
     return yield* distributeTeams({
       ...args,
-      players: yield* randomizeArray(args.players),
+      players: Chunk.toArray(yield* Random.shuffle(args.players)),
     })
   })
