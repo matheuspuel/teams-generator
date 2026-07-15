@@ -4,7 +4,7 @@ import MoreVertIcon from '@expo/material-symbols/more_vert.xml'
 import SportsSoccerIcon from '@expo/material-symbols/sports_soccer.xml'
 import { Array, Data, Effect, flow, pipe, Record, Tuple } from 'effect'
 import { router, Stack } from 'expo-router'
-import { FlatList, Pressable, Txt, View } from 'src/components'
+import { FlatList, Pressable, SafeAreaView, Txt, View } from 'src/components'
 import { BannerAd } from 'src/components/custom/BannerAd'
 import { Group } from 'src/datatypes'
 import { extractGroupFromDocumentPicker } from 'src/export/group'
@@ -29,8 +29,9 @@ export default function GroupListScreen() {
     ),
   )
   return (
-    <View
+    <SafeAreaView
       flex={1}
+      edges={['bottom', 'left', 'right']}
       onLayout={() => SplashScreen.hide().pipe(runtime.runPromiseExit)}
     >
       <Stack.Title>{t('Groups')}</Stack.Title>
@@ -74,7 +75,7 @@ export default function GroupListScreen() {
         initialNumToRender={16}
       />
       <BannerAd />
-    </View>
+    </SafeAreaView>
   )
 }
 

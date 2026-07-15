@@ -38,7 +38,7 @@ export default function GroupScreen() {
     ),
   )
   return (
-    <SafeAreaView flex={1} edges={['bottom']}>
+    <SafeAreaView flex={1} edges={['bottom', 'left', 'right']}>
       <Stack.Title>{t('Group')}</Stack.Title>
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button

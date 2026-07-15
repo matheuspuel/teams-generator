@@ -1,7 +1,15 @@
 import AddIcon from '@expo/material-symbols/add.xml'
 import { Data } from 'effect'
 import { router, Stack } from 'expo-router'
-import { FlatList, MaterialIcons, Pressable, Txt, View } from 'src/components'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import {
+  FlatList,
+  MaterialIcons,
+  Pressable,
+  SafeAreaView,
+  Txt,
+  View,
+} from 'src/components'
 import type { Modality } from 'src/datatypes'
 import { staticModalities } from 'src/datatypes/Modality'
 import { useSelector } from 'src/hooks/useSelector'
@@ -10,11 +18,12 @@ import { Colors } from 'src/services/Theme'
 import { getModality } from 'src/slices/groups'
 
 export default function ModalityListScreen() {
+  const insets = useSafeAreaInsets()
   const modalities = useSelector(s =>
     Data.array([...s.customModalities, ...staticModalities]),
   )
   return (
-    <View flex={1}>
+    <SafeAreaView flex={1} edges={['left', 'right']}>
       <Stack.Title>{t('Modalities')}</Stack.Title>
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button
@@ -33,10 +42,15 @@ export default function ModalityListScreen() {
             </Txt>
           </View>
         }
-        contentContainerStyle={{ flexGrow: 1, p: 8, gap: 8 }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          p: 8,
+          pb: 8 + insets.bottom,
+          gap: 8,
+        }}
         initialNumToRender={16}
       />
-    </View>
+    </SafeAreaView>
   )
 }
 

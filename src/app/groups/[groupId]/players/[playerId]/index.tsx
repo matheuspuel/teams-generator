@@ -3,12 +3,15 @@ import { Effect, String } from 'effect'
 import { router, Stack, useLocalSearchParams } from 'expo-router'
 import { useEffect } from 'react'
 import {
+  KeyboardAwareScrollView,
+  KeyboardStickyView,
+} from 'react-native-keyboard-controller'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import {
   Input,
-  KeyboardAvoidingView,
   MaterialIcons,
   Pressable,
   SafeAreaView,
-  ScrollView,
   Txt,
   View,
 } from 'src/components'
@@ -39,6 +42,7 @@ function PlayerScreen_() {
     groupId: Id
     playerId?: Id
   }>()
+  const insets = useSafeAreaInsets()
   const appActions = useActions()
   const actions = PlayerForm.useActions()
   const name = PlayerForm.useSelector(_ => _.name.value)
@@ -58,32 +62,34 @@ function PlayerScreen_() {
   }, [groupId, playerId, appActions])
 
   return (
-    <SafeAreaView flex={1} edges={['bottom']}>
-      <KeyboardAvoidingView>
-        <Stack.Title>{t('Player')}</Stack.Title>
-        <Stack.Toolbar placement="right">
-          <Stack.Toolbar.Button
-            onPress={() => {
-              if (playerId) {
-                appActions.groups
-                  .key(groupId)
-                  .players.removeItem({ id: playerId })
-              }
-              router.back()
-            }}
-            icon={DeleteIcon}
-          />
-        </Stack.Toolbar>
-        <ScrollView
-          keyboardShouldPersistTaps="always"
-          contentContainerStyle={{ flexGrow: 1 }}
-        >
-          <View flex={1} p={4}>
-            <NameField />
-            <RatingField />
-            <PositionField />
-          </View>
-        </ScrollView>
+    <SafeAreaView flex={1} edges={['bottom', 'left', 'right']}>
+      <Stack.Title>{t('Player')}</Stack.Title>
+      <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Button
+          onPress={() => {
+            if (playerId) {
+              appActions.groups
+                .key(groupId)
+                .players.removeItem({ id: playerId })
+            }
+            router.back()
+          }}
+          icon={DeleteIcon}
+        />
+      </Stack.Toolbar>
+      <KeyboardAwareScrollView
+        mode="layout"
+        keyboardShouldPersistTaps="always"
+        contentContainerStyle={{ flexGrow: 1 }}
+        extraKeyboardSpace={-insets.bottom}
+      >
+        <View flex={1} p={4}>
+          <NameField />
+          <RatingField />
+          <PositionField />
+        </View>
+      </KeyboardAwareScrollView>
+      <KeyboardStickyView offset={{ opened: insets.bottom }}>
         <SolidButton
           onPress={() =>
             Effect.gen(function* () {
@@ -103,7 +109,7 @@ function PlayerScreen_() {
         >
           <Txt>{t('Save')}</Txt>
         </SolidButton>
-      </KeyboardAvoidingView>
+      </KeyboardStickyView>
     </SafeAreaView>
   )
 }

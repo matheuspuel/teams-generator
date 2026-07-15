@@ -4,12 +4,15 @@ import { router, Stack, useLocalSearchParams } from 'expo-router'
 import { useEffect } from 'react'
 import { Platform } from 'react-native'
 import {
+  KeyboardAwareScrollView,
+  KeyboardStickyView,
+} from 'react-native-keyboard-controller'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import {
   Input,
-  KeyboardAvoidingView,
   MaterialIcons,
   Row,
   SafeAreaView,
-  ScrollView,
   Txt,
   View,
 } from 'src/components'
@@ -34,6 +37,7 @@ export default function ModalityScreen() {
 
 function ModalityScreen_() {
   const { modalityId } = useLocalSearchParams<{ modalityId?: Id }>()
+  const insets = useSafeAreaInsets()
   const appActions = useActions()
   const actions = ModalityForm.useActions()
 
@@ -51,30 +55,32 @@ function ModalityScreen_() {
   }, [modalityId, actions])
 
   return (
-    <SafeAreaView flex={1} edges={['bottom']}>
-      <KeyboardAvoidingView>
-        <Stack.Title>
-          {modalityId ? t('Edit modality') : t('New modality')}
-        </Stack.Title>
-        <Stack.Toolbar placement="right">
-          <Stack.Toolbar.Button
-            onPress={() =>
-              modalityId
-                ? router.navigate(`/modalities/${modalityId}/delete`)
-                : router.back()
-            }
-            icon={DeleteIcon}
-          />
-        </Stack.Toolbar>
-        <ScrollView
-          keyboardShouldPersistTaps="always"
-          contentContainerStyle={{ flexGrow: 1 }}
-        >
-          <View flex={1} p={4}>
-            <NameField />
-            <PositionsField />
-          </View>
-        </ScrollView>
+    <SafeAreaView flex={1} edges={['bottom', 'left', 'right']}>
+      <Stack.Title>
+        {modalityId ? t('Edit modality') : t('New modality')}
+      </Stack.Title>
+      <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Button
+          onPress={() =>
+            modalityId
+              ? router.navigate(`/modalities/${modalityId}/delete`)
+              : router.back()
+          }
+          icon={DeleteIcon}
+        />
+      </Stack.Toolbar>
+      <KeyboardAwareScrollView
+        mode="layout"
+        keyboardShouldPersistTaps="always"
+        contentContainerStyle={{ flexGrow: 1 }}
+        extraKeyboardSpace={-insets.bottom}
+      >
+        <View flex={1} p={4}>
+          <NameField />
+          <PositionsField />
+        </View>
+      </KeyboardAwareScrollView>
+      <KeyboardStickyView offset={{ opened: insets.bottom }}>
         <SolidButton
           onPress={() =>
             Effect.gen(function* () {
@@ -92,7 +98,7 @@ function ModalityScreen_() {
         >
           <Txt>{t('Save')}</Txt>
         </SolidButton>
-      </KeyboardAvoidingView>
+      </KeyboardStickyView>
     </SafeAreaView>
   )
 }

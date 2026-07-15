@@ -18,7 +18,7 @@ export const SolidButton = (
     bg={
       props.bg ??
       pipe(props.color ?? Colors.primary, c =>
-        props.isEnabled === false ? Colors.opacity(0.375)(c) : c,
+        props.isEnabled === false ? Colors.tone(-0.55)(c) : c,
       )
     }
     rippleColor={props.rippleColor ?? Colors.black}
@@ -27,7 +27,7 @@ export const SolidButton = (
     <TextStyleContext.Provider
       value={{
         color: pipe(props.textColor ?? Colors.text.light, c =>
-          props.isEnabled === false ? Colors.opacity(0.375)(c) : c,
+          props.isEnabled === false ? Colors.tone(-0.55)(c) : c,
         ),
       }}
     >

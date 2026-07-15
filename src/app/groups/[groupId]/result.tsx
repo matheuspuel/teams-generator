@@ -4,9 +4,11 @@ import VisibilityOffIcon from '@expo/material-symbols/visibility_off.xml'
 import { Array, Effect, Exit, Option, Order, identity, pipe } from 'effect'
 import { Stack, useLocalSearchParams } from 'expo-router'
 import * as React from 'react'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import {
   ActivityIndicator,
   Row,
+  SafeAreaView,
   ScrollView,
   Txt,
   TxtContext,
@@ -23,6 +25,7 @@ import { toFixedLocale } from 'src/utils/Number'
 
 export default function ResultScreen() {
   const { groupId } = useLocalSearchParams<{ groupId: Id }>()
+  const insets = useSafeAreaInsets()
   const actions = useActions()
   const runtime = useRuntime()
   const result = useSelector(s => s.result)
@@ -36,7 +39,7 @@ export default function ResultScreen() {
   }, [])
   if (!modality) return null
   return (
-    <View flex={1}>
+    <SafeAreaView flex={1} edges={['left', 'right']}>
       <Stack.Title>{t('Result')}</Stack.Title>
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button
@@ -52,7 +55,14 @@ export default function ResultScreen() {
           icon={ShareIcon}
         />
       </Stack.Toolbar>
-      <ScrollView contentContainerStyle={{ flexGrow: 1, gap: 8, p: 8 }}>
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+          gap: 8,
+          p: 8,
+          pb: 8 + insets.bottom,
+        }}
+      >
         {pipe(
           result.poll,
           Effect.runSync,
@@ -76,7 +86,7 @@ export default function ResultScreen() {
           }),
         )}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   )
 }
 

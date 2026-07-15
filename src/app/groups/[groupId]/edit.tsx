@@ -2,13 +2,16 @@ import { Effect, String } from 'effect'
 import { router, Stack, useLocalSearchParams } from 'expo-router'
 import { useEffect } from 'react'
 import {
+  KeyboardAwareScrollView,
+  KeyboardStickyView,
+} from 'react-native-keyboard-controller'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import {
   Input,
-  KeyboardAvoidingView,
   MaterialIcons,
   Pressable,
   Row,
   SafeAreaView,
-  ScrollView,
   Txt,
   View,
 } from 'src/components'
@@ -34,6 +37,7 @@ export default function GroupEditScreen() {
 
 function GroupEditScreen_() {
   const { groupId } = useLocalSearchParams<{ groupId?: Id }>()
+  const insets = useSafeAreaInsets()
   const appActions = useActions()
   const actions = GroupForm.useActions()
   const runtime = useRuntime()
@@ -50,18 +54,20 @@ function GroupEditScreen_() {
   }, [groupId])
 
   return (
-    <SafeAreaView flex={1} edges={['bottom']}>
-      <KeyboardAvoidingView>
-        <Stack.Title>{groupId ? t('Edit group') : t('New group')}</Stack.Title>
-        <ScrollView
-          keyboardShouldPersistTaps="always"
-          contentContainerStyle={{ flexGrow: 1 }}
-        >
-          <View flex={1} p={16}>
-            <NameField />
-            <ModalityField />
-          </View>
-        </ScrollView>
+    <SafeAreaView flex={1} edges={['bottom', 'left', 'right']}>
+      <Stack.Title>{groupId ? t('Edit group') : t('New group')}</Stack.Title>
+      <KeyboardAwareScrollView
+        mode="layout"
+        keyboardShouldPersistTaps="always"
+        contentContainerStyle={{ flexGrow: 1 }}
+        extraKeyboardSpace={-insets.bottom}
+      >
+        <View flex={1} p={16}>
+          <NameField />
+          <ModalityField />
+        </View>
+      </KeyboardAwareScrollView>
+      <KeyboardStickyView offset={{ opened: insets.bottom }}>
         <SolidButton
           onPress={() =>
             Effect.gen(function* () {
@@ -77,7 +83,7 @@ function GroupEditScreen_() {
         >
           <Txt>{t('Save')}</Txt>
         </SolidButton>
-      </KeyboardAvoidingView>
+      </KeyboardStickyView>
     </SafeAreaView>
   )
 }
