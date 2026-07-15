@@ -1,12 +1,12 @@
 import { Text as RawText } from 'react-native'
-import type { MarginProps, PaddingProps, UIColor } from 'src/components/types'
+import type { MarginProps, PaddingProps } from 'src/components/types'
 import { useTextStyle } from 'src/contexts/TextStyle'
-import { useThemeGetRawColor } from 'src/contexts/Theme'
+import type { Color } from 'src/utils/datatypes/Color'
 
 export type TextStyleProps = PaddingProps &
   MarginProps & {
     flex?: number
-    color?: UIColor
+    color?: Color
     align?: 'left' | 'center' | 'right' | 'justify'
     size?: number
     lineHeight?: number
@@ -23,7 +23,6 @@ export type TextProps = TextStyleProps & {
 
 export const Txt = (props: TextProps) => {
   const textStyle = useTextStyle()
-  const getRawColor = useThemeGetRawColor()
   return (
     <RawText
       numberOfLines={props.numberOfLines}
@@ -45,7 +44,7 @@ export const Txt = (props: TextProps) => {
         width: props.w,
         height: props.h,
         flex: props.flex,
-        color: getRawColor(props.color ?? textStyle.color),
+        color: (props.color ?? textStyle.color).toHex(),
         textAlign: props.align ?? 'center',
         fontSize: props.size,
         fontWeight: props.weight ? `${props.weight}` : undefined,

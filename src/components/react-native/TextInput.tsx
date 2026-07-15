@@ -1,4 +1,3 @@
-import { pipe } from 'effect'
 import * as React from 'react'
 import { TextInput as RNTextInput_ } from 'react-native-gesture-handler'
 import type {
@@ -7,9 +6,8 @@ import type {
   MarginProps,
   PaddingProps,
   RoundProps,
-  UIColor,
 } from 'src/components/types'
-import { useThemeGetRawColor } from 'src/contexts/Theme'
+import type { Color } from 'src/utils/datatypes/Color'
 
 export type TextInputStyleProps = PaddingProps &
   MarginProps &
@@ -18,9 +16,9 @@ export type TextInputStyleProps = PaddingProps &
   FlexChildProps & {
     w?: number
     h?: number
-    bg?: UIColor
-    borderColor?: UIColor
-    fontColor?: UIColor
+    bg?: Color
+    borderColor?: Color
+    fontColor?: Color
     fontSize?: number
   }
 
@@ -34,16 +32,15 @@ export type TextInputProps = TextInputStyleProps & {
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters'
   align?: 'left' | 'center' | 'right' | 'justify' | 'auto'
   placeholder?: string
-  placeholderTextColor?: UIColor
-  cursorColor?: UIColor
+  placeholderTextColor?: Color
+  cursorColor?: Color
   focused?: {
-    bg?: UIColor
-    borderColor?: UIColor
+    bg?: Color
+    borderColor?: Color
   }
 }
 
 export const TextInput = (props: TextInputProps) => {
-  const getRawColor = useThemeGetRawColor()
   const [isFocused, setIsFocused] = React.useState(false)
   return (
     <RNTextInput_
@@ -61,16 +58,10 @@ export const TextInput = (props: TextInputProps) => {
       autoFocus={props.autoFocus}
       autoCapitalize={props.autoCapitalize}
       placeholder={props.placeholder}
-      placeholderTextColor={
-        props.placeholderTextColor
-          ? getRawColor(props.placeholderTextColor)
-          : undefined
-      }
-      cursorColor={
-        props.cursorColor ? getRawColor(props.cursorColor) : undefined
-      }
+      placeholderTextColor={props.placeholderTextColor?.toHex()}
+      cursorColor={props.cursorColor?.toHex()}
       style={{
-        color: props.fontColor ? getRawColor(props.fontColor) : undefined,
+        color: props.fontColor?.toHex(),
         textAlign: props.align,
         padding: props?.p,
         paddingHorizontal: props?.px,
@@ -103,14 +94,14 @@ export const TextInput = (props: TextInputProps) => {
         flex: props?.flex,
         flexGrow: props?.flexGrow,
         flexShrink: props?.flexShrink,
-        backgroundColor: pipe(
-          (isFocused && props.focused?.bg) || props.bg,
-          c => c && getRawColor(c),
-        ),
-        borderColor: pipe(
-          (isFocused && props.focused?.borderColor) || props.borderColor,
-          c => c && getRawColor(c),
-        ),
+        backgroundColor: (
+          (isFocused && props.focused?.bg) ||
+          props.bg
+        )?.toHex(),
+        borderColor: (
+          (isFocused && props.focused?.borderColor) ||
+          props.borderColor
+        )?.toHex(),
         alignSelf:
           props?.alignSelf === 'start'
             ? 'flex-start'

@@ -20,10 +20,10 @@ import { BorderlessButton } from 'src/components/derivative/BorderlessButton'
 import { FormLabel } from 'src/components/derivative/FormLabel'
 import { GhostButton } from 'src/components/derivative/GhostButton'
 import { SolidButton } from 'src/components/derivative/SolidButton'
+import { useTheme } from 'src/contexts/Theme'
 import { useActions } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { runtime } from 'src/runtime'
-import { Colors } from 'src/services/Theme'
 import { ModalityForm } from 'src/state/forms/modality'
 import type { Id } from 'src/utils/Entity'
 
@@ -40,6 +40,7 @@ function ModalityScreen_() {
   const insets = useSafeAreaInsets()
   const appActions = useActions()
   const actions = ModalityForm.useActions()
+  const { colors } = useTheme()
 
   useEffect(() => {
     if (modalityId) {
@@ -94,7 +95,7 @@ function ModalityScreen_() {
           }
           p={16}
           round={0}
-          color={Colors.header}
+          color={colors.header}
         >
           <Txt>{t('Save')}</Txt>
         </SolidButton>
@@ -150,6 +151,7 @@ const PositionsField = () => {
 
 const PositionItem = ({ index }: { index: number }) => {
   const actions = ModalityForm.useActions()
+  const { colors } = useTheme()
   return (
     <Row align="center">
       <PositionAbbreviationField index={index} />
@@ -159,7 +161,7 @@ const PositionItem = ({ index }: { index: number }) => {
       </BorderlessButton>
       <BorderlessButton
         onPress={() => actions.positions.removeItemKeepingAtLeastOne(index)}
-        color={Colors.error}
+        color={colors.error}
       >
         <MaterialIcons name="delete" />
       </BorderlessButton>

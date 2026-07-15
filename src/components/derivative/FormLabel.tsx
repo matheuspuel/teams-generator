@@ -1,12 +1,15 @@
-import { Colors } from 'src/services/Theme'
+import { useTheme } from 'src/contexts/Theme'
 import { Txt } from '../react-native/Txt'
 
-export const FormLabel: typeof Txt = props => (
-  <Txt
-    align="left"
-    weight={500}
-    color={Colors.text.secondary}
-    my={4}
-    {...props}
-  />
-)
+export const FormLabel: typeof Txt = props => {
+  const { colors } = useTheme()
+  return (
+    <Txt
+      align="left"
+      weight={500}
+      color={colors.text.secondary}
+      my={4}
+      {...props}
+    />
+  )
+}

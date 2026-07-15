@@ -19,11 +19,11 @@ import { FormLabel } from 'src/components/derivative/FormLabel'
 import { GhostButton } from 'src/components/derivative/GhostButton'
 import { SolidButton } from 'src/components/derivative/SolidButton'
 import { useRuntime } from 'src/contexts/Runtime'
+import { useTheme } from 'src/contexts/Theme'
 import type { Modality } from 'src/datatypes'
 import { staticModalities } from 'src/datatypes/Modality'
 import { useActions, useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
-import { Colors } from 'src/services/Theme'
 import { GroupForm } from 'src/state/forms/group'
 import type { Id } from 'src/utils/Entity'
 
@@ -41,6 +41,7 @@ function GroupEditScreen_() {
   const appActions = useActions()
   const actions = GroupForm.useActions()
   const runtime = useRuntime()
+  const { colors } = useTheme()
   const isEnabled = GroupForm.useSelector(_ =>
     String.isNonEmpty(_.name.value.trim()),
   )
@@ -79,7 +80,7 @@ function GroupEditScreen_() {
           isEnabled={isEnabled}
           p={16}
           round={0}
-          color={Colors.header}
+          color={colors.header}
         >
           <Txt>{t('Save')}</Txt>
         </SolidButton>
@@ -132,6 +133,7 @@ const ModalityField = () => {
 
 const ModalityItem = (props: Modality) => {
   const actions = GroupForm.useActions()
+  const { colors } = useTheme()
   const isActive = GroupForm.useSelector(_ => _.modality.value.id === props.id)
   return (
     <Pressable
@@ -142,13 +144,13 @@ const ModalityItem = (props: Modality) => {
       round={8}
       align="center"
       direction="row"
-      bg={isActive ? Colors.opacity(0.125)(Colors.primary) : undefined}
-      rippleColor={Colors.opacity(0.125)(Colors.primary)}
+      bg={isActive ? colors.primary.setOpacityFactor(0.125) : undefined}
+      rippleColor={colors.primary.setOpacityFactor(0.125)}
       rippleOpacity={0.1}
     >
       <View w={50}>
         {isActive ? (
-          <MaterialIcons name="check" color={Colors.primary} />
+          <MaterialIcons name="check" color={colors.primary} />
         ) : null}
       </View>
       <Txt flex={1} align="center" p={8} size={16} weight={500}>

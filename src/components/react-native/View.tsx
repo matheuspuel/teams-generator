@@ -10,9 +10,8 @@ import type {
   MarginProps,
   PaddingProps,
   RoundProps,
-  UIColor,
 } from 'src/components/types'
-import { useThemeGetRawColor } from 'src/contexts/Theme'
+import type { Color } from 'src/utils/datatypes/Color'
 
 export type ViewStyleProps = PaddingProps &
   MarginProps &
@@ -30,8 +29,8 @@ export type ViewStyleProps = PaddingProps &
     overflow?: 'visible' | 'hidden'
     shadow?: number
     zIndex?: number
-    bg?: UIColor
-    borderColor?: UIColor
+    bg?: Color
+    borderColor?: Color
   }
 
 export type ViewProps = ViewStyleProps & {
@@ -40,7 +39,6 @@ export type ViewProps = ViewStyleProps & {
 }
 
 export const View = (props: ViewProps = {}) => {
-  const getRawColor = useThemeGetRawColor()
   return (
     <RawView
       children={props.children}
@@ -84,10 +82,8 @@ export const View = (props: ViewProps = {}) => {
         flexGrow: props?.flexGrow,
         flexShrink: props?.flexShrink,
         flexDirection: props?.direction,
-        backgroundColor: props?.bg ? getRawColor(props.bg) : undefined,
-        borderColor: props?.borderColor
-          ? getRawColor(props.borderColor)
-          : undefined,
+        backgroundColor: props?.bg?.toHex(),
+        borderColor: props?.borderColor?.toHex(),
         justifyContent:
           props?.justify === 'start'
             ? 'flex-start'

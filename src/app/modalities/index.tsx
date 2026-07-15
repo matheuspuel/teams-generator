@@ -10,15 +10,16 @@ import {
   Txt,
   View,
 } from 'src/components'
+import { useTheme } from 'src/contexts/Theme'
 import type { Modality } from 'src/datatypes'
 import { staticModalities } from 'src/datatypes/Modality'
 import { useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
-import { Colors } from 'src/services/Theme'
 import { getModality } from 'src/slices/groups'
 
 export default function ModalityListScreen() {
   const insets = useSafeAreaInsets()
+  const { colors } = useTheme()
   const modalities = useSelector(s =>
     Data.array([...s.customModalities, ...staticModalities]),
   )
@@ -37,7 +38,7 @@ export default function ModalityListScreen() {
         renderItem={m => <Item modality={m} />}
         ListEmptyComponent={
           <View flex={1} justify="center">
-            <Txt size={16} color={Colors.opacity(0.625)(Colors.gray)}>
+            <Txt size={16} color={colors.gray.setOpacityFactor(0.625)}>
               {t('No modalities registered')}
             </Txt>
           </View>
@@ -55,6 +56,7 @@ export default function ModalityListScreen() {
 }
 
 const Item = ({ modality }: { modality: Modality.Reference }) => {
+  const { colors } = useTheme()
   const name = useSelector(s => getModality(modality)(s)?.name ?? null)
   if (!name) return null
   return (
@@ -65,7 +67,7 @@ const Item = ({ modality }: { modality: Modality.Reference }) => {
       p={12}
       round={8}
       shadow={1}
-      bg={Colors.card}
+      bg={colors.card}
       isEnabled={modality._tag === 'CustomModality'}
     >
       <View minW={30} />
@@ -76,7 +78,7 @@ const Item = ({ modality }: { modality: Modality.Reference }) => {
         {modality._tag === 'CustomModality' ? null : (
           <MaterialIcons
             name="lock"
-            color={Colors.opacity(0.375)(Colors.gray)}
+            color={colors.gray.setOpacityFactor(0.375)}
           />
         )}
       </View>

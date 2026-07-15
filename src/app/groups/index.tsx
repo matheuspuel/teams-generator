@@ -6,18 +6,19 @@ import { Array, Data, Effect, flow, pipe, Record, Tuple } from 'effect'
 import { router, Stack } from 'expo-router'
 import { FlatList, Pressable, SafeAreaView, Txt, View } from 'src/components'
 import { BannerAd } from 'src/components/custom/BannerAd'
+import { useTheme } from 'src/contexts/Theme'
 import { Group } from 'src/datatypes'
 import { extractGroupFromDocumentPicker } from 'src/export/group'
 import { useActions, useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { runtime } from 'src/runtime'
 import { SplashScreen } from 'src/services/SplashScreen'
-import { Colors } from 'src/services/Theme'
 import { getModality } from 'src/slices/groups'
 import type { Id } from 'src/utils/Entity'
 
 export default function GroupListScreen() {
   const actions = useActions()
+  const { colors } = useTheme()
   const groupsIds = useSelector(
     flow(
       s => s.groups,
@@ -66,7 +67,7 @@ export default function GroupListScreen() {
         renderItem={id => <Item id={id} />}
         ListEmptyComponent={
           <View flex={1} justify="center">
-            <Txt size={16} color={Colors.opacity(0.625)(Colors.gray)}>
+            <Txt size={16} color={colors.gray.setOpacityFactor(0.625)}>
               {t('No groups registered')}
             </Txt>
           </View>
@@ -80,6 +81,7 @@ export default function GroupListScreen() {
 }
 
 const Item = ({ id }: { id: Id }) => {
+  const { colors } = useTheme()
   const group = useSelector(s =>
     pipe(
       s.groups[id] ?? null,
@@ -99,14 +101,14 @@ const Item = ({ id }: { id: Id }) => {
       p={12}
       round={8}
       shadow={1}
-      bg={Colors.card}
+      bg={colors.card}
     >
       <Txt
         numberOfLines={1}
         flex={1}
         align="left"
         weight={600}
-        color={Colors.text.secondary}
+        color={colors.text.secondary}
         size={10}
       >
         {modalityName ?? '-'}

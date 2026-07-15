@@ -13,9 +13,8 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import { Txt, View } from 'src/components'
-import { useThemeGetRawColor } from 'src/contexts/Theme'
+import { useTheme } from 'src/contexts/Theme'
 import { Rating } from 'src/datatypes'
-import { Colors } from 'src/services/Theme'
 
 export type RatingSliderProps = {
   initialPercentage: number
@@ -28,16 +27,16 @@ export const RatingSlider = ({
   step,
   onChange,
 }: RatingSliderProps) => {
+  const { colors } = useTheme()
   const paddingHorizontal = 16
   const paddingVertical = 25
   const trackWidth = 10
   const thumbSize = 30
   const tickWidth = 4
-  const trackColor = Colors.tone(-0.67)(Colors.primary)
-  const thumbColor = Colors.primary
+  const trackColor = colors.tone(-0.67)(colors.primary)
+  const thumbColor = colors.primary
   const [width, setWidth] = React.useState(0)
   const position = useSharedValue(0)
-  const getRawColor = useThemeGetRawColor()
 
   const getPosition = (
     e: GestureUpdateEvent<PanGestureHandlerEventPayload>,
@@ -92,7 +91,7 @@ export const RatingSlider = ({
           style={{
             height: trackWidth,
             borderRadius: trackWidth / 2,
-            backgroundColor: getRawColor(trackColor),
+            backgroundColor: trackColor.toHex(),
           }}
         >
           {Rating.List.map(r => (
@@ -132,7 +131,7 @@ export const RatingSlider = ({
                 width: thumbSize,
                 height: thumbSize,
                 borderRadius: thumbSize / 2,
-                backgroundColor: getRawColor(thumbColor),
+                backgroundColor: thumbColor.toHex(),
               },
               animatedStyles,
             ]}

@@ -1,20 +1,18 @@
 import { Effect, Option, pipe } from 'effect'
 import * as React from 'react'
 import { SafeAreaProvider as RawSafeAreaProvider_ } from 'react-native-safe-area-context'
-import type { UIColor } from 'src/components/types'
 import { useRuntime } from 'src/contexts/Runtime'
-import { useThemeGetRawColor } from 'src/contexts/Theme'
 import { SafeAreaService } from 'src/services/SafeArea'
+import type { Color } from 'src/utils/datatypes/Color'
 
 export type SafeAreaProviderProps = {
   flex?: number
-  bg?: UIColor
+  bg?: Color
   children?: React.ReactNode
 }
 
 export const SafeAreaProvider = (props: SafeAreaProviderProps) => {
   const runtime = useRuntime()
-  const getRawColor = useThemeGetRawColor()
   return (
     <RawSafeAreaProvider_
       children={props.children}
@@ -24,7 +22,7 @@ export const SafeAreaProvider = (props: SafeAreaProviderProps) => {
         runtime.runSync,
       )}
       style={{
-        backgroundColor: props?.bg ? getRawColor(props.bg) : undefined,
+        backgroundColor: props?.bg?.toHex(),
       }}
     />
   )

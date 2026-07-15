@@ -1,8 +1,7 @@
 import { Effect, Match, pipe } from 'effect'
 import * as React from 'react'
 import { Image as RNImage_ } from 'react-native'
-import type { UIColor } from 'src/components/types'
-import { useThemeGetRawColor } from 'src/contexts/Theme'
+import type { Color } from 'src/utils/datatypes/Color'
 
 export type ImageStyleProps = {
   w?: number
@@ -18,7 +17,7 @@ export type ImageProps = ImageStyleProps & {
     | { _tag: 'base64'; base64: string }
     | { _tag: 'uri'; uri: string }
   alt?: string
-  tintColor?: UIColor
+  tintColor?: Color
   Loading?: React.ReactNode
   Error?: React.ReactNode
 }
@@ -26,7 +25,6 @@ export type ImageProps = ImageStyleProps & {
 type ImageStatus = 'loading' | 'success' | 'error'
 
 export const Image = (props: ImageProps) => {
-  const getThemeRawColor = useThemeGetRawColor()
   const [status, setStatus] = React.useState<ImageStatus>('loading')
   React.useEffect(() => {
     if (props.src._tag === 'uri') {
@@ -64,7 +62,7 @@ export const Image = (props: ImageProps) => {
         )}
         alt={props.alt}
         style={{
-          tintColor: props.tintColor && getThemeRawColor(props.tintColor),
+          tintColor: props.tintColor?.toHex(),
           width: props.w,
           height: props.h,
           resizeMode: props.resizeMode,

@@ -18,13 +18,13 @@ import {
 import { RatingSlider } from 'src/components/custom/RatingSlider'
 import { FormLabel } from 'src/components/derivative/FormLabel'
 import { SolidButton } from 'src/components/derivative/SolidButton'
+import { useTheme } from 'src/contexts/Theme'
 import { Position, Rating } from 'src/datatypes'
 import { initialModalityPosition } from 'src/datatypes/Modality'
 import type { Abbreviation } from 'src/datatypes/Position'
 import { useActions, useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { runtime } from 'src/runtime'
-import { Colors } from 'src/services/Theme'
 import { getGroupModality } from 'src/slices/groups'
 import { PlayerForm } from 'src/state/forms/player'
 import type { Id } from 'src/utils/Entity'
@@ -45,6 +45,7 @@ function PlayerScreen_() {
   const insets = useSafeAreaInsets()
   const appActions = useActions()
   const actions = PlayerForm.useActions()
+  const { colors } = useTheme()
   const name = PlayerForm.useSelector(_ => _.name.value)
 
   useEffect(() => {
@@ -105,7 +106,7 @@ function PlayerScreen_() {
           isEnabled={String.isNonEmpty(name.trim())}
           p={16}
           round={0}
-          color={Colors.header}
+          color={colors.header}
         >
           <Txt>{t('Save')}</Txt>
         </SolidButton>
@@ -132,11 +133,12 @@ const NameField = () => {
 
 const RatingField = () => {
   const actions = PlayerForm.useActions()
+  const { colors } = useTheme()
   const rating = PlayerForm.useSelector(_ => _.rating)
   return (
     <View p={4}>
       <FormLabel>{t('Rating')}</FormLabel>
-      <Txt size={24} weight={700} color={Colors.primary}>
+      <Txt size={24} weight={700} color={colors.primary}>
         {Rating.toString(rating.value)}
       </Txt>
       <RatingSlider
@@ -168,6 +170,7 @@ const PositionField = () => {
 const PositionItem = ({ abbreviation }: { abbreviation: Abbreviation }) => {
   const { groupId } = useLocalSearchParams<{ groupId: Id }>()
   const actions = PlayerForm.useActions()
+  const { colors } = useTheme()
   const position = useSelector(
     s =>
       getGroupModality({ group: { id: groupId } })(s)?.positions.find(
@@ -187,20 +190,20 @@ const PositionItem = ({ abbreviation }: { abbreviation: Abbreviation }) => {
       round={8}
       align="center"
       direction="row"
-      bg={isActive ? Colors.opacity(0.125)(Colors.primary) : undefined}
-      rippleColor={Colors.primary}
+      bg={isActive ? colors.primary.setOpacityFactor(0.125) : undefined}
+      rippleColor={colors.primary}
       rippleOpacity={0.1}
     >
       <View w={30}>
         {isActive ? (
-          <MaterialIcons name="check" color={Colors.primary} />
+          <MaterialIcons name="check" color={colors.primary} />
         ) : null}
       </View>
       <View minW={70} align="center">
         <View
           p={4}
           round={12}
-          bg={Colors.opacity(0.5)(Colors.primary)}
+          bg={colors.primary.setOpacityFactor(0.5)}
           minW={35}
         >
           <Txt align="center" size={18} weight={600} includeFontPadding={false}>

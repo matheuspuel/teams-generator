@@ -1,7 +1,3 @@
-import type { Effect } from 'effect'
-import type { Theme } from 'src/services/Theme'
-import type { Color } from 'src/utils/datatypes'
-
 type Axis = 'x' | 'y'
 
 type DirectionX = 'l' | 'r'
@@ -70,5 +66,3 @@ export type AbsolutePositionProps = {
   absolute?:
     false | { left?: number; right?: number; top?: number; bottom?: number }
 }
-
-export type UIColor = Effect.Effect<Color, never, Theme>

@@ -1,24 +1,22 @@
 import RawIcons_ from '@react-native-vector-icons/material-design-icons'
 import * as React from 'react'
 import { useTextStyle } from 'src/contexts/TextStyle'
-import { useThemeGetRawColor } from 'src/contexts/Theme'
-import type { UIColor } from '../types'
+import type { Color } from 'src/utils/datatypes/Color'
 
 export type IconProps = {
   name: React.ComponentProps<typeof RawIcons_>['name']
-  color?: UIColor
+  color?: Color
   size?: number
   align?: 'left' | 'right' | 'center'
 }
 
 export const MaterialCommunityIcons = (props: IconProps) => {
   const textStyle = useTextStyle()
-  const getRawColor = useThemeGetRawColor()
   return (
     <RawIcons_
       name={props.name}
       size={props.size ?? 24}
-      color={getRawColor(props.color ?? textStyle.color)}
+      color={(props.color ?? textStyle.color).toHex()}
       style={{ textAlign: props.align }}
     />
   )

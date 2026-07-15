@@ -15,10 +15,10 @@ import {
   View,
 } from 'src/components'
 import { useRuntime } from 'src/contexts/Runtime'
+import { useTheme } from 'src/contexts/Theme'
 import { type Modality, Player, Position, Rating } from 'src/datatypes'
 import { useActions, useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
-import { Colors } from 'src/services/Theme'
 import { getGroupModality } from 'src/slices/groups'
 import type { Id } from 'src/utils/Entity'
 import { toFixedLocale } from 'src/utils/Number'
@@ -28,6 +28,7 @@ export default function ResultScreen() {
   const insets = useSafeAreaInsets()
   const actions = useActions()
   const runtime = useRuntime()
+  const { colors } = useTheme()
   const result = useSelector(s => s.result)
   const modality = useSelector(s =>
     getGroupModality({ group: { id: groupId } })(s),
@@ -71,7 +72,7 @@ export default function ResultScreen() {
           Exit.match({
             onFailure: () => (
               <View flex={1} justify="center">
-                <ActivityIndicator color={Colors.primary} />
+                <ActivityIndicator color={colors.primary} />
               </View>
             ),
             onSuccess: Array.map((t, i) => (
@@ -96,28 +97,29 @@ const TeamItem = (props: {
   modality: Modality
   isRatingVisible: boolean
 }) => {
+  const { colors } = useTheme()
   const title = `${t('Team')} ${props.index + 1}`
   const numPlayers = props.players.length
   const totalRating = Player.getRatingTotal(props.players)
   const averageRating =
     numPlayers === 0 ? '-' : toFixedLocale(2)(totalRating / numPlayers)
   return (
-    <View bg={Colors.card} p={8} gap={8} round={8} shadow={1}>
+    <View bg={colors.card} p={8} gap={8} round={8} shadow={1}>
       <Txt size={16} weight={600}>
         {title}
       </Txt>
       <View>
-        <TxtContext align="left" color={Colors.text.secondary} size={12}>
+        <TxtContext align="left" color={colors.text.secondary} size={12}>
           <Txt align="left">{`${t('Number of players')}: `}</Txt>
           <Txt>{numPlayers.toString()}</Txt>
         </TxtContext>
         {props.isRatingVisible && (
           <>
-            <TxtContext align="left" color={Colors.text.secondary} size={12}>
+            <TxtContext align="left" color={colors.text.secondary} size={12}>
               <Txt align="left">{`${t('Average rating')}: `}</Txt>
               <Txt>{averageRating}</Txt>
             </TxtContext>
-            <TxtContext align="left" color={Colors.text.secondary} size={12}>
+            <TxtContext align="left" color={colors.text.secondary} size={12}>
               <Txt align="left">{`${t('Total rating')}: `}</Txt>
               <Txt>{totalRating.toString()}</Txt>
             </TxtContext>

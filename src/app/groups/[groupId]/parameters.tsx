@@ -7,16 +7,17 @@ import { Checkbox } from 'src/components/derivative/Checkbox'
 import { GhostButton } from 'src/components/derivative/GhostButton'
 import { SolidButton } from 'src/components/derivative/SolidButton'
 import { useRuntime } from 'src/contexts/Runtime'
+import { useTheme } from 'src/contexts/Theme'
 import { Parameters } from 'src/datatypes'
 import { useActions, useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
-import { Colors } from 'src/services/Theme'
 import type { Id } from 'src/utils/Entity'
 
 export default function ParametersScreen() {
   const { groupId } = useLocalSearchParams<{ groupId: Id }>()
   const actions = useActions()
   const runtime = useRuntime()
+  const { colors } = useTheme()
   const parameters = useSelector(
     s => s.parameters,
     Schema.equivalence(Parameters.Parameters),
@@ -48,7 +49,7 @@ export default function ParametersScreen() {
             p={4}
             pl={8}
             gap={4}
-            color={Colors.text.normal}
+            color={colors.text.normal}
           >
             <Txt flex={1}>
               {pipe(
@@ -59,7 +60,7 @@ export default function ParametersScreen() {
                 }),
               )}
             </Txt>
-            <MaterialIcons name="swap-horiz" size={20} color={Colors.primary} />
+            <MaterialIcons name="swap-horiz" size={20} color={colors.primary} />
           </GhostButton>
         </Row>
         <Pressable
@@ -68,7 +69,7 @@ export default function ParametersScreen() {
           align="center"
           p={8}
           round={8}
-          bg={Colors.opacity(0)(Colors.white)}
+          bg={colors.white.setOpacityFactor(0)}
         >
           <Checkbox
             onToggle={() => actions.parameters.position.update(_ => !_)}
@@ -84,7 +85,7 @@ export default function ParametersScreen() {
           align="center"
           p={8}
           round={8}
-          bg={Colors.opacity(0)(Colors.white)}
+          bg={colors.white.setOpacityFactor(0)}
         >
           <Checkbox
             onToggle={() => actions.parameters.rating.update(_ => !_)}
@@ -95,7 +96,10 @@ export default function ParametersScreen() {
           </Txt>
         </Pressable>
       </View>
-      <View borderWidthT={1} borderColor={Colors.opacity(0.375)(Colors.gray)} />
+      <View
+        borderWidthT={1}
+        borderColor={colors.gray.setOpacityFactor(0.375)}
+      />
       <Row p={16} gap={8} justify="end">
         <GhostButton onPress={() => router.back()}>
           <Txt>{t('Cancel')}</Txt>

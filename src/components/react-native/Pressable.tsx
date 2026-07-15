@@ -8,10 +8,8 @@ import type {
   GapProps,
   MarginProps,
   PaddingProps,
-  UIColor,
 } from 'src/components/types'
-import { useThemeGetRawColor } from 'src/contexts/Theme'
-import { Colors } from 'src/services/Theme'
+import type { Color } from 'src/utils/datatypes/Color'
 
 export type PressableStyleProps = PaddingProps &
   MarginProps &
@@ -26,14 +24,14 @@ export type PressableStyleProps = PaddingProps &
     minH?: number
     aspectRatio?: number
     shadow?: number
-    bg?: UIColor
-    borderColor?: UIColor
+    bg?: Color
+    borderColor?: Color
   }
 
 export type PressableProps = PressableStyleProps & {
   onPress: () => void
   isEnabled?: boolean
-  rippleColor?: UIColor
+  rippleColor?: Color
   rippleOpacity?: number
   borderless?: boolean
   foreground?: boolean
@@ -41,7 +39,6 @@ export type PressableProps = PressableStyleProps & {
 }
 
 export const Pressable = (props: PressableProps) => {
-  const getRawColor = useThemeGetRawColor()
   const Component = props.borderless ? BorderlessButton : RectButton
   return (
     <Component
@@ -50,16 +47,12 @@ export const Pressable = (props: PressableProps) => {
       rippleColor={
         props.isEnabled !== false
           ? props.rippleColor
-            ? getRawColor(
-                Colors.opacity(props.rippleOpacity ?? 1)(props.rippleColor),
-              )
-            : undefined
+              ?.setOpacityFactor(props.rippleOpacity ?? 1)
+              .toHex()
           : 'transparent'
       }
       activeOpacity={props.isEnabled !== false ? props.rippleOpacity : 0}
-      underlayColor={
-        props.rippleColor ? getRawColor(props.rippleColor) : undefined
-      }
+      underlayColor={props.rippleColor?.toHex()}
       borderless={props.borderless}
       foreground={props.foreground}
       style={{
@@ -90,10 +83,8 @@ export const Pressable = (props: PressableProps) => {
         flexGrow: props?.flexGrow,
         flexShrink: props?.flexShrink,
         flexDirection: props?.direction,
-        backgroundColor: props?.bg ? getRawColor(props.bg) : undefined,
-        borderColor: props?.borderColor
-          ? getRawColor(props.borderColor)
-          : undefined,
+        backgroundColor: props?.bg?.toHex(),
+        borderColor: props?.borderColor?.toHex(),
         justifyContent:
           props?.justify === 'start'
             ? 'flex-start'

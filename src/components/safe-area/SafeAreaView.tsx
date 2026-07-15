@@ -4,7 +4,6 @@ import {
   type Edges,
   SafeAreaView as SafeAreaView_,
 } from 'react-native-safe-area-context'
-import { useThemeGetRawColor } from 'src/contexts/Theme'
 import type { ViewProps } from '../react-native/View'
 
 export type SafeAreaViewProps = ViewProps & {
@@ -14,7 +13,6 @@ export type SafeAreaViewProps = ViewProps & {
 }
 
 export const SafeAreaView = (props: SafeAreaViewProps = {}) => {
-  const getRawColor = useThemeGetRawColor()
   return (
     <SafeAreaView_
       children={props.children}
@@ -58,10 +56,8 @@ export const SafeAreaView = (props: SafeAreaViewProps = {}) => {
         aspectRatio: props?.aspectRatio,
         flex: props?.flex,
         flexDirection: props?.direction,
-        backgroundColor: props?.bg ? getRawColor(props.bg) : undefined,
-        borderColor: props?.borderColor
-          ? getRawColor(props.borderColor)
-          : undefined,
+        backgroundColor: props?.bg?.toHex(),
+        borderColor: props?.borderColor?.toHex(),
         justifyContent:
           props?.justify === 'start'
             ? 'flex-start'

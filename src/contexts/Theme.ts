@@ -1,17 +1,14 @@
-import { Effect } from 'effect'
 import * as SystemUI from 'expo-system-ui'
 import * as React from 'react'
 import { useColorScheme } from 'react-native'
-import type { UIColor } from 'src/components/types'
-import { Colors, Theme, type ThemeImplementation } from 'src/services/Theme'
-import { darkTheme } from 'src/services/Theme/dark'
-import { lightTheme } from 'src/services/Theme/light'
-import { Color } from 'src/utils/datatypes'
+import { makeTheme, type Theme } from 'src/theme'
+import { darkTheme } from 'src/theme/dark'
+import { lightTheme } from 'src/theme/light'
 
 export const ThemeContext = React.createContext<{
-  light: ThemeImplementation
-  dark: ThemeImplementation
-}>({ light: lightTheme, dark: darkTheme })
+  light: Theme
+  dark: Theme
+}>({ light: makeTheme(lightTheme), dark: makeTheme(darkTheme) })
 
 export const useTheme = () => {
   const schema = useColorScheme()
@@ -19,19 +16,10 @@ export const useTheme = () => {
   return schema === 'dark' ? themes.dark : themes.light
 }
 
-export const useThemeGetRawColor = () => {
+export const RootBackgroundStyle = (props: { color: string }) => {
   const theme = useTheme()
-  const getColorHex = React.useMemo(
-    () => (color: UIColor) =>
-      Color.toHex(Effect.runSync(Effect.provideService(color, Theme, theme))),
-    [theme],
-  )
-  return getColorHex
-}
-
-export const useAdjustRootColor = () => {
-  const getRawColor = useThemeGetRawColor()
   React.useEffect(() => {
-    void SystemUI.setBackgroundColorAsync(getRawColor(Colors.background))
-  }, [getRawColor])
+    void SystemUI.setBackgroundColorAsync(props.color)
+  }, [theme])
+  return null
 }

@@ -11,17 +11,18 @@ import { FlatList, Pressable, SafeAreaView, Txt, View } from 'src/components'
 import { Checkbox } from 'src/components/derivative/Checkbox'
 import { PreRender } from 'src/components/derivative/PreRender'
 import { SolidButton } from 'src/components/derivative/SolidButton'
+import { useTheme } from 'src/contexts/Theme'
 import { GroupOrder, Position, Rating } from 'src/datatypes'
 import { useActions, useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { runtime } from 'src/runtime'
-import { Colors } from 'src/services/Theme'
 import { getGroupModality, getPlayer } from 'src/slices/groups'
 import type { Id } from 'src/utils/Entity'
 
 export default function GroupScreen() {
   const { groupId } = useLocalSearchParams<{ groupId: Id }>()
   const actions = useActions()
+  const { colors } = useTheme()
   const playersIds = useSelector(_ =>
     Option.gen(function* () {
       const group = yield* Option.fromNullable(_.groups[groupId])
@@ -87,7 +88,7 @@ export default function GroupScreen() {
               <View
                 key={i}
                 round={8}
-                bg={Colors.opacity(0.125)(Colors.gray)}
+                bg={colors.gray.setOpacityFactor(0.125)}
                 h={40}
               />
             ))}
@@ -100,7 +101,7 @@ export default function GroupScreen() {
           renderItem={id => <Item groupId={groupId} playerId={id} />}
           ListEmptyComponent={
             <View flex={1} justify="center">
-              <Txt size={16} color={Colors.opacity(0.625)(Colors.gray)}>
+              <Txt size={16} color={colors.gray.setOpacityFactor(0.625)}>
                 {t('No players registered')}
               </Txt>
             </View>
@@ -116,6 +117,7 @@ export default function GroupScreen() {
 
 const Item = ({ groupId, playerId }: { groupId: Id; playerId: Id }) => {
   const actions = useActions()
+  const { colors } = useTheme()
   const player = useSelector(s =>
     pipe(
       getPlayer({ group: { id: groupId }, player: { id: playerId } })(s),
@@ -143,7 +145,7 @@ const Item = ({ groupId, playerId }: { groupId: Id; playerId: Id }) => {
       gap={8}
       round={8}
       shadow={1}
-      bg={Colors.card}
+      bg={colors.card}
     >
       <Checkbox
         onToggle={
@@ -153,7 +155,12 @@ const Item = ({ groupId, playerId }: { groupId: Id; playerId: Id }) => {
         m={8}
         mr={-8}
       />
-      <View p={4} round={12} bg={Colors.opacity(0.5)(Colors.primary)} minW={35}>
+      <View
+        p={4}
+        round={12}
+        bg={colors.primary.setOpacityFactor(0.5)}
+        minW={35}
+      >
         <Txt align="center" size={18} weight={600} includeFontPadding={false}>
           {position ? Position.toAbbreviationString(position) : '-'}
         </Txt>
@@ -170,6 +177,7 @@ const Item = ({ groupId, playerId }: { groupId: Id; playerId: Id }) => {
 
 const ShuffleButton = () => {
   const { groupId } = useLocalSearchParams<{ groupId: Id }>()
+  const { colors } = useTheme()
   const numSelected = useSelector(
     _ => (_.groups[groupId]?.players ?? []).filter(_ => _.active).length,
   )
@@ -178,7 +186,7 @@ const ShuffleButton = () => {
       onPress={() => router.navigate(`/groups/${groupId}/parameters`)}
       p={16}
       round={0}
-      color={Colors.header}
+      color={colors.header}
       isEnabled={numSelected > 1}
     >
       <Txt>{t('Generate teams')}</Txt>

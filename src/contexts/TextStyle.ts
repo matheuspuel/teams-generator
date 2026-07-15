@@ -1,11 +1,19 @@
 import * as React from 'react'
-import type { UIColor } from 'src/components/types'
-import { Colors } from 'src/services/Theme'
+import type { Color } from 'src/utils/datatypes/Color'
+import { useTheme } from './Theme'
 
-export type TextStyleContext = { color: UIColor }
+export type TextStyleContextValue = { color: Color }
 
-export const TextStyleContext = React.createContext<TextStyleContext>({
-  color: Colors.text.normal,
-})
+const TextStyleContext = React.createContext<TextStyleContextValue | null>(null)
 
-export const useTextStyle = () => React.useContext(TextStyleContext)
+export const TextStyleContextProvider = TextStyleContext.Provider
+
+export const useTextStyle = () => {
+  const theme = useTheme()
+  const contextValue = React.useContext(TextStyleContext)
+  const value = React.useMemo(
+    () => contextValue ?? { color: theme.colors.text.normal },
+    [contextValue, theme.colors.text.normal],
+  )
+  return value
+}

@@ -3,15 +3,16 @@ import { Row, Txt, TxtContext, View } from 'src/components'
 import { CenterModal } from 'src/components/derivative/CenterModal'
 import { GhostButton } from 'src/components/derivative/GhostButton'
 import { SolidButton } from 'src/components/derivative/SolidButton'
+import { useTheme } from 'src/contexts/Theme'
 import { useActions, useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
-import { Colors } from 'src/services/Theme'
 import { getModality } from 'src/slices/groups'
 import type { Id } from 'src/utils/Entity'
 
 export default function DeleteModalityView() {
   const { modalityId } = useLocalSearchParams<{ modalityId: Id }>()
   const actions = useActions()
+  const { colors } = useTheme()
   const modality = useSelector(
     getModality({ _tag: 'CustomModality', id: modalityId }),
   )
@@ -31,9 +32,12 @@ export default function DeleteModalityView() {
           </TxtContext>
         )}
       </View>
-      <View borderWidthT={1} borderColor={Colors.opacity(0.375)(Colors.gray)} />
+      <View
+        borderWidthT={1}
+        borderColor={colors.gray.setOpacityFactor(0.375)}
+      />
       <Row p={16} gap={8} justify="end">
-        <GhostButton onPress={() => router.back()} color={Colors.error}>
+        <GhostButton onPress={() => router.back()} color={colors.error}>
           <Txt>{t('Cancel')}</Txt>
         </GhostButton>
         <SolidButton
@@ -42,7 +46,7 @@ export default function DeleteModalityView() {
             router.back()
             router.back()
           }}
-          color={Colors.error}
+          color={colors.error}
         >
           <Txt>{t('Delete')}</Txt>
         </SolidButton>

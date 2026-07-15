@@ -2,14 +2,15 @@ import { absurd } from 'effect'
 import Animated, { SlideInRight, SlideOutRight } from 'react-native-reanimated'
 import { MaterialIcons, Pressable, Txt, View } from 'src/components'
 import { useRuntime } from 'src/contexts/Runtime'
+import { useTheme } from 'src/contexts/Theme'
 import { Alert } from 'src/services/Alert'
-import { Colors } from 'src/services/Theme'
 import { useAlertState } from 'src/state/alert'
 
 const ANIMATION_DURATION = 200
 
 export const AlertToast = () => {
   const runtime = useRuntime()
+  const { colors } = useTheme()
   const alert = useAlertState(_ => _)
   return alert === null ? null : (
     <View absolute={{ top: 0, bottom: 0, left: 0, right: 0 }} justify="end">
@@ -19,7 +20,7 @@ export const AlertToast = () => {
       >
         <Pressable
           onPress={() => Alert.dismiss().pipe(runtime.runPromiseExit)}
-          bg={Colors.card}
+          bg={colors.card}
           m={16}
           mb={48}
           round={8}
@@ -29,9 +30,9 @@ export const AlertToast = () => {
           <View
             bg={
               alert.type === 'error'
-                ? Colors.tone(-0.8)(Colors.error)
+                ? colors.tone(-0.8)(colors.error)
                 : alert.type === 'success'
-                  ? Colors.tone(-0.8)(Colors.success)
+                  ? colors.tone(-0.8)(colors.success)
                   : absurd<never>(alert.type)
             }
             p={8}
@@ -41,13 +42,13 @@ export const AlertToast = () => {
             {alert.type === 'error' ? (
               <MaterialIcons
                 name="error-outline"
-                color={Colors.tone(0.33)(Colors.error)}
+                color={colors.tone(0.33)(colors.error)}
                 size={36}
               />
             ) : alert.type === 'success' ? (
               <MaterialIcons
                 name="check-circle-outline"
-                color={Colors.tone(0.33)(Colors.success)}
+                color={colors.tone(0.33)(colors.success)}
                 size={36}
               />
             ) : (

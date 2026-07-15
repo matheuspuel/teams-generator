@@ -4,8 +4,8 @@ import {
   TestIds,
 } from 'react-native-google-mobile-ads'
 import { MaterialIcons, Pressable, View } from 'src/components'
+import { useTheme } from 'src/contexts/Theme'
 import { useState } from 'src/hooks/useState'
-import { Colors } from 'src/services/Theme'
 import { matchEnv } from 'src/utils/Metadata'
 
 const adUnitId = matchEnv({
@@ -16,6 +16,7 @@ const adUnitId = matchEnv({
 })
 
 export const BannerAd = () => {
+  const { colors } = useTheme()
   const isLoaded = useState(() => false)
   const isDismissed = useState(() => false)
   return isDismissed.value ? null : (
@@ -30,7 +31,7 @@ export const BannerAd = () => {
         absolute={{ top: 0, right: 0 }}
         p={2}
       >
-        <MaterialIcons name="close" color={Colors.gray} size={18} />
+        <MaterialIcons name="close" color={colors.gray} size={18} />
       </Pressable>
     </View>
   )

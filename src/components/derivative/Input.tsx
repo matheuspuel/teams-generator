@@ -1,30 +1,33 @@
 import { Platform } from 'react-native'
-import { Colors } from 'src/services/Theme'
+import { useTheme } from 'src/contexts/Theme'
+import type { Color } from 'src/utils/datatypes/Color'
 import { TextInput, type TextInputProps } from '../react-native/TextInput'
-import type { UIColor } from '../types'
 
 export type InputProps = TextInputProps & {
-  color?: UIColor
+  color?: Color
   isEnabled?: boolean
 }
 
-export const Input = (props: InputProps) => (
-  <TextInput
-    cursorColor={Colors.primary}
-    placeholderTextColor={Colors.text.gray}
-    bg={Colors.card}
-    fontColor={Colors.text.normal}
-    fontSize={12}
-    py={Platform.OS === 'ios' ? 16.5 : 10}
-    px={Platform.OS === 'ios' ? 12 : 14}
-    borderWidth={1}
-    round={4}
-    {...props}
-    borderColor={props.borderColor ?? Colors.opacity(0.375)(Colors.gray)}
-    focused={{
-      bg: Colors.opacity(0.125)(props.color ?? Colors.primary),
-      borderColor: props.color ?? Colors.primary,
-      ...props.focused,
-    }}
-  />
-)
+export const Input = (props: InputProps) => {
+  const { colors } = useTheme()
+  return (
+    <TextInput
+      cursorColor={colors.primary}
+      placeholderTextColor={colors.text.gray}
+      bg={colors.card}
+      fontColor={colors.text.normal}
+      fontSize={12}
+      py={Platform.OS === 'ios' ? 16.5 : 10}
+      px={Platform.OS === 'ios' ? 12 : 14}
+      borderWidth={1}
+      round={4}
+      {...props}
+      borderColor={props.borderColor ?? colors.gray.setOpacityFactor(0.375)}
+      focused={{
+        bg: (props.color ?? colors.primary).setOpacityFactor(0.125),
+        borderColor: props.color ?? colors.primary,
+        ...props.focused,
+      }}
+    />
+  )
+}
