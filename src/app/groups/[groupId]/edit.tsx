@@ -48,7 +48,7 @@ function GroupEditScreen_() {
 
   useEffect(() => {
     if (groupId) {
-      const group = appActions.groups.key(groupId).get()
+      const group = appActions.groups.key(groupId)?.get()
       if (!group) return
       actions.setStateFromData(group)
     }

@@ -12,19 +12,7 @@ const modalityFormStateMachine = Form.Struct({
         _.toLowerCase(),
       ).transform(Abbreviation),
       name: Form.Field.TrimNonEmptyString,
-    }).mapActions(actions => ({
-      ...actions,
-      setStateFromData: (
-        data: Omit<
-          Parameters<typeof actions.setStateFromData>[0],
-          'oldAbbreviation'
-        >,
-      ) =>
-        actions.setStateFromData({
-          ...data,
-          oldAbbreviation: data.abbreviation,
-        }),
-    })),
+    }),
   ).mapActions((actions, { Store }) => ({
     ...actions,
     removeItemKeepingAtLeastOne: (index: number) => {
@@ -44,6 +32,19 @@ const modalityFormStateMachine = Form.Struct({
         ),
       ),
   })),
-})
+}).mapActions(actions => ({
+  ...actions,
+  setStateFromData: (_: {
+    name: string
+    positions: readonly { abbreviation: Abbreviation; name: string }[]
+  }) =>
+    actions.setStateFromData({
+      ..._,
+      positions: _.positions.map(_ => ({
+        ..._,
+        oldAbbreviation: _.abbreviation,
+      })),
+    }),
+}))
 
 export const ModalityForm = makeStateMachineContext(modalityFormStateMachine)

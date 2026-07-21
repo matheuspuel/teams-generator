@@ -28,52 +28,26 @@ import type { Id } from 'src/utils/Entity'
 export type RootState = typeof appStateMachine.initialState
 
 export const appStateMachine = StateMachine.Struct({
-  groups: StateMachine.of<{ [groupId: Id]: Group }>({}).mapActions(actions => ({
-    ...actions,
-    setItem: (group: Group) => actions.update(Record.set(group.id, group)),
-    key: (key: Id) => {
-      const get = () => actions.get()[key] ?? null
-      const update = (f: (item: Group) => Group) =>
-        actions.update(Record.modify(key, f))
-      return {
-        get,
-        update,
-        remove: () => actions.update(Record.remove(key)),
-        players: {
-          toggleAll: () =>
-            update(g => {
-              const allActive = g.players.every(_ => _.active)
-              return {
-                ...g,
-                players: g.players.map(_ => ({ ..._, active: !allActive })),
-              }
-            }),
-          addItem: (item: Player) =>
-            update(g => ({ ...g, players: [...g.players, item] })),
-          removeItem: (args: { id: Id }) =>
-            update(g => ({
-              ...g,
-              players: g.players.filter(p => p.id !== args.id),
-            })),
-          id: (id: Id) => {
-            const updatePlayer = (f: (_: Player) => Player) =>
-              update(g => ({
-                ...g,
-                players: g.players.map(a => (a.id === id ? f(a) : a)),
-              }))
-            return {
-              get: () => get()?.players.find(_ => _.id === id) ?? null,
-              update: updatePlayer,
-              active: {
-                toggle: () => updatePlayer(_ => ({ ..._, active: !_.active })),
-              },
-            }
-          },
-        },
-      }
-    },
-  })),
-  customModalities: StateMachine.of<ReadonlyArray<CustomModality>>([]),
+  groups: StateMachine.Record(
+    StateMachine.Struct.type<Group>()({
+      players: StateMachine.Array(
+        StateMachine.Struct.type<Player>()({
+          active: StateMachine.Boolean(),
+        }),
+      ).mapActions(actions => ({
+        ...actions,
+        toggleAll: () =>
+          actions.update(_ => {
+            const allActive = _.every(_ => _.active)
+            return _.map(_ => ({ ..._, active: !allActive }))
+          }),
+        removeItem: (args: { id: Id }) => actions.remove(_ => _.id === args.id),
+        id: (id: Id) => actions.find(_ => _.id === id),
+      })),
+    }),
+    { getKey: _ => _.id },
+  ),
+  customModalities: StateMachine.Array(StateMachine.of<CustomModality>()),
   parameters: StateMachine.Struct({
     teamsCountMethod: StateMachine.of<{
       _tag: 'count' | 'playersRequired'
@@ -97,8 +71,8 @@ export const appStateMachine = StateMachine.Struct({
       increment: () => actions.update(_ => playersRequiredClamp(_ + 1)),
       decrement: () => actions.update(_ => playersRequiredClamp(_ - 1)),
     })),
-    position: StateMachine.of(true),
-    rating: StateMachine.of(true),
+    position: StateMachine.Boolean(true),
+    rating: StateMachine.Boolean(true),
   }).mapActions(actions => ({
     ...actions,
     incrementMethod: () =>
@@ -126,7 +100,7 @@ export const appStateMachine = StateMachine.Struct({
       ),
   })),
   preferences: StateMachine.Struct({
-    isRatingVisible: StateMachine.of(true),
+    isRatingVisible: StateMachine.Boolean(true),
   }),
   result: StateMachine.of<Fiber.Fiber<Array<Array<Player>>>>(
     Fiber.never,
@@ -140,7 +114,7 @@ export const appStateMachine = StateMachine.Struct({
       ? staticModalities.find(_ => _.id === modality.id)
       : Store.get().customModalities.find(_ => _.id === modality.id)) ?? null
   const getGroupModality = (args: { group: { id: Id } }) => {
-    const group = actions.groups.key(args.group.id).get()
+    const group = actions.groups.key(args.group.id)?.get()
     if (!group) return null
     return getModality(group.modality)
   }
@@ -165,7 +139,7 @@ export const appStateMachine = StateMachine.Struct({
         // TODO alert that modality is being used by a group and cannot be deleted
         return
       }
-      actions.customModalities.update(Array.filter(_ => _.id !== modality.id))
+      actions.customModalities.remove(_ => _.id === modality.id)
     },
     saveModality: (data: {
       id: Id | null
@@ -194,10 +168,8 @@ export const appStateMachine = StateMachine.Struct({
           }
           const prevModality = getModality(modality)
           if (!prevModality) return
-          actions.customModalities.update(_ => [
-            modality,
-            ..._.filter(_ => _.id !== modality.id),
-          ])
+          actions.customModalities.remove(_ => _.id === modality.id)
+          actions.customModalities.prepend(modality)
           actions.groups.update(
             Record.map(_ =>
               _.modality.id === prevModality.id
@@ -215,10 +187,11 @@ export const appStateMachine = StateMachine.Struct({
           )
         } else {
           const id = yield* IdGenerator.generate()
-          actions.customModalities.update(_ => [
-            { ...data, _tag: 'CustomModality' as const, id },
-            ..._,
-          ])
+          actions.customModalities.prepend({
+            ...data,
+            _tag: 'CustomModality' as const,
+            id,
+          })
         }
       }),
     savePlayer: (data: {
@@ -232,8 +205,8 @@ export const appStateMachine = StateMachine.Struct({
         if (data.id) {
           actions.groups
             .key(data.group.id)
-            .players.id(data.id)
-            .update(_ => ({
+            ?.players.id(data.id)
+            ?.update(_ => ({
               ...data,
               id: _.id,
               active: _.active,
@@ -242,7 +215,7 @@ export const appStateMachine = StateMachine.Struct({
         } else {
           const id = yield* IdGenerator.generate()
           const now = yield* Timestamp.now
-          actions.groups.key(data.group.id).players.addItem({
+          actions.groups.key(data.group.id)?.players.append({
             ...data,
             id,
             active: true,
@@ -258,7 +231,7 @@ export const appStateMachine = StateMachine.Struct({
       Effect.gen(function* () {
         if (data.id === null) {
           const id = yield* IdGenerator.generate()
-          actions.groups.setItem({
+          actions.groups.insert({
             id,
             name: data.name,
             modality: data.modality,
@@ -268,7 +241,7 @@ export const appStateMachine = StateMachine.Struct({
           const prevModality = getGroupModality({ group: { id: data.id } })
           const nextModality = getModality(data.modality)
           if (!nextModality) return
-          actions.groups.key(data.id).update(_ => ({
+          actions.groups.key(data.id)?.update(_ => ({
             id: _.id,
             name: data.name,
             modality: data.modality,
@@ -289,7 +262,7 @@ export const appStateMachine = StateMachine.Struct({
       }),
     exportGroup: (args: { id: Id }) =>
       Effect.gen(function* () {
-        const group = actions.groups.key(args.id).get()
+        const group = actions.groups.key(args.id)?.get()
         if (!group) return
         const modality = getModality(group.modality)
         if (!modality) return
@@ -335,14 +308,12 @@ export const appStateMachine = StateMachine.Struct({
             ? existingModality.id
             : yield* IdGenerator.generate()
           if (!existingModality) {
-            actions.customModalities.update(
-              Array.append({
-                _tag: 'CustomModality' as const,
-                id: nextModalityId,
-                name: modality.name,
-                positions: modality.positions,
-              }),
-            )
+            actions.customModalities.append({
+              _tag: 'CustomModality' as const,
+              id: nextModalityId,
+              name: modality.name,
+              positions: modality.positions,
+            })
           }
           return {
             modality: { _tag: 'CustomModality' as const, id: nextModalityId },
@@ -356,7 +327,7 @@ export const appStateMachine = StateMachine.Struct({
         Effect.flatMap((group: Omit<Group, 'id'>) =>
           pipe(
             IdGenerator.generate(),
-            Effect.tap(id => actions.groups.setItem({ ...group, id })),
+            Effect.tap(id => actions.groups.insert({ ...group, id })),
           ),
         ),
         Effect.asVoid,

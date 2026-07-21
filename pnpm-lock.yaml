@@ -21,8 +21,8 @@ importers:
         specifier: ~57.0.4
         version: 57.0.4(@babel/core@7.29.7)(@types/react@19.2.17)(expo@57.0.4)(react-dom@19.2.7(react@19.2.3))(react-native-worklets@0.10.0(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(react-native@0.86.0(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3))(react-native@0.86.0(@babel/core@7.29.7)(@react-native/metro-config@0.86.0(@babel/core@7.29.7))(@types/react@19.2.17)(react@19.2.3))(react@19.2.3)
       '@matheuspuel/state-machine':
-        specifier: ^0.8.3
-        version: 0.8.3
+        specifier: 0.9.1
+        version: 0.9.1
       '@paralleldrive/cuid2':
         specifier: ^3.3.0
         version: 3.3.0
@@ -1060,8 +1060,8 @@ packages:
   '@matheuspuel/query-state@0.3.0':
     resolution: {integrity: sha512-8G1iRohi0HlAJGhJ7/wovTAjFFbtvxJRIVUexv5BvBQmyKvU49JXWV/d8z7iRf1FZDWwVczlMzjpaH8kdiaegw==}
 
-  '@matheuspuel/state-machine@0.8.3':
-    resolution: {integrity: sha512-X3Clc40O9rI1s/XNKrLpk+x+36As/PLtSRSHy8zEVs9WbThH4xwiMFCKToJqdVg7UOHbD8Mquy2GjnvWsEYhTQ==}
+  '@matheuspuel/state-machine@0.9.1':
+    resolution: {integrity: sha512-cPeZ+G73XqFtSzh5F0xjRP7lx3iOHPdmv3cNHFUh9JmsvsZstnQEzx993qEFj/nMzyNn8qN+NYqH0oZXK2jfdg==}
 
   '@napi-rs/wasm-runtime@1.1.6':
     resolution: {integrity: sha512-ZLv/JdUfkvOy9eCnnBaGfiO+XimbjebAeO+MRQqD/B+FR1tnRN0tpKSJHRbE8sFfS6aqsXZ67TQjfwfsxULVbg==}
@@ -5307,7 +5307,7 @@ snapshots:
     dependencies:
       effect: 3.21.4
 
-  '@matheuspuel/state-machine@0.8.3':
+  '@matheuspuel/state-machine@0.9.1':
     dependencies:
       '@matheuspuel/optic': 0.3.0
       '@matheuspuel/query-state': 0.3.0

@@ -48,7 +48,7 @@ export default function GroupScreen() {
         />
         <Stack.Toolbar.Menu icon={MoreVertIcon}>
           <Stack.Toolbar.MenuAction
-            onPress={actions.groups.key(groupId).players.toggleAll}
+            onPress={actions.groups.key(groupId)?.players.toggleAll}
             icon={CheckBoxIcon}
           >
             {t('Select all')}
@@ -148,8 +148,8 @@ const Item = ({ groupId, playerId }: { groupId: Id; playerId: Id }) => {
       bg={colors.card}
     >
       <Checkbox
-        onToggle={
-          actions.groups.key(groupId).players.id(playerId).active.toggle
+        onToggle={() =>
+          actions.groups.key(groupId)?.players.id(playerId)?.active.toggle()
         }
         isSelected={active}
         m={8}

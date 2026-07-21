@@ -50,7 +50,7 @@ function PlayerScreen_() {
 
   useEffect(() => {
     if (playerId) {
-      const player = appActions.groups.key(groupId).players.id(playerId).get()
+      const player = appActions.groups.key(groupId)?.players.id(playerId)?.get()
       if (!player) return
       actions.setStateFromData(player)
     } else {
@@ -71,7 +71,7 @@ function PlayerScreen_() {
             if (playerId) {
               appActions.groups
                 .key(groupId)
-                .players.removeItem({ id: playerId })
+                ?.players.removeItem({ id: playerId })
             }
             router.back()
           }}

@@ -154,7 +154,7 @@ const group3 = Schema.decodeSync(Group.Group)({
 describe('importGroup state logic', () => {
   test('add group and modality', () => {
     const instance = StateMachine.run(appStateMachine)
-    instance.actions.groups.setItem(group0)
+    instance.actions.groups.insert(group0)
     instance.actions.customModalities.set([modality0])
     let currentId = 0
     const IdGeneratorSequential = IdGenerator.context({
@@ -215,7 +215,7 @@ describe('importGroup state logic', () => {
 
   test('add group and reuse modality', () => {
     const instance = StateMachine.run(appStateMachine)
-    instance.actions.groups.setItem(group0)
+    instance.actions.groups.insert(group0)
     instance.actions.customModalities.set([modality0])
     let currentId = 0
     const IdGeneratorSequential = IdGenerator.context({
@@ -261,7 +261,7 @@ describe('importGroup state logic', () => {
 
   test('add group with static modality', () => {
     const instance = StateMachine.run(appStateMachine)
-    instance.actions.groups.setItem(group0)
+    instance.actions.groups.insert(group0)
     instance.actions.customModalities.set([modality0])
     let currentId = 0
     const IdGeneratorSequential = IdGenerator.context({

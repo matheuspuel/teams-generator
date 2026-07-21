@@ -34,8 +34,7 @@ export default function GroupDeleteScreen() {
         </GhostButton>
         <SolidButton
           onPress={() => {
-            actions.groups.key(groupId).remove()
-            router.back()
+            actions.groups.remove(groupId)
             router.back()
             router.back()
           }}
