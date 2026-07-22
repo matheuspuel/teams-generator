@@ -5,6 +5,7 @@ import ExpoRouter from 'expo-router/plugin'
 import ExpoSharing from 'expo-sharing/plugin'
 import ExpoSplashScreen from 'expo-splash-screen/plugin'
 import ExpoStatusBar from 'expo-status-bar/plugin'
+import ExpoSystemUI from 'expo-system-ui/plugin'
 import packageJSON from './package.json'
 
 const brandColor = '#136d15'
@@ -111,7 +112,8 @@ const getConfig = (): ExpoConfig => ({
   plugins: [
     ExpoSharing(),
     ExpoFont(),
-    ExpoStatusBar(),
+    ExpoSystemUI(),
+    ExpoStatusBar({ style: 'light' }),
     ExpoRouter(),
     ExpoSplashScreen({
       image: './assets/splash-icon.png',
