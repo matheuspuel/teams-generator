@@ -1,7 +1,7 @@
+import { type FileSystem, Path } from '@effect/platform'
 import { Layer, LogLevel, Logger, ManagedRuntime, pipe } from 'effect'
 import { Alert } from 'src/services/Alert'
 import type { DocumentPicker } from 'src/services/DocumentPicker'
-import type { FileSystem } from 'src/services/FileSystem'
 import { IdGenerator } from 'src/services/IdGenerator'
 import type { Linking } from 'src/services/Linking'
 import type { Repository } from 'src/services/Repositories'
@@ -11,7 +11,7 @@ import type { SplashScreen } from 'src/services/SplashScreen'
 import { envName } from 'src/utils/Metadata'
 import { AsyncStorageDefault } from './services/AsyncStorage/default'
 import { DocumentPickerDefault } from './services/DocumentPicker/default'
-import { FileSystemDefault } from './services/FileSystem/default'
+import { FileSystemExpo } from './services/FileSystem/expo'
 import { LinkingDefault } from './services/Linking/default'
 import { RepositoryDefault } from './services/Repositories/default'
 import { ShareServiceDefault } from './services/Share/default'
@@ -24,7 +24,8 @@ export type AppRequirements =
   | Repository
   | Alert
   | DocumentPicker
-  | FileSystem
+  | FileSystem.FileSystem
+  | Path.Path
   | IdGenerator
   | ShareService
   | SafeAreaService
@@ -34,7 +35,8 @@ const appLayer = pipe(
   Layer.empty,
   Layer.provideMerge(
     Layer.mergeAll(
-      FileSystemDefault,
+      FileSystemExpo,
+      Path.layer,
       DocumentPickerDefault,
       LinkingDefault,
       IdGenerator.Default,

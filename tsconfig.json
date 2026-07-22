@@ -6,6 +6,7 @@
     "noFallthroughCasesInSwitch": true,
     "noErrorTruncation": true,
     "skipLibCheck": true,
+    "plugins": [{ "name": "@effect/language-service" }],
     "paths": { "src/*": ["./src/*"] }
   },
   "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]

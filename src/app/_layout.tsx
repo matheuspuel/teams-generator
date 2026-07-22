@@ -21,7 +21,9 @@ export default function Layout() {
               headerTintColor: colors.text.light.toHex(),
               contentStyle: { backgroundColor: colors.background.toHex() },
             }}
-          />
+          >
+            <Stack.Screen name="+not-found" options={{ headerShown: false }} />
+          </Stack>
         )}
         <AlertToast />
       </GestureHandlerRootView>

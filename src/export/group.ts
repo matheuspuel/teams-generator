@@ -1,18 +1,19 @@
+import { FileSystem, Path } from '@effect/platform'
 import {
   Data,
   Effect,
+  flow,
   Match,
   Option,
+  pipe,
   Schema,
   Stream,
   String,
-  flow,
-  pipe,
 } from 'effect'
 import { Group, Modality } from 'src/datatypes'
 import { Alert } from 'src/services/Alert'
 import { DocumentPicker } from 'src/services/DocumentPicker'
-import { FileSystem } from 'src/services/FileSystem'
+import { cacheDirectory } from 'src/services/FileSystem/expo'
 import { Linking } from 'src/services/Linking'
 import { ShareService } from 'src/services/Share'
 import { normalize } from 'src/utils/String'
@@ -26,9 +27,13 @@ export const exportGroup = ({
   modality: Modality
 }) =>
   Effect.gen(function* () {
-    const fileUri = yield* makeFileUri(group)
+    const fs = yield* FileSystem.FileSystem
+    const path = yield* Path.Path
+    const fileUri = makeFileUri(group)
     const data = yield* Schema.encode(schema)({ ...group, modality })
-    yield* FileSystem.write({ uri: fileUri, data })
+    const directory = path.dirname(fileUri)
+    yield* fs.makeDirectory(directory, { recursive: true })
+    yield* fs.writeFileString(fileUri, data)
     yield* ShareService.shareFile({
       title: 'Exportar Grupo',
       uri: fileUri,
@@ -36,13 +41,15 @@ export const exportGroup = ({
     })
   }).pipe(
     Effect.tapError(e =>
-      Effect.logError(e._tag === 'FileSystemError' ? e.cause.message : e),
+      Effect.logError(
+        e._tag === 'SystemError' || e._tag === 'BadArgument' ? e.cause : e,
+      ),
     ),
   )
 
 export const extractGroupFromDocumentPicker = () =>
   pipe(
-    DocumentPicker.getDocument({ type: ['application/json'] }),
+    DocumentPicker.getDocument(),
     Effect.flatMap(f => extractGroupFromFile({ url: f.uri })),
   )
 
@@ -53,18 +60,20 @@ export const setupReceiveURLHandler = () =>
     Stream.catchAll(() => Stream.empty),
     Stream.concat(Linking.startLinkingStream()),
     Stream.map(url => ({ url })),
-    Stream.flatMap(extractGroupFromFile),
+    Stream.flatMap(_ =>
+      extractGroupFromFile(_).pipe(Stream.catchAllCause(() => Stream.empty)),
+    ),
   )
 
 const extractGroupFromFile = (args: { url: string }) =>
   Effect.gen(function* () {
-    const tempUri = yield* pipe(
-      temporaryImportUri,
-      Effect.tap(() => Effect.log(args.url)),
-      Effect.tap(tempUri => FileSystem.copy({ from: args.url, to: tempUri })),
-      Effect.tapErrorCause(_ => Effect.logError(_)),
-    )
-    const rawData = yield* FileSystem.read({ uri: tempUri })
+    const fs = yield* FileSystem.FileSystem
+    yield* Effect.log(`Importing group from: ${args.url}`)
+    yield* fs.remove(temporaryImportUri, { force: true })
+    yield* fs
+      .copyFile(args.url, temporaryImportUri)
+      .pipe(Effect.tapErrorCause(_ => Effect.logError(_)))
+    const rawData = yield* fs.readFileString(temporaryImportUri)
     const group = yield* pipe(
       Schema.decodeUnknown(schema)(rawData),
       Effect.catchTags({
@@ -101,7 +110,8 @@ const extractGroupFromFile = (args: { url: string }) =>
               'O arquivo foi criado com uma versão mais recente do aplicativo. Atualize o aplicativo e tente novamente.',
             OldVersionError: () =>
               'O arquivo foi criado com uma versão antiga do aplicativo. Atualize o aplicativo antes de exportar e tente novamente.',
-            FileSystemError: () => 'Não foi possível acessar o arquivo.',
+            SystemError: () => 'Não foi possível acessar o arquivo.',
+            BadArgument: () => 'Não foi possível acessar o arquivo.',
             ParseError: () => 'O arquivo não é válido ou está corrompido',
           }),
         ),
@@ -155,17 +165,10 @@ const anyVersionSchema = Schema.Struct({
   version: Schema.JsonNumber,
 })
 
-const temporaryImportUri = Effect.map(
-  FileSystem.cacheDirectory(),
-  cacheDir => cacheDir + '/import2.json',
-)
+const temporaryImportUri = cacheDirectory + '/import2.json'
 
 const makeFileUri = (group: Group) =>
-  Effect.map(
-    FileSystem.cacheDirectory(),
-    cacheDir =>
-      cacheDir + '/export/' + toUri(group.name) + '.sorteio-times.json',
-  )
+  cacheDirectory + '/export/' + toUri(group.name) + '.sorteio-times.json'
 
 const toUri = flow(
   normalize,
