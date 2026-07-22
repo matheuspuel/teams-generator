@@ -11,6 +11,8 @@ import type { SplashScreen } from 'src/services/SplashScreen'
 import { envName } from 'src/utils/Metadata'
 import { AsyncStorageDefault } from './services/AsyncStorage/default'
 import { DocumentPickerDefault } from './services/DocumentPicker/default'
+import type { FileSystemDirectories } from './services/FileSystem/Directories'
+import { FileSystemDirectoriesExpo } from './services/FileSystem/Directories/default'
 import { FileSystemExpo } from './services/FileSystem/expo'
 import { LinkingDefault } from './services/Linking/default'
 import { RepositoryDefault } from './services/Repositories/default'
@@ -26,6 +28,7 @@ export type AppRequirements =
   | DocumentPicker
   | FileSystem.FileSystem
   | Path.Path
+  | FileSystemDirectories
   | IdGenerator
   | ShareService
   | SafeAreaService
@@ -37,6 +40,7 @@ const appLayer = pipe(
     Layer.mergeAll(
       FileSystemExpo,
       Path.layer,
+      FileSystemDirectoriesExpo,
       DocumentPickerDefault,
       LinkingDefault,
       IdGenerator.Default,

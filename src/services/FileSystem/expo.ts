@@ -119,7 +119,3 @@ export const FileSystemExpo = Layer.succeed(
       }),
   }),
 )
-
-export const cacheDirectory = ExpoFileSystem.Paths.cache.uri
-
-export const documentDirectory = ExpoFileSystem.Paths.document.uri

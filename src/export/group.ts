@@ -13,7 +13,7 @@ import {
 import { Group, Modality } from 'src/datatypes'
 import { Alert } from 'src/services/Alert'
 import { DocumentPicker } from 'src/services/DocumentPicker'
-import { cacheDirectory } from 'src/services/FileSystem/expo'
+import { FileSystemDirectories } from 'src/services/FileSystem/Directories'
 import { Linking } from 'src/services/Linking'
 import { ShareService } from 'src/services/Share'
 import { normalize } from 'src/utils/String'
@@ -29,7 +29,7 @@ export const exportGroup = ({
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem
     const path = yield* Path.Path
-    const fileUri = makeFileUri(group)
+    const fileUri = yield* makeFileUri(group)
     const data = yield* Schema.encode(schema)({ ...group, modality })
     const directory = path.dirname(fileUri)
     yield* fs.makeDirectory(directory, { recursive: true })
@@ -69,6 +69,7 @@ const extractGroupFromFile = (args: { url: string }) =>
   Effect.gen(function* () {
     const fs = yield* FileSystem.FileSystem
     yield* Effect.log(`Importing group from: ${args.url}`)
+    const temporaryImportUri = yield* getTemporaryImportUri
     yield* fs.remove(temporaryImportUri, { force: true })
     yield* fs
       .copyFile(args.url, temporaryImportUri)
@@ -165,10 +166,16 @@ const anyVersionSchema = Schema.Struct({
   version: Schema.JsonNumber,
 })
 
-const temporaryImportUri = cacheDirectory + '/import2.json'
+const getTemporaryImportUri = Effect.map(
+  FileSystemDirectories.cache,
+  _ => _ + '/import2.json',
+)
 
 const makeFileUri = (group: Group) =>
-  cacheDirectory + '/export/' + toUri(group.name) + '.sorteio-times.json'
+  Effect.map(
+    FileSystemDirectories.cache,
+    _ => _ + '/export/' + toUri(group.name) + '.sorteio-times.json',
+  )
 
 const toUri = flow(
   normalize,
