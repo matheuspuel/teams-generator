@@ -53,6 +53,8 @@ export const ptTranslation: Translation = {
   'Want to delete the modality': 'Deseja excluir a modalidade',
   'The positions of the players of this modality will be lost':
     'As posições dos jogadores desta modalidade serão perdidas',
+  'Required field': 'Campo obrigatório',
+  'Invalid value': 'Valor inválido',
   Success: 'Sucesso',
   Error: 'Erro',
   'Group imported': 'Grupo importado',

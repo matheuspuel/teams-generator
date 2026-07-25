@@ -51,6 +51,8 @@ export const enTranslation = {
   'Want to delete the modality': 'Want to delete the modality',
   'The positions of the players of this modality will be lost':
     'The positions of the players of this modality will be lost',
+  'Required field': 'Required field',
+  'Invalid value': 'Invalid value',
   Success: 'Success',
   Error: 'Error',
   'Group imported': 'Group imported',

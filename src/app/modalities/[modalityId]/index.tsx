@@ -1,5 +1,5 @@
 import DeleteIcon from '@expo/material-symbols/delete.xml'
-import { Array, Effect } from 'effect'
+import { Array, Effect, Match } from 'effect'
 import { router, Stack, useLocalSearchParams } from 'expo-router'
 import { useEffect } from 'react'
 import { Platform } from 'react-native'
@@ -105,6 +105,7 @@ function ModalityScreen_() {
 }
 
 const NameField = () => {
+  const { colors } = useTheme()
   const actions = ModalityForm.useActions()
   const name = ModalityForm.useSelector(_ => _.name)
   return (
@@ -116,6 +117,13 @@ const NameField = () => {
         onChange={actions.name.set}
         autoFocus={true}
       />
+      {name.error && (
+        <Txt align="left" color={colors.error} size={12}>
+          {Match.valueTags(name.error, {
+            NoSuchElementException: () => t('Required field'),
+          })}
+        </Txt>
+      )}
     </View>
   )
 }
@@ -152,20 +160,34 @@ const PositionsField = () => {
 const PositionItem = ({ index }: { index: number }) => {
   const actions = ModalityForm.useActions()
   const { colors } = useTheme()
+  const error = ModalityForm.useSelector(_ => {
+    const item = _.positions[index]
+    return item?.abbreviation.error ?? item?.name.error
+  })
   return (
-    <Row align="center">
-      <PositionAbbreviationField index={index} />
-      <PositionNameField index={index} />
-      <BorderlessButton onPress={() => actions.positions.moveUp(index)}>
-        <MaterialIcons name="keyboard-arrow-up" />
-      </BorderlessButton>
-      <BorderlessButton
-        onPress={() => actions.positions.removeItemKeepingAtLeastOne(index)}
-        color={colors.error}
-      >
-        <MaterialIcons name="delete" />
-      </BorderlessButton>
-    </Row>
+    <>
+      <Row align="center">
+        <PositionAbbreviationField index={index} />
+        <PositionNameField index={index} />
+        <BorderlessButton onPress={() => actions.positions.moveUp(index)}>
+          <MaterialIcons name="keyboard-arrow-up" />
+        </BorderlessButton>
+        <BorderlessButton
+          onPress={() => actions.positions.removeItemKeepingAtLeastOne(index)}
+          color={colors.error}
+        >
+          <MaterialIcons name="delete" />
+        </BorderlessButton>
+      </Row>
+      {error && (
+        <Txt align="left" color={colors.error} size={12}>
+          {Match.valueTags(error, {
+            NoSuchElementException: () => t('Required field'),
+            ParseError: () => t('Invalid value'),
+          })}
+        </Txt>
+      )}
+    </>
   )
 }
 
