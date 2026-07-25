@@ -156,15 +156,10 @@ describe('importGroup state logic', () => {
     const instance = StateMachine.run(appStateMachine)
     instance.actions.groups.insert(group0)
     instance.actions.customModalities.set([modality0])
-    let currentId = 0
-    const IdGeneratorSequential = IdGenerator.context({
-      _tag: 'IdGenerator',
-      generate: () => Effect.sync(() => Id.make((++currentId).toString())),
-    })
 
     instance.actions
       .importGroupData({ ...group1, modality: modality1 })
-      .pipe(Effect.provide(IdGeneratorSequential), Effect.runSync)
+      .pipe(Effect.provide(IdGenerator.Test), Effect.runSync)
 
     const state = instance.ref.get.pipe(Effect.runSync)
     expect(state.groups).toEqual<typeof state.groups>({
@@ -217,15 +212,10 @@ describe('importGroup state logic', () => {
     const instance = StateMachine.run(appStateMachine)
     instance.actions.groups.insert(group0)
     instance.actions.customModalities.set([modality0])
-    let currentId = 0
-    const IdGeneratorSequential = IdGenerator.context({
-      _tag: 'IdGenerator',
-      generate: () => Effect.sync(() => Id.make((++currentId).toString())),
-    })
 
     instance.actions
       .importGroupData({ ...group2, modality: modality2 })
-      .pipe(Effect.provide(IdGeneratorSequential), Effect.runSync)
+      .pipe(Effect.provide(IdGenerator.Test), Effect.runSync)
 
     const state = instance.ref.get.pipe(Effect.runSync)
     expect(state.groups).toEqual<typeof state.groups>({
@@ -263,19 +253,13 @@ describe('importGroup state logic', () => {
     const instance = StateMachine.run(appStateMachine)
     instance.actions.groups.insert(group0)
     instance.actions.customModalities.set([modality0])
-    let currentId = 0
-    const IdGeneratorSequential = IdGenerator.context({
-      _tag: 'IdGenerator',
-      generate: () => Effect.sync(() => Id.make((++currentId).toString())),
-    })
-    // TODO reuse IdGeneratorTest
 
     instance.actions
       .importGroupData({
         ...group3,
         modality: { _tag: 'StaticModality', id: futsal.id },
       })
-      .pipe(Effect.provide(IdGeneratorSequential), Effect.runSync)
+      .pipe(Effect.provide(IdGenerator.Test), Effect.runSync)
 
     const state = instance.ref.get.pipe(Effect.runSync)
     expect(state.groups).toEqual<typeof state.groups>({
