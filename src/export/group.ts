@@ -74,6 +74,9 @@ const extractGroupFromFile = (args: { url: string }) =>
     yield* fs
       .copyFile(args.url, temporaryImportUri)
       .pipe(Effect.tapErrorCause(_ => Effect.logError(_)))
+    const info = yield* fs.stat(temporaryImportUri)
+    if (info.size > FileSystem.MiB(10))
+      return yield* Effect.fail({ _tag: 'FileTooLargeError' } as const)
     const rawData = yield* fs.readFileString(temporaryImportUri)
     const group = yield* pipe(
       Schema.decodeUnknown(schema)(rawData),
@@ -114,6 +117,7 @@ const extractGroupFromFile = (args: { url: string }) =>
             SystemError: () => 'Não foi possível acessar o arquivo.',
             BadArgument: () => 'Não foi possível acessar o arquivo.',
             ParseError: () => 'O arquivo não é válido ou está corrompido',
+            FileTooLargeError: () => 'O arquivo é muito grande.',
           }),
         ),
       }),

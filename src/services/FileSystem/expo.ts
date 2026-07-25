@@ -1,6 +1,6 @@
 import { FileSystem } from '@effect/platform'
 import { SystemError } from '@effect/platform/Error'
-import { Effect, Layer } from 'effect'
+import { Effect, Layer, Option } from 'effect'
 import * as ExpoFileSystem from 'expo-file-system'
 
 export const FileSystemExpo = Layer.succeed(
@@ -96,7 +96,87 @@ export const FileSystemExpo = Layer.succeed(
           }),
       }).pipe(effect => (options?.force ? Effect.ignore(effect) : effect)),
     rename: () => Effect.die('not implemented'),
-    stat: () => Effect.die('not implemented'),
+    stat: path =>
+      Effect.try({
+        try: () => new ExpoFileSystem.File(path),
+        catch: e =>
+          new SystemError({
+            method: 'stat',
+            module: 'FileSystem',
+            reason: 'Unknown',
+            cause: e,
+            pathOrDescriptor: path,
+          }),
+      }).pipe(
+        Effect.filterOrFail(
+          _ => _.exists,
+          () =>
+            new SystemError({
+              method: 'stat',
+              module: 'FileSystem',
+              reason: 'NotFound',
+              pathOrDescriptor: path,
+              description: 'No such file or read operation denied',
+            }),
+        ),
+        Effect.map((_): FileSystem.File.Info => ({
+          type: 'File',
+          mtime: Option.none(),
+          atime: Option.none(),
+          birthtime: Option.none(),
+          dev: 0,
+          ino: Option.none(),
+          mode: 0,
+          nlink: Option.none(),
+          uid: Option.none(),
+          gid: Option.none(),
+          rdev: Option.none(),
+          size: FileSystem.Size(_.size),
+          blksize: Option.none(),
+          blocks: Option.none(),
+        })),
+        Effect.orElse(() =>
+          Effect.try({
+            try: () => new ExpoFileSystem.Directory(path),
+            catch: e =>
+              new SystemError({
+                method: 'stat',
+                module: 'FileSystem',
+                reason: 'Unknown',
+                cause: e,
+                pathOrDescriptor: path,
+              }),
+          }).pipe(
+            Effect.filterOrFail(
+              _ => _.exists,
+              () =>
+                new SystemError({
+                  method: 'stat',
+                  module: 'FileSystem',
+                  reason: 'NotFound',
+                  pathOrDescriptor: path,
+                  description: 'No such directory or access denied',
+                }),
+            ),
+            Effect.map((_): FileSystem.File.Info => ({
+              type: 'Directory',
+              mtime: Option.none(),
+              atime: Option.none(),
+              birthtime: Option.none(),
+              dev: 0,
+              ino: Option.none(),
+              mode: 0,
+              nlink: Option.none(),
+              uid: Option.none(),
+              gid: Option.none(),
+              rdev: Option.none(),
+              size: FileSystem.Size(_.size ?? 0),
+              blksize: Option.none(),
+              blocks: Option.none(),
+            })),
+          ),
+        ),
+      ),
     symlink: () => Effect.die('not implemented'),
     truncate: () => Effect.die('not implemented'),
     utimes: () => Effect.die('not implemented'),
