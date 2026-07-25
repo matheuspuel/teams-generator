@@ -2,7 +2,7 @@ import { Effect, Layer, Option, Ref, flow, pipe } from 'effect'
 import * as Application from 'expo-application'
 import * as Device from 'expo-device'
 import packageJSON from 'src/../package.json'
-import { preferences } from 'src/i18n'
+import { localePreferences } from 'src/i18n'
 import { IdGenerator } from 'src/services/IdGenerator'
 import { type Metadata, MetadataService } from '.'
 import { AsyncStorageDefault } from '../AsyncStorage/default'
@@ -77,13 +77,7 @@ const getStaticMetadata = Effect.sync(() => ({
     },
   },
   preferences: {
-    languageCode: preferences.location.pipe(
-      Option.map(_ => _.languageCode),
-      Option.getOrNull,
-    ),
-    regionCode: preferences.location.pipe(
-      Option.map(_ => _.regionCode),
-      Option.getOrNull,
-    ),
+    languageCode: localePreferences.location.languageCode,
+    regionCode: localePreferences.location.regionCode,
   },
 }))

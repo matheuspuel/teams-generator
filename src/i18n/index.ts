@@ -26,20 +26,22 @@ const getPreferences = () => {
     Option.flatMap(l =>
       pipe(
         Array.findFirst(translations, t => t.languageCode === l.languageCode),
-        Option.map(t => ({ translation: t, location: Option.some(l) })),
+        Option.map(t => ({ translation: t, location: l })),
       ),
     ),
     Option.getOrElse(() => ({
       translation: translations[0],
-      location: Array.head(locales),
+      location: locales[0],
     })),
     _ => ({ ..._, calendar: Array.head(calendars) }),
   )
 }
 
-export const preferences = getPreferences()
+export const localePreferences = getPreferences()
 
-const translation = preferences.translation.translation
+export const locale = localePreferences.location.languageTag
+
+const translation = localePreferences.translation.translation
 
 export type TranslationFunction = typeof t
 export const t = (token: keyof Translation) => translation[token]
