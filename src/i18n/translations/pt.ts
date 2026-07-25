@@ -59,6 +59,8 @@ export const ptTranslation: Translation = {
   Error: 'Erro',
   'Group imported': 'Grupo importado',
   'Failed to import group': 'Falha ao importar grupo',
+  'This modality is being used by a group and cannot be deleted':
+    'Esta modalidade está sendo utilizada por um grupo e não pode ser excluída',
   NewerVersionError:
     'O arquivo foi criado com uma versão mais recente do aplicativo. Atualize o aplicativo e tente novamente.',
   OldVersionError:

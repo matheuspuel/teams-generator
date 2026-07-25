@@ -1,5 +1,8 @@
 import { absurd } from 'effect'
+import React from 'react'
+import { KeyboardController } from 'react-native-keyboard-controller'
 import Animated, { SlideInRight, SlideOutRight } from 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { MaterialIcons, Pressable, Txt, View } from 'src/components'
 import { useRuntime } from 'src/contexts/Runtime'
 import { useTheme } from 'src/contexts/Theme'
@@ -10,10 +13,16 @@ const ANIMATION_DURATION = 200
 
 export const AlertToast = () => {
   const runtime = useRuntime()
+  const insets = useSafeAreaInsets()
   const { colors } = useTheme()
   const alert = useAlertState(_ => _)
+  React.useEffect(() => {
+    if (alert) {
+      KeyboardController.dismiss()
+    }
+  }, [alert])
   return alert === null ? null : (
-    <View absolute={{ top: 0, bottom: 0, left: 0, right: 0 }} justify="end">
+    <View justify="end" absolute={insets}>
       <Animated.View
         entering={SlideInRight.duration(ANIMATION_DURATION)}
         exiting={SlideOutRight.duration(ANIMATION_DURATION)}

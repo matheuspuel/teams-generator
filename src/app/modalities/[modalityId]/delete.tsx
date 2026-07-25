@@ -1,16 +1,20 @@
+import { Effect } from 'effect'
 import { router, useLocalSearchParams } from 'expo-router'
 import { Row, Txt, TxtContext, View } from 'src/components'
 import { CenterModal } from 'src/components/derivative/CenterModal'
 import { GhostButton } from 'src/components/derivative/GhostButton'
 import { SolidButton } from 'src/components/derivative/SolidButton'
+import { useRuntime } from 'src/contexts/Runtime'
 import { useTheme } from 'src/contexts/Theme'
 import { useActions, useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
+import { Alert } from 'src/services/Alert'
 import { getModality } from 'src/slices/groups'
 import type { Id } from 'src/utils/Entity'
 
 export default function DeleteModalityView() {
   const { modalityId } = useLocalSearchParams<{ modalityId: Id }>()
+  const runtime = useRuntime()
   const actions = useActions()
   const { colors } = useTheme()
   const modality = useSelector(
@@ -41,11 +45,25 @@ export default function DeleteModalityView() {
           <Txt>{t('Cancel')}</Txt>
         </GhostButton>
         <SolidButton
-          onPress={() => {
-            actions.removeModality({ id: modality.id })
-            router.back()
-            router.back()
-          }}
+          onPress={() =>
+            Effect.gen(function* () {
+              router.back()
+              yield* actions.removeModality({ id: modality.id })
+              router.back()
+            }).pipe(
+              Effect.catchTags({
+                ModalityInUseError: () =>
+                  Alert.alert({
+                    type: 'error',
+                    title: t('Error'),
+                    message: t(
+                      'This modality is being used by a group and cannot be deleted',
+                    ),
+                  }),
+              }),
+              runtime.runPromiseExit,
+            )
+          }
           color={colors.error}
         >
           <Txt>{t('Delete')}</Txt>

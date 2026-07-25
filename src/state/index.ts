@@ -122,25 +122,25 @@ export const appStateMachine = StateMachine.Struct({
     ...actions,
     getModality,
     getGroupModality,
-    removeModality: (reference: { id: Id }) => {
-      const modality = getModality({
-        _tag: 'CustomModality',
-        id: reference.id,
-      })
-      if (!modality) return
-      if (
-        Record.some(
-          actions.groups.get(),
-          _ =>
-            _.modality._tag === 'CustomModality' &&
-            _.modality.id === modality.id,
-        )
-      ) {
-        // TODO alert that modality is being used by a group and cannot be deleted
-        return
-      }
-      actions.customModalities.remove(_ => _.id === modality.id)
-    },
+    removeModality: (reference: { id: Id }) =>
+      Effect.gen(function* () {
+        const modality = getModality({
+          _tag: 'CustomModality',
+          id: reference.id,
+        })
+        if (!modality) return
+        if (
+          Record.some(
+            actions.groups.get(),
+            _ =>
+              _.modality._tag === 'CustomModality' &&
+              _.modality.id === modality.id,
+          )
+        ) {
+          return yield* Effect.fail({ _tag: 'ModalityInUseError' as const })
+        }
+        actions.customModalities.remove(_ => _.id === modality.id)
+      }),
     saveModality: (data: {
       id: Id | null
       name: string

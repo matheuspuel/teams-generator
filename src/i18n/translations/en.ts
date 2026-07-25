@@ -57,6 +57,8 @@ export const enTranslation = {
   Error: 'Error',
   'Group imported': 'Group imported',
   'Failed to import group': 'Failed to import group',
+  'This modality is being used by a group and cannot be deleted':
+    'This modality is being used by a group and cannot be deleted',
   NewerVersionError:
     'The file was created with a newer version of the app. Please update the app and try again.',
   OldVersionError:
