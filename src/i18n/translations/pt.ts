@@ -53,6 +53,17 @@ export const ptTranslation: Translation = {
   'Want to delete the modality': 'Deseja excluir a modalidade',
   'The positions of the players of this modality will be lost':
     'As posições dos jogadores desta modalidade serão perdidas',
+  Success: 'Sucesso',
+  Error: 'Erro',
+  'Group imported': 'Grupo importado',
+  'Failed to import group': 'Falha ao importar grupo',
+  NewerVersionError:
+    'O arquivo foi criado com uma versão mais recente do aplicativo. Atualize o aplicativo e tente novamente.',
+  OldVersionError:
+    'O arquivo foi criado com uma versão antiga do aplicativo. Atualize o aplicativo antes de exportar e tente novamente.',
+  UnableToAccessFileError: 'Não foi possível acessar o arquivo.',
+  InvalidFileError: 'O arquivo não é válido ou está corrompido.',
+  FileTooLargeError: 'O arquivo é muito grande.',
   'Ex: Jack': 'Ex: Pedro',
   'Ex: Soccer': 'Ex: Futebol',
   'Ex: Thursday soccer': 'Ex: Futebol de quinta',

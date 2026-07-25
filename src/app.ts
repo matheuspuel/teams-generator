@@ -1,6 +1,8 @@
-import { Duration, Effect, Stream, SubscriptionRef, pipe } from 'effect'
+import { Duration, Effect, Match, Stream, SubscriptionRef, pipe } from 'effect'
 import { hydrate, saveState } from 'src/slices/core/hydration'
 import { setupReceiveURLHandler } from './export/group'
+import { t } from './i18n'
+import { Alert } from './services/Alert'
 import { runMigrations } from './services/Repositories/migrations'
 import { SplashScreen } from './services/SplashScreen'
 import { type RootState, appStateMachineInstance } from './state'
@@ -24,7 +26,33 @@ export const startApp = Effect.gen(function* () {
   )
   setAppLoaded()
   yield* setupReceiveURLHandler().pipe(
-    Stream.tap(_ => appStateMachineInstance.actions.importGroupData(_)),
+    Stream.tap(_ =>
+      _.pipe(
+        Effect.tap(_ => appStateMachineInstance.actions.importGroupData(_)),
+        Effect.tap(() =>
+          Alert.alert({
+            type: 'success',
+            title: t('Success'),
+            message: t('Group imported'),
+          }),
+        ),
+        Effect.catchAll(e =>
+          Alert.alert({
+            type: 'error',
+            title: t('Failed to import group'),
+            message: Match.valueTags(e, {
+              NewerVersionError: () => t('NewerVersionError'),
+              OldVersionError: () => t('OldVersionError'),
+              SystemError: () => t('UnableToAccessFileError'),
+              BadArgument: () => t('UnableToAccessFileError'),
+              ParseError: () => t('InvalidFileError'),
+              FileTooLargeError: () => t('FileTooLargeError'),
+            }),
+          }),
+        ),
+        Effect.catchAllCause(() => Effect.void),
+      ),
+    ),
     Stream.runDrain,
     Effect.forkDaemon,
   )

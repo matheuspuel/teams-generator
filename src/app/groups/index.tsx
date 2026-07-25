@@ -2,7 +2,7 @@ import AddIcon from '@expo/material-symbols/add.xml'
 import DownloadIcon from '@expo/material-symbols/download.xml'
 import MoreVertIcon from '@expo/material-symbols/more_vert.xml'
 import SportsSoccerIcon from '@expo/material-symbols/sports_soccer.xml'
-import { Array, Data, Effect, flow, pipe, Record, Tuple } from 'effect'
+import { Array, Data, Effect, flow, Match, pipe, Record, Tuple } from 'effect'
 import { router, Stack } from 'expo-router'
 import { FlatList, Pressable, SafeAreaView, Txt, View } from 'src/components'
 import { BannerAd } from 'src/components/custom/BannerAd'
@@ -12,6 +12,7 @@ import { extractGroupFromDocumentPicker } from 'src/export/group'
 import { useActions, useSelector } from 'src/hooks/useSelector'
 import { t } from 'src/i18n'
 import { runtime } from 'src/runtime'
+import { Alert } from 'src/services/Alert'
 import { SplashScreen } from 'src/services/SplashScreen'
 import { getModality } from 'src/slices/groups'
 import type { Id } from 'src/utils/Entity'
@@ -46,6 +47,31 @@ export default function GroupListScreen() {
             onPress={() =>
               extractGroupFromDocumentPicker().pipe(
                 Effect.tap(_ => actions.importGroupData(_)),
+                Effect.tap(() =>
+                  Alert.alert({
+                    type: 'success',
+                    title: t('Success'),
+                    message: t('Group imported'),
+                  }),
+                ),
+                Effect.catchTags({
+                  CanceledOperationError: () => Effect.void,
+                  DocumentPickerError: () => Effect.void,
+                }),
+                Effect.catchAll(e =>
+                  Alert.alert({
+                    type: 'error',
+                    title: t('Failed to import group'),
+                    message: Match.valueTags(e, {
+                      NewerVersionError: () => t('NewerVersionError'),
+                      OldVersionError: () => t('OldVersionError'),
+                      SystemError: () => t('UnableToAccessFileError'),
+                      BadArgument: () => t('UnableToAccessFileError'),
+                      ParseError: () => t('InvalidFileError'),
+                      FileTooLargeError: () => t('FileTooLargeError'),
+                    }),
+                  }),
+                ),
                 runtime.runPromiseExit,
               )
             }

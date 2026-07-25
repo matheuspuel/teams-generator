@@ -3,7 +3,6 @@ import {
   Data,
   Effect,
   flow,
-  Match,
   Option,
   pipe,
   Schema,
@@ -11,7 +10,6 @@ import {
   String,
 } from 'effect'
 import { Group, Modality } from 'src/datatypes'
-import { Alert } from 'src/services/Alert'
 import { DocumentPicker } from 'src/services/DocumentPicker'
 import { FileSystemDirectories } from 'src/services/FileSystem/Directories'
 import { Linking } from 'src/services/Linking'
@@ -60,9 +58,7 @@ export const setupReceiveURLHandler = () =>
     Stream.catchAll(() => Stream.empty),
     Stream.concat(Linking.startLinkingStream()),
     Stream.map(url => ({ url })),
-    Stream.flatMap(_ =>
-      extractGroupFromFile(_).pipe(Stream.catchAllCause(() => Stream.empty)),
-    ),
+    Stream.flatMap(_ => extractGroupFromFile(_).pipe(Effect.exit)),
   )
 
 const extractGroupFromFile = (args: { url: string }) =>
@@ -96,33 +92,8 @@ const extractGroupFromFile = (args: { url: string }) =>
           ),
       }),
     )
-    yield* Alert.alert({
-      type: 'success',
-      title: 'Sucesso',
-      message: 'Grupo importado',
-    })
     return group
-  }).pipe(
-    Effect.tapError(e =>
-      Alert.alert({
-        type: 'error',
-        title: 'Falha ao importar grupo',
-        message: pipe(
-          e,
-          Match.valueTags({
-            NewerVersionError: () =>
-              'O arquivo foi criado com uma versão mais recente do aplicativo. Atualize o aplicativo e tente novamente.',
-            OldVersionError: () =>
-              'O arquivo foi criado com uma versão antiga do aplicativo. Atualize o aplicativo antes de exportar e tente novamente.',
-            SystemError: () => 'Não foi possível acessar o arquivo.',
-            BadArgument: () => 'Não foi possível acessar o arquivo.',
-            ParseError: () => 'O arquivo não é válido ou está corrompido',
-            FileTooLargeError: () => 'O arquivo é muito grande.',
-          }),
-        ),
-      }),
-    ),
-  )
+  })
 
 const dataSchema = Group.Group.pipe(
   Schema.omit('modality'),

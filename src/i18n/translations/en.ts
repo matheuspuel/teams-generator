@@ -51,6 +51,17 @@ export const enTranslation = {
   'Want to delete the modality': 'Want to delete the modality',
   'The positions of the players of this modality will be lost':
     'The positions of the players of this modality will be lost',
+  Success: 'Success',
+  Error: 'Error',
+  'Group imported': 'Group imported',
+  'Failed to import group': 'Failed to import group',
+  NewerVersionError:
+    'The file was created with a newer version of the app. Please update the app and try again.',
+  OldVersionError:
+    'The file was created with an older version of the app. Please update the app before exporting and try again.',
+  UnableToAccessFileError: 'Unable to access the file.',
+  InvalidFileError: 'The file is invalid or corrupted.',
+  FileTooLargeError: 'The file is too large.',
   'Ex: Jack': 'Ex: Jack',
   'Ex: Soccer': 'Ex: Soccer',
   'Ex: Thursday soccer': 'Ex: Thursday soccer',
